@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="lt">
+<TS version="2.0" language="lt">
+<context>
+    <name>MircastShowWidget</name>
+    <message>
+        <source>Projecting... 
+Please do not exit the Movie app during the process.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exit Miracast</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MircastWidget</name>
+    <message>
+        <source>Project to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Searching for devices...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 <context>
     <name>QObject</name>
     <message>
@@ -484,16 +515,8 @@
         <translation>Buferizacija...</translation>
     </message>
     <message>
-        <source>No device found</source>
-        <translation type="vanished">Nerasta jokio įrenginio</translation>
-    </message>
-    <message>
         <source>Open folder</source>
         <translation>Atverti aplanką</translation>
-    </message>
-    <message>
-        <source>All videos (%1)</source>
-        <translation type="vanished">Visi vaizdo įrašai (%1)</translation>
     </message>
     <message>
         <source>Stereo</source>
@@ -540,10 +563,6 @@
         <translation>Greitis: %1x</translation>
     </message>
     <message>
-        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation>Subtitrai (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
-    </message>
-    <message>
         <source>View</source>
         <translation>Žiūrėti</translation>
     </message>
@@ -578,10 +597,6 @@
     <message>
         <source>No video file found</source>
         <translation>Nerasta jokio vaizdo įrašo failo</translation>
-    </message>
-    <message>
-        <source>Open File</source>
-        <translation type="vanished">Atverti failą</translation>
     </message>
     <message>
         <source>Film screenshot</source>
@@ -636,10 +651,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="obsolete">Visi vaizdo įrašai (%1) {2 %1)?}</translation>
-    </message>
-    <message>
         <source>Please exit smart dock</source>
         <translation type="unfinished"></translation>
     </message>
@@ -660,11 +671,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Audio (%1)</source>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
+        <comment>All (*)</comment>
+        <translation type="unfinished">Subtitrai (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
+    </message>
+    <message>
+        <source>Connection failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Video (%1)</source>
+        <source>Miracast disconnected</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -672,19 +688,19 @@
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation type="vanished">%1G</translation>
+        <translation>%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation type="vanished">%1M</translation>
+        <translation>%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation type="vanished">%1K</translation>
+        <translation>%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
@@ -794,6 +810,275 @@
     </message>
 </context>
 <context>
+    <name>dmr::Platform_MainWindow</name>
+    <message>
+        <source>Load successfully</source>
+        <translation type="unfinished">Įkėlimas sėkmingas</translation>
+    </message>
+    <message>
+        <source>Load failed</source>
+        <translation type="unfinished">Įkėlimas nepavyko</translation>
+    </message>
+    <message>
+        <source>Cannot play the disc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parse failed</source>
+        <translation type="unfinished">Nagrinėjimas nepavyko</translation>
+    </message>
+    <message>
+        <source>Open folder</source>
+        <translation type="unfinished">Atverti aplanką</translation>
+    </message>
+    <message>
+        <source>All (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed: %1x</source>
+        <translation type="unfinished">Greitis: %1x</translation>
+    </message>
+    <message>
+        <source>Stereo</source>
+        <translation type="unfinished">Stereo</translation>
+    </message>
+    <message>
+        <source>Left channel</source>
+        <translation type="unfinished">Kairysis kanalas</translation>
+    </message>
+    <message>
+        <source>Right channel</source>
+        <translation type="unfinished">Dešinysis kanalas</translation>
+    </message>
+    <message>
+        <source>Track: %1</source>
+        <translation type="unfinished">Takelis: %1</translation>
+    </message>
+    <message>
+        <source>Unable to adjust the subtitle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subtitle %1: %2s</source>
+        <translation type="unfinished">Subtitrai %1: %2s</translation>
+    </message>
+    <message>
+        <source>delayed</source>
+        <translation type="unfinished">vėluoja</translation>
+    </message>
+    <message>
+        <source>advanced</source>
+        <translation type="unfinished">skuba</translation>
+    </message>
+    <message>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
+        <comment>All (*)</comment>
+        <translation type="unfinished">Subtitrai (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished">Žiūrėti</translation>
+    </message>
+    <message>
+        <source>Film screenshot</source>
+        <translation type="unfinished">Filmo ekrano kopija</translation>
+    </message>
+    <message>
+        <source>Saved to</source>
+        <translation type="unfinished">Įrašyta į</translation>
+    </message>
+    <message>
+        <source>The screenshot is saved</source>
+        <translation type="unfinished">Ekrano kopija įrašyta</translation>
+    </message>
+    <message>
+        <source>Failed to save the screenshot</source>
+        <translation type="unfinished">Nepavyko įrašyti ekrano kopijos</translation>
+    </message>
+    <message>
+        <source>Taking the screenshots, please wait...</source>
+        <translation type="unfinished">Daromos ekrano kopijos, palaukite...</translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
+        <translation type="unfinished">Skaitomi DVD failai...</translation>
+    </message>
+    <message>
+        <source>No matching online subtitles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4K video may be stuck</source>
+        <translation type="unfinished">4K vaizdo įrašai gali užstrigti</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished">Gerai</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation type="unfinished">Tvarkingas atkūrimas</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffering...</source>
+        <translation type="unfinished">Buferizacija...</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation type="unfinished">Nutildyti</translation>
+    </message>
+    <message>
+        <source>Volume: %1%</source>
+        <translation type="unfinished">Garsis: %1%</translation>
+    </message>
+    <message>
+        <source>Cannot open file or stream</source>
+        <translation type="unfinished">Nepavyksta atverti failo ar srauto</translation>
+    </message>
+    <message>
+        <source>Invalid file</source>
+        <translation type="unfinished">Neteisingas failas</translation>
+    </message>
+    <message>
+        <source>Please insert a CD/DVD</source>
+        <translation type="unfinished">Įdėkite CD/DVD</translation>
+    </message>
+    <message>
+        <source>No video file found</source>
+        <translation type="unfinished">Nerasta jokio vaizdo įrašo failo</translation>
+    </message>
+    <message>
+        <source>Please load the video first</source>
+        <translation type="unfinished">Iš pradžių, įkelkite vaizdo įrašą</translation>
+    </message>
+    <message>
+        <source>Please exit smart dock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The CD/DVD has been ejected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The action is not supported in this video</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid file: %1</source>
+        <translation type="unfinished">Neteisingas failas: %1</translation>
+    </message>
+    <message>
+        <source>Connection failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Miracast disconnected</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dmr::Platform_PlayItemWidget</name>
+    <message>
+        <source>The file does not exist</source>
+        <translation type="unfinished">Failo nėra</translation>
+    </message>
+</context>
+<context>
+    <name>dmr::Platform_PlaylistWidget</name>
+    <message>
+        <source>Playlist</source>
+        <translation type="unfinished">Grojaraštis</translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation type="unfinished">Išvalyti</translation>
+    </message>
+    <message>
+        <source>%1 videos</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dmr::Platform_ToolboxProxy</name>
+    <message>
+        <source>Play/Pause</source>
+        <translation type="unfinished">Groti/Pristabdyti</translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation type="unfinished">Ankstesnis</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation type="unfinished">Kitas</translation>
+    </message>
+    <message>
+        <source>Fullscreen</source>
+        <translation type="unfinished">Visas ekranas</translation>
+    </message>
+    <message>
+        <source>Playlist</source>
+        <translation type="unfinished">Grojaraštis</translation>
+    </message>
+    <message>
+        <source>play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>prev</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exit fullscreen</source>
+        <translation type="unfinished">Išeiti iš viso ekrano</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation type="unfinished">Pristabdyti</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation type="unfinished">Groti</translation>
+    </message>
+    <message>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Miracast</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
@@ -817,10 +1102,6 @@
 </context>
 <context>
     <name>dmr::Settings</name>
-    <message>
-        <source>%1/Movie%2.jpg</source>
-        <translation type="vanished">%1/Filmas%2.jpg</translation>
-    </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
         <translation>%1/Filmas%2(%3).jpg</translation>
@@ -873,10 +1154,6 @@
         <translation>Kitas</translation>
     </message>
     <message>
-        <source>Subtitles</source>
-        <translation type="vanished">Subtitrai</translation>
-    </message>
-    <message>
         <source>Playlist</source>
         <translation>Grojaraštis</translation>
     </message>
@@ -917,11 +1194,11 @@
         <translation>Pristabdyti</translation>
     </message>
     <message>
-        <source>Mute</source>
-        <translation type="obsolete">Nutildyti</translation>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>sub</source>
+        <source>Miracast</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

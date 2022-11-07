@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 project(libdmr VERSION 0.1.0)
 
 set(CMAKE_AUTOMOC ON)
@@ -27,8 +31,6 @@ target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
 #target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
 #    Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::AV GL png jpeg)
 
-
-include(GNUInstallDirs)
 
 configure_file(libdmr.pc.in ${PROJECT_BINARY_DIR}/libdmr.pc @ONLY)
 

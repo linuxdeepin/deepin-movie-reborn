@@ -1,23 +1,8 @@
-/*
- * Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
- *
- * Author:     zhuyuliang <zhuyuliang@uniontech.com>
- *
- * Maintainer: xiepengfei <xiepengfei@uniontech.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "volumeslider.h"
 #include "toolbox_proxy.h"
 #include "dbusutils.h"
@@ -100,8 +85,8 @@ void VolumeSlider::initVolume()
 
         changeVolume(nVolume);
         changeMuteState(bMute);
-        if(bMute)
-            setMute(bMute);
+
+        setMute(bMute);
     });
 }
 
@@ -162,7 +147,7 @@ void VolumeSlider::updatePoint(QPoint point)
 {
     QRect main_rect = _mw->rect();
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
-    m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
+    m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
                              view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT);
 }
 void VolumeSlider::popup()
@@ -170,7 +155,7 @@ void VolumeSlider::popup()
     QRect main_rect = _mw->rect();
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 
-    int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
+    int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
     int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
     QRect end(x, y, VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
     QRect start = end;

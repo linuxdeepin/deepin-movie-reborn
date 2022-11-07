@@ -1,12 +1,15 @@
-prefix=/usr
+// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
-libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
-includedir=${prefix}/include/libdmr
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@/libdmr
 
 Name: dmr
 Description: deepin movie player widget development file
 Version: @PROJECT_VERSION@
-Libs: -ldmr
+Libs: -L${libdir} -ldmr
 Cflags: -I${includedir}
 Requires: Qt5Widgets Qt5X11Extras Qt5Concurrent Qt5Network gl dtkcore dtkwidget
-

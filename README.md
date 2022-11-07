@@ -100,4 +100,4 @@ Execute `deepin-movie`
 
 ## License
 
-Deepin Movie is licensed under [GPLv3](LICENSE) with [OpenSSL exception](https://lists.debian.org/debian-legal/2004/05/msg00595.html).
+Deepin Movie is licensed under [GPL-3.0-or-later](LICENSE)
