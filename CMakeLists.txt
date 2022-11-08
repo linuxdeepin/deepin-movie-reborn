@@ -56,8 +56,8 @@ endif()
 configure_file(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_BINARY_DIR}/config.h @ONLY)
 
 add_subdirectory(src)
-#add_subdirectory(examples/test)
+add_subdirectory(examples/test)
 
-#if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-#    add_subdirectory(tests)
-#endif()
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_subdirectory(tests)
+endif()
