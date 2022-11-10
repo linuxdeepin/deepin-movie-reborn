@@ -20,6 +20,7 @@ namespace dmr {
         setDefaultButton(1);
         setIcon(QIcon::fromTheme("deepin-movie"));
         setMessage(QApplication::translate("UrlDialog", "Please enter the URL:"));
+        setFixedSize(380, 190);
 
         m_lineEdit = new LineEdit(this);
         addContent(m_lineEdit);
