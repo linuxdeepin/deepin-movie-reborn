@@ -1102,8 +1102,7 @@ bool Platform_MainWindow::event(QEvent *pEvent)
 
 void Platform_MainWindow::leaveEvent(QEvent *)
 {
-    m_autoHideTimer.stop();
-    this->suspendToolsWindow();
+    m_autoHideTimer.start(AUTOHIDE_TIMEOUT);
 }
 
 void Platform_MainWindow::onWindowStateChanged()
