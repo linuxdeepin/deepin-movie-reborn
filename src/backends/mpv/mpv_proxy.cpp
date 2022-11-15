@@ -348,6 +348,8 @@ mpv_handle *MpvProxy::mpv_init()
         //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         QFileInfo fi("/dev/mwv206_0");
         QFileInfo jmfi("/dev/jmgpu"); //jmgpu
+        QFileInfo X100GPU("/dev/x100gpu");
+        QFileInfo X100VPU("/dev/vxd0");
         if (fi.exists() || jmfi.exists()) { //2.1.1景嘉微
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
@@ -371,6 +373,9 @@ mpv_handle *MpvProxy::mpv_init()
                 my_set_property(pHandle, "wid", m_pParentWidget->winId());
             }
             m_sInitVo = "xv,x11";
+        }  else if (X100GPU.exists() && X100VPU.exists()) {
+            my_set_property(m_handle, "hwdec", "ftomx-copy");
+            my_set_property(m_handle, "vo", "gpu");
         } else if (CompositingManager::get().isOnlySoftDecode()) {//2.1.3 鲲鹏920 || 曙光+英伟达 || 浪潮
             my_set_property(pHandle, "hwdec", "no");
         } else { //2.2非特殊硬件
@@ -422,6 +427,8 @@ mpv_handle *MpvProxy::mpv_init()
     } else { //3.设置硬解
         QFileInfo fi("/dev/mwv206_0");
         QFileInfo jmfi("/dev/jmgpu");
+        QFileInfo X100GPU("/dev/x100gpu");
+        QFileInfo X100VPU("/dev/vxd0");
         if (fi.exists() || jmfi.exists()) { //2.1.1景嘉微
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
@@ -433,11 +440,14 @@ mpv_handle *MpvProxy::mpv_init()
                 my_set_property(pHandle, "hwdec", "vaapi");
                 my_set_property(pHandle, "vo", "vaapi");
                 m_sInitVo = "vaapi";
-            }else {
+            } else {
                 my_set_property(pHandle, "hwdec", "auto");
                 my_set_property(pHandle, "vo", "vdpau,xv,x11");
                 m_sInitVo = "vdpau,xv,x11";
             }
+        } else if (X100GPU.exists() && X100VPU.exists()) {
+            my_set_property(m_handle, "hwdec", "ftomx-copy");
+            my_set_property(m_handle, "vo", "gpu");
         } else {
             my_set_property(pHandle, "hwdec", "auto");
         }
@@ -1099,8 +1109,13 @@ void MpvProxy::refreshDecode()
                     jmflag=true;
                 }
             }
+            QFileInfo X100GPU("/dev/x100gpu");
+            bool x100flag =false;
+            if (X100GPU.exists()) {
+                x100flag = true;
+            }
             //探测硬解码
-            if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag) {
+            if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag && !x100flag) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
 #endif
@@ -1112,6 +1127,8 @@ void MpvProxy::refreshDecode()
             //2.2.1 特殊硬件
             QFileInfo fi("/dev/mwv206_0"); //2.2.1.1 景嘉微
             QFileInfo jmfi("/dev/jmgpu");
+            QFileInfo X100GPU("/dev/x100gpu");
+            QFileInfo X100VPU("/dev/vxd0");
             if (fi.exists() || jmfi.exists()) {
                 QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
                 QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
@@ -1122,6 +1139,9 @@ void MpvProxy::refreshDecode()
                 }else {
                     my_set_property(m_handle, "hwdec", "auto");
                 }
+            } else if (X100GPU.exists() && X100VPU.exists()) {
+                my_set_property(m_handle, "hwdec", "ftomx-copy");
+                my_set_property(m_handle, "vo", "gpu");
             } else if (CompositingManager::get().isOnlySoftDecode()) { //2.2.1.2 鲲鹏920 || 曙光+英伟达 || 浪潮
                 my_set_property(m_handle, "hwdec", "no");
             } else { //2.2.2 非特殊硬件 + 非特殊格式
@@ -1157,6 +1177,8 @@ void MpvProxy::refreshDecode()
 #endif
         QFileInfo fi("/dev/mwv206_0"); //2.2.1.1 景嘉微
         QFileInfo jmfi("/dev/jmgpu");
+        QFileInfo X100GPU("/dev/x100gpu");
+        QFileInfo X100VPU("/dev/vxd0");
         if (fi.exists() || jmfi.exists()) {
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
@@ -1169,6 +1191,9 @@ void MpvProxy::refreshDecode()
             if (!sdir.exists() && jmdir.exists()) {
                 my_set_property(m_handle, "hwdec", "vaapi");
             }
+        } else if (X100GPU.exists() && X100VPU.exists()) {
+            my_set_property(m_handle, "hwdec", "ftomx-copy");
+            my_set_property(m_handle, "vo", "gpu");
         }
 
         //play.conf
