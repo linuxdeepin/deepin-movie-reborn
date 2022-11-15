@@ -789,6 +789,7 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         });
     });
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::aboutToHide, [ = ]() {
+        m_pClearButton->update();
         if (_mouseItem) {
             (static_cast<Platform_PlayItemWidget *>(_mouseItem))->setHovered(false);
         }
