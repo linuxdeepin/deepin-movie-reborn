@@ -3526,6 +3526,7 @@ void Platform_MainWindow::capturedMousePressEvent(QMouseEvent *pEvent)
 
     if (pEvent->buttons() == Qt::LeftButton) {
         m_bMousePressed = true;
+        m_bStartMove = true;
     }
 
     m_posMouseOrigin = mapToGlobal(pEvent->pos());
@@ -3598,8 +3599,8 @@ void Platform_MainWindow::mousePressEvent(QMouseEvent *pEvent)
     if (qApp->focusWindow() == nullptr)
         return;
     if (pEvent->buttons() == Qt::LeftButton) {
-        m_bStartMove = true;
         m_bMousePressed = true;
+        m_bStartMove = true;
         if (!m_mousePressTimer.isActive() && m_bIsTouch) {
             m_mousePressTimer.stop();
 
@@ -3636,6 +3637,9 @@ void Platform_MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         }
     }
 
+    m_bMouseMoved = false;
+    m_bMousePressed = false;
+
     qInfo() << __func__ << "进入mouseReleaseEvent";
     QWidget::mouseReleaseEvent(ev);
 }
@@ -3669,8 +3673,9 @@ void Platform_MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
     m_pAnimationlable->hide();
     QPoint ptCurr = mapToGlobal(pEvent->pos());
     QPoint ptDelta = ptCurr - this->m_posMouseOrigin;
-
+    m_posMouseOrigin = mapToGlobal(pEvent->pos());
     if (qAbs(ptDelta.x()) < 5 && qAbs(ptDelta.y()) < 5) { //避免误触
+
         return;
     }
 
@@ -3679,7 +3684,7 @@ void Platform_MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
                 && m_pEngine->state() != PlayerEngine::CoreState::Idle) {
             m_bTouchChangeVolume = false;
             m_pToolbox->updateProgress(ptDelta.x());     //改变进度条显示
-            this->m_posMouseOrigin = ptCurr;
+            //this->m_posMouseOrigin = ptCurr;
             m_bProgressChanged = true;
             return;
         } else if (qAbs(ptDelta.x()) < qAbs(ptDelta.y())) {
@@ -3691,18 +3696,19 @@ void Platform_MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
                 requestAction(ActionFactory::ActionKind::VolumeUp);
             }
 
-            this->m_posMouseOrigin = ptCurr;
+            //this->m_posMouseOrigin = ptCurr;
             return;
         }
     }
 
-    if (!isFullScreen()) {
+    if (!isFullScreen() && m_bStartMove) {
 #ifdef XCB_Platform
         Utility::startWindowSystemMove(this->winId());
         if (m_bStartMove) {
             m_bStartMove = false;
-            this->m_posMouseOrigin = ptCurr;
+            //this->m_posMouseOrigin = ptCurr;
             m_bMouseMoved = true;
+            qInfo() <<m_posMouseOrigin;
             return Utility::updateMousePointForWindowMove(this->winId(), pEvent->globalPos() * devicePixelRatioF());
         }
 #else
@@ -3712,7 +3718,7 @@ void Platform_MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
         QWidget::mouseMoveEvent(pEvent);
     }
 
-    this->m_posMouseOrigin = ptCurr;
+    //this->m_posMouseOrigin = ptCurr;
     m_bMouseMoved = true;
 }
 
