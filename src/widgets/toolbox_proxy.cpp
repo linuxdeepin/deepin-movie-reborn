@@ -2476,7 +2476,8 @@ bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
 
     if(CompositingManager::get().platform() == Platform::X86) {
         if (obj == m_pListBtn) {
-            if (ev->type() == QEvent::MouseButtonRelease) {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(ev);
+            if (ev->type() == QEvent::MouseButtonRelease && mouseEvent->button() == Qt::LeftButton) {
                 if (m_pPlaylist->state() == PlaylistWidget::State::Opened && m_pListBtn->isChecked()) {
                     m_pListBtn->setChecked(!m_pListBtn->isChecked());
                 }
