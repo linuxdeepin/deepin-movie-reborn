@@ -129,7 +129,8 @@ CompositingManager::CompositingManager()
         return;
     }
 
-    _composited = false;
+    _composited = true;
+#if defined (_MOVIE_USE_)
     QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
     QString aa = gsettings.get("composited").toString();
     if ((gsettings.get("composited").toString() == "DisableComposited"
@@ -154,6 +155,8 @@ CompositingManager::CompositingManager()
             _composited = false;
         }
     }
+#endif
+
     //针对9200显卡适配
     QFileInfo jmfi("/dev/jmgpu");
     if (jmfi.exists()) {
