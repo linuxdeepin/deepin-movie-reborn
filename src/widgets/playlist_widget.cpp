@@ -789,6 +789,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         });
     });
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::aboutToHide, [ = ]() {
+        m_pClearButton->update();
         if (_mouseItem) {
             (static_cast<PlayItemWidget *>(_mouseItem))->setHovered(false);
         }
