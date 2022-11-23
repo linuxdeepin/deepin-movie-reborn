@@ -1098,22 +1098,24 @@ void MpvProxy::refreshDecode()
             auto codec = currentInfo.mi.videoCodec();
             auto name = _file.fileName();
             isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv");
-#if !defined(_loongarch) && !defined(__loongarch__) && !defined(__loongarch64)
             //去除9200显卡适配
             QFileInfo jmfi("/dev/jmgpu");
+            QFileInfo fi("/dev/mwv206_0");
             bool jmflag =false;
-            if (jmfi.exists()) {
+            if (jmfi.exists() || fi.exists()) {
                 QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
                 if(jmdir.exists())
                 {
                     jmflag=true;
                 }
+                isSoftCodec = codec.toLower().contains("mpeg4") ? true : isSoftCodec;
             }
             QFileInfo X100GPU("/dev/x100gpu");
             bool x100flag =false;
             if (X100GPU.exists()) {
                 x100flag = true;
             }
+#if !defined(_loongarch) && !defined(__loongarch__) && !defined(__loongarch64)
             //探测硬解码
             if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag && !x100flag) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
@@ -1130,14 +1132,20 @@ void MpvProxy::refreshDecode()
             QFileInfo X100GPU("/dev/x100gpu");
             QFileInfo X100VPU("/dev/vxd0");
             if (fi.exists() || jmfi.exists()) {
-                QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
-                QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
-                if(sdir.exists() && fi.exists()) {
-                    my_set_property(m_handle, "hwdec", "vdpau");
-                }else if (jmfi.exists() && jmdir.exists()) {
-                    my_set_property(m_handle, "hwdec", "vaapi");
-                }else {
-                    my_set_property(m_handle, "hwdec", "auto");
+                PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+                auto codec = currentInfo.mi.videoCodec();
+                if (codec.toLower().contains("mpeg2") || codec.toLower().contains("mpeg4")) {
+                    my_set_property(m_handle, "hwdec", "no");
+                } else {
+                    QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
+                    QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
+                    if(sdir.exists() && fi.exists()) {
+                        my_set_property(m_handle, "hwdec", "vdpau");
+                    }else if (jmfi.exists() && jmdir.exists()) {
+                        my_set_property(m_handle, "hwdec", "vaapi");
+                    }else {
+                        my_set_property(m_handle, "hwdec", "auto");
+                    }
                 }
             } else if (X100GPU.exists() && X100VPU.exists()) {
                 my_set_property(m_handle, "hwdec", "ftomx-copy");
