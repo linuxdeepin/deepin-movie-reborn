@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
 #endif
     QFileInfo fi("/dev/mwv206_0");
     QFileInfo jmfi("/dev/jmgpu");
-    if ((fi.exists() || jmfi.exists()) && !CompositingManager::isMpvExists()) {
+    if ((fi.exists() || jmfi.exists())) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
     }
     /**
