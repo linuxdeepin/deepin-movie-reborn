@@ -396,8 +396,8 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "video-sync", "desync");
         }
         if (!fi.exists() && !jmfi.exists()) {
-            my_set_property(pHandle, "vo", "gpu,x11");
-            m_sInitVo = "gpu,x11";
+            my_set_property(pHandle, "vo", "x11");
+            m_sInitVo = "x11";
         }
 #elif defined (__sw_64__)
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
