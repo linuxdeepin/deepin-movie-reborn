@@ -161,8 +161,10 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
     static QString sNameLast = nullptr;
 
     pMainWid->setLayout(pLayout);
-    DPushButton *pPushButton = new DPushButton;
-    pPushButton->setAutoDefault(false);
+    DIconButton *pIconButton = new DIconButton(nullptr);
+    pIconButton->setIcon(DStyle::SP_SelectElement);
+    pIconButton->setFixedHeight(40);
+
     pLineEdit->setFixedHeight(40);
     pLineEdit->setObjectName("OptionSelectableLineEdit");
     pLineEdit->setText(pSettingOption->value().toString());
@@ -176,11 +178,9 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
     });
     pLineEdit->setText(sElideText);
     sNameLast = sElideText;
-    pPushButton->setIcon(QIcon(":resources/icons/select-normal.svg"));
-    pPushButton->setFixedHeight(40);
     pLayout->setContentsMargins(0, 0, 0, 0);
     pLayout->addWidget(pLineEdit);
-    pLayout->addWidget(pPushButton);
+    pLayout->addWidget(pIconButton);
 
     QWidget *pOptionWidget = new QWidget;
     pOptionWidget->setObjectName("OptionFrame");
@@ -236,7 +236,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
         return true;
     };
 
-    pSettingOption->connect(pPushButton, &DPushButton::clicked, [ = ]() {
+    pSettingOption->connect(pIconButton, &DPushButton::clicked, [ = ]() {
 #ifndef USE_TEST
         QString sName = DFileDialog::getExistingDirectory(nullptr, QObject::tr("Open folder"),
                                                           MainWindow::lastOpenedPath(),
