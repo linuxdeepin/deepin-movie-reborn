@@ -3478,9 +3478,11 @@ void MainWindow::updateWindowTitle()
         QString sTitle = m_pTitlebar->fontMetrics().elidedText(mi.title,
                                                                Qt::ElideMiddle, m_pTitlebar->contentsRect().width() - 400);
         m_pTitlebar->setTitletxt(sTitle);
+        setWindowTitle(mi.filePath);
         m_pTitlebar->setTitleBarBackground(true);
     } else {
         m_pTitlebar->setTitletxt(QString());
+        setWindowTitle(QString());
         m_pTitlebar->setTitleBarBackground(false);
     }
     m_pTitlebar->setProperty("idle", m_pEngine->state() == PlayerEngine::Idle);
