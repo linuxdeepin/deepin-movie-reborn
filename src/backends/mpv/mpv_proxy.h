@@ -13,6 +13,7 @@
 #include <xcb/xproto.h>
 #undef Bool
 #include "../../vendor/qthelper.hpp"
+#include "libraryloader.h"
 
 typedef mpv_event *(*mpv_waitEvent)(mpv_handle *ctx, double timeout);
 typedef int (*mpv_set_optionString)(mpv_handle *ctx, const char *name, const char *data);
@@ -37,23 +38,7 @@ typedef int (*mpvinitialize)(mpv_handle *ctx);
 typedef void (*mpv_freeNode_contents)(mpv_node *node);
 typedef void (*mpv_terminateDestroy)(mpv_handle *ctx);
 
-static QString libPath(const QString &sLib)
-{
-    QDir dir;
-    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
-    dir.setPath(path);
-    QStringList list = dir.entryList(QStringList() << (sLib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
-    if (list.contains(sLib)) {
-        return sLib;
-    } else {
-        list.sort();
-    }
 
-    if(list.size() > 0)
-        return list.last();
-    else
-        return QString();
-}
 
 class MpvHandle
 {
@@ -61,7 +46,7 @@ class MpvHandle
         explicit container(mpv_handle *pHandle) : m_pHandle(pHandle) {}
         ~container()
         {
-            mpv_terminateDestroy func = (mpv_terminateDestroy)QLibrary::resolve(libPath("libmpv.so.1"), "mpv_terminate_destroy");
+            mpv_terminateDestroy func = (mpv_terminateDestroy)QLibrary::resolve(LibraryLoader::libPath("libmpv.so"), "mpv_terminate_destroy");
             func(m_pHandle);
         }
         mpv_handle *m_pHandle;

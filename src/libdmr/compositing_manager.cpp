@@ -9,6 +9,7 @@
 #ifndef _LIBDMR_
 #include "options.h"
 #endif
+#include "libraryloader.h"
 
 #include <iostream>
 #include <unistd.h>
@@ -268,14 +269,7 @@ void CompositingManager::setCanHwdec(bool bCanHwdec)
 
 bool CompositingManager::isMpvExists()
 {
-    QDir dir;
-    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
-    dir.setPath(path);
-    QStringList list = dir.entryList(QStringList() << (QString("libmpv.so.1") + "*"), QDir::NoDotAndDotDot | QDir::Files);
-    if (list.contains("libmpv.so.1")) {
-        return true;
-    }
-    return false;
+    return LibraryLoader::isLibExists("libmpv.so");
 }
 
 bool CompositingManager::isZXIntgraphics() const

@@ -163,6 +163,12 @@ void PlayerEngine::updateSubStyles()
 
     int fontId = pFontOpt->value().toInt();
     int size = pSizeOpt->value().toInt();
+
+    if (fontId >= pFontOpt->data("items").toStringList().size() || fontId < 0)
+    {
+        return;
+    }
+
     QString font = pFontOpt->data("items").toStringList()[fontId];
 
     if (_state != CoreState::Idle) {
