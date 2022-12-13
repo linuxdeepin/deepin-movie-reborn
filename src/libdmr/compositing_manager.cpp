@@ -166,6 +166,23 @@ CompositingManager::CompositingManager()
            _composited = false;
         }
     }
+
+    //判断xd显卡不能通过opengl渲染
+    QDir innodir("/sys/bus/platform/drivers/inno-codec");
+    if ( innodir.exists()) {
+       _composited = false;
+    }
+
+    //判断MT显卡不能通过opengl渲染
+    QFileInfo mtfi("/dev/mtgpu.0");
+    if (mtfi.exists()) {
+        //判断是否安装核外驱动  因为mt显卡 不能通过opengl渲染
+        QDir mtdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"musa");
+        if ( mtdir.exists()) {
+           _composited = false;
+        }
+    }
+
     //读取配置
     m_pMpvConfig = new QMap<QString, QString>;
     utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);
