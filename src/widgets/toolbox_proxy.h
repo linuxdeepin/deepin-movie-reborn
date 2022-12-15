@@ -387,10 +387,6 @@ public slots:
      */
     void finishLoadSlot(QSize size);
     /**
-     * @brief updateplaylisticon 切换主题时更新播放列表图标
-     */
-    void updateplaylisticon();
-    /**
      * @brief setthumbnailmode 设置胶片进度条的模式
      */
     void setthumbnailmode();
