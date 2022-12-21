@@ -833,8 +833,6 @@ Platform_ToolboxProxy::Platform_ToolboxProxy(QWidget *mainWindow, PlayerEngine *
 
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &Platform_ToolboxProxy::updatePlayState);
-    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
-            this, &Platform_ToolboxProxy::updateplaylisticon);
     connect(m_mircastWidget, &MircastWidget::updatePlayStatus, this, &Platform_ToolboxProxy::updatePlayState);
     connect(m_mircastWidget, &MircastWidget::updateTime, this, &Platform_ToolboxProxy::updateMircastTime, Qt::QueuedConnection);
 }
@@ -868,21 +866,6 @@ void Platform_ToolboxProxy::setthumbnailmode()
     //no thunbnail progress bar is loaded except amd plantform
     m_bThumbnailmode = false;
     updateMovieProgress();
-}
-
-void Platform_ToolboxProxy::updateplaylisticon()
-{
-    if (m_pListBtn->isChecked() && DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-        m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
-    } else {
-        m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
-    }
-
-    if (m_pMircastBtn->isChecked() && DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-        m_pMircastBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/mircast_chenked.svg"));
-    } else {
-        m_pMircastBtn->setIcon(QIcon::fromTheme("dcc_mircast"));
-    }
 }
 
 void Platform_ToolboxProxy::setup()
@@ -1768,7 +1751,6 @@ void Platform_ToolboxProxy::hideMircastWidget()
 {
     m_mircastWidget->hide();
     m_pMircastBtn->setChecked(false);
-    updateplaylisticon();
 }
 /**
  * @brief volumeUp 鼠标滚轮增加音量
