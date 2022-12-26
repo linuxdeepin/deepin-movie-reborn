@@ -3989,9 +3989,8 @@ void MainWindow::toggleUIMode()
         if (m_bMiniMode) {
             flags |= Qt::X11BypassWindowManagerHint;
             m_preMiniWindowState = windowState();
-            setWindowState(Qt::WindowNoState);
             setWindowFlags(flags);
-            show();
+            showNormal();
         } else {
             flags &= ~Qt::X11BypassWindowManagerHint;
             setWindowFlags(flags);
