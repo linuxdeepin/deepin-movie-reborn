@@ -1,21 +1,23 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="sl">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="sl">
 <context>
     <name>MircastShowWidget</name>
     <message>
-        <location filename="../src/widgets/mircastshowwidget.cpp" line="47"/>
+        <location filename="../src/widgets/mircastshowwidget.cpp" line="57"/>
         <source>Exit Miracast</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/mircastshowwidget.cpp" line="64"/>
+        <location filename="../src/widgets/mircastshowwidget.cpp" line="74"/>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/mircastshowwidget.cpp" line="84"/>
+        <location filename="../src/widgets/mircastshowwidget.cpp" line="102"/>
         <source>Display device</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23,29 +25,29 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="67"/>
         <source>Project to</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/mircastwidget.cpp" line="325"/>
+        <location filename="../src/widgets/mircastwidget.cpp" line="336"/>
         <source>Searching for devices...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/mircastwidget.cpp" line="334"/>
+        <location filename="../src/widgets/mircastwidget.cpp" line="345"/>
         <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="458"/>
-        <location filename="../src/common/dmr_settings.cpp" line="192"/>
-        <location filename="../src/common/volumemonitoring.cpp" line="68"/>
+        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="477"/>
         <location filename="../src/main.cpp" line="181"/>
         <location filename="../src/main.cpp" line="219"/>
-        <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="116"/>
         <location filename="../src/widgets/volumeslider.cpp" line="113"/>
+        <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="116"/>
+        <location filename="../src/common/volumemonitoring.cpp" line="68"/>
+        <location filename="../src/common/dmr_settings.cpp" line="192"/>
         <source>Movie</source>
         <translation>Film</translation>
     </message>
@@ -55,20 +57,20 @@ Please do not exit the Movie app during the process.</source>
         <translation>Film je zmogljiv video predvajalnik, ki omogoča predvajanje lokalnih in pretočnih vsebin v številnih video formatih.</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="59"/>
         <location filename="../src/common/shortcut_manager.cpp" line="186"/>
+        <location filename="../src/common/settings_translation.cpp" line="59"/>
         <source>Settings</source>
         <translation>Nastavitve</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="57"/>
         <location filename="../src/common/shortcut_manager.cpp" line="189"/>
+        <location filename="../src/common/settings_translation.cpp" line="57"/>
         <source>Help</source>
         <translation>Pomoč</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="58"/>
         <location filename="../src/common/shortcut_manager.cpp" line="194"/>
+        <location filename="../src/common/settings_translation.cpp" line="58"/>
         <source>Display shortcuts</source>
         <translation>Prikaži bližnjice</translation>
     </message>
@@ -320,32 +322,32 @@ Please do not exit the Movie app during the process.</source>
         <translation>Programsko dekodiranje</translation>
     </message>
     <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="201"/>
         <location filename="../src/common/mainwindow.cpp" line="203"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="200"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>Nimate dovoljenja za upravljanje te mape</translation>
     </message>
     <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="203"/>
         <location filename="../src/common/mainwindow.cpp" line="205"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="202"/>
         <source>OK</source>
         <translation>V redu</translation>
     </message>
     <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="219"/>
         <location filename="../src/common/mainwindow.cpp" line="221"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="218"/>
         <source>Invalid folder</source>
         <translation>Neveljavna mapa</translation>
     </message>
     <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="239"/>
         <location filename="../src/common/mainwindow.cpp" line="241"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="238"/>
         <source>Open folder</source>
         <translation>Odpri mapo</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2871"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2902"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2906"/>
+        <location filename="../src/common/mainwindow.cpp" line="2875"/>
         <source>Network disconnected</source>
         <translation>Ni omrežne povezave</translation>
     </message>
@@ -706,7 +708,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1712"/>
-        <location filename="../src/common/mainwindow.cpp" line="3202"/>
+        <location filename="../src/common/mainwindow.cpp" line="3206"/>
         <source>Parse failed</source>
         <translation>Razčlenjevanje ni uspelo</translation>
     </message>
@@ -815,10 +817,10 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4552"/>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2878"/>
+        <location filename="../src/common/mainwindow.cpp" line="2882"/>
         <source>No matching online subtitles</source>
         <translation>Na spletu ni najti pripadajočih podnapisov</translation>
     </message>
@@ -829,65 +831,65 @@ Please do not exit the Movie app during the process.</source>
         <translation>Vse (*)</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2894"/>
+        <location filename="../src/common/mainwindow.cpp" line="2898"/>
         <source>4K video may be stuck</source>
         <translation>4K video se lahko zatika</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2895"/>
+        <location filename="../src/common/mainwindow.cpp" line="2899"/>
         <source>OK</source>
         <translation>V redu</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2927"/>
-        <location filename="../src/common/mainwindow.cpp" line="3854"/>
+        <location filename="../src/common/mainwindow.cpp" line="2931"/>
+        <location filename="../src/common/mainwindow.cpp" line="3855"/>
         <source>Order play</source>
         <translation>Vrstni red predvajanja </translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2930"/>
-        <location filename="../src/common/mainwindow.cpp" line="3857"/>
+        <location filename="../src/common/mainwindow.cpp" line="2934"/>
+        <location filename="../src/common/mainwindow.cpp" line="3858"/>
         <source>Shuffle play</source>
         <translation>Premešano predvajanje</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2933"/>
-        <location filename="../src/common/mainwindow.cpp" line="3860"/>
+        <location filename="../src/common/mainwindow.cpp" line="2937"/>
+        <location filename="../src/common/mainwindow.cpp" line="3861"/>
         <source>Single play</source>
         <translation>Posamično predvajanje</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2936"/>
-        <location filename="../src/common/mainwindow.cpp" line="3863"/>
+        <location filename="../src/common/mainwindow.cpp" line="2940"/>
+        <location filename="../src/common/mainwindow.cpp" line="3864"/>
         <source>Single loop</source>
         <translation>Posamično ponavljanje</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2939"/>
-        <location filename="../src/common/mainwindow.cpp" line="3866"/>
+        <location filename="../src/common/mainwindow.cpp" line="2943"/>
+        <location filename="../src/common/mainwindow.cpp" line="3867"/>
         <source>List loop</source>
         <translation>Ponavljanje seznama</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3093"/>
+        <location filename="../src/common/mainwindow.cpp" line="3097"/>
         <source>Buffering...</source>
         <translation>Berem v predpomnilnik...</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3116"/>
-        <location filename="../src/common/mainwindow.cpp" line="3141"/>
+        <location filename="../src/common/mainwindow.cpp" line="3120"/>
+        <location filename="../src/common/mainwindow.cpp" line="3145"/>
         <source>Mute</source>
         <translation>Utišaj</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3118"/>
-        <location filename="../src/common/mainwindow.cpp" line="3143"/>
+        <location filename="../src/common/mainwindow.cpp" line="3122"/>
+        <location filename="../src/common/mainwindow.cpp" line="3147"/>
         <source>Volume: %1%</source>
         <translation>Glasnost: %1%</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3161"/>
-        <location filename="../src/common/mainwindow.cpp" line="3193"/>
+        <location filename="../src/common/mainwindow.cpp" line="3165"/>
+        <location filename="../src/common/mainwindow.cpp" line="3197"/>
         <source>Cannot open file or stream</source>
         <translation>Datoteke ali pretoka ni mogoče odpreti</translation>
     </message>
@@ -902,8 +904,8 @@ Please do not exit the Movie app during the process.</source>
         <translation>Povezava ni uspela</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3210"/>
-        <location filename="../src/common/mainwindow.cpp" line="3215"/>
+        <location filename="../src/common/mainwindow.cpp" line="3214"/>
+        <location filename="../src/common/mainwindow.cpp" line="3219"/>
         <source>Invalid file</source>
         <translation>Neveljavna datoteka</translation>
     </message>
@@ -914,23 +916,23 @@ Please do not exit the Movie app during the process.</source>
         <translation>Podnapisi (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3217"/>
+        <location filename="../src/common/mainwindow.cpp" line="3221"/>
         <source>Please insert a CD/DVD</source>
         <translation>Vstavite CD/DVD</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3222"/>
+        <location filename="../src/common/mainwindow.cpp" line="3226"/>
         <source>No video file found</source>
         <translation>Ni najdenih video datotek</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3845"/>
+        <location filename="../src/common/mainwindow.cpp" line="3846"/>
         <source>Please load the video first</source>
         <translation>Najprej naložite video</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3968"/>
-        <location filename="../src/common/mainwindow.cpp" line="3976"/>
+        <location filename="../src/common/mainwindow.cpp" line="3969"/>
+        <location filename="../src/common/mainwindow.cpp" line="3977"/>
         <source>Please exit smart dock</source>
         <translation>Zapustite pametno sidrišče</translation>
     </message>
@@ -943,24 +945,20 @@ Please do not exit the Movie app during the process.</source>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
-        <location filename="../src/libdmr/playlist_model.h" line="139"/>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
-        <location filename="../src/libdmr/playlist_model.h" line="141"/>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
-        <location filename="../src/libdmr/playlist_model.h" line="143"/>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
-        <location filename="../src/libdmr/playlist_model.h" line="145"/>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -1091,7 +1089,7 @@ Please do not exit the Movie app during the process.</source>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1694"/>
+        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1744"/>
         <source>Internal</source>
         <translation>Notranje</translation>
     </message>
@@ -1099,17 +1097,17 @@ Please do not exit the Movie app during the process.</source>
 <context>
     <name>dmr::Platform_MainWindow</name>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="873"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="874"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2397"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4186"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4198"/>
         <source>Load successfully</source>
         <translation>Uspešno naloženo</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="873"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="874"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2397"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2400"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4186"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4198"/>
         <source>Load failed</source>
         <translation>Nalaganje neuspešno</translation>
     </message>
@@ -1121,7 +1119,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1772"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3220"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3224"/>
         <source>Parse failed</source>
         <translation>Razčlenjevanje ni uspelo</translation>
     </message>
@@ -1143,7 +1141,7 @@ Please do not exit the Movie app during the process.</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2158"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2166"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2372"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4370"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4382"/>
         <source>Speed: %1x</source>
         <translation>Hitrost: %1x</translation>
     </message>
@@ -1235,123 +1233,123 @@ Please do not exit the Movie app during the process.</source>
         <translation>Branje DVD datotek</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2909"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2913"/>
         <source>No matching online subtitles</source>
         <translation>Na spletu ni najti pripadajočih podnapisov</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2925"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2929"/>
         <source>4K video may be stuck</source>
         <translation>4K video se lahko zatika</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2926"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2930"/>
         <source>OK</source>
         <translation>V redu</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2967"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3872"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2971"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3884"/>
         <source>Order play</source>
         <translation>Vrstni red predvajanja </translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2970"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3875"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2974"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3887"/>
         <source>Shuffle play</source>
         <translation>Premešano predvajanje</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2973"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3878"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2977"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3890"/>
         <source>Single play</source>
         <translation>Posamično predvajanje</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2976"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3881"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2980"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3893"/>
         <source>Single loop</source>
         <translation>Posamično ponavljanje</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2979"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3884"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2983"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3896"/>
         <source>List loop</source>
         <translation>Ponavljanje seznama</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3117"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3121"/>
         <source>Buffering...</source>
         <translation>Berem v predpomnilnik...</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3140"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3165"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3144"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3169"/>
         <source>Mute</source>
         <translation>Utišaj</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3142"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3167"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3146"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3171"/>
         <source>Volume: %1%</source>
         <translation>Glasnost: %1%</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3211"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3215"/>
         <source>Cannot open file or stream</source>
         <translation>Datoteke ali pretoka ni mogoče odpreti</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3228"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3233"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3232"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3237"/>
         <source>Invalid file</source>
         <translation>Neveljavna datoteka</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3235"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3239"/>
         <source>Please insert a CD/DVD</source>
         <translation>Vstavite CD/DVD</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3240"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3244"/>
         <source>No video file found</source>
         <translation>Ni najdenih video datotek</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3863"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3875"/>
         <source>Please load the video first</source>
         <translation>Najprej naložite video</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3983"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3990"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3995"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4002"/>
         <source>Please exit smart dock</source>
         <translation>Zapustite pametno sidrišče</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4231"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4243"/>
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVD je bil izvržen</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4471"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4483"/>
         <source>The action is not supported in this video</source>
         <translation>Dejanja ni podporto za ta video</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4482"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4494"/>
         <source>Invalid file: %1</source>
         <translation>Neveljavna datoteka: %1</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4506"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4518"/>
         <source>Connection failed</source>
         <translation>Povezava ni uspela</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4513"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4525"/>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1378,10 +1376,10 @@ Please do not exit the Movie app during the process.</source>
         <translation>Prazno</translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="860"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1143"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1168"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1250"/>
+        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="861"/>
+        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1144"/>
+        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1169"/>
+        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1251"/>
         <source>%1 videos</source>
         <translation>%1 videov</translation>
     </message>
@@ -1389,87 +1387,52 @@ Please do not exit the Movie app during the process.</source>
 <context>
     <name>dmr::Platform_ToolboxProxy</name>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1160"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1143"/>
         <source>Play/Pause</source>
         <translation>Predvajaj/premor</translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1160"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1143"/>
         <source>Previous</source>
         <translation>Prejšnja</translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1160"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1143"/>
         <source>Next</source>
         <translation>Naprej</translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1161"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2017"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2464"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1144"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1999"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2447"/>
         <source>Fullscreen</source>
         <translation>Celozaslonski način</translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1161"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2481"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1144"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2464"/>
         <source>Playlist</source>
         <translation>Seznam predvajanja</translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1161"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1144"/>
         <source>Miracast</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1164"/>
-        <source>play</source>
-        <translation>predvajaj</translation>
-    </message>
-    <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1164"/>
-        <source>prev</source>
-        <translation>prejšnji</translation>
-    </message>
-    <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1164"/>
-        <source>next</source>
-        <translation>naslednji</translation>
-    </message>
-    <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1165"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2265"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2278"/>
-        <source>fs</source>
-        <translation>fs</translation>
-    </message>
-    <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1165"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2265"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2278"/>
-        <source>list</source>
-        <translation>seznam</translation>
-    </message>
-    <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2014"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1996"/>
         <source>Exit fullscreen</source>
         <translation>Izhod iz celozaslonskega načina</translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2099"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2081"/>
         <source>Pause</source>
         <translation>Premor</translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2159"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2141"/>
         <source>Play</source>
         <translation>Predvajaj</translation>
-    </message>
-    <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2265"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2278"/>
-        <source>sub</source>
-        <translation>pod</translation>
     </message>
 </context>
 <context>
@@ -1496,10 +1459,10 @@ Please do not exit the Movie app during the process.</source>
         <translation>Prazno</translation>
     </message>
     <message>
-        <location filename="../src/widgets/playlist_widget.cpp" line="860"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1143"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1168"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1250"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="861"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="1144"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="1169"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="1251"/>
         <source>%1 videos</source>
         <translation>%1 videov</translation>
     </message>
@@ -1555,94 +1518,67 @@ Please do not exit the Movie app during the process.</source>
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1232"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1216"/>
         <source>Play/Pause</source>
         <translation>Predvajaj/premor</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1232"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2585"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1216"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2573"/>
         <source>Previous</source>
         <translation>Predhodni</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1232"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2602"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1216"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2590"/>
         <source>Next</source>
         <translation>Naprej</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1233"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2131"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2133"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2619"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1217"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2114"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2116"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2607"/>
         <source>Fullscreen</source>
         <translation>Celozaslonski način</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1233"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2635"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1217"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2623"/>
         <source>Playlist</source>
         <translation>Seznam predvajanja</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1233"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1217"/>
         <source>Miracast</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1236"/>
-        <source>play</source>
-        <translation>predvajaj</translation>
-    </message>
-    <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1236"/>
-        <source>prev</source>
-        <translation>prejšnji</translation>
-    </message>
-    <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1236"/>
-        <source>next</source>
-        <translation>naslednji</translation>
-    </message>
-    <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1237"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2393"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2406"/>
-        <source>fs</source>
-        <translation>fs</translation>
-    </message>
-    <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1237"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2393"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2406"/>
-        <source>list</source>
-        <translation>seznam</translation>
-    </message>
-    <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2125"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2127"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2108"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2110"/>
         <source>Exit fullscreen</source>
         <translation>Izhod iz celozaslonskega načina</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2217"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2219"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2204"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2206"/>
         <source>Pause</source>
         <translation>Premor</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2282"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2284"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2570"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2269"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2271"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2558"/>
         <source>Play</source>
         <translation>Predvajaj</translation>
     </message>
+</context>
+<context>
+    <name>dmr::VolumeButton</name>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2393"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2406"/>
-        <source>sub</source>
-        <translation>pod</translation>
+        <location filename="../src/widgets/toolbutton.cpp" line="18"/>
+        <source>Volume</source>
+        <translation>Glasnost</translation>
     </message>
 </context>
 </TS>

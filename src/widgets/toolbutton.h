@@ -291,24 +291,29 @@ public:
         if (nullptr == m_pToolTip) {
             m_pToolTip = new ToolTip;
         }
+
+        connect(&m_showTime, &QTimer::timeout, [=]{
+            QPoint pos = this->parentWidget()->mapToGlobal(this->pos());
+            pos.rx() = pos.x() + (this->width() - m_pToolTip->width()) / 2;
+            pos.ry() = pos.y() - 40;
+
+            if (nullptr != m_pToolTip) {
+                m_pToolTip->move(pos);
+                m_pToolTip->show();
+            }
+        });
     }
 
     void showToolTip()
     {
-        QPoint pos = this->parentWidget()->mapToGlobal(this->pos());
-        pos.rx() = pos.x() + (this->width() - m_pToolTip->width()) / 2;
-        pos.ry() = pos.y() - 40;
-
-        if (nullptr != m_pToolTip) {
-            m_pToolTip->move(pos);
-            QThread::msleep(10);
-            m_pToolTip->show();
-        }
+        if (!m_showTime.isActive())
+            m_showTime.start(2000);
     }
 
     void hideToolTip()
     {
-        if (nullptr != m_pToolTip) {
+        m_showTime.stop();
+        if (nullptr != m_pToolTip && m_pToolTip->isVisible()) {
             QThread::msleep(10);
             m_pToolTip->hide();
         }
@@ -340,6 +345,7 @@ protected:
 
 private:
     ToolTip *m_pToolTip {nullptr};
+    QTimer  m_showTime;
 };
 
 class VolumeButton: public DIconButton
@@ -373,6 +379,8 @@ private:
     QString _name;
     int m_nVolume;
     bool m_bMute;
+    ToolTip *m_pToolTip;
+    QTimer m_showTime;
 };
 
 }

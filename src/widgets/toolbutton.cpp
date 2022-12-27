@@ -14,6 +14,19 @@ VolumeButton::VolumeButton(QWidget *parent)
     setIcon(QIcon::fromTheme("dcc_volume"));
     setIconSize(QSize(36, 36));
     installEventFilter(this);
+    m_pToolTip = new ToolTip;
+    m_pToolTip->setText(tr("Volume"));
+
+    connect(&m_showTime, &QTimer::timeout, [=]{
+        QPoint pos = this->parentWidget()->mapToGlobal(this->pos());
+        pos.rx() = pos.x() + (this->width() - m_pToolTip->width()) / 2;
+        pos.ry() = pos.y() - 40;
+
+        if (nullptr != m_pToolTip) {
+            m_pToolTip->move(pos);
+            m_pToolTip->show();
+        }
+    });
 }
 
 void VolumeButton::setVolume(int nVolume)
@@ -58,6 +71,8 @@ void VolumeButton::changeStyle()
 void VolumeButton::enterEvent(QEvent *ev)
 {
     emit entered();
+    if (!m_showTime.isActive())
+        m_showTime.start(2000);
 
     DIconButton::enterEvent(ev);
 }
@@ -65,6 +80,11 @@ void VolumeButton::enterEvent(QEvent *ev)
 void VolumeButton::leaveEvent(QEvent *ev)
 {
     emit leaved();
+    m_showTime.stop();
+    if (nullptr != m_pToolTip && m_pToolTip->isVisible()) {
+        QThread::msleep(10);
+        m_pToolTip->hide();
+    }
 
     DIconButton::leaveEvent(ev);
 }
