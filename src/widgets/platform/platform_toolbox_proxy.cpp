@@ -68,7 +68,24 @@ public:
      * @brief TooltipHandler 构造函数
      * @param parent 父窗口
      */
-    explicit Platform_TooltipHandler(QObject *parent): QObject(parent) {}
+    explicit Platform_TooltipHandler(QObject *parent): QObject(parent) {
+        connect(&m_showTime, &QTimer::timeout, [=]{
+            //QHelpEvent *he = static_cast<QHelpEvent *>(event);
+            if (m_object != nullptr) {
+                auto tip = m_object->property("HintWidget").value<Tip *>();
+                auto btn = tip->property("for").value<QWidget *>();
+                tip->setText(btn->toolTip());
+                tip->show();
+                tip->raise();
+                tip->adjustSize();
+
+                QPoint pos = btn->parentWidget()->mapToGlobal(btn->pos());
+                pos.rx() = pos.x() + (btn->width() - tip->width()) / 2;
+                pos.ry() = pos.y() - 40;
+                tip->move(pos);
+            }
+        });
+    }
 
 protected:
     /**
@@ -82,22 +99,15 @@ protected:
         switch (event->type()) {
         case QEvent::ToolTip:
         case QEvent::Enter: {
-            //QHelpEvent *he = static_cast<QHelpEvent *>(event);
-            auto tip = obj->property("HintWidget").value<Tip *>();
-            auto btn = tip->property("for").value<QWidget *>();
-            tip->setText(btn->toolTip());
-            tip->show();
-            tip->raise();
-            tip->adjustSize();
-
-            QPoint pos = btn->parentWidget()->mapToGlobal(btn->pos());
-            pos.rx() = pos.x() + (btn->width() - tip->width()) / 2;
-            pos.ry() = pos.y() - 40;
-            tip->move(pos);
+            m_object = obj;
+            if (!m_showTime.isActive())
+                m_showTime.start(2000);
             return true;
         }
 
         case QEvent::Leave: {
+            m_object = nullptr;
+            m_showTime.stop();
             auto parent = obj->property("HintWidget").value<Tip *>();
             parent->hide();
             event->ignore();
@@ -114,6 +124,10 @@ protected:
         // standard event processing
         return QObject::eventFilter(obj, event);
     }
+
+private:
+    QTimer m_showTime;
+    QObject *m_object {nullptr};
 };
 /**
  * @brief The SliderTime class 进度条事件显示类
@@ -1144,8 +1158,8 @@ void Platform_ToolboxProxy::setup()
         tr("Fullscreen"), tr("Miracast"), tr("Playlist")
     };
     QString attrs[] = {
-        tr("play"), tr("prev"), tr("next"),
-        tr("fs"), "mir", tr("list")
+        "play", "prev", "next",
+        "fs", "mir", "list"
     };
 
     for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {
@@ -2244,7 +2258,7 @@ void Platform_ToolboxProxy::buttonEnter()
     ToolButton *btn = qobject_cast<ToolButton *>(sender());
     QString id = btn->property("TipId").toString();
 
-    if (id == tr("sub") || id == tr("fs") || id == tr("list") || id == "mir") {
+    if (id == "sub" || id == "fs" || id == "list" || id == "mir") {
         updateToolTipTheme(btn);
         btn->showToolTip();
     }
@@ -2257,7 +2271,7 @@ void Platform_ToolboxProxy::buttonLeave()
     ToolButton *btn = qobject_cast<ToolButton *>(sender());
     QString id = btn->property("TipId").toString();
 
-    if (id == tr("sub") || id == tr("fs") || id == tr("list") || id == "mir") {
+    if (id == "sub" || id == "fs" || id == "list" || id == "mir") {
         btn->hideToolTip();
     }
 }
