@@ -3991,6 +3991,8 @@ void MainWindow::toggleUIMode()
                                    (abs(windowPos.y() + this->geometry().height() - deskrect.height()) < 50))) {
             if (abs(this->geometry().width() - deskrect.width() / 2) < 50) {
                 m_pCommHintWid->updateWithMessage(tr("Please exit smart dock"));
+                m_bStartMini = false;
+                reflectActionToUI(ActionFactory::ToggleMiniMode);
                 return ;
             }
 
@@ -3999,6 +4001,8 @@ void MainWindow::toggleUIMode()
                 (windowPos.y()  == 0 || abs(windowPos.y() + this->geometry().height() - deskrect.height()) < 50)) {
             if (abs(this->geometry().width() - deskrect.width() / 2) < 50) {
                 m_pCommHintWid->updateWithMessage(tr("Please exit smart dock"));
+                m_bStartMini = false;
+                reflectActionToUI(ActionFactory::ToggleMiniMode);
                 return ;
             }
         }
