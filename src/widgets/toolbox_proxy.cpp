@@ -1880,6 +1880,7 @@ void ToolboxProxy::hideMircastWidget()
 {
     m_mircastWidget->hide();
     m_pMircastBtn->setChecked(false);
+    m_pMircastBtn->setIcon(QIcon::fromTheme("dcc_mircast"));
 }
 /**
  * @brief volumeUp 鼠标滚轮增加音量
