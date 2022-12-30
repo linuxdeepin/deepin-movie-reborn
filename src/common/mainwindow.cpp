@@ -2860,9 +2860,19 @@ void MainWindow::resumeToolsWindow()
             m_pToolbox->hide();
         }
     } else {
-        m_pMiniPlayBtn->show();
-        m_pMiniCloseBtn->show();
-        m_pMiniQuitMiniBtn->show();
+	    //迷你模式根据半屏模式显示控件
+        int nScreenHeight = QApplication::desktop()->availableGeometry().height();
+        QRect rt = rect();
+        if(rt.height() >= nScreenHeight-100){
+            m_pMiniPlayBtn->setVisible(false);
+            m_pMiniCloseBtn->setVisible(false);
+            m_pMiniQuitMiniBtn->setVisible(false);
+            m_pToolbox->setVisible(false);
+        }else {
+            m_pMiniPlayBtn->setVisible(m_bMiniMode);
+            m_pMiniCloseBtn->setVisible(m_bMiniMode);
+            m_pMiniQuitMiniBtn->setVisible(m_bMiniMode);
+        }
     }
 
 _finish:
@@ -3469,6 +3479,20 @@ void MainWindow::resizeEvent(QResizeEvent *pEvent)
 
     m_pAnimationlable->move(QPoint((width() - m_pAnimationlable->width()) / 2,
                                    (height() - m_pAnimationlable->height()) / 2));
+    if(m_bMiniMode) {//迷你模式显示与半屏模式处理
+        int nScreenHeight = QApplication::desktop()->availableGeometry().height();
+        QRect rt = rect();
+        if(rt.height() >= nScreenHeight-100){
+            m_pMiniPlayBtn->setVisible(false);
+            m_pMiniCloseBtn->setVisible(false);
+            m_pMiniQuitMiniBtn->setVisible(false);
+            m_pToolbox->setVisible(false);
+        }else {
+            m_pMiniPlayBtn->setVisible(m_bMiniMode);
+            m_pMiniCloseBtn->setVisible(m_bMiniMode);
+            m_pMiniQuitMiniBtn->setVisible(m_bMiniMode);
+        }
+    }
 }
 
 void MainWindow::updateWindowTitle()
