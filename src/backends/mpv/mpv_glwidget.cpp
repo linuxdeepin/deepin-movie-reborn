@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -17,6 +18,8 @@
 //#include <wayland-client.h>
 //#include "../../window/qplatformnativeinterface.h"
 //qpa/qplatformnativeinterface.h
+#include "compositing_manager.h"
+
 #if defined(_WIN32) && !defined(_WIN32_WCE) && !defined(__SCITECH_SNAP__)
 /* Win32 but not WinCE */
 #   define KHRONOS_APIENTRY __stdcall
@@ -850,7 +853,7 @@ namespace dmr {
 
                 pGLFunction->glDisable(GL_BLEND);
             }
-#ifdef __x86_64__
+#if 0
             QWidget *topWidget = topLevelWidget();
             if(topWidget && (topWidget->isFullScreen())) {//全屏状态播放时更新显示进度
                 QString time_text = QTime::currentTime().toString("hh:mm");
@@ -967,7 +970,7 @@ namespace dmr {
 
         }
     }
-#ifdef __x86_64__
+#if 0
     void MpvGLWidget::updateMovieProgress(qint64 duration, qint64 pos)
     {
         if (pos > duration)
@@ -1009,7 +1012,7 @@ namespace dmr {
     void MpvGLWidget::initMpvFuns()
     {
         qInfo() << "MpvGLWidget开始initMpvFuns";
-        QLibrary mpvLibrary(libPath("libmpv.so.1"));
+        QLibrary mpvLibrary(CompositingManager::libPath("libmpv.so.1"));
         m_callback = reinterpret_cast<mpv_render_contextSet_update_callback>(mpvLibrary.resolve("mpv_render_context_set_update_callback"));
         m_context_report = reinterpret_cast<mpv_render_contextReport_swap>(mpvLibrary.resolve("mpv_render_context_report_swap"));
         m_renderContex = reinterpret_cast<mpv_renderContext_free>(mpvLibrary.resolve("mpv_render_context_free"));

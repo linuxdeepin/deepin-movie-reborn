@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -19,6 +20,7 @@
 #include <DTextEdit>
 #include <QPainterPath>
 #include <QSvgWidget>
+#include <QSvgRenderer>
 
 namespace Dtk {
 namespace Widget {
@@ -75,6 +77,29 @@ protected:
     };
 private:
     QPixmap _pic;
+};
+
+class Platform_ClearButton: public QPushButton
+{
+    Q_OBJECT
+public:
+    Platform_ClearButton(QWidget *parent = 0);
+
+protected:
+    void paintEvent(QPaintEvent *pe) override;
+    void enterEvent(QEvent *event) override;
+    void leaveEvent(QEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
+signals:
+    void clearList();
+
+private:
+    bool m_bIsHover;
+    bool m_bIsPressed;
+
+    QSvgRenderer m_svgRender;
 };
 
 class Platform_PlayItemWidget;
@@ -173,7 +198,7 @@ private:
 
     QPropertyAnimation *paOpen ;
     QPropertyAnimation *paClose ;
-    DPushButton *m_pClearButton;
+    Platform_ClearButton *m_pClearButton;
 
     bool _toggling {false};
     bool m_bButtonFocusOut {false};       ///键盘交互标志位

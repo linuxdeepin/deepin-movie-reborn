@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -9,6 +10,7 @@
 
 #include <QtGui>
 #include <DThemeManager>
+#include <DWindowCloseButton>
 #include <QPainterPath>
 #include "../accessibility/ac-deepin-movie-define.h"
 
@@ -58,24 +60,6 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
                                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
     d->m_titlebar->setBackgroundTransparent(false);
     d->m_titlebar->setBlurBackground(true);
-
-//    qreal dpr = qApp->devicePixelRatio();
-//    int w = static_cast<int>(32 * dpr);
-
-//    QIcon icon = QIcon::fromTheme("deepin-movie");
-//    QPixmap logo = icon.pixmap(QSize(32, 32))
-//            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-//    logo.setDevicePixelRatio(dpr);
-//    QPixmap pm(w, w);
-//    pm.setDevicePixelRatio(dpr);
-//    pm.fill(Qt::transparent);
-//    QPainter p(&pm);
-//    p.drawPixmap(0, 0, logo);
-//    p.end();
-
-//    this->setIcon(pm);
-    //使用dtk接口后，图标跟随控制中心的图标主题动态变化。
     d->m_titlebar->setIcon(QIcon::fromTheme("deepin-movie"));
     d->m_titlebar->setTitle("");
     d->m_titletxt = new DLabel(this);
@@ -224,5 +208,67 @@ void Titlebar::paintEvent(QPaintEvent *pe)
     pp.addRect(rect());
     painter.fillPath(pp, bgColor);
 }
+
+FullScreenTitlebar::FullScreenTitlebar(QWidget *parent)
+    :QFrame(parent)
+{
+    setFixedHeight(50);
+
+    QHBoxLayout *mainLayout = new QHBoxLayout;
+    mainLayout->setAlignment(Qt::AlignCenter);
+    mainLayout->setContentsMargins(4, 0, 30, 0);
+    setLayout(mainLayout);
+
+    m_iconLabel = new DLabel;
+    m_iconLabel->setFixedSize(50, 50);
+    m_iconLabel->setContentsMargins(18, 18, 18, 18);
+    QIcon icon = QIcon::fromTheme("deepin-movie");
+    QPixmap logo = icon.pixmap(QSize(32, 32));
+    m_iconLabel->setPixmap(logo);
+
+    m_textLabel = new DLabel;
+    m_textLabel->setFixedHeight(height());
+    m_textLabel->setAlignment(Qt::AlignCenter);
+
+    m_timeLabel = new DLabel;
+    m_timeLabel->setFixedHeight(height());
+    m_timeLabel->setAlignment(Qt::AlignCenter);
+
+    QPalette pa = m_textLabel->palette();
+    pa.setColor(QPalette::WindowText,Qt::white);
+    m_textLabel->setPalette(pa);
+    m_timeLabel->setPalette(pa);
+
+    mainLayout->addWidget(m_iconLabel);
+    mainLayout->addStretch();
+    mainLayout->addWidget(m_textLabel);
+    mainLayout->addStretch();
+    mainLayout->addWidget(m_timeLabel);
+}
+
+void FullScreenTitlebar::setTitletxt(const QString &sTitle)
+{
+    m_textLabel->setText(sTitle);
+}
+
+void FullScreenTitlebar::setTime(const QString &sTime)
+{
+    m_timeLabel->setText(sTime);
+}
+
+void FullScreenTitlebar::paintEvent(QPaintEvent *pPaintEvent)
+{
+    QString sTimeText = QTime::currentTime().toString("hh:mm");
+    setTime(sTimeText);
+
+    QPainter p(this);
+    QPainterPath path;
+    path.addRect(rect());
+    QLinearGradient linear(QPointF(rect().width() / 2, 0), QPointF(rect().width() / 2, rect().height()));
+    linear.setColorAt(0, QColor(0, 0, 0, 0.3 * 255));
+    linear.setColorAt(1, Qt::transparent);
+    p.fillPath(path, linear);
+}
+
 }
 

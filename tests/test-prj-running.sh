@@ -1,9 +1,4 @@
 #!/bin/bash
-
-# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
-
 rm -rf ${HOME}/.config/deepin-movie-test
 rm -rf ${HOME}/Pictures/DMovie
 

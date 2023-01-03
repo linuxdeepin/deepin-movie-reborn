@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -122,7 +123,7 @@ int main(int argc, char *argv[])
 #endif
     QFileInfo fi("/dev/mwv206_0");
     QFileInfo jmfi("/dev/jmgpu");
-    if ((fi.exists() || jmfi.exists())) {
+    if ((fi.exists() || jmfi.exists()) && !CompositingManager::isMpvExists()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
     }
     /**
@@ -191,7 +192,7 @@ int main(int argc, char *argv[])
     if (clm.debug()) {
         Dtk::Core::DLogManager::registerConsoleAppender();
     }
-    Dtk::Core::DLogManager::registerFileAppender();
+//    Dtk::Core::DLogManager::registerFileAppender();
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
 

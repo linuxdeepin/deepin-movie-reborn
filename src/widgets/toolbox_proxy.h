@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -240,16 +241,6 @@ public:
         m_pmBlackList.append(pmBlack);
     }
     /**
-     * @brief getfullscreentimeLabel 获取全屏时当前播放时间控件
-     * @return 返回label控件指针
-     */
-    QLabel *getfullscreentimeLabel();
-    /**
-     * @brief getfullscreentimeLabelend 获取全屏时当前播放总时长控件
-     * @return 返回label控件指针
-     */
-    QLabel *getfullscreentimeLabelend();
-    /**
      * @brief getbAnimationFinash 查看是否动画已结束
      * @return 动画进行中标志位
      */
@@ -386,6 +377,10 @@ public slots:
      * TODO(xxxpengfei)：此处窗口大小没用，请在1050前去除并梳理逻辑
      */
     void finishLoadSlot(QSize size);
+    /**
+     * @brief updateplaylisticon 切换主题时更新播放列表图标
+     */
+    void updateplaylisticon();
     /**
      * @brief setthumbnailmode 设置胶片进度条的模式
      */
@@ -594,8 +589,6 @@ private:
     QHBoxLayout *_mid;                   ///
     QHBoxLayout *_right;                 ///
 
-    QLabel *m_pFullscreentimelable;      ///全屏下视频当前播放时长控件
-    QLabel *m_pFullscreentimelableend;   ///全屏下视频总时长控件
     QLabel *m_pTimeLabel;                ///视频当前播放时长控件
     QLabel *m_pTimeLabelend;             ///视频总时长的控件
     VolumeSlider *m_pVolSlider;          ///音量条控件窗口
@@ -728,11 +721,11 @@ private:
 }
 
 //HACK: extent area for progress slider
-#define TOOLBOX_TOP_EXTENT  0
+#define TOOLBOX_TOP_EXTENT  10
 #define TOOLBOX_SPACE_HEIGHT 314
-#define TOOLBOX_HEIGHT  80
+#define TOOLBOX_HEIGHT  56
 #define TOOLBOX_HEIGHT_EXT (TOOLBOX_HEIGHT + TOOLBOX_TOP_EXTENT)
-#define TOOLBOX_BUTTON_WIDTH 50
+#define TOOLBOX_BUTTON_WIDTH 36
 #define TOOLBOX_BUTTON_HEIGHT 50
 #define VOLSLIDER_WIDTH 62
 #define VOLSLIDER_HEIGHT 205

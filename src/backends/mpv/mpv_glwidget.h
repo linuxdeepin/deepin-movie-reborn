@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
 
 #ifndef _DMR_MPV_GLWIDGET_H
 #define _DMR_MPV_GLWIDGET_H
@@ -63,7 +63,7 @@ protected:
      * @brief initMpvFuns 第一次播放需要初库始化函数指针
      */
     void initMpvFuns();
-#ifdef __x86_64__
+#if 0
     //更新全屏时影院播放进度
     void updateMovieProgress(qint64 duration, qint64 pos);
 #endif

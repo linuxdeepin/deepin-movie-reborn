@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -374,10 +375,6 @@ public slots:
      */
     void slotUrlpause(bool bStatus);
     /**
-     * @brief 根据字体大小改变显示
-     */
-    void slotFontChanged(const QFont &font);
-    /**
      * @brief 改变静音状态
      */
     void slotMuteChanged(bool bMute);
@@ -499,14 +496,13 @@ private:
 
 private:
     MessageWindow *m_pPopupWid;                     ///截图提示窗口
-    QLabel *m_pFullScreenTimeLable;                 ///全屏时右上角的影片进度
     QHBoxLayout *m_pFullScreenTimeLayout;           ///右上角的影片进度框布局器
     Titlebar *m_pTitlebar;                          ///标题栏
+    FullScreenTitlebar *m_fsTitlebar;               ///全屏标题栏
     ToolboxProxy *m_pToolbox;                       ///工具栏
     PlaylistWidget *m_pPlaylist;                    ///播放列表
     PlayerEngine *m_pEngine;                        ///播放引擎
     AnimationLabel *m_pAnimationlable;              ///点击暂停和播放时动画
-    MovieProgressIndicator *m_pProgIndicator;       ///全屏时右上角的系统时间
     QList<QPair<QImage, qint64>> m_listBurstShoots; ///存储连拍截图
     bool m_bInBurstShootMode;                       ///是否处于截图状态
     bool m_bPausedBeforeBurst;                      ///截图时暂停播放

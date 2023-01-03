@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -71,13 +72,13 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo &PlayItemInfo)
     m_pGrid->setColumnMinimumWidth(2, 160);
 
     QHBoxLayout *pButtonContent = new QHBoxLayout;
-    pButtonContent->setContentsMargins(0, 13, 0, 0);
-    pButtonContent->addStretch(1);
+    pButtonContent->setContentsMargins(0, 20, 0, 0);
+//    pButtonContent->addStretch(1);
 
     m_pSaveBtn = new QPushButton(tr("Save"));
     m_pSaveBtn->setObjectName("SaveBtn");
     connect(m_pSaveBtn, &QPushButton::clicked, this, &BurstScreenshotsDialog::savePoster);
-    m_pSaveBtn->setFixedSize(70, 30);
+    m_pSaveBtn->setFixedSize(232, 36);
     m_pSaveBtn->setDefault(true);
     pButtonContent->addWidget(m_pSaveBtn);
     pMainContent->addLayout(pButtonContent);
@@ -99,7 +100,7 @@ void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>>
 {
     qreal devicePixelRatio = qApp->devicePixelRatio();
     //参考设计图
-    QSize size(static_cast<int>(178 * devicePixelRatio), static_cast<int>(100 * devicePixelRatio));
+    QSize size(static_cast<int>(192 * devicePixelRatio), static_cast<int>(108 * devicePixelRatio));
 
     int nCount = 0;
     QImage scaled;
@@ -111,9 +112,9 @@ void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>>
         int nColumn = nCount % 3;
 
         QPixmap pixmap = QPixmap::fromImage(image);
-        pixmap = pixmap.scaled(size.width() - 2, size.height() - 2, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        pixmap = pixmap.scaled(size.width(), size.height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         pixmap.setDevicePixelRatio(devicePixelRatio);
-        pixmap = utils::MakeRoundedPixmap(size, pixmap, 2, 2, frame.second);
+        pixmap = utils::MakeRoundedPixmap(size, pixmap, 8, 8, frame.second);
         pThumbnailFrame->setAlignment(Qt::AlignCenter);
         pThumbnailFrame->setPixmap(pixmap);
         m_pGrid->addWidget(pThumbnailFrame, nRowCount, nColumn);

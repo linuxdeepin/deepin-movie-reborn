@@ -2,37 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="bg">
 <context>
-    <name>MircastShowWidget</name>
-    <message>
-        <source>Projecting... 
-Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Display device</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exit Miracast</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>MircastWidget</name>
-    <message>
-        <source>Project to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Searching for devices...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -515,8 +484,16 @@ Please do not exit the Movie app during the process.</source>
         <translation>Буфериране...</translation>
     </message>
     <message>
+        <source>No device found</source>
+        <translation type="vanished">Не е открито устройство</translation>
+    </message>
+    <message>
         <source>Open folder</source>
         <translation>Отваряне на папка</translation>
+    </message>
+    <message>
+        <source>All videos (%1)</source>
+        <translation type="vanished">Всички видеа (%1)</translation>
     </message>
     <message>
         <source>Stereo</source>
@@ -563,6 +540,10 @@ Please do not exit the Movie app during the process.</source>
         <translation>Скорост: %1x</translation>
     </message>
     <message>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
+        <translation>Субтитри (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
+    </message>
+    <message>
         <source>View</source>
         <translation>Изглед</translation>
     </message>
@@ -599,6 +580,10 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Open File</source>
+        <translation type="vanished">Отвори файл</translation>
+    </message>
+    <message>
         <source>Film screenshot</source>
         <translation>Кадър от филма</translation>
     </message>
@@ -625,6 +610,10 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <source>Please load the video first</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="obsolete">Всички видеа (%1) {2 %1)?}</translation>
     </message>
     <message>
         <source>Order play</source>
@@ -671,16 +660,11 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <comment>All (*)</comment>
-        <translation type="unfinished">Субтитри (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
-    </message>
-    <message>
-        <source>Connection failed</source>
+        <source>Audio (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Miracast disconnected</source>
+        <source>Video (%1)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -810,251 +794,6 @@ Please do not exit the Movie app during the process.</source>
     </message>
 </context>
 <context>
-    <name>dmr::Platform_MainWindow</name>
-    <message>
-        <source>Load successfully</source>
-        <translation type="unfinished">Успешно зареждане</translation>
-    </message>
-    <message>
-        <source>Load failed</source>
-        <translation type="unfinished">Неуспешно зареждане</translation>
-    </message>
-    <message>
-        <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Parse failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open folder</source>
-        <translation type="unfinished">Отваряне на папка</translation>
-    </message>
-    <message>
-        <source>All (*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Speed: %1x</source>
-        <translation type="unfinished">Скорост: %1x</translation>
-    </message>
-    <message>
-        <source>Stereo</source>
-        <translation type="unfinished">Стерео</translation>
-    </message>
-    <message>
-        <source>Left channel</source>
-        <translation type="unfinished">Ляв канал</translation>
-    </message>
-    <message>
-        <source>Right channel</source>
-        <translation type="unfinished">Десен канал</translation>
-    </message>
-    <message>
-        <source>Track: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Subtitle %1: %2s</source>
-        <translation type="unfinished">Субтитри %1: %2s</translation>
-    </message>
-    <message>
-        <source>delayed</source>
-        <translation type="unfinished">забавен</translation>
-    </message>
-    <message>
-        <source>advanced</source>
-        <translation type="unfinished">разширен</translation>
-    </message>
-    <message>
-        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <comment>All (*)</comment>
-        <translation type="unfinished">Субтитри (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
-    </message>
-    <message>
-        <source>View</source>
-        <translation type="unfinished">Изглед</translation>
-    </message>
-    <message>
-        <source>Film screenshot</source>
-        <translation type="unfinished">Кадър от филма</translation>
-    </message>
-    <message>
-        <source>Saved to</source>
-        <translation type="unfinished">Запази в</translation>
-    </message>
-    <message>
-        <source>The screenshot is saved</source>
-        <translation type="unfinished">Снимка на екрана е запазена.</translation>
-    </message>
-    <message>
-        <source>Failed to save the screenshot</source>
-        <translation type="unfinished">Не може да се запази снимка на кадъра</translation>
-    </message>
-    <message>
-        <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="unfinished">ОК</translation>
-    </message>
-    <message>
-        <source>Order play</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single play</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single loop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>List loop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Buffering...</source>
-        <translation type="unfinished">Буфериране...</translation>
-    </message>
-    <message>
-        <source>Mute</source>
-        <translation type="unfinished">Заглушаване</translation>
-    </message>
-    <message>
-        <source>Volume: %1%</source>
-        <translation type="unfinished">Сила на звука: %1</translation>
-    </message>
-    <message>
-        <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid file</source>
-        <translation type="unfinished">Невалиден файл</translation>
-    </message>
-    <message>
-        <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No video file found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid file: %1</source>
-        <translation type="unfinished">Невалиден файл: %1</translation>
-    </message>
-    <message>
-        <source>Connection failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>dmr::Platform_PlayItemWidget</name>
-    <message>
-        <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>dmr::Platform_PlaylistWidget</name>
-    <message>
-        <source>Playlist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Empty</source>
-        <translation type="unfinished">Празно</translation>
-    </message>
-    <message>
-        <source>%1 videos</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>dmr::Platform_ToolboxProxy</name>
-    <message>
-        <source>Play/Pause</source>
-        <translation type="unfinished">Изпълнение/Пауза</translation>
-    </message>
-    <message>
-        <source>Previous</source>
-        <translation type="unfinished">Предишно</translation>
-    </message>
-    <message>
-        <source>Next</source>
-        <translation type="unfinished">Следващ</translation>
-    </message>
-    <message>
-        <source>Fullscreen</source>
-        <translation type="unfinished">Цял екран</translation>
-    </message>
-    <message>
-        <source>Playlist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exit fullscreen</source>
-        <translation type="unfinished">Изход от цял екран</translation>
-    </message>
-    <message>
-        <source>Pause</source>
-        <translation type="unfinished">Задържане</translation>
-    </message>
-    <message>
-        <source>Play</source>
-        <translation type="unfinished">Изпълнение</translation>
-    </message>
-    <message>
-        <source>Miracast</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
@@ -1130,6 +869,10 @@ Please do not exit the Movie app during the process.</source>
         <translation>Следващ</translation>
     </message>
     <message>
+        <source>Subtitles</source>
+        <translation type="vanished">Субтитри</translation>
+    </message>
+    <message>
         <source>Playlist</source>
         <translation>Списък</translation>
     </message>
@@ -1142,6 +885,26 @@ Please do not exit the Movie app during the process.</source>
         <translation>Изпълнение/Пауза</translation>
     </message>
     <message>
+        <source>play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>prev</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Exit fullscreen</source>
         <translation>Изход от цял екран</translation>
     </message>
@@ -1150,14 +913,11 @@ Please do not exit the Movie app during the process.</source>
         <translation>Задържане</translation>
     </message>
     <message>
-        <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <source>Mute</source>
+        <translation type="obsolete">Заглушаване</translation>
     </message>
-</context>
-<context>
-    <name>dmr::VolumeButton</name>
     <message>
-        <source>Volume</source>
+        <source>sub</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

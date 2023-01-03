@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -20,7 +21,6 @@ namespace dmr {
         setDefaultButton(1);
         setIcon(QIcon::fromTheme("deepin-movie"));
         setMessage(QApplication::translate("UrlDialog", "Please enter the URL:"));
-        setFixedSize(380, 190);
 
         m_lineEdit = new LineEdit(this);
         addContent(m_lineEdit);
