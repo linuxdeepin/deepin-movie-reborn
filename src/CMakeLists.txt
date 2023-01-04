@@ -1,5 +1,4 @@
 # SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
-# SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -99,22 +98,15 @@ install(FILES ${PROJECT_SOURCE_DIR}/assets/resources/icons/logo-big.svg
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps
     RENAME deepin-movie.svg)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/deepin-movie DESTINATION ${CMAKE_INSTALL_DATADIR}/deepin-manual/manual-assets/application/)
-install (FILES ${CMAKE_SOURCE_DIR}/com.deepin.movie.service DESTINATION /usr/share/dbus-1/services/)
-
-#匹配mpris差异
-execute_process(COMMAND dpkg -s libmpris-qt5-1 COMMAND grep -i version COMMAND cut -d\  -f2 OUTPUT_VARIABLE libmprisVersion)
-message(${libmprisVersion})
-if( ${libmprisVersion} MATCHES "0.1.0-" )
-    add_definitions(-D_LIBMPR_)
-endif()
+install (FILES ${CMAKE_SOURCE_DIR}/com.deepin.movie.service DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/services/)
 
 # 加速编译优化参数
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")
-    SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O3 -ftree-vectorize -march=loongson3a -mhard-float -mno-micromips -mno-mips16 -flax-vector-conversions -mloongson-ext2 -mloongson-mmi -Wl,--as-need -fPIE -z noexecstack")
+    SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O3 -ftree-vectorize -march=loongson3a -mhard-float -mno-micromips -mno-mips16 -flax-vector-conversions -mloongson-ext2 -mloongson-mmi -Wl,--as-needed -fPIE -z noexecstack")
     SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O3 -ftree-vectorize -march=loongson3a -mhard-float -mno-micromips -mno-mips16 -flax-vector-conversions -mloongson-ext2 -mloongson-mmi -z noexecstack")
     SET(CMAKE_EXE_LINKER_FLAGS "-pie")
 else()
-    SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -std=c++14 -O3 -DNDEBUG -fPIC -Wl,--as-need -fPIE")
+    SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -std=c++14 -O3 -DNDEBUG -fPIC -Wl,--as-needed -fPIE")
     SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -std=c++14 -O3 -DNDEBUG -fPIC")
     SET(CMAKE_EXE_LINKER_FLAGS "-pie")
 endif()

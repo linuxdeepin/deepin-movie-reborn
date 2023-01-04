@@ -23,6 +23,11 @@ Files: debian/*
 Copyright: None
 License: CC0-1.0
 
+# patches
+Files: patches/*
+Copyright: None
+License: CC0-1.0
+
 # rpm
 Files: rpm/*
 Copyright: None
@@ -75,6 +80,11 @@ License: GPL-3.0-or-later
 
 # deepin-movie.desktop
 Files: deepin-movie.desktop
+Copyright: UnionTech Software Technology Co., Ltd.
+License: CC-BY-4.0
+
+# com.deepin.movie.service
+Files: com.deepin.movie.service
 Copyright: UnionTech Software Technology Co., Ltd.
 License: CC-BY-4.0
 

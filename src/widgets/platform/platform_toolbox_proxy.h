@@ -1,8 +1,6 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
-// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
 /**
  * @file 此文件中实现播放窗口工具栏相关内容
  */

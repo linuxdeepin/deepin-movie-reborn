@@ -1,8 +1,6 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
-// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
 #ifndef _DMR_PLAYER_BACKEND_H
 #define _DMR_PLAYER_BACKEND_H
 

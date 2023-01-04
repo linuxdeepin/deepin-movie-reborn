@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ro">
+<TS version="2.1" language="ro">
 <context>
     <name>MircastShowWidget</name>
     <message>
@@ -680,26 +680,26 @@ Please do not exit the Movie app during the process.</source>
     <name>dmr::MessageWindow</name>
     <message>
         <source>View</source>
-        <translation type="unfinished">Aspect</translation>
+        <translation type="obsolete">Aspect</translation>
     </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -988,7 +988,7 @@ Please do not exit the Movie app during the process.</source>
     <name>dmr::Platform_MessageWindow</name>
     <message>
         <source>View</source>
-        <translation type="unfinished">Aspect</translation>
+        <translation type="obsolete">Aspect</translation>
     </message>
 </context>
 <context>

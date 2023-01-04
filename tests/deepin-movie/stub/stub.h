@@ -20,6 +20,7 @@
 #include <cstring>
 //c++
 #include <map>
+#include <cstdint>
 
 
 #define ADDR(CLASS_NAME,MEMBER_NAME) (&CLASS_NAME::MEMBER_NAME)
