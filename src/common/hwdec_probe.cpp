@@ -1,11 +1,11 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 #include "hwdec_probe.h"
-
+#include "compositing_manager.h"
 namespace dmr {
 
 HwdecProbe HwdecProbe::m_ffmpegProbe;
@@ -100,9 +100,9 @@ static QString libPath(const QString &sLib)
 
 void HwdecProbe::initffmpegInterface()
 {
-    QLibrary avcodecLibrary(libPath("libavcodec.so"));
-    QLibrary avformatLibrary(libPath("libavformat.so"));
-    QLibrary avutilLibrary(libPath("libavutil.so"));
+    QLibrary avcodecLibrary(CompositingManager::libPath("libavcodec.so"));
+    QLibrary avformatLibrary(CompositingManager::libPath("libavformat.so"));
+    QLibrary avutilLibrary(CompositingManager::libPath("libavutil.so"));
 
     m_avHwdeviceCtxCreate  = reinterpret_cast<ffmAvHwdeviceCtxCreate>(avutilLibrary.resolve("av_hwdevice_ctx_create"));
     m_avHwdeviceIterateTypes = reinterpret_cast<ffmAvHwdeviceIterateTypes>(avutilLibrary.resolve("av_hwdevice_iterate_types"));

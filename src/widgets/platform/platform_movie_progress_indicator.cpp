@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -28,7 +29,7 @@ Platform_MovieProgressIndicator::Platform_MovieProgressIndicator(QWidget *parent
     this->setFixedSize(m_fixedSize);
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setWindowFlags(Qt::FramelessWindowHint);
-    setWindowFlags(this->windowFlags() | Qt::ToolTip);
+    setWindowFlags(this->windowFlags() | Qt::Dialog);
 }
 /**
  * @brief paintEvent 重载绘制事件函数

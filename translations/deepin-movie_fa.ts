@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fa">
+<TS version="2.0" language="fa">
 <context>
     <name>MircastShowWidget</name>
+    <message>
+        <source>Exit Miracast</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
@@ -10,10 +14,6 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Display device</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exit Miracast</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -325,34 +325,6 @@ Please do not exit the Movie app during the process.</source>
         <translation>باز کردن CD/DVF</translation>
     </message>
     <message>
-        <source>Mini Mode</source>
-        <translation>حالت کوچک</translation>
-    </message>
-    <message>
-        <source>Play Mode</source>
-        <translation>حالت پخش</translation>
-    </message>
-    <message>
-        <source>Order Play</source>
-        <translation>اجرای سفارشی</translation>
-    </message>
-    <message>
-        <source>Shuffle Play</source>
-        <translation>اجرای درهم</translation>
-    </message>
-    <message>
-        <source>Single Play</source>
-        <translation>اجرای تک</translation>
-    </message>
-    <message>
-        <source>Single Loop</source>
-        <translation>تکرار یک مورد</translation>
-    </message>
-    <message>
-        <source>List Loop</source>
-        <translation>لیست تکرار</translation>
-    </message>
-    <message>
         <source>Frame</source>
         <translation>فریم</translation>
     </message>
@@ -401,16 +373,8 @@ Please do not exit the Movie app during the process.</source>
         <translation>بارگذاری</translation>
     </message>
     <message>
-        <source>Online Search</source>
-        <translation>جستجوی آنلاین</translation>
-    </message>
-    <message>
         <source>Select</source>
         <translation>انتخاب</translation>
-    </message>
-    <message>
-        <source>Hide</source>
-        <translation>مخفی</translation>
     </message>
     <message>
         <source>Encodings</source>
@@ -421,20 +385,8 @@ Please do not exit the Movie app during the process.</source>
         <translation>تصویر از صفحه</translation>
     </message>
     <message>
-        <source>Film Screenshot</source>
-        <translation>عکس از فیلم</translation>
-    </message>
-    <message>
-        <source>Burst Shooting</source>
-        <translation>عکس متوالی</translation>
-    </message>
-    <message>
         <source>Playlist</source>
         <translation>لیست پخش</translation>
-    </message>
-    <message>
-        <source>Film Info</source>
-        <translation>درباره فیلم</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
@@ -445,19 +397,7 @@ Please do not exit the Movie app during the process.</source>
         <translation>نمایش درمدیریت فایل</translation>
     </message>
     <message>
-        <source>Next Frame</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Previous Frame</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Playback Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -478,6 +418,70 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>2.0x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation type="unfinished">پخش</translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation type="unfinished">پیشین</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation type="unfinished">بعدی</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Next frame</source>
+        <translation type="unfinished">فریم بعدی</translation>
+    </message>
+    <message>
+        <source>Previous frame</source>
+        <translation type="unfinished">فریم قبلی</translation>
+    </message>
+    <message>
+        <source>Playback speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mini mode</source>
+        <translation type="unfinished">حالت کوچک</translation>
+    </message>
+    <message>
+        <source>Online search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Film screenshot</source>
+        <translation type="unfinished">عکس گرفتن از فیلم</translation>
+    </message>
+    <message>
+        <source>Burst shooting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -563,14 +567,6 @@ Please do not exit the Movie app during the process.</source>
         <translation>سرعت: x1%</translation>
     </message>
     <message>
-        <source>View</source>
-        <translation>نما</translation>
-    </message>
-    <message>
-        <source>Saved to</source>
-        <translation>ذخیره شده در</translation>
-    </message>
-    <message>
         <source>The screenshot is saved</source>
         <translation>اسکرین شات ذخیره شد</translation>
     </message>
@@ -597,10 +593,6 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <source>No video file found</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Film screenshot</source>
-        <translation>عکس گرفتن از فیلم</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
@@ -685,22 +677,29 @@ Please do not exit the Movie app during the process.</source>
     </message>
 </context>
 <context>
+    <name>dmr::MessageWindow</name>
+    <message>
+        <source>View</source>
+        <translation type="unfinished">نما</translation>
+    </message>
+</context>
+<context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation type="vanished">%1G</translation>
+        <translation>%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation type="vanished">%1M</translation>
+        <translation>%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation type="vanished">%1K</translation>
+        <translation>%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
@@ -715,10 +714,6 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -801,6 +796,14 @@ Please do not exit the Movie app during the process.</source>
         <source>%1 bps</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
@@ -875,18 +878,6 @@ Please do not exit the Movie app during the process.</source>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <comment>All (*)</comment>
         <translation type="unfinished">زیرنویس (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
-    </message>
-    <message>
-        <source>View</source>
-        <translation type="unfinished">نما</translation>
-    </message>
-    <message>
-        <source>Film screenshot</source>
-        <translation type="unfinished">عکس گرفتن از فیلم</translation>
-    </message>
-    <message>
-        <source>Saved to</source>
-        <translation type="unfinished">ذخیره شده در</translation>
     </message>
     <message>
         <source>The screenshot is saved</source>
@@ -994,6 +985,13 @@ Please do not exit the Movie app during the process.</source>
     </message>
 </context>
 <context>
+    <name>dmr::Platform_MessageWindow</name>
+    <message>
+        <source>View</source>
+        <translation type="unfinished">نما</translation>
+    </message>
+</context>
+<context>
     <name>dmr::Platform_PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
@@ -1007,10 +1005,6 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished">لیست پخش</translation>
     </message>
     <message>
-        <source>Empty</source>
-        <translation type="unfinished">خالی</translation>
-    </message>
-    <message>
         <source>%1 videos</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1022,16 +1016,20 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished">پخش/مکث</translation>
     </message>
     <message>
-        <source>Previous</source>
-        <translation type="unfinished">پیشین</translation>
+        <source>15s backward</source>
+        <translation type="unfinished">0.5s رو به عقب  {15s?}</translation>
     </message>
     <message>
-        <source>Next</source>
-        <translation type="unfinished">بعدی</translation>
+        <source>15s forward</source>
+        <translation type="unfinished">0.5s رو به جلو  {15s?}</translation>
     </message>
     <message>
         <source>Fullscreen</source>
         <translation type="unfinished">تمام صفحه</translation>
+    </message>
+    <message>
+        <source>Miracast</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Playlist</source>
@@ -1048,10 +1046,6 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <source>Play</source>
         <translation type="unfinished">پخش</translation>
-    </message>
-    <message>
-        <source>Miracast</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1070,10 +1064,6 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <source>%1 videos</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Empty</source>
-        <translation>خالی</translation>
     </message>
 </context>
 <context>
@@ -1122,14 +1112,6 @@ Please do not exit the Movie app during the process.</source>
         <translation>پخش</translation>
     </message>
     <message>
-        <source>Previous</source>
-        <translation>پیشین</translation>
-    </message>
-    <message>
-        <source>Next</source>
-        <translation>بعدی</translation>
-    </message>
-    <message>
         <source>Playlist</source>
         <translation>لیست پخش</translation>
     </message>
@@ -1150,14 +1132,15 @@ Please do not exit the Movie app during the process.</source>
         <translation>مکث</translation>
     </message>
     <message>
-        <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <source>15s backward</source>
+        <translation type="unfinished">0.5s رو به عقب  {15s?}</translation>
     </message>
-</context>
-<context>
-    <name>dmr::VolumeButton</name>
     <message>
-        <source>Volume</source>
+        <source>15s forward</source>
+        <translation type="unfinished">0.5s رو به جلو  {15s?}</translation>
+    </message>
+    <message>
+        <source>Miracast</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

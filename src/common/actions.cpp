@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -63,13 +64,16 @@ DMenu *ActionFactory::titlebarMenu()
             m_pTitlebarMenu = pMenu_p;
             {
                 DMenu *pParent = pMenu_p;
-                DMenu *pMenu = new DMenu(tr("Play Mode"));
+                DMenu *pMenu = new DMenu(tr("Play"));
                 QActionGroup *pActionGroup = new QActionGroup(pMenu);
-                DEF_ACTION_CHECKED_GROUP(tr("Order Play"), ActionKind::OrderPlay, pActionGroup);
-                DEF_ACTION_CHECKED_GROUP(tr("Shuffle Play"), ActionKind::ShufflePlay, pActionGroup);
-                DEF_ACTION_CHECKED_GROUP(tr("Single Play"), ActionKind::SinglePlay, pActionGroup);
-                DEF_ACTION_CHECKED_GROUP(tr("Single Loop"), ActionKind::SingleLoop, pActionGroup);
-                DEF_ACTION_CHECKED_GROUP(tr("List Loop"), ActionKind::ListLoop, pActionGroup);
+                DEF_ACTION_GROUP(tr("Previous"), ActionKind::GotoPlaylistPrev, pActionGroup);
+                DEF_ACTION_GROUP(tr("Next"), ActionKind::GotoPlaylistNext, pActionGroup);
+                pMenu->addSeparator();
+                DEF_ACTION_CHECKED_GROUP(tr("Order play"), ActionKind::OrderPlay, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("Shuffle play"), ActionKind::ShufflePlay, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("Single play"), ActionKind::SinglePlay, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("Single loop"), ActionKind::SingleLoop, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("List loop"), ActionKind::ListLoop, pActionGroup);
                 pParent->addMenu(pMenu);
             }
             {
@@ -86,8 +90,8 @@ DMenu *ActionFactory::titlebarMenu()
                 DEF_ACTION_GROUP(tr("Clockwise"), ActionKind::ClockwiseFrame, pActionGroup);
                 DEF_ACTION_GROUP(tr("Counterclockwise"), ActionKind::CounterclockwiseFrame, pActionGroup);
                 pMenu->addSeparator();
-                DEF_ACTION_GROUP(tr("Next Frame"), ActionKind::NextFrame, pActionGroup);
-                DEF_ACTION_GROUP(tr("Previous Frame"), ActionKind::PreviousFrame, pActionGroup);
+                DEF_ACTION_GROUP(tr("Next frame"), ActionKind::NextFrame, pActionGroup);
+                DEF_ACTION_GROUP(tr("Previous frame"), ActionKind::PreviousFrame, pActionGroup);
                 pParent->addMenu(pMenu);
                 pMenu->setEnabled(false);
                 connect(this, &ActionFactory::frameMenuEnable, this, [ = ](bool statu) {
@@ -96,7 +100,7 @@ DMenu *ActionFactory::titlebarMenu()
             }
             {
                 DMenu *pParent = pMenu_p;
-                DMenu *pMenu = new DMenu(tr("Playback Speed"));
+                DMenu *pMenu = new DMenu(tr("Playback speed"));
                 QActionGroup *pActionGroup = new QActionGroup(pMenu);
                 DEF_ACTION_CHECKED_GROUP(tr("0.5x"), ActionKind::ZeroPointFiveTimes, pActionGroup);
                 DEF_ACTION_CHECKED_GROUP(tr("1.0x"), ActionKind::OneTimes, pActionGroup);
@@ -130,23 +134,26 @@ DMenu *ActionFactory::mainContextMenu()
         DEF_ACTION(tr("Open CD/DVD"), ActionKind::OpenCdrom);
         pMenu_p->addSeparator();
         DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::ToggleFullscreen);
-        DEF_ACTION_CHECKED(tr("Mini Mode"), ActionKind::ToggleMiniMode);
+        DEF_ACTION_CHECKED(tr("Mini mode"), ActionKind::ToggleMiniMode);
         DEF_ACTION_CHECKED(tr("Always on Top"), ActionKind::WindowAbove);
         pMenu_p->addSeparator();
         {
             DMenu *pParent = pMenu_p;         //这里使用代码块和局部变量为了使结构清晰
-            DMenu *pMenu = new DMenu(tr("Play Mode"));
+            DMenu *pMenu = new DMenu(tr("Play"));
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
-            DEF_ACTION_CHECKED_GROUP(tr("Order Play"), ActionKind::OrderPlay, pActionGroup);
-            DEF_ACTION_CHECKED_GROUP(tr("Shuffle Play"), ActionKind::ShufflePlay, pActionGroup);
-            DEF_ACTION_CHECKED_GROUP(tr("Single Play"), ActionKind::SinglePlay, pActionGroup);
-            DEF_ACTION_CHECKED_GROUP(tr("Single Loop"), ActionKind::SingleLoop, pActionGroup);
-            DEF_ACTION_CHECKED_GROUP(tr("List Loop"), ActionKind::ListLoop, pActionGroup);
+            DEF_ACTION_GROUP(tr("Previous"), ActionKind::GotoPlaylistPrev, pActionGroup);
+            DEF_ACTION_GROUP(tr("Next"), ActionKind::GotoPlaylistNext, pActionGroup);
+            pMenu->addSeparator();
+            DEF_ACTION_CHECKED_GROUP(tr("Order play"), ActionKind::OrderPlay, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("Shuffle play"), ActionKind::ShufflePlay, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("Single play"), ActionKind::SinglePlay, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("Single loop"), ActionKind::SingleLoop, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("List loop"), ActionKind::ListLoop, pActionGroup);
             pParent->addMenu(pMenu);
         }
         {
             DMenu *pParent = pMenu_p;
-            DMenu *pMenu = new DMenu(tr("Playback Speed"));
+            DMenu *pMenu = new DMenu(tr("Playback speed"));
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
             DEF_ACTION_CHECKED_GROUP(tr("0.5x"), ActionKind::ZeroPointFiveTimes, pActionGroup);
             DEF_ACTION_CHECKED_GROUP(tr("1.0x"), ActionKind::OneTimes, pActionGroup);
@@ -173,8 +180,8 @@ DMenu *ActionFactory::mainContextMenu()
             DEF_ACTION_GROUP(tr("Clockwise"), ActionKind::ClockwiseFrame, pActionGroup);
             DEF_ACTION_GROUP(tr("Counterclockwise"), ActionKind::CounterclockwiseFrame, pActionGroup);
             pMenu->addSeparator();
-            DEF_ACTION_GROUP(tr("Next Frame"), ActionKind::NextFrame, pActionGroup);
-            DEF_ACTION_GROUP(tr("Previous Frame"), ActionKind::PreviousFrame, pActionGroup);
+            DEF_ACTION_GROUP(tr("Next frame"), ActionKind::NextFrame, pActionGroup);
+            DEF_ACTION_GROUP(tr("Previous frame"), ActionKind::PreviousFrame, pActionGroup);
             pParent->addMenu(pMenu);
             pMenu->setEnabled(false);
             connect(this, &ActionFactory::frameMenuEnable, this, [ = ](bool statu) {
@@ -214,15 +221,14 @@ DMenu *ActionFactory::mainContextMenu()
             DMenu *pMenu = new DMenu(tr("Subtitle"));
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
             DEF_ACTION_GROUP(tr("Load"), ActionKind::LoadSubtitle, pActionGroup);
-            DEF_ACTION_GROUP(tr("Online Search"), ActionKind::MatchOnlineSubtitle, pActionGroup);
+            DEF_ACTION_GROUP(tr("Online search"), ActionKind::MatchOnlineSubtitle, pActionGroup);
             //DEF_ACTION(tr("Select"), ActionKind::SelectSubtitle);
             {
                 DMenu *pParent_select = pMenu;
-                DMenu *pMenutemp = new DMenu(tr("Select"));
-                m_pSubtitleMenu = pMenutemp;
-                pParent_select->addMenu(pMenutemp);
+                DMenu *pMenu = new DMenu(tr("Select"));
+                m_pSubtitleMenu = pMenu;
+                pParent_select->addMenu(pMenu);
             }
-            DEF_ACTION_CHECKED_NEW(tr("Hide"), ActionKind::HideSubtitle);
             {
                 DMenu *parent_encoding = pMenu;
                 DMenu *pMenu = new DMenu(tr("Encodings"));
@@ -295,8 +301,8 @@ DMenu *ActionFactory::mainContextMenu()
             DMenu *pMenu = new DMenu(tr("Screenshot"));
             //cppcheck 误报
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
-            DEF_ACTION_GROUP(tr("Film Screenshot"), ActionKind::Screenshot, pActionGroup);
-            DEF_ACTION_GROUP(tr("Burst Shooting"), ActionKind::BurstScreenshot, pActionGroup);
+            DEF_ACTION_GROUP(tr("Film screenshot"), ActionKind::Screenshot, pActionGroup);
+            DEF_ACTION_GROUP(tr("Burst shooting"), ActionKind::BurstScreenshot, pActionGroup);
             DEF_ACTION_GROUP(tr("Open screenshot folder"), ActionKind::GoToScreenshotSolder, pActionGroup);
             pMenu->setEnabled(false);
             parent->addMenu(pMenu);
@@ -306,7 +312,7 @@ DMenu *ActionFactory::mainContextMenu()
         }
         pMenu_p->addSeparator();
         DEF_ACTION_CHECKED(tr("Playlist"), ActionKind::TogglePlaylist);
-        DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
+        DEF_ACTION(tr("Film info"), ActionKind::MovieInfo);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
         m_pContextMenu = pMenu_p;
     } else {
@@ -317,23 +323,26 @@ DMenu *ActionFactory::mainContextMenu()
         DEF_ACTION(tr("Open CD/DVD"), ActionKind::OpenCdrom);
         pMenu_p->addSeparator();
         DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::ToggleFullscreen);
-        DEF_ACTION_CHECKED(tr("Mini Mode"), ActionKind::ToggleMiniMode);
+        DEF_ACTION_CHECKED(tr("Mini mode"), ActionKind::ToggleMiniMode);
         DEF_ACTION_CHECKED(tr("Always on Top"), ActionKind::WindowAbove);
         pMenu_p->addSeparator();
         {
             DMenu *pParent = pMenu_p;         //这里使用代码块和局部变量为了使结构清晰
-            DMenu *pMenu = new DMenu(tr("Play Mode"));
+            DMenu *pMenu = new DMenu(tr("Play"));
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
-            DEF_ACTION_CHECKED_GROUP(tr("Order Play"), ActionKind::OrderPlay, pActionGroup);
-            DEF_ACTION_CHECKED_GROUP(tr("Shuffle Play"), ActionKind::ShufflePlay, pActionGroup);
-            DEF_ACTION_CHECKED_GROUP(tr("Single Play"), ActionKind::SinglePlay, pActionGroup);
-            DEF_ACTION_CHECKED_GROUP(tr("Single Loop"), ActionKind::SingleLoop, pActionGroup);
-            DEF_ACTION_CHECKED_GROUP(tr("List Loop"), ActionKind::ListLoop, pActionGroup);
+            DEF_ACTION_GROUP(tr("Previous"), ActionKind::GotoPlaylistPrev, pActionGroup);
+            DEF_ACTION_GROUP(tr("Next"), ActionKind::GotoPlaylistNext, pActionGroup);
+            pMenu->addSeparator();
+            DEF_ACTION_CHECKED_GROUP(tr("Order play"), ActionKind::OrderPlay, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("Shuffle play"), ActionKind::ShufflePlay, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("Single play"), ActionKind::SinglePlay, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("Single loop"), ActionKind::SingleLoop, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("List loop"), ActionKind::ListLoop, pActionGroup);
             pParent->addMenu(pMenu);
         }
         {
             DMenu *pParent = pMenu_p;
-            DMenu *pMenu = new DMenu(tr("Playback Speed"));
+            DMenu *pMenu = new DMenu(tr("Playback speed"));
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
             DEF_ACTION_CHECKED_GROUP(tr("0.5x"), ActionKind::ZeroPointFiveTimes, pActionGroup);
             DEF_ACTION_CHECKED_GROUP(tr("1.0x"), ActionKind::OneTimes, pActionGroup);
@@ -352,7 +361,7 @@ DMenu *ActionFactory::mainContextMenu()
             DMenu *pMenu = new DMenu(tr("Screenshot"));
             //cppcheck 误报
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
-            DEF_ACTION_GROUP(tr("Film Screenshot"), ActionKind::Screenshot, pActionGroup);
+            DEF_ACTION_GROUP(tr("Film screenshot"), ActionKind::Screenshot, pActionGroup);
             DEF_ACTION_GROUP(tr("Open screenshot folder"), ActionKind::GoToScreenshotSolder, pActionGroup);
             pMenu->setEnabled(false);
             parent->addMenu(pMenu);
@@ -362,7 +371,7 @@ DMenu *ActionFactory::mainContextMenu()
         }
         pMenu_p->addSeparator();
         DEF_ACTION_CHECKED(tr("Playlist"), ActionKind::TogglePlaylist);
-        DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
+        DEF_ACTION(tr("Film info"), ActionKind::MovieInfo);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
         m_pContextMenu = pMenu_p;
     }
@@ -406,12 +415,15 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
         if (!m_pSubgroup) {
             m_pSubgroup = new QActionGroup(pMenu); // mem leak ?
         }
+        DEF_ACTION_CHECKED_GROUP(tr("None"), ActionKind::HideSubtitle, m_pSubgroup);
+        QAction *pAct = pMenu->actions().first();
+        pAct->setChecked(true);
+        pAct->setEnabled(true);
         for (int i = 0; i < pmf.subs.size(); i++) {
             DEF_ACTION_CHECKED_GROUP(pmf.subs[i]["title"].toString(), ActionKind::SelectSubtitle, m_pSubgroup);
             QAction *pAct = pMenu->actions().last();
-            pAct->setProperty("args", QList<QVariant>() << i);
+            pAct->setProperty("args", QList<QVariant>() << i+1);
         }
-        m_pSubtitleMenu->setEnabled(pmf.subs.size() > 0);
     }
     if (m_pSound) {
         DMenu *pMenu = m_pTracksMenu;

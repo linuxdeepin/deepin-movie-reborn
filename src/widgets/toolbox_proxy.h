@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -240,21 +241,6 @@ public:
         m_pmBlackList.append(pmBlack);
     }
     /**
-     * @brief getfullscreentimeLabel 获取全屏时当前播放时间控件
-     * @return 返回label控件指针
-     */
-    QLabel *getfullscreentimeLabel();
-    /**
-     * @brief getfullscreentimeLabelend 获取全屏时当前播放总时长控件
-     * @return 返回label控件指针
-     */
-    QLabel *getfullscreentimeLabelend();
-    /**
-     * @brief getbAnimationFinash 查看是否动画已结束
-     * @return 动画进行中标志位
-     */
-    bool getbAnimationFinash();
-    /**
      * @brief setVolSliderHide 将音量条控件隐藏
      */
     void setVolSliderHide();
@@ -387,6 +373,10 @@ public slots:
      */
     void finishLoadSlot(QSize size);
     /**
+     * @brief updateplaylisticon 切换主题时更新播放列表图标
+     */
+    void updateplaylisticon();
+    /**
      * @brief setthumbnailmode 设置胶片进度条的模式
      */
     void setthumbnailmode();
@@ -510,10 +500,6 @@ protected slots:
      */
     void slotUpdateThumbnailTimeOut();
     /**
-     * @brief slotProAnimationFinished 动画结束槽函数
-     */
-    void slotProAnimationFinished();
-    /**
      * @brief slotVolumeChanged 音量变化槽函数
      * @param nVolume 音量值
      */
@@ -594,8 +580,6 @@ private:
     QHBoxLayout *_mid;                   ///
     QHBoxLayout *_right;                 ///
 
-    QLabel *m_pFullscreentimelable;      ///全屏下视频当前播放时长控件
-    QLabel *m_pFullscreentimelableend;   ///全屏下视频总时长控件
     QLabel *m_pTimeLabel;                ///视频当前播放时长控件
     QLabel *m_pTimeLabelend;             ///视频总时长的控件
     VolumeSlider *m_pVolSlider;          ///音量条控件窗口
@@ -620,6 +604,7 @@ private:
     ButtonToolTip *m_pNextBtnTip;        ///下一个按钮的悬浮提示
     ButtonToolTip *m_pFullScreenBtnTip;  ///全屏按钮的悬浮提示
     ButtonToolTip *m_pListBtnTip;        ///播放列表按钮的悬浮提示
+    ButtonToolTip *m_pmiracastBtnTip;    ///投屏按钮的悬浮提示
 
     viewProgBarLoad *m_pWorker;          ///获取胶片的线程
     QPropertyAnimation *m_pPaOpen;       ///工具栏升起动画
@@ -635,7 +620,6 @@ private:
     bool m_bMouseFlag;
     bool m_bMousePree;              ///
     bool m_bThumbnailmode;          ///进度条是否为胶片模式
-    bool m_bAnimationFinash;        ///动画是否完成
     bool m_bCanPlay;                ///判断是否能进行曲目切换的标志位
     bool m_bSetListBtnFocus;        ///设置播放列表按钮焦点标志位
 
@@ -728,11 +712,11 @@ private:
 }
 
 //HACK: extent area for progress slider
-#define TOOLBOX_TOP_EXTENT  0
+#define TOOLBOX_TOP_EXTENT  10
 #define TOOLBOX_SPACE_HEIGHT 314
-#define TOOLBOX_HEIGHT  80
+#define TOOLBOX_HEIGHT  56
 #define TOOLBOX_HEIGHT_EXT (TOOLBOX_HEIGHT + TOOLBOX_TOP_EXTENT)
-#define TOOLBOX_BUTTON_WIDTH 50
+#define TOOLBOX_BUTTON_WIDTH 36
 #define TOOLBOX_BUTTON_HEIGHT 50
 #define VOLSLIDER_WIDTH 62
 #define VOLSLIDER_HEIGHT 205

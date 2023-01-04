@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="sk">
+<TS version="2.0" language="sk">
 <context>
     <name>MircastShowWidget</name>
+    <message>
+        <source>Exit Miracast</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
@@ -10,10 +14,6 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Display device</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exit Miracast</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -325,34 +325,6 @@ Please do not exit the Movie app during the process.</source>
         <translation>Otvoriť CD/DVD</translation>
     </message>
     <message>
-        <source>Mini Mode</source>
-        <translation>Malý režim</translation>
-    </message>
-    <message>
-        <source>Play Mode</source>
-        <translation>Režim prehrávania</translation>
-    </message>
-    <message>
-        <source>Order Play</source>
-        <translation>Prehrávanie podľa poradia</translation>
-    </message>
-    <message>
-        <source>Shuffle Play</source>
-        <translation>Shuffle prehrávanie</translation>
-    </message>
-    <message>
-        <source>Single Play</source>
-        <translation>Jednoduché prehrávanie</translation>
-    </message>
-    <message>
-        <source>Single Loop</source>
-        <translation>Jedna slučka</translation>
-    </message>
-    <message>
-        <source>List Loop</source>
-        <translation>Zoznam slučiek</translation>
-    </message>
-    <message>
         <source>Frame</source>
         <translation>Rámec</translation>
     </message>
@@ -401,16 +373,8 @@ Please do not exit the Movie app during the process.</source>
         <translation>Nahrať</translation>
     </message>
     <message>
-        <source>Online Search</source>
-        <translation>Online vyhľadávanie</translation>
-    </message>
-    <message>
         <source>Select</source>
         <translation>Vybrať</translation>
-    </message>
-    <message>
-        <source>Hide</source>
-        <translation>Skryť</translation>
     </message>
     <message>
         <source>Encodings</source>
@@ -421,20 +385,8 @@ Please do not exit the Movie app during the process.</source>
         <translation>Snímok obrazovky</translation>
     </message>
     <message>
-        <source>Film Screenshot</source>
-        <translation>Snímka filmu</translation>
-    </message>
-    <message>
-        <source>Burst Shooting</source>
-        <translation>Sekvenčné snímanie</translation>
-    </message>
-    <message>
         <source>Playlist</source>
         <translation>Zoznam skladieb</translation>
-    </message>
-    <message>
-        <source>Film Info</source>
-        <translation>Informácie o filme</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
@@ -445,19 +397,7 @@ Please do not exit the Movie app during the process.</source>
         <translation>Zobraziť v správcovi súborov</translation>
     </message>
     <message>
-        <source>Next Frame</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Previous Frame</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Playback Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -478,6 +418,70 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>2.0x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation type="unfinished">Spustiť</translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation type="unfinished">Predchádzajúce</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation type="unfinished">Ďalšie</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Next frame</source>
+        <translation type="unfinished">Ďalší snímok</translation>
+    </message>
+    <message>
+        <source>Previous frame</source>
+        <translation type="unfinished">Predchádzajúci snímok</translation>
+    </message>
+    <message>
+        <source>Playback speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mini mode</source>
+        <translation type="unfinished">Mini režim</translation>
+    </message>
+    <message>
+        <source>Online search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Film screenshot</source>
+        <translation type="unfinished">Snímka filmu</translation>
+    </message>
+    <message>
+        <source>Burst shooting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -563,14 +567,6 @@ Please do not exit the Movie app during the process.</source>
         <translation>Rýchlosť: %1x</translation>
     </message>
     <message>
-        <source>View</source>
-        <translation>Náhľad</translation>
-    </message>
-    <message>
-        <source>Saved to</source>
-        <translation>Uložené na</translation>
-    </message>
-    <message>
         <source>The screenshot is saved</source>
         <translation>Snímok obrazovky sa uložil</translation>
     </message>
@@ -597,10 +593,6 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <source>No video file found</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Film screenshot</source>
-        <translation>Snímka filmu</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
@@ -685,22 +677,29 @@ Please do not exit the Movie app during the process.</source>
     </message>
 </context>
 <context>
+    <name>dmr::MessageWindow</name>
+    <message>
+        <source>View</source>
+        <translation type="unfinished">Náhľad</translation>
+    </message>
+</context>
+<context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation type="vanished">%1G</translation>
+        <translation>%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation type="vanished">%1M</translation>
+        <translation>%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation type="vanished">%1K</translation>
+        <translation>%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
@@ -716,10 +715,6 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <source>Duration</source>
         <translation>Doba trvania</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation>Typ</translation>
     </message>
     <message>
         <source>Size</source>
@@ -801,6 +796,14 @@ Please do not exit the Movie app during the process.</source>
         <source>%1 bps</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
@@ -875,18 +878,6 @@ Please do not exit the Movie app during the process.</source>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <comment>All (*)</comment>
         <translation type="unfinished">Titulky (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
-    </message>
-    <message>
-        <source>View</source>
-        <translation type="unfinished">Náhľad</translation>
-    </message>
-    <message>
-        <source>Film screenshot</source>
-        <translation type="unfinished">Snímka filmu</translation>
-    </message>
-    <message>
-        <source>Saved to</source>
-        <translation type="unfinished">Uložené na</translation>
     </message>
     <message>
         <source>The screenshot is saved</source>
@@ -994,6 +985,13 @@ Please do not exit the Movie app during the process.</source>
     </message>
 </context>
 <context>
+    <name>dmr::Platform_MessageWindow</name>
+    <message>
+        <source>View</source>
+        <translation type="unfinished">Náhľad</translation>
+    </message>
+</context>
+<context>
     <name>dmr::Platform_PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
@@ -1007,10 +1005,6 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished">Zoznam skladieb</translation>
     </message>
     <message>
-        <source>Empty</source>
-        <translation type="unfinished">Vysypať</translation>
-    </message>
-    <message>
         <source>%1 videos</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1022,16 +1016,20 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished">Prehrať/pozastaviť</translation>
     </message>
     <message>
-        <source>Previous</source>
-        <translation type="unfinished">Predchádzajúce</translation>
+        <source>15s backward</source>
+        <translation type="unfinished">0,5 s dozadu {15s?}</translation>
     </message>
     <message>
-        <source>Next</source>
-        <translation type="unfinished">Ďalšie</translation>
+        <source>15s forward</source>
+        <translation type="unfinished">0,5 s dopredu {15s?}</translation>
     </message>
     <message>
         <source>Fullscreen</source>
         <translation type="unfinished">Celá obrazovka</translation>
+    </message>
+    <message>
+        <source>Miracast</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Playlist</source>
@@ -1048,10 +1046,6 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <source>Play</source>
         <translation type="unfinished">Spustiť</translation>
-    </message>
-    <message>
-        <source>Miracast</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1070,10 +1064,6 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <source>%1 videos</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Empty</source>
-        <translation>Vysypať</translation>
     </message>
 </context>
 <context>
@@ -1122,14 +1112,6 @@ Please do not exit the Movie app during the process.</source>
         <translation>Spustiť</translation>
     </message>
     <message>
-        <source>Previous</source>
-        <translation>Predchádzajúce</translation>
-    </message>
-    <message>
-        <source>Next</source>
-        <translation>Ďalšie</translation>
-    </message>
-    <message>
         <source>Playlist</source>
         <translation>Zoznam skladieb</translation>
     </message>
@@ -1150,14 +1132,15 @@ Please do not exit the Movie app during the process.</source>
         <translation>Pozastaviť</translation>
     </message>
     <message>
-        <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <source>15s backward</source>
+        <translation type="unfinished">0,5 s dozadu {15s?}</translation>
     </message>
-</context>
-<context>
-    <name>dmr::VolumeButton</name>
     <message>
-        <source>Volume</source>
+        <source>15s forward</source>
+        <translation type="unfinished">0,5 s dopredu {15s?}</translation>
+    </message>
+    <message>
+        <source>Miracast</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

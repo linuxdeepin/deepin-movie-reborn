@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -696,23 +697,13 @@ void PlayerEngine::stopBurstScreenshot()
 void PlayerEngine::seekForward(int secs)
 {
     if (state() == CoreState::Idle) return;
-
-    static int lastElapsed = 0;
-
-    if (elapsed() == lastElapsed)
-        return ;
     _current->seekForward(secs);
 }
 
 void PlayerEngine::seekBackward(int secs)
 {
     if (state() == CoreState::Idle) return;
-
-    if (elapsed() - abs(secs) <= 0) {
-        _current->seekBackward(static_cast<int>(elapsed()));
-    } else {
-        _current->seekBackward(secs);
-    }
+    _current->seekBackward(secs);
 }
 
 

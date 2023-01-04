@@ -13,3 +13,4 @@ Version: @PROJECT_VERSION@
 Libs: -L${libdir} -ldmr
 Cflags: -I${includedir}
 Requires: Qt5Widgets Qt5X11Extras Qt5Concurrent Qt5Network gl dtkcore dtkwidget
+

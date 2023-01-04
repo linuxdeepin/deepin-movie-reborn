@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -15,10 +16,29 @@
 #include <DLabel>
 #include <QGraphicsDropShadowEffect>
 #include <DFontSizeManager>
+#include <QTimer>
 
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
+class FullScreenTitlebar : public QFrame
+{
+    Q_OBJECT
+public:
+    FullScreenTitlebar(QWidget *parent = 0);
+
+    void setTitletxt(const QString &sTitle);
+    void setTime(const QString &sTime);
+
+protected:
+    void paintEvent(QPaintEvent *pPaintEvent) override;
+
+private:
+    DLabel     *m_iconLabel;
+    DLabel     *m_textLabel;
+    DLabel     *m_timeLabel;
+};
+
 class TitlebarPrivate;
 /**
  * @brief The Titlebar class

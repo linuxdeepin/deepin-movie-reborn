@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -21,6 +22,8 @@
 #include <DButtonBox>
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QPushButton>
+#include <DToolButton>
 
 DWIDGET_USE_NAMESPACE
 
@@ -38,11 +41,14 @@ class ButtonBoxButton: public DButtonBoxButton
 public:
     explicit ButtonBoxButton(const QString &text, QWidget *parent = nullptr)
         : DButtonBoxButton(text, parent)
-    {};
+    {
+        installEventFilter(this);
+    };
 
 signals:
     void entered();
     void leaved();
+    void sigUnsupported();
 protected:
     void enterEvent(QEvent *ev) override
     {
@@ -51,6 +57,19 @@ protected:
     void leaveEvent(QEvent *ev) override
     {
         emit leaved();
+    };
+    bool eventFilter(QObject *obj, QEvent *e)
+    {
+        QMouseEvent* pMouseEvent = dynamic_cast<QMouseEvent*>(e);
+        if(!isEnabled() && pMouseEvent)                  // 音量按钮不能使用时需要给出提示
+        {
+            if(pMouseEvent->type() == QEvent::MouseButtonPress) {
+               emit sigUnsupported();
+            }
+            return false;
+        }
+
+        return QObject::eventFilter(obj, e);
     };
 };
 
@@ -279,11 +298,11 @@ private:
     bool m_bIsWM {false};
 };
 
-class ToolButton: public DIconButton
+class ToolButton: public DToolButton
 {
     Q_OBJECT
 public:
-    explicit ToolButton(QWidget *parent = nullptr): DIconButton(parent) {}
+    explicit ToolButton(QWidget *parent = nullptr): DToolButton(parent) {}
     virtual ~ToolButton() {}
 
     void initToolTip()
@@ -291,29 +310,24 @@ public:
         if (nullptr == m_pToolTip) {
             m_pToolTip = new ToolTip;
         }
-
-        connect(&m_showTime, &QTimer::timeout, [=]{
-            QPoint pos = this->parentWidget()->mapToGlobal(this->pos());
-            pos.rx() = pos.x() + (this->width() - m_pToolTip->width()) / 2;
-            pos.ry() = pos.y() - 40;
-
-            if (nullptr != m_pToolTip) {
-                m_pToolTip->move(pos);
-                m_pToolTip->show();
-            }
-        });
     }
 
     void showToolTip()
     {
-        if (!m_showTime.isActive())
-            m_showTime.start(2000);
+        QPoint pos = this->parentWidget()->mapToGlobal(this->pos());
+        pos.rx() = pos.x() + (this->width() - m_pToolTip->width()) / 2;
+        pos.ry() = pos.y() - 40;
+
+        if (nullptr != m_pToolTip) {
+            m_pToolTip->move(pos);
+            QThread::msleep(10);
+            m_pToolTip->show();
+        }
     }
 
     void hideToolTip()
     {
-        m_showTime.stop();
-        if (nullptr != m_pToolTip && m_pToolTip->isVisible()) {
+        if (nullptr != m_pToolTip) {
             QThread::msleep(10);
             m_pToolTip->hide();
         }
@@ -345,10 +359,9 @@ protected:
 
 private:
     ToolTip *m_pToolTip {nullptr};
-    QTimer  m_showTime;
 };
 
-class VolumeButton: public DIconButton
+class VolumeButton: public QPushButton
 {
     Q_OBJECT
 public:
@@ -357,6 +370,7 @@ public:
     void setVolume(int nVolume);
     void setMute(bool bMute);
     void setButtonEnable(bool bFlag);
+    void setIcon(const QIcon&);
 
 signals:
     void entered();
@@ -371,16 +385,16 @@ signals:
 protected:
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
+    void paintEvent(QPaintEvent *) override;
     void wheelEvent(QWheelEvent *wev) override;
-    void focusOutEvent(QFocusEvent *ev);
-    bool eventFilter(QObject *obj, QEvent *e);
+    void focusOutEvent(QFocusEvent *ev) override;
+    bool eventFilter(QObject *obj, QEvent *e) override;
 
 private:
     QString _name;
     int m_nVolume;
     bool m_bMute;
-    ToolTip *m_pToolTip;
-    QTimer m_showTime;
+    QIcon m_icon;
 };
 
 }

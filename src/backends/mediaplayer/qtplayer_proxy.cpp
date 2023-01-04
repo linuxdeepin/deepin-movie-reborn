@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -63,6 +64,7 @@ QtPlayerProxy::QtPlayerProxy(QWidget *parent)
 
 QtPlayerProxy::~QtPlayerProxy()
 {
+    //disconnect(window()->windowHandle(), &QWindow::windowStateChanged, nullptr, nullptr);
     if (CompositingManager::get().composited()) {
         disconnect(this, &QtPlayerProxy::stateChanged, nullptr, nullptr);
     }
@@ -123,9 +125,6 @@ void QtPlayerProxy::slotStateChanged(QMediaPlayer::State newState)
 {
     switch (newState) {
     case QMediaPlayer::StoppedState:
-#ifndef _LIBDMR_
-        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, 0);
-#endif
         setState(PlayState::Stopped);
         break;
      case QMediaPlayer::PlayingState:
@@ -175,10 +174,7 @@ void QtPlayerProxy::processFrame(QVideoFrame &frame)
     frame.map(QAbstractVideoBuffer::ReadOnly);
     QImage recvImage(frame.bits(), frame.width(), frame.height(), QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat()));
     m_currentImage = recvImage;
-    if(!recvImage.isNull())
-    {
-        m_pGLWidget->setVideoTex(recvImage);
-    }
+    m_pGLWidget->setVideoTex(recvImage);
     m_pGLWidget->repaint();
     frame.unmap();
 }

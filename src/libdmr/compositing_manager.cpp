@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -97,21 +98,6 @@ CompositingManager &CompositingManager::get()
 CompositingManager::CompositingManager()
 {
     initMember();
-    bool isDriverLoaded = isDriverLoadedCorrectly();
-    softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
-
-//    bool isI915 = false;
-//    for (int id = 0; id <= 10; id++) {
-//        if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
-//        if (is_device_viable(id)) {
-//            vector<string> drivers = {"i915"};
-//            isI915 = is_card_exists(id, drivers);
-//            break;
-//        }
-//    }
-//    if (isI915) qInfo() << "is i915!";
-//    m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
-
     if (dmr::utils::check_wayland_env()) {
         _composited = true;
         //读取配置
@@ -123,26 +109,25 @@ CompositingManager::CompositingManager()
                 _composited = true;//libmpv只能走opengl
             }
         }
-        if (_platform == Platform::Arm64 && isDriverLoaded)
-            m_bHasCard = true;
         qInfo() << __func__ << "Composited is " << _composited;
         return;
     }
+    softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
-    _composited = true;
-#if defined (_MOVIE_USE_)
-    QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
-    QString aa = gsettings.get("composited").toString();
-    if ((gsettings.get("composited").toString() == "DisableComposited"
-            || gsettings.get("composited").toString() == "EnableComposited")) {
-        if (gsettings.keys().contains("composited")) {
-            if (gsettings.get("composited").toString() == "DisableComposited") {
-                _composited = false;
-            } else if (gsettings.get("composited").toString() == "EnableComposited") {
-                _composited = true;
-            }
-        }
-    } else {
+    _composited = false;
+//    QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
+//    QString aa = gsettings.get("composited").toString();
+//    if ((gsettings.get("composited").toString() == "DisableComposited"
+//            || gsettings.get("composited").toString() == "EnableComposited")) {
+//        if (gsettings.keys().contains("composited")) {
+//            if (gsettings.get("composited").toString() == "DisableComposited") {
+//                _composited = false;
+//            } else if (gsettings.get("composited").toString() == "EnableComposited") {
+//                _composited = true;
+//            }
+//        }
+//    } else {
+        bool isDriverLoaded = isDriverLoadedCorrectly();
         if (_platform == Platform::X86) {
             if (m_bZXIntgraphics) {
                 _composited = false;
@@ -154,34 +139,7 @@ CompositingManager::CompositingManager()
                 m_bHasCard = true;
             _composited = false;
         }
-    }
-#endif
-
-    //针对9200显卡适配
-    QFileInfo jmfi("/dev/jmgpu");
-    if (jmfi.exists()) {
-        //判断是否安装核外驱动  因为9200 不能通过opengl渲染
-        QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
-        if ( jmdir.exists()) {
-           _composited = false;
-        }
-    }
-
-    //判断xd显卡不能通过opengl渲染
-    QDir innodir("/sys/bus/platform/drivers/inno-codec");
-    if ( innodir.exists()) {
-       _composited = false;
-    }
-
-    //判断MT显卡不能通过opengl渲染
-    QFileInfo mtfi("/dev/mtgpu.0");
-    if (mtfi.exists()) {
-        //判断是否安装核外驱动  因为mt显卡 不能通过opengl渲染
-        QDir mtdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"musa");
-        if ( mtdir.exists()) {
-           _composited = false;
-        }
-    }
+//    }
 
     //读取配置
     m_pMpvConfig = new QMap<QString, QString>;
@@ -278,6 +236,24 @@ bool CompositingManager::isCanHwdec()
     return m_bCanHwdec;
 }
 
+QString  CompositingManager::libPath(const QString &sLib)
+{
+    QDir dir;
+    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+    dir.setPath(path);
+    QStringList list = dir.entryList(QStringList() << (sLib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
+    if (list.contains(sLib)) {
+        return (path+ QDir::separator() + sLib);
+    } else {
+        list.sort();
+    }
+
+    if(list.size() > 0)
+        return (path + QDir::separator() + list.last());
+    else
+        return QString();
+}
+
 void CompositingManager::setCanHwdec(bool bCanHwdec)
 {
     m_bCanHwdec = bCanHwdec;
@@ -285,11 +261,8 @@ void CompositingManager::setCanHwdec(bool bCanHwdec)
 
 bool CompositingManager::isMpvExists()
 {
-    QDir dir;
-    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
-    dir.setPath(path);
-    QStringList list = dir.entryList(QStringList() << (QString("libmpv.so.1") + "*"), QDir::NoDotAndDotDot | QDir::Files);
-    if (list.contains("libmpv.so.1")) {
+    QString path  = libPath("libmpv.so.1");
+    if (path.contains("libmpv.so.1")) {
         return true;
     }
     return false;
@@ -351,9 +324,6 @@ void CompositingManager::softDecodeCheck()
     if ((runningOnNvidia() && m_boardVendor.contains("Sugon"))
             || m_cpuModelName.contains("Kunpeng 920")) {
         m_bOnlySoftDecode = true;
-    }
-    if(m_boardVendor.toLower().contains("huawei")) {
-        m_bHasCard = true;
     }
 
     m_setSpecialControls = m_boardVendor.contains("Ruijie");
@@ -486,7 +456,6 @@ bool CompositingManager::isDriverLoadedCorrectly()
     static QRegExp dri_ok("direct rendering: DRI\\d+ enabled");
     static QRegExp swrast("GLX: Initialized DRISWRAST");
     static QRegExp regZX("loading driver: zx");
-    static QRegExp controller("1ec8");
 
     QString xorglog = QString("/var/log/Xorg.%1.log").arg(QX11Info::appScreen());
     qInfo() << "check " << xorglog;
@@ -516,11 +485,6 @@ bool CompositingManager::isDriverLoadedCorrectly()
 
         if (regZX.indexIn(ln) != -1) {
             m_bZXIntgraphics = true;
-        }
-
-        if (controller.indexIn(ln) != -1) {
-            qInfo() << ln;
-            return true;
         }
     }
     f.close();

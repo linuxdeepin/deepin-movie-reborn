@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -16,14 +17,9 @@
 #include <QTextBlockFormat>
 #include <QTextCursor>
 #include <QMouseEvent>
-#include <QApplication>
-#include <QDesktopWidget>
 
 #define DEFAULT_BGWIDTH 410
 #define DEFAULT_BGHEIGHT 287
-#define X_OFFSET 17
-#define Y_OFFSET 143
-#define DEFAULT_RATION (1.0f*680/1070)
 
 MircastShowWidget::MircastShowWidget(QWidget *parent)
 : QGraphicsView(parent)
@@ -40,18 +36,13 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
     m_pScene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
     this->setScene(m_pScene);
 
-    m_pBgRender = new QSvgRenderer(QString(":/resources/icons/mircast/default_Back.svg"));
+    m_pBgRender = new QSvgRenderer(QString(":/resources/icons/mircast/default.svg"));
 
     m_pBgSvgItem = new QGraphicsSvgItem;
     m_pBgSvgItem->setSharedRenderer(m_pBgRender);
     m_pBgSvgItem->setCacheMode(QGraphicsItem::NoCache);
     m_pScene->setSceneRect(m_pBgSvgItem->boundingRect());   //要在设置位置之前，不然动画会跳动
     m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGWIDTH) / 2, (m_pScene->height() - DEFAULT_BGHEIGHT) / 2);
-
-    m_pProSvgItem = new QGraphicsPixmapItem;
-    QPixmap pixmap(QString(":/resources/icons/mircast/prospect.png"));
-    m_pProSvgItem->setPixmap(pixmap.scaled(376, 100));
-    m_pProSvgItem->setPos(m_pBgSvgItem->pos().x() + X_OFFSET, m_pBgSvgItem->pos().y() + Y_OFFSET);
 
     ExitButton *exitBtn = new ExitButton();
     exitBtn->setToolTip(tr("Exit Miracast"));
@@ -61,32 +52,27 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
 
     m_deviceName = new QGraphicsTextItem;
     m_deviceName->setDefaultTextColor(Qt::white);
-    m_deviceName->setTextWidth(DEFAULT_BGWIDTH);
+    m_deviceName->setTextWidth(390);
     QTextBlockFormat format;
     format.setAlignment(Qt::AlignCenter);
     QTextCursor cursor = m_deviceName->textCursor();
     cursor.mergeBlockFormat(format);
     m_deviceName->setTextCursor(cursor);
-    m_deviceName->setPos(m_pBgSvgItem->pos().x(), m_pBgSvgItem->pos().y() - 20);
+    m_deviceName->setPos(m_pBgSvgItem->pos().x() + 10, m_pBgSvgItem->pos().y() - 20);
 
-    m_promptInformation = new QGraphicsTextItem;
-    m_promptInformation->setDefaultTextColor(QColor(255, 255, 255, 153));
-    m_promptInformation->setPlainText(tr("Projecting... \nPlease do not exit the Movie app during the process."));
-    m_promptInformation->setTextWidth(DEFAULT_BGWIDTH);
+    QGraphicsTextItem *promptInformation = new QGraphicsTextItem;
+    promptInformation->setDefaultTextColor(QColor(255, 255, 255, 153));
+    promptInformation->setPlainText(tr("Projecting... \nPlease do not exit the Movie app during the process."));
+    promptInformation->setTextWidth(DEFAULT_BGWIDTH);
     QFont font = m_deviceName->font();
-    font.setPointSize(10);
-    QTextBlockFormat infoFormat;
-    infoFormat.setAlignment(Qt::AlignCenter);
-    QTextCursor infoCursor = m_promptInformation->textCursor();
-    infoCursor.mergeBlockFormat(infoFormat);
-    m_promptInformation->setFont(font);
-    m_promptInformation->setTextCursor(infoCursor);
-    m_promptInformation->setPos(m_pBgSvgItem->pos().x(), m_pBgSvgItem->pos().y() + DEFAULT_BGHEIGHT + 10);
+    font.setPointSize(9);
+    promptInformation->setFont(font);
+    promptInformation->setTextCursor(cursor);
+    promptInformation->setPos(m_pBgSvgItem->pos().x() + 93, m_pBgSvgItem->pos().y() + 297);
 
     m_pScene->addItem(m_pBgSvgItem);
-    m_pScene->addItem(m_pProSvgItem);
     m_pScene->addItem(m_deviceName);
-    m_pScene->addItem(m_promptInformation);
+    m_pScene->addItem(promptInformation);
     m_pScene->addWidget(exitBtn);
 }
 
@@ -106,38 +92,6 @@ void MircastShowWidget::setDeviceName(QString name)
     QTextCursor cursor = m_deviceName->textCursor();
     cursor.mergeBlockFormat(format);
     m_deviceName->setTextCursor(cursor);
-}
-
-void MircastShowWidget::updateView()
-{
-    qreal fRatio = 1.0;
-    QRect rectDesktop;
-    int nWidth = 0;
-    int nHeight = 0;
-
-    nWidth = rect().width();
-    nHeight = rect().height();
-    rectDesktop = qApp->desktop()->availableGeometry(this);
-
-    //根据比例缩放背景
-    if (1.0f * nHeight / nWidth < DEFAULT_RATION) {
-        nWidth = static_cast<int>(nHeight / DEFAULT_RATION);
-        fRatio = nWidth * 2.0 / rectDesktop.width();
-    } else {
-        nHeight = static_cast<int>(nWidth * DEFAULT_RATION);
-        fRatio = nHeight * 2.0 / rectDesktop.height();
-    }
-
-    m_pBgSvgItem->setScale(fRatio);
-    m_pProSvgItem->setScale(fRatio);
-
-    m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGWIDTH * fRatio) / 2, (m_pScene->height() - DEFAULT_BGHEIGHT * fRatio) / 2);
-    m_pProSvgItem->setPos(m_pBgSvgItem->pos().x() + (X_OFFSET * fRatio), m_pBgSvgItem->pos().y() + (Y_OFFSET * fRatio));
-    m_deviceName->setTextWidth(DEFAULT_BGWIDTH * fRatio);
-    m_deviceName->setPos(m_pBgSvgItem->pos().x(), m_pBgSvgItem->pos().y() - 20);
-    m_promptInformation->setTextWidth(DEFAULT_BGWIDTH * fRatio);
-    m_promptInformation->setPos(m_pBgSvgItem->pos().x(), (DEFAULT_BGHEIGHT + 10) * fRatio + m_pBgSvgItem->pos().y());
-    viewport()->update();
 }
 
 void MircastShowWidget::mouseMoveEvent(QMouseEvent *pEvent)
