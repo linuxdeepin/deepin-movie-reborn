@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -9,6 +10,7 @@
 #include <QPushButton>
 #include <QtWidgets>
 #include <DIconButton>
+#include <DToolButton>
 #include <DFloatingButton>
 #include <DListWidget>
 #include <DApplicationHelper>
@@ -19,6 +21,7 @@
 #include <DTextEdit>
 #include <QPainterPath>
 #include <QSvgWidget>
+#include <QSvgRenderer>
 
 namespace Dtk {
 namespace Widget {
@@ -173,7 +176,7 @@ private:
 
     QPropertyAnimation *paOpen ;
     QPropertyAnimation *paClose ;
-    DPushButton *m_pClearButton;
+    DToolButton *m_pClearButton;
 
     bool _toggling {false};
     bool m_bButtonFocusOut {false};       ///键盘交互标志位

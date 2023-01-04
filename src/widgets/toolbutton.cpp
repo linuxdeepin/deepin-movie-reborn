@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -9,24 +10,10 @@
 
 namespace dmr {
 VolumeButton::VolumeButton(QWidget *parent)
-    : DIconButton(parent), m_nVolume(100), m_bMute(false)
+    : QPushButton(parent), m_nVolume(100), m_bMute(false)
 {
     setIcon(QIcon::fromTheme("dcc_volume"));
-    setIconSize(QSize(36, 36));
     installEventFilter(this);
-    m_pToolTip = new ToolTip;
-    m_pToolTip->setText(tr("Volume"));
-
-    connect(&m_showTime, &QTimer::timeout, [=]{
-        QPoint pos = this->parentWidget()->mapToGlobal(this->pos());
-        pos.rx() = pos.x() + (this->width() - m_pToolTip->width()) / 2;
-        pos.ry() = pos.y() - 40;
-
-        if (nullptr != m_pToolTip) {
-            m_pToolTip->move(pos);
-            m_pToolTip->show();
-        }
-    });
 }
 
 void VolumeButton::setVolume(int nVolume)
@@ -46,12 +33,20 @@ void VolumeButton::setMute(bool bMute)
 void VolumeButton::setButtonEnable(bool bFlag)
 {
     QIcon icon = QIcon::fromTheme("dcc_volumedisable");
+
     if (bFlag) {
         setEnabled(true);
         changeStyle();
     } else {
         setEnabled(false);
         setIcon(icon);
+    }
+}
+
+void VolumeButton::setIcon(const QIcon &icon)
+{
+    if (!icon.isNull()) {
+        m_icon = icon;
     }
 }
 
@@ -66,27 +61,27 @@ void VolumeButton::changeStyle()
 
     if (m_bMute || m_nVolume == 0)
         setIcon(QIcon::fromTheme("dcc_mute"));
+    update();
 }
 
 void VolumeButton::enterEvent(QEvent *ev)
 {
     emit entered();
-    if (!m_showTime.isActive())
-        m_showTime.start(2000);
 
-    DIconButton::enterEvent(ev);
+    QPushButton::enterEvent(ev);
 }
 
 void VolumeButton::leaveEvent(QEvent *ev)
 {
     emit leaved();
-    m_showTime.stop();
-    if (nullptr != m_pToolTip && m_pToolTip->isVisible()) {
-        QThread::msleep(10);
-        m_pToolTip->hide();
-    }
 
-    DIconButton::leaveEvent(ev);
+    QPushButton::leaveEvent(ev);
+}
+
+void VolumeButton::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    painter.drawPixmap(rect(), m_icon.pixmap(rect().size()));
 }
 
 void VolumeButton::wheelEvent(QWheelEvent *we)
@@ -109,7 +104,7 @@ void VolumeButton::focusOutEvent(QFocusEvent *ev)
 #if !defined (__mips__) && !defined (__aarch64__)
     emit leaved();
 #endif
-    DIconButton::focusOutEvent(ev);
+    QPushButton::focusOutEvent(ev);
 }
 
 bool VolumeButton::eventFilter(QObject *obj, QEvent *e)

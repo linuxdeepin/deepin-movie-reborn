@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -99,8 +100,8 @@ QString VolumeSlider::readSinkInputPath()
 {
     QString strPath = "";
 
-    QVariant v = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                                     "com.deepin.daemon.Audio", "SinkInputs");
+    QVariant v = ApplicationAdaptor::redDBusProperty("org.deepin.daemon.Audio1", "/org/deepin/daemon/Audio1",
+                                                     "org.deepin.daemon.Audio1", "SinkInputs");
 
     if (!v.isValid())
         return strPath;
@@ -108,8 +109,8 @@ QString VolumeSlider::readSinkInputPath()
     QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
 
     for (auto curPath : allSinkInputsList) {
-        QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
-                                                             "com.deepin.daemon.Audio.SinkInput", "Name");
+        QVariant nameV = ApplicationAdaptor::redDBusProperty("org.deepin.daemon.Audio1", curPath.path(),
+                                                             "org.deepin.daemon.Audio1.SinkInput", "Name");
         QString strMovie = QObject::tr("Movie");
         if (!nameV.isValid() || (!nameV.toString().contains(strMovie, Qt::CaseInsensitive) && !nameV.toString().contains("deepin movie", Qt::CaseInsensitive)))
             continue;
@@ -129,8 +130,8 @@ void VolumeSlider::setMute(bool muted)
     QString sinkInputPath = readSinkInputPath();
 
     if (!sinkInputPath.isEmpty()) {
-        QDBusInterface ainterface("com.deepin.daemon.Audio", sinkInputPath,
-                                  "com.deepin.daemon.Audio.SinkInput",
+        QDBusInterface ainterface("org.deepin.daemon.Audio1", sinkInputPath,
+                                  "org.deepin.daemon.Audio1.SinkInput",
                                   QDBusConnection::sessionBus());
         if (!ainterface.isValid()) {
             return;
@@ -147,7 +148,7 @@ void VolumeSlider::updatePoint(QPoint point)
 {
     QRect main_rect = _mw->rect();
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
-    m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
+    m_point = point + QPoint(TOOLBOX_BUTTON_WIDTH * 3 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2 + 20,
                              view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT);
 }
 void VolumeSlider::popup()
@@ -155,15 +156,15 @@ void VolumeSlider::popup()
     QRect main_rect = _mw->rect();
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 
-    int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
-    int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
+    int x = TOOLBOX_BUTTON_WIDTH * 3 + (TOOLBOX_BUTTON_WIDTH - VOLSLIDER_WIDTH) / 2 + 20;
+    int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT - TOOLBOX_TOP_EXTENT;
     QRect end(x, y, VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
     QRect start = end;
 
     start.setWidth(start.width() + 12);
     start.setHeight(start.height() + 10);
     if(CompositingManager::get().platform() == Platform::X86) {
-        start.moveTo(start.topLeft() - QPoint(6, 10));
+        start.moveTo(start.topLeft() - QPoint(6, 20));
     } else {
         end.moveTo(m_point + QPoint(6, 0));
         start.moveTo(m_point - QPoint(0, 14));

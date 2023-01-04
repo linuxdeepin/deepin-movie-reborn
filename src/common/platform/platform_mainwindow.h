@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -16,6 +17,7 @@
 #include <DFloatingMessage>
 #include <QDBusAbstractInterface>
 #include <QtX11Extras/QX11Info>
+#include <QDBusInterface>
 
 #include "widgets/titlebar.h"
 #include "platform/platform_animationlabel.h"
@@ -138,8 +140,27 @@ public:
         m_pTextLabel->setFixedHeight(25);
         m_pTextLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
+        m_pViewBtn = new DPushButton(this);
+        m_pViewBtn->setFixedSize(52, 28);
+        m_pViewBtn->setText(tr("View"));
+        m_pViewBtn->setFocusPolicy(Qt::NoFocus);
+        m_pViewBtn->hide();
+
+        connect(m_pViewBtn, &DPushButton::clicked, this, [=]{
+            QUrl displayUrl = QUrl::fromLocalFile(m_imgPath);
+            QDBusInterface interface(QStringLiteral("org.freedesktop.FileManager1"),
+                                         QStringLiteral("/org/freedesktop/FileManager1"),
+                                         QStringLiteral("org.freedesktop.FileManager1"));
+            if (interface.isValid()) {
+                QStringList list;
+                list << displayUrl.toString();
+                interface.call("ShowItems", list, "");
+            }
+        });
+
         mainLayout->addWidget(m_pIconBtn);
         mainLayout->addWidget(m_pTextLabel);
+        mainLayout->addWidget(m_pViewBtn);
 
         m_pTimer->setInterval(4000);
         m_pTimer->setSingleShot(true);
@@ -155,6 +176,13 @@ public:
     {
         m_pTextLabel->setText(str);
     }
+    void setImgPath(const QString &path)
+    {
+        m_imgPath = path;
+        m_pViewBtn->show();
+    }
+signals:
+    void viewScreenShot();
 protected:
     void showEvent(QShowEvent *event)
     {
@@ -193,6 +221,8 @@ private:
     QTimer *m_pTimer {nullptr};
     DIconButton *m_pIconBtn {nullptr};
     DLabel *m_pTextLabel{nullptr};
+    DPushButton *m_pViewBtn{nullptr};
+    QString m_imgPath;
 };
 
 /**
@@ -380,10 +410,6 @@ public slots:
      */
     void slotUrlpause(bool bStatus);
     /**
-     * @brief 根据字体大小改变显示
-     */
-    void slotFontChanged(const QFont &font);
-    /**
      * @brief 改变静音状态
      */
     void slotMuteChanged(bool bMute);
@@ -485,7 +511,7 @@ private:
     void readSinkInputPath();
     void setAudioVolume(int);
     void setMusicMuted(bool bMuted);
-    void popupAdapter(QIcon, QString);
+    void popupAdapter(QIcon, QString, QString path = QString());
     //void setHwaccelMode(const QVariant &value = -1);
     //Limit video to mini mode size
     void LimitWindowize();
@@ -504,14 +530,13 @@ private:
 
 private:
     Platform_MessageWindow *m_pPopupWid;                     ///截图提示窗口
-    QLabel *m_pFullScreenTimeLable;                 ///全屏时右上角的影片进度
     QHBoxLayout *m_pFullScreenTimeLayout;           ///右上角的影片进度框布局器
     Titlebar *m_pTitlebar;                          ///标题栏
+    FullScreenTitlebar *m_fsTitlebar;               ///全屏标题栏
     Platform_ToolboxProxy *m_pToolbox;                       ///工具栏
     Platform_PlaylistWidget *m_pPlaylist;                    ///播放列表
     PlayerEngine *m_pEngine;                        ///播放引擎
     Platform_AnimationLabel *m_pAnimationlable;              ///点击暂停和播放时动画
-    Platform_MovieProgressIndicator *m_pProgIndicator;       ///全屏时右上角的系统时间
     QList<QPair<QImage, qint64>> m_listBurstShoots; ///存储连拍截图
     bool m_bInBurstShootMode;                       ///是否处于截图状态
     bool m_bPausedBeforeBurst;                      ///截图时暂停播放

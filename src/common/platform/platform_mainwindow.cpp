@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -161,10 +162,8 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
     static QString sNameLast = nullptr;
 
     pMainWid->setLayout(pLayout);
-    DIconButton *pIconButton = new DIconButton(nullptr);
-    pIconButton->setIcon(DStyle::SP_SelectElement);
-    pIconButton->setFixedHeight(21);
-
+    DPushButton *pPushButton = new DPushButton;
+    pPushButton->setAutoDefault(false);
     pLineEdit->setFixedHeight(21);
     pLineEdit->setObjectName("OptionSelectableLineEdit");
     pLineEdit->setText(pSettingOption->value().toString());
@@ -178,9 +177,10 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
     });
     pLineEdit->setText(sElideText);
     sNameLast = sElideText;
-
+    pPushButton->setIcon(QIcon(":resources/icons/select-normal.svg"));
+    pPushButton->setFixedHeight(21);
     pLayout->addWidget(pLineEdit);
-    pLayout->addWidget(pIconButton);
+    pLayout->addWidget(pPushButton);
 
     QWidget *pOptionWidget = new QWidget;
     pOptionWidget->setObjectName("OptionFrame");
@@ -234,7 +234,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
         return true;
     };
 
-    pSettingOption->connect(pIconButton, &DPushButton::clicked, [ = ]() {
+    pSettingOption->connect(pPushButton, &DPushButton::clicked, [ = ]() {
 #ifndef USE_TEST
         QString sName = DFileDialog::getExistingDirectory(nullptr, QObject::tr("Open folder"),
                                                           Platform_MainWindow::lastOpenedPath(),
@@ -690,30 +690,6 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     connect(m_pToolbox, &Platform_ToolboxProxy::sigVolumeChanged, this, &Platform_MainWindow::slotVolumeChanged);
     connect(m_pToolbox, &Platform_ToolboxProxy::sigMuteStateChanged, this, &Platform_MainWindow::slotMuteChanged);
 
-    //In the case of Platform, this is currently not initialized in the case of
-    //MIPS, followed by the situation, and the code is subsequently removed by judging the macro.
-    if (CompositingManager::get().platform() != Platform::Mips) {
-        m_pProgIndicator = new Platform_MovieProgressIndicator(this);
-        m_pFullScreenTimeLable = new QLabel;
-
-        m_pProgIndicator->setVisible(false);
-        connect(m_pEngine, &PlayerEngine::elapsedChanged, [ = ]() {
-            m_pProgIndicator->updateMovieProgress(m_pEngine->duration(), m_pEngine->elapsed());
-        });
-
-        m_pFullScreenTimeLable->setAttribute(Qt::WA_TranslucentBackground);
-        m_pFullScreenTimeLable->setWindowFlags(Qt::FramelessWindowHint);
-        m_pFullScreenTimeLable->setParent(this);
-        m_pFullScreenTimeLable->setWindowFlags(m_pFullScreenTimeLable->windowFlags() | Qt::ToolTip);
-        m_pFullScreenTimeLayout = new QHBoxLayout;
-        m_pFullScreenTimeLayout->addStretch();
-        m_pFullScreenTimeLayout->addWidget(m_pToolbox->getfullscreentimeLabel());
-        m_pFullScreenTimeLayout->addWidget(m_pToolbox->getfullscreentimeLabelend());
-        m_pFullScreenTimeLayout->addStretch();
-        m_pFullScreenTimeLable->setLayout(m_pFullScreenTimeLayout);
-        m_pFullScreenTimeLable->close();
-    }
-
     // mini ui
     QSignalMapper *pSignalMapper = new QSignalMapper(this);
     connect(pSignalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped), this, &Platform_MainWindow::miniButtonClicked);
@@ -752,27 +728,17 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
             emit subtitleMenuEnable(true);
         }
 
-        if (m_pProgIndicator) {
-            if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
-                //播放切换时，更新音量dbus 当前的sinkInputPath
-                if (m_pProgIndicator) {
-                    m_pFullScreenTimeLable->close();
-                    m_pProgIndicator->setVisible(false);
-                }
-                emit frameMenuEnable(false);
-                emit playSpeedMenuEnable(false);
-            }
+        if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
+            //播放切换时，更新音量dbus 当前的sinkInputPath
+            emit frameMenuEnable(false);
+            emit playSpeedMenuEnable(false);
         }
 
         if (m_pEngine->state() == PlayerEngine::CoreState::Playing) {
             if (CompositingManager::get().platform() != Platform::Mips) {
                 if (isFullScreen()) {
-                    m_pFullScreenTimeLable->show();
-                    m_pProgIndicator->setVisible(true);
-                    QTimer::singleShot(200, [ = ]() {
-                        activateWindow();    // show other window make mainwindow deactivate
-                        setFocus();
-                    });
+                    activateWindow();    // show other window make mainwindow deactivate
+                    setFocus();
                 }
             }
             m_pMiniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/pause-normal-mini.svg"));
@@ -921,6 +887,7 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
         if (m_pEngine->windowHandle())
             m_pEngine->windowHandle()->installEventFilter(m_pEventListener);
         m_pTitlebar->windowHandle()->installEventFilter(m_pEventListener);
+        m_fsTitlebar->windowHandle()->installEventFilter(m_pEventListener);
         m_pToolbox->windowHandle()->installEventFilter(m_pEventListener);
         m_pMircastShowWidget->windowHandle()->installEventFilter(m_pEventListener);
         qInfo() << "event listener";
@@ -957,7 +924,6 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::newProcessInstance, this, [ = ] {
         this->activateWindow();
     });
-    connect(qApp, &QGuiApplication::fontChanged, this, &Platform_MainWindow::slotFontChanged);
 
     ThreadPool::instance()->moveToNewThread(&m_diskCheckThread);
     m_diskCheckThread.start();
@@ -1007,6 +973,11 @@ void Platform_MainWindow::setupTitlebar()
     m_pTitlebar->titlebar()->setMenu(ActionFactory::get().titlebarMenu());
 
     connect(m_pTitlebar->titlebar()->menu(), &DMenu::triggered, this, &Platform_MainWindow::menuItemInvoked);
+
+    m_fsTitlebar = new FullScreenTitlebar(this);
+    m_fsTitlebar->move(0, 0);
+    m_fsTitlebar->setAttribute(Qt::WA_NativeWindow);
+    m_fsTitlebar->winId();
 }
 
 void Platform_MainWindow::updateContentGeometry(const QRect &rect)
@@ -1103,7 +1074,8 @@ bool Platform_MainWindow::event(QEvent *pEvent)
 
 void Platform_MainWindow::leaveEvent(QEvent *)
 {
-    m_autoHideTimer.start(AUTOHIDE_TIMEOUT);
+    m_autoHideTimer.stop();
+    this->suspendToolsWindow();
 }
 
 void Platform_MainWindow::onWindowStateChanged()
@@ -1112,13 +1084,16 @@ void Platform_MainWindow::onWindowStateChanged()
     if (!m_bMiniMode && !isFullScreen()) {
         m_pTitlebar->setVisible(m_pToolbox->isVisible());
     } else {
+        if (isFullScreen())
+            m_fsTitlebar->setVisible(true);
+        else
+            m_fsTitlebar->setVisible(false);
         m_pTitlebar->setVisible(false);
     }
-    if (CompositingManager::get().platform() != Platform::Mips)
-        m_pProgIndicator->setVisible(isFullScreen() && m_pEngine && m_pEngine->state() != PlayerEngine::Idle);
 
 #ifndef USE_DXCB
     m_pTitlebar->move(0, 0);
+    m_fsTitlebar->move(0, 0);
     m_pEngine->move(0, 0);
 #endif
 
@@ -1597,12 +1572,12 @@ void Platform_MainWindow::setCurrentHwdec(QString str)
 
 void Platform_MainWindow::mipsShowFullScreen()
 {
-//    QPropertyAnimation *pAn = new QPropertyAnimation(this, "windowOpacity");
-//    pAn->setDuration(100);
-//    pAn->setEasingCurve(QEasingCurve::Linear);
-//    pAn->setEndValue(1);
-//    pAn->setStartValue(0);
-//    pAn->start(QAbstractAnimation::DeleteWhenStopped);
+    QPropertyAnimation *pAn = new QPropertyAnimation(this, "windowOpacity");
+    pAn->setDuration(100);
+    pAn->setEasingCurve(QEasingCurve::Linear);
+    pAn->setEndValue(1);
+    pAn->setStartValue(0);
+    pAn->start(QAbstractAnimation::DeleteWhenStopped);
 
     showFullScreen();
 }
@@ -1657,7 +1632,10 @@ void Platform_MainWindow::menuItemInvoked(QAction *pAction)
         }
     }
     //菜单操作完成后，标题栏获取焦点
-    m_pTitlebar->setFocus();
+    if (isFullScreen())
+        m_fsTitlebar->setFocus();
+    else
+        m_pTitlebar->setFocus();
 }
 
 bool Platform_MainWindow::isActionAllowed(ActionFactory::ActionKind actionKind, bool fromUI, bool isShortcut)
@@ -1948,10 +1926,6 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         m_bStartMini = true;
 
         QTimer::singleShot(nDelayTime, this, [ = ] {
-            if (m_pFullScreenTimeLable && !isFullScreen())
-            {
-                m_pFullScreenTimeLable->close();
-            }
             if (!bFromUI)
             {
                 reflectActionToUI(actionKind);
@@ -2000,9 +1974,6 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
             toggleUIMode();
         } else if (isFullScreen()) {
             requestAction(ActionFactory::ToggleFullscreen);
-            if (m_pFullScreenTimeLable && !isFullScreen()) {
-                m_pFullScreenTimeLable->close();
-            }
         } else {
             //当焦点在播放列表上按下Esc键，播放列表收起，焦点回到列表按钮上
             if (m_pPlaylist->state() == Platform_PlaylistWidget::Opened) {
@@ -2035,9 +2006,6 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
                     resize(m_lastRectInNormalMode.width(), m_lastRectInNormalMode.height());
                 }
             }
-            if (m_pFullScreenTimeLable && !isFullScreen()) {
-                m_pFullScreenTimeLable->close();
-            }
         } else {
             //可能存在更好的方法（全屏后更新toolbox状态），后期修改
             if (!m_pToolbox->getbAnimationFinash())
@@ -2046,13 +2014,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
             mipsShowFullScreen();
             if (isFullScreen()) {
                 if (CompositingManager::get().platform() != Platform::Mips) {
-                    if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
-                        int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
-                        QRect deskRect = QApplication::desktop()->availableGeometry();
-                        pixelsWidth = qMax(117, pixelsWidth);
-                        m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
-                        m_pFullScreenTimeLable->show();
-                    }
+                    QRect deskRect = QApplication::desktop()->availableGeometry();
                 }
             }
         }
@@ -2492,33 +2454,6 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
             qInfo() << __func__ << "pixmap is null";
         else
             bSuccess = img.save(filePath);
-
-#ifdef USE_SYSTEM_NOTIFY
-        // Popup notify.
-        QDBusInterface notification("org.freedesktop.Notifications",
-                                    "/org/freedesktop/Notifications",
-                                    "org.freedesktop.Notifications",
-                                    QDBusConnection::sessionBus());
-
-        QStringList actions;
-        actions << "_open" << tr("View");
-
-        QVariantMap hints;
-        hints["x-deepin-action-_open"] = QString("xdg-open,%1").arg(filePath);
-
-        QList<QVariant> arg;
-        arg << (QCoreApplication::applicationName())                 // appname
-            << ((unsigned int) 0)                                    // id
-            << QString("deepin-movie")                               // icon
-            << tr("Film screenshot")                                // summary
-            << QString("%1 %2").arg(tr("Saved to")).arg(filePath) // body
-            << actions                                               // actions
-            << hints                                                 // hints
-            << (int) -1;                                             // timeout
-        notification.callWithArgumentList(QDBus::AutoDetect, "Notify", arg);
-
-#else
-
 #define POPUP_ADAPTER(icon, text)  do { \
     m_pPopupWid->setIcon(icon);\
     DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);\
@@ -2533,7 +2468,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         if (bSuccess) {
             const QIcon icon = QIcon(":/resources/icons/short_ok.svg");
             QString sText = QString(tr("The screenshot is saved"));
-            popupAdapter(icon, sText);
+            popupAdapter(icon, sText, filePath);
         } else {
             const QIcon icon = QIcon(":/resources/icons/short_fail.svg");
             QString sText = QString(tr("Failed to save the screenshot"));
@@ -2541,18 +2476,21 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         }
 
 #undef POPUP_ADAPTER
-
-#endif
         break;
     }
 
     case ActionFactory::ActionKind::GoToScreenshotSolder: {
         QString filePath = Settings::get().screenshotLocation();
         qInfo() << __func__ << filePath;
-        QProcess *pProcess = new QProcess();
-        QObject::connect(pProcess, SIGNAL(finished(int)), pProcess, SLOT(deleteLater()));
-        pProcess->start("dde-file-manager", QStringList(filePath));
-        pProcess->waitForStarted(3000);
+        QUrl displayUrl = QUrl(filePath);
+        QDBusInterface interface(QStringLiteral("org.freedesktop.FileManager1"),
+                                     QStringLiteral("/org/freedesktop/FileManager1"),
+                                     QStringLiteral("org.freedesktop.FileManager1"));
+        if (interface.isValid()) {
+            QStringList list;
+            list << displayUrl.toString();
+            interface.call("ShowFolders", list, "");
+        }
         break;
     }
 
@@ -2660,7 +2598,7 @@ void Platform_MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestam
             if (QFileInfo::exists(sPosterPath)) {
                 const QIcon icon = QIcon(":/resources/icons/short_ok.svg");
                 QString sText = QString(tr("The screenshot is saved"));
-                popupAdapter(icon, sText);
+                popupAdapter(icon, sText, sPosterPath);
             } else {
                 const QIcon icon = QIcon(":/resources/icons/short_fail.svg");
                 QString sText = QString(tr("Failed to save the screenshot"));
@@ -2777,30 +2715,19 @@ void Platform_MainWindow::updateProxyGeometry()
     if (!m_bMiniMode) {
         if (m_pTitlebar) {
             m_pTitlebar->setFixedWidth(view_rect.width());
+            m_fsTitlebar->setFixedWidth(view_rect.width());
         }
 
         if (m_pToolbox) {
-            QRect rfs;
-            if (m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::State::Opened) {
-                rfs = QRect(5, height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - rect().top() - 5,
-                            rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
-            } else {
-                rfs = QRect(5, height() - TOOLBOX_HEIGHT - rect().top() - 5,
-                            rect().width() - 10, TOOLBOX_HEIGHT);
-            }
+            QRect rfs = QRect(0, height() - TOOLBOX_HEIGHT + TOOLBOX_TOP_EXTENT - rect().top(),
+                        rect().width() - 10, TOOLBOX_HEIGHT + TOOLBOX_TOP_EXTENT);
             m_pToolbox->setGeometry(rfs);
             m_pToolbox->updateMircastWidget(QRect(5, height() - TOOLBOX_HEIGHT - rect().top() - 5,
                                                   rect().width() - 10, TOOLBOX_HEIGHT).topRight());
         }
 
         if (m_pPlaylist && !m_pPlaylist->toggling()) {
-#ifndef __sw_64__
-            QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 5)),
-                        view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
-#else
-            QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT - 1)),
-                        view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
-#endif
+            QRect fixed(view_rect.width() - m_pPlaylist->width() - 10, 60, 344, view_rect.height() - 138);
             m_pPlaylist->setGeometry(fixed);
         }
     }
@@ -2825,8 +2752,6 @@ void Platform_MainWindow::suspendToolsWindow()
         if (m_pToolbox->isVisible()) {
             if (m_pToolbox->getMircast()->isVisible() &&
                     m_pToolbox->getMircast()->geometry().contains(cursor) && !m_bLastIsTouch)
-                return;
-            if (insideToolsArea(cursor) && !m_bLastIsTouch)
                 return;
         } else {
             if (m_pToolbox->geometry().contains(mapFromGlobal(QCursor::pos()))) {
@@ -2859,6 +2784,7 @@ void Platform_MainWindow::suspendToolsWindow()
         //the tab focus will be re-executed in the order set
         m_pTitlebar->setFocus();
         m_pTitlebar->hide();        //隐藏操作应放在设置焦点后
+        m_fsTitlebar->hide();
     } else {
         if (m_autoHideTimer.isActive())
             return;
@@ -2886,24 +2812,16 @@ void Platform_MainWindow::resumeToolsWindow()
     if (!m_bMiniMode) {
         if (!m_bTouchChangeVolume) {
             m_pTitlebar->setVisible(!isFullScreen());
+            m_fsTitlebar->setVisible(isFullScreen());
+            m_fsTitlebar->raise();
             m_pToolbox->show();
         } else {
             m_pToolbox->hide();
         }
     } else {
-	    //迷你模式根据半屏模式显示控件
-        int nScreenHeight = QApplication::desktop()->availableGeometry().height();
-        QRect rt = rect();
-        if(rt.height() >= nScreenHeight-100){
-            m_pMiniPlayBtn->setVisible(false);
-            m_pMiniCloseBtn->setVisible(false);
-            m_pMiniQuitMiniBtn->setVisible(false);
-            m_pToolbox->setVisible(false);
-        }else {
-            m_pMiniPlayBtn->setVisible(m_bMiniMode);
-            m_pMiniCloseBtn->setVisible(m_bMiniMode);
-            m_pMiniQuitMiniBtn->setVisible(m_bMiniMode);
-        }
+        m_pMiniPlayBtn->show();
+        m_pMiniCloseBtn->show();
+        m_pMiniQuitMiniBtn->show();
     }
 
 _finish:
@@ -3133,19 +3051,6 @@ void Platform_MainWindow::slotUrlpause(bool bStatus)
     }
 }
 
-void Platform_MainWindow::slotFontChanged(const QFont &/*font*/)
-{
-#ifndef __mips__
-    QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
-    m_pToolbox->getfullscreentimeLabel()->setMinimumWidth(fm.width(m_pToolbox->getfullscreentimeLabel()->text()));
-    m_pToolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.width(m_pToolbox->getfullscreentimeLabelend()->text()));
-
-    int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
-    QRect deskRect = QApplication::desktop()->availableGeometry();
-    m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
-#endif
-}
-
 void Platform_MainWindow::slotMuteChanged(bool bMute)
 {
     m_pEngine->setMute(bMute);
@@ -3156,16 +3061,6 @@ void Platform_MainWindow::slotMuteChanged(bool bMute)
         m_pCommHintWid->updateWithMessage(tr("Volume: %1%").arg(m_nDisplayVolume));   // 取消静音时显示音量提示
     }
 }
-
-/*void MainWindow::slotAwaacelModeChanged(const QString &sKey, const QVariant &value)
-{
-    if (sKey != "base.play.hwaccel") {
-        qInfo() << "Settings key error";
-        return;
-    }
-
-    setHwaccelMode(value);
-}*/
 
 void Platform_MainWindow::slotVolumeChanged(int nVolume)
 {
@@ -3316,7 +3211,10 @@ void Platform_MainWindow::showEvent(QShowEvent *pEvent)
     /*最大化，全屏，取消全屏，会先调用hideevent,再调用showevent，此时播放状态尚未切换，导致逻辑出错*/
 
     m_pAnimationlable->raise();
-    m_pTitlebar->raise();
+    if (isFullScreen())
+        m_fsTitlebar->raise();
+    else
+        m_pTitlebar->raise();
     m_pToolbox->raise();
     if (m_pPlaylist) {
         m_pPlaylist->raise();
@@ -3336,6 +3234,7 @@ void Platform_MainWindow::resizeByConstraints(bool bForceCentered)
 {
     if (m_pEngine->state() == PlayerEngine::Idle || m_pEngine->playlist().count() == 0) {
         m_pTitlebar->setTitletxt(QString());
+        m_fsTitlebar->setTitletxt(QString());
         return;
     }
 
@@ -3429,9 +3328,6 @@ void Platform_MainWindow::LimitWindowize()
 void Platform_MainWindow::resizeEvent(QResizeEvent *pEvent)
 {
     qInfo() << __func__ << geometry();
-    if (m_pProgIndicator && isFullScreen()) {
-        m_pProgIndicator->move(geometry().width() - m_pProgIndicator->width() - 18, 8);
-    }
     // modify 4.1  Limit video to mini mode size by thx
     LimitWindowize();
 
@@ -3458,20 +3354,6 @@ void Platform_MainWindow::resizeEvent(QResizeEvent *pEvent)
 
     QPoint relativePoint = mapToGlobal(QPoint(0, 0));
     m_pToolbox->updateSliderPoint(relativePoint);
-    if(m_bMiniMode) { //迷你模式显示与半屏模式处理
-        int nScreenHeight = QApplication::desktop()->availableGeometry().height();
-        QRect rt = rect();
-        if(rt.height() >= nScreenHeight-100){
-            m_pMiniPlayBtn->setVisible(false);
-            m_pMiniCloseBtn->setVisible(false);
-            m_pMiniQuitMiniBtn->setVisible(false);
-            m_pToolbox->setVisible(false);
-        }else {
-            m_pMiniPlayBtn->setVisible(m_bMiniMode);
-            m_pMiniCloseBtn->setVisible(m_bMiniMode);
-            m_pMiniQuitMiniBtn->setVisible(m_bMiniMode);
-        }
-    }
 }
 
 void Platform_MainWindow::updateWindowTitle()
@@ -3481,12 +3363,12 @@ void Platform_MainWindow::updateWindowTitle()
         QString sTitle = m_pTitlebar->fontMetrics().elidedText(mi.title,
                          Qt::ElideMiddle, m_pTitlebar->contentsRect().width() - 400);
         m_pTitlebar->setTitletxt(sTitle);
-        setWindowTitle(mi.filePath);
         m_pTitlebar->setTitleBarBackground(false);
+        m_fsTitlebar->setTitletxt(sTitle);
     } else {
         m_pTitlebar->setTitletxt(QString());
-        setWindowTitle(QString());
         m_pTitlebar->setTitleBarBackground(false);
+        m_fsTitlebar->setTitletxt(QString());
     }
     m_pTitlebar->setProperty("idle", m_pEngine->state() == PlayerEngine::Idle);
 }
@@ -3553,7 +3435,6 @@ void Platform_MainWindow::capturedMousePressEvent(QMouseEvent *pEvent)
 
     if (pEvent->buttons() == Qt::LeftButton) {
         m_bMousePressed = true;
-        m_bStartMove = true;
     }
 
     m_posMouseOrigin = mapToGlobal(pEvent->pos());
@@ -3609,7 +3490,8 @@ void Platform_MainWindow::capturedKeyEvent(QKeyEvent *pEvent)
     if (pEvent->key() == Qt::Key_Tab) {
         if (!isFullScreen()) {
             m_pTitlebar->show();
-        }
+        } else
+            m_fsTitlebar->show();
         m_pToolbox->show();
         m_autoHideTimer.start(AUTOHIDE_TIMEOUT);  //如果点击tab键，重置计时器
     }
@@ -3626,8 +3508,8 @@ void Platform_MainWindow::mousePressEvent(QMouseEvent *pEvent)
     if (qApp->focusWindow() == nullptr)
         return;
     if (pEvent->buttons() == Qt::LeftButton) {
-        m_bMousePressed = true;
         m_bStartMove = true;
+        m_bMousePressed = true;
         if (!m_mousePressTimer.isActive() && m_bIsTouch) {
             m_mousePressTimer.stop();
 
@@ -3664,9 +3546,6 @@ void Platform_MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         }
     }
 
-    m_bMouseMoved = false;
-    m_bMousePressed = false;
-
     qInfo() << __func__ << "进入mouseReleaseEvent";
     QWidget::mouseReleaseEvent(ev);
 }
@@ -3700,9 +3579,8 @@ void Platform_MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
     m_pAnimationlable->hide();
     QPoint ptCurr = mapToGlobal(pEvent->pos());
     QPoint ptDelta = ptCurr - this->m_posMouseOrigin;
-    m_posMouseOrigin = mapToGlobal(pEvent->pos());
-    if (qAbs(ptDelta.x()) < 5 && qAbs(ptDelta.y()) < 5) { //避免误触
 
+    if (qAbs(ptDelta.x()) < 5 && qAbs(ptDelta.y()) < 5) { //避免误触
         return;
     }
 
@@ -3711,7 +3589,7 @@ void Platform_MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
                 && m_pEngine->state() != PlayerEngine::CoreState::Idle) {
             m_bTouchChangeVolume = false;
             m_pToolbox->updateProgress(ptDelta.x());     //改变进度条显示
-            //this->m_posMouseOrigin = ptCurr;
+            this->m_posMouseOrigin = ptCurr;
             m_bProgressChanged = true;
             return;
         } else if (qAbs(ptDelta.x()) < qAbs(ptDelta.y())) {
@@ -3723,19 +3601,18 @@ void Platform_MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
                 requestAction(ActionFactory::ActionKind::VolumeUp);
             }
 
-            //this->m_posMouseOrigin = ptCurr;
+            this->m_posMouseOrigin = ptCurr;
             return;
         }
     }
 
-    if (!isFullScreen() && m_bStartMove) {
+    if (!isFullScreen()) {
 #ifdef XCB_Platform
         Utility::startWindowSystemMove(this->winId());
         if (m_bStartMove) {
             m_bStartMove = false;
-            //this->m_posMouseOrigin = ptCurr;
+            this->m_posMouseOrigin = ptCurr;
             m_bMouseMoved = true;
-            qInfo() <<m_posMouseOrigin;
             return Utility::updateMousePointForWindowMove(this->winId(), pEvent->globalPos() * devicePixelRatioF());
         }
 #else
@@ -3745,7 +3622,7 @@ void Platform_MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
         QWidget::mouseMoveEvent(pEvent);
     }
 
-    //this->m_posMouseOrigin = ptCurr;
+    this->m_posMouseOrigin = ptCurr;
     m_bMouseMoved = true;
 }
 
@@ -3820,10 +3697,10 @@ void Platform_MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
 bool Platform_MainWindow::insideToolsArea(const QPoint &p)
 {
     if (CompositingManager::get().platform() == Platform::X86) {
-        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+        return m_pTitlebar->geometry().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
                 m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
     } else {
-        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->rect().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+        return m_pTitlebar->geometry().contains(p) || m_pToolbox->rect().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
                 m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
     }
 }
@@ -3942,15 +3819,20 @@ void Platform_MainWindow::decodeInit()
     }
 }
 
-void Platform_MainWindow::popupAdapter(QIcon icon, QString sText)
+void Platform_MainWindow::popupAdapter(QIcon icon, QString sText, QString path)
 {
     m_pPopupWid->setIcon(icon);
     DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);
     QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
     QFontMetrics fm(font);
     auto w = fm.boundingRect(sText).width();
+    if (!path.isEmpty()) {
+        m_pPopupWid->setImgPath(path);
+        m_pPopupWid->resize(w + 112, 40);
+    } else {
+        m_pPopupWid->resize(w + 70, 40);
+    }
     m_pPopupWid->setMessage(sText);
-    m_pPopupWid->resize(w + 70, 40);
     m_pPopupWid->move((width() - m_pPopupWid->width()) / 2 + geometry().x(), height() - 127 + geometry().y());
     m_pPopupWid->show();
     m_pPopupWid->raise();
@@ -4017,8 +3899,6 @@ void Platform_MainWindow::toggleUIMode()
                                    (abs(windowPos.y() + this->geometry().height() - deskrect.height()) < 50))) {
             if (abs(this->geometry().width() - deskrect.width() / 2) < 50) {
                 m_pCommHintWid->updateWithMessage(tr("Please exit smart dock"));
-                m_bStartMini = false;
-                reflectActionToUI(ActionFactory::ToggleMiniMode);
                 return ;
             }
         }
@@ -4026,8 +3906,6 @@ void Platform_MainWindow::toggleUIMode()
                 (windowPos.y()  == 0 || abs(windowPos.y() + this->geometry().height() - deskrect.height()) < 50)) {
             if (abs(this->geometry().width() - deskrect.width() / 2) < 50) {
                 m_pCommHintWid->updateWithMessage(tr("Please exit smart dock"));
-                m_bStartMini = false;
-                reflectActionToUI(ActionFactory::ToggleMiniMode);
                 return ;
             }
         }
@@ -4042,7 +3920,8 @@ void Platform_MainWindow::toggleUIMode()
         m_pTitlebar->titlebar()->setDisableFlags(nullptr);
     }
 
-    m_pTitlebar->setVisible(!m_bMiniMode);
+    m_pTitlebar->setVisible(!m_bMiniMode && !isFullScreen());
+    m_fsTitlebar->setVisible(!m_bMiniMode && isFullScreen());
 
     m_pMiniPlayBtn->setVisible(m_bMiniMode);
     m_pMiniCloseBtn->setVisible(m_bMiniMode);
@@ -4316,14 +4195,13 @@ void Platform_MainWindow::lockStateChanged(bool bLock)
 void Platform_MainWindow::initMember()
 {
     m_pPopupWid = nullptr;
-    m_pFullScreenTimeLable = nullptr;             //全屏时右上角的影片进度
     m_pFullScreenTimeLayout = nullptr;
     m_pTitlebar = nullptr;
+    m_fsTitlebar = nullptr;
     m_pToolbox = nullptr;
     m_pPlaylist = nullptr;
     m_pEngine = nullptr;
     m_pAnimationlable = nullptr;
-    m_pProgIndicator = nullptr;   //全屏时右上角的系统时间
     m_pEventMonitor = nullptr;
     m_pEventListener = nullptr;
     m_pDVDHintWid = nullptr;
@@ -4508,7 +4386,8 @@ void Platform_MainWindow::slotProperChanged(QString, QVariantMap key2value, QStr
 
 void Platform_MainWindow::slotUnsupported()
 {
-    m_pCommHintWid->updateWithMessage(tr("The action is not supported in this video"));
+    if (m_pEngine->state() != PlayerEngine::CoreState::Idle)
+        m_pCommHintWid->updateWithMessage(tr("The action is not supported in this video"));
 }
 
 void Platform_MainWindow::slotInvalidFile(QString strFileName)

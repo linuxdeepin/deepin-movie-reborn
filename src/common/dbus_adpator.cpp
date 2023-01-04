@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -28,8 +29,9 @@ void ApplicationAdaptor::openFiles(const QStringList &listFiles)
 }
 
 //cppcheck 单元测试在用
-void ApplicationAdaptor::openFile(const QString &sFile)
+bool ApplicationAdaptor::openFile(const QString &sFile)
 {
+    qDebug() << "dbus openFile.........." << sFile;
     QRegExp url_re("\\w+://");
 
     QUrl url;
@@ -39,11 +41,13 @@ void ApplicationAdaptor::openFile(const QString &sFile)
         url = QUrl::fromLocalFile(sFile);
     }
 
-    QTime current = QTime::currentTime();
-    if (abs(m_oldTime.msecsTo(current)) > 800) {
-        m_oldTime = current;
+//    QTime current = QTime::currentTime();
+//    if (abs(m_oldTime.msecsTo(current)) > 800) {
+//        m_oldTime = current;
         m_pMainWindow->play({url.toString()});
-    }
+//    }
+
+    return true;
 }
 
 void ApplicationAdaptor::Raise()
@@ -76,7 +80,6 @@ QVariant ApplicationAdaptor::redDBusProperty(const QString &sService, const QStr
     return  v;
 }
 
-//cppcheck 单元测试在使用
 QVariant ApplicationAdaptor::redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
     // 创建QDBusInterface接口

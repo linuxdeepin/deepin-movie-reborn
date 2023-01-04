@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -466,7 +467,7 @@ QString PlaylistModel::libPath(const QString &strlib)
 
 void PlaylistModel::initThumb()
 {
-    QLibrary library(libPath("libffmpegthumbnailer.so"));
+    QLibrary library(CompositingManager::libPath("libffmpegthumbnailer.so"));
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
     m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
@@ -490,9 +491,9 @@ void PlaylistModel::initThumb()
 
 void PlaylistModel::initFFmpeg()
 {
-    QLibrary avcodecLibrary(libPath("libavcodec.so"));
-    QLibrary avformatLibrary(libPath("libavformat.so"));
-    QLibrary avutilLibrary(libPath("libavutil.so"));
+    QLibrary avcodecLibrary(CompositingManager::libPath("libavcodec.so"));
+    QLibrary avformatLibrary(CompositingManager::libPath("libavformat.so"));
+    QLibrary avutilLibrary(CompositingManager::libPath("libavutil.so"));
 
     g_mvideo_avformat_open_input = (mvideo_avformat_open_input) avformatLibrary.resolve("avformat_open_input");
     g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) avformatLibrary.resolve("avformat_find_stream_info");
@@ -1380,7 +1381,7 @@ bool PlaylistModel::getMusicPix(const QFileInfo &fi, QPixmap &rImg)
         return false;
     }
 
-    QLibrary library(libPath("libavformat.so"));
+    QLibrary library(CompositingManager::libPath("libavformat.so"));
     mvideo_avformat_open_input g_mvideo_avformat_open_input_temp = (mvideo_avformat_open_input) library.resolve("avformat_open_input");
     mvideo_avformat_close_input g_mvideo_avformat_close_input = (mvideo_avformat_close_input) library.resolve("avformat_close_input");
     mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info_temp = (mvideo_avformat_find_stream_info) library.resolve("avformat_find_stream_info");

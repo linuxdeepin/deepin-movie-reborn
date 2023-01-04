@@ -27,14 +27,14 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(MPRIS REQUIRED IMPORTED_TARGET mpris-qt5)
 
 # test deepin fork mpris-qt5
-try_compile(USE_FORK_MPRIS
-              ${CMAKE_CURRENT_BINARY_DIR}/try_compile
-            SOURCES
-              ${CMAKE_CURRENT_SOURCE_DIR}/tests/mpris_test.cc
-            LINK_LIBRARIES
-              PkgConfig::MPRIS
-            OUTPUT_VARIABLE TRY_COMPILE_OUTPUT
-)
+#try_compile(USE_FORK_MPRIS
+#              ${CMAKE_CURRENT_BINARY_DIR}/try_compile
+#            SOURCES
+#              ${CMAKE_CURRENT_SOURCE_DIR}/tests/mpris_test.cc
+#            LINK_LIBRARIES
+#              PkgConfig::MPRIS
+#            OUTPUT_VARIABLE TRY_COMPILE_OUTPUT
+#)
 
 message(STATUS "use deepin fork mpris-qt5: ${USE_FORK_MPRIS}")
 

@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -29,8 +30,16 @@ void ShowInFileManager(const QString &path)
     qInfo() << __func__ << url.toString();
 
     // Try dde-file-manager
+    QProcess *fp = new QProcess();
+    QObject::connect(fp, SIGNAL(finished(int)), fp, SLOT(deleteLater()));
+#ifndef USE_TEST
+    fp->start("dde-file-manager", QStringList(url.toString()));
+#else
+    fp->start("wrong-name-for-test", QStringList(url.toString()));
+#endif
+    fp->waitForStarted(3000);
 
-    if (url.isLocalFile()) {
+    if (fp->error() == QProcess::FailedToStart) {
         // Start dde-file-manager failed, try nautilus
         QDBusInterface iface("org.freedesktop.FileManager1",
                              "/org/freedesktop/FileManager1",
@@ -49,6 +58,7 @@ void ShowInFileManager(const QString &path)
             qInfo() << "desktopService::openUrl";
             QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(path).dir().absolutePath()));
         }
+        fp->deleteLater();
     }
 }
 
@@ -205,6 +215,43 @@ QString FullFileHash(const QFileInfo &fi)
     return QString(QCryptographicHash::hash(bytes, QCryptographicHash::Md5).toHex());
 }
 
+QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, qint64 time, int rotation)
+{
+    QString timeString = utils::Time2str(time);
+
+    QMatrix matrix;
+    matrix.rotate(rotation);
+    pm = pm.transformed(matrix, Qt::SmoothTransformation);
+
+    auto dpr = pm.devicePixelRatio();
+    QPixmap dest(pm.size());
+    dest.setDevicePixelRatio(dpr);
+
+    auto scaled_rect = QRectF({0, 0}, QSizeF(dest.size() / dpr));
+    dest.fill(Qt::transparent);
+
+    QPainter p(&dest);
+    p.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+
+    QPainterPath path;
+    path.addRoundedRect(QRect(QPoint(), scaled_rect.size().toSize()), rx, ry);
+    p.setClipPath(path);
+    p.drawPixmap(scaled_rect.toRect(), pm);
+
+    QPainterPath timePath;
+    QRect timeRect(0, scaled_rect.height() - 30, scaled_rect.width(), 30);
+    timePath.addRoundedRect(timeRect, rx, ry);
+    QLinearGradient linear(QPointF(scaled_rect.width() / 2, scaled_rect.height() - 30), QPointF(scaled_rect.width() / 2, scaled_rect.height()));
+    linear.setColorAt(0, Qt::transparent);
+    linear.setColorAt(1, QColor(0, 0, 0, 0.3 * 255));
+    p.fillPath(timePath, linear);
+
+    p.setPen(QPen(Qt::white));
+    p.drawText(timeRect, Qt::AlignCenter, timeString);
+
+    return dest;
+}
+
 QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
 {
     QMatrix matrix;
@@ -238,30 +285,29 @@ QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
 
 QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
 {
-    int nX = 0;
-    int nY = 0;
+    int nX = (sz.width() - pm.width()) / 2;
+    int nY = (sz.height() - pm.height()) / 2;
     auto dpr = pm.devicePixelRatio();
     QPixmap dest(sz);
     dest.setDevicePixelRatio(dpr);
     dest.fill(Qt::transparent);
 
-    auto scaled_rect = QRectF({0, 0}, QSizeF(dest.size() / dpr));
+    auto scaled_rect = QRectF(QPoint(nX, nY), QSizeF(pm.size() / dpr));
 
     QPainter p(&dest);
     p.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    p.setPen(QColor(0, 0, 0, 255 / 10));
-    p.drawRoundedRect(scaled_rect, rx, ry);
+//    p.setPen(QColor(0, 0, 0, 255 / 10));
+//    p.drawRoundedRect(scaled_rect, rx, ry);
 
     QPainterPath path;
     auto r = scaled_rect.marginsRemoved({1, 1, 1, 1});
     path.addRoundedRect(r, rx, ry);
     p.setClipPath(path);
-    nX = (sz.width() - pm.width()) / 2;
-    nY = (sz.height() - pm.height()) / 2;
     p.drawPixmap(nX, nY, pm);
 
 
+#if 0
     p.setCompositionMode(QPainter::CompositionMode_SourceOver);
     QFont ft;
     ft.setPixelSize(12);
@@ -288,6 +334,7 @@ QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
         pp.addText(bounding.bottomLeft(), ft, tm_str);
         p.fillPath(pp, QColor(Qt::white));
     }
+#endif
 
     return dest;
 }

@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -17,6 +18,20 @@ class ApplicationAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.deepin.movie")
+    Q_CLASSINFO("D-Bus Introspection", ""
+                "  <interface name=\"com.deepin.movie\">\n"
+
+                "    <method name=\"openFiles\">\n"
+                "      <arg direction=\"in\" type=\"none\" name=\"openFiles\"/>\n"
+                "    </method>\n"
+
+                "    <method name=\"openFile\">\n"
+                "      <arg direction=\"in\" type=\"s\" name=\"openFile\"/>\n"
+                "      <arg direction=\"out\" type=\"b\"/>\n"
+                "    </method>\n"
+
+                "  </interface>\n")
+
 public:
     explicit ApplicationAdaptor(MainWindow *pMainWid);
     /**
@@ -38,12 +53,12 @@ public:
      */
     static QVariant redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod);
 
-public slots:
+public Q_SLOTS:
     /**
      * @brief 通过d-bus服务播放视频
      * @param 视频路径
      */
-    void openFile(const QString &sFile);
+    bool openFile(const QString &sFile);
     /**
      * @brief 通过d-bus服务播放视频
      * @param 视频路径集合
@@ -58,8 +73,8 @@ private:
     void initMember();
 
 private:
-    MainWindow *m_pMainWindow;    ///主窗口指针
     QTime m_oldTime;              ///记录上次播放时的时间
+    MainWindow *m_pMainWindow;
 };
 
 

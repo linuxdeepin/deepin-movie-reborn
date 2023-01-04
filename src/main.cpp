@@ -1,5 +1,6 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -122,7 +123,7 @@ int main(int argc, char *argv[])
 #endif
     QFileInfo fi("/dev/mwv206_0");
     QFileInfo jmfi("/dev/jmgpu");
-    if ((fi.exists() || jmfi.exists())) {
+    if ((fi.exists() || jmfi.exists()) && !CompositingManager::isMpvExists()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
     }
     /**
@@ -182,11 +183,6 @@ int main(int argc, char *argv[])
     app->setApplicationDescription(QObject::tr(
                                        "Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats."
                                    ));
-//    "Deepin Movie is a well-designed and full-featured"
-//    " video player with simple borderless design. It supports local and"
-//    " streaming media play with multiple video formats."
-//    auto light_theme = dmr::Settings::get().internalOption("light_theme").toBool();
-//    app.setTheme(light_theme ? "light": "dark");
 
     if (clm.debug()) {
         Dtk::Core::DLogManager::registerConsoleAppender();
@@ -215,11 +211,9 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
-//    app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
     app->setApplicationDisplayName(QObject::tr("Movie"));
     app->setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 
-//    app.setApplicationVersion(DApplication::buildVersion("20190830"));
     MovieConfiguration::get().init();
 
     QRegExp url_re("\\w+://");
@@ -227,7 +221,6 @@ int main(int argc, char *argv[])
     if (CompositingManager::get().composited()) {
         dmr::MainWindow mw;
         Presenter *presenter = new Presenter(&mw);
-    //    mw.setMinimumSize(QSize(1070, 680));
         mw.setPresenter(presenter);
         if (CompositingManager::isPadSystem()) {
             ///平板模式下全屏显示
@@ -237,7 +230,6 @@ int main(int argc, char *argv[])
             Dtk::Widget::moveToCenter(&mw);
             mw.show();
         }
-
         mw.setOpenFiles(toOpenFiles);
 
         if (!QDBusConnection::sessionBus().isConnected()) {
@@ -252,7 +244,6 @@ int main(int argc, char *argv[])
     } else {
         dmr::Platform_MainWindow platform_mw;
         Presenter *presenter = new Presenter(&platform_mw);
-    //    mw.setMinimumSize(QSize(1070, 680));
         platform_mw.setPresenter(presenter);
         if (CompositingManager::isPadSystem()) {
             ///平板模式下全屏显示
@@ -275,13 +266,5 @@ int main(int argc, char *argv[])
 
         return app->exec();
     }
-
-//    if (!toOpenFiles.isEmpty()) {
-//        if (toOpenFiles.size() == 1) {
-//            mw.play(toOpenFiles[0]);
-//        } else {
-//            mw.playList(toOpenFiles);
-//        }
-//    }
 }
 
