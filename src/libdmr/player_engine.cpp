@@ -656,6 +656,7 @@ void PlayerEngine::playSelected(int id)
 void PlayerEngine::clearPlaylist()
 {
     _playlist->clear();
+    MovieConfiguration::get().clear();
 }
 
 void PlayerEngine::pauseResume()
