@@ -350,6 +350,7 @@ mpv_handle *MpvProxy::mpv_init()
         QFileInfo jmfi("/dev/jmgpu"); //jmgpu
         QFileInfo X100GPU("/dev/x100gpu");
         QFileInfo X100VPU("/dev/vxd0");
+        QFileInfo mtfi("/dev/mtgpu.0");
         if (fi.exists() || jmfi.exists()) { //2.1.1景嘉微
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
@@ -395,7 +396,7 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "修改音视频同步模式";
             my_set_property(pHandle, "video-sync", "desync");
         }
-        if (!fi.exists() && !jmfi.exists()) {
+        if (!fi.exists() && !jmfi.exists() && !mtfi.exists()) {
             my_set_property(pHandle, "vo", "x11");
             m_sInitVo = "x11";
         }
