@@ -19,6 +19,8 @@
 #include "filefilter.h"
 
 //#include <QtWidgets>
+#include <QDir>
+
 #include <DImageButton>
 #include <DThemeManager>
 #include <DArrowRectangle>
@@ -832,38 +834,87 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     auto url = m_pEngine->playlist().currentInfo().url;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
-    for (auto i = 0; i < num ; i++) {
-        if (isInterruptionRequested()) {
-            qInfo() << "isInterruptionRequested";
-            return;
-        }
+    bool command = false;
+    if(m_pEngine->duration() < 300) {
+        QProcess process;
+        process.setProgram("ffmpeg");
+        QStringList options;
+        options << "-c" << QString("ffprobe -v quiet -show_frames %1 | grep \"pict_type=I\" | wc -l").arg(url.toLocalFile());
+        process.start("/bin/bash", options);
+        process.waitForFinished();
+        process.waitForReadyRead();
 
-        time = time.addMSecs(tmp);
-
-//        m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
-        memcpy(m_seekTime, time.toString("hh:mm:ss").toLatin1().data(), length + 1);
-        m_video_thumbnailer->seek_time = m_seekTime;
-        try {
-
-            m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, file.toUtf8().data(),  m_image_data);
-            auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
-            if (img.format() == QImage::Format_Invalid) {
-                return;
-            }
-            auto img_tmp = img.scaledToHeight(50);
-
-
-            pmList.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, pixWidget, 50))); //-2 为了1px的内边框
-            QImage img_black = img_tmp.convertToFormat(QImage::Format_Grayscale8);
-            pmBlackList.append(QPixmap::fromImage(img_black.copy(img_black.size().width() / 2 - 4, 0, pixWidget, 50)));
-
-        } catch (const std::logic_error &) {
-
-        }
+        QString comStr = process.readAllStandardOutput();
+        QString str = comStr.trimmed();
+        int pictI = str.toInt();
+        if (pictI < 5)
+            command = true;
+        process.close();
     }
 
-    m_mvideo_thumbnailer_destroy_image_data(m_image_data);
-    m_image_data = nullptr;
+    if (command) {
+        QDir dir;
+        dir.mkpath("/tmp/Movie/");
+        dir.cd("/tmp/Movie/");
+
+        QProcess process;
+        process.setProgram("ffmpeg");
+        QStringList argList;
+        argList << "-i" << url.toLocalFile() << "-r" << QString("%1/%2").arg(num).arg(m_pEngine->duration()) << "-f" << "image2" << "/tmp/Movie/image-%05d.jpg";
+
+        process.setArguments(argList);
+        process.start();
+
+        process.waitForFinished();
+
+        dir.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot); //设置过滤
+        QFileInfoList fileList = dir.entryInfoList(); // 获取所有的文件信息
+        foreach (QFileInfo fileInfo, fileList) {
+            if (fileInfo.isFile()) {
+                QImage img(fileInfo.absoluteFilePath());
+                auto img_tmp = img.scaledToHeight(50);
+
+                pmList.append(QPixmap::fromImage(img_tmp.copy(((img.width() * 50 / img.height()) - pixWidget) / 2, 0, pixWidget, 50))); //-2 为了1px的内边框
+                QImage img_black = img_tmp.convertToFormat(QImage::Format_Grayscale8);
+                pmBlackList.append(QPixmap::fromImage(img_black.copy(((img.width() * 50 / img.height()) - pixWidget) / 2, 0, pixWidget, 50)));
+            }
+        }
+
+        dir.removeRecursively();
+    } else {
+        for (auto i = 0; i < num ; i++) {
+            if (isInterruptionRequested()) {
+                qInfo() << "isInterruptionRequested";
+                return;
+            }
+
+            time = time.addMSecs(tmp);
+
+    //        m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
+            memcpy(m_seekTime, time.toString("hh:mm:ss").toLatin1().data(), length + 1);
+            m_video_thumbnailer->seek_time = m_seekTime;
+            try {
+
+                m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, file.toUtf8().data(),  m_image_data);
+                auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
+                if (img.format() == QImage::Format_Invalid) {
+                    return;
+                }
+                auto img_tmp = img.scaledToHeight(50);
+
+
+                pmList.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, pixWidget, 50))); //-2 为了1px的内边框
+                QImage img_black = img_tmp.convertToFormat(QImage::Format_Grayscale8);
+                pmBlackList.append(QPixmap::fromImage(img_black.copy(img_black.size().width() / 2 - 4, 0, pixWidget, 50)));
+
+            } catch (const std::logic_error &) {
+
+            }
+        }
+
+        m_mvideo_thumbnailer_destroy_image_data(m_image_data);
+        m_image_data = nullptr;
+    }
 
     m_pListPixmapMutex->lock();
     m_pParent->addpmList(pmList);
