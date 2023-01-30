@@ -1877,8 +1877,11 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
                     while (m_pEngine->getplaylist()->getThumanbilRunning()) {
                         QCoreApplication::processEvents();
                     }
-                    restore_pos = qMax(qMin(restore_pos, m_pEngine->playlist().count() - 1), 0);
-                    requestAction(ActionFactory::ActionKind::GotoPlaylistSelected, false, {restore_pos});
+                    qInfo() << "playlist_pos: " << restore_pos << " current: " << m_pEngine->playlist().current();
+                    if(m_pEngine->playlist().current() == -1) { //第一次直接启动影院(不是双击视频启动的影院)，点击播放按钮时启动上次退出影院时播放的视频
+                        restore_pos = qMax(qMin(restore_pos, m_pEngine->playlist().count() - 1), 0);
+                        requestAction(ActionFactory::ActionKind::GotoPlaylistSelected, false, {restore_pos});
+                    }
                 } else {
                     m_pEngine->play();
                 }
