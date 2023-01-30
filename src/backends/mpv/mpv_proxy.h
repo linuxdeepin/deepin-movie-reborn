@@ -442,6 +442,7 @@ private:
 
     bool m_bPolling;
     bool m_bConnectStateChange;
+    bool m_bLoadMedia;                     //mpv是否在加载媒体中
     bool m_bPauseOnStart;                  //mpv是否在暂停中
     bool m_bIsJingJia;                     //是否在景嘉微平台上
     bool m_bInited;                        //mpv是否已经初始化

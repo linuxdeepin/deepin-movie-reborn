@@ -733,6 +733,7 @@ void MpvProxy::handle_mpv_events()
             qInfo() << QString("rotate metadata: dec %1, out %2")
                     .arg(my_get_property(m_handle, "video-dec-params/rotate").toInt())
                     .arg(my_get_property(m_handle, "video-params/rotate").toInt());
+            m_bLoadMedia = false;
             break;
         }
         case MPV_EVENT_VIDEO_RECONFIG: {
@@ -752,6 +753,7 @@ void MpvProxy::handle_mpv_events()
                     "reason " << ev_ef->reason;
 
             setState(PlayState::Stopped);
+            m_bLoadMedia = false;
             break;
         }
 
@@ -1230,6 +1232,7 @@ void MpvProxy::initMember()
     m_bPendingSeek = false;
     m_bPolling = false;
     m_bConnectStateChange = false;
+    m_bLoadMedia = false;
     m_bPauseOnStart = false;
     m_bIsJingJia = false;
     m_bInited = false;
@@ -1261,11 +1264,18 @@ void MpvProxy::initMember()
 
 void MpvProxy::play()
 {
+    if(m_bLoadMedia) {
+        QTimer::singleShot(5000, [=](){ //超时5s恢复状态，视频加载成功后也会重置状态，正常播放状态下不会进入此函数
+            m_bLoadMedia = false;
+        });
+        return;
+    }
     bool bRawFormat = false;
     QList<QVariant> listArgs = { "loadfile" };
     QStringList listOpts = { };
     PlayerEngine* pEngine = nullptr;
     bool bAudio = false;
+    m_bLoadMedia = true;
 
     if (!m_bInited) {
         firstInit();
