@@ -72,7 +72,7 @@ void VolumeButton::enterEvent(QEvent *ev)
 {
     emit entered();
     if (!m_showTime.isActive())
-        m_showTime.start(2000);
+        m_showTime.start(1000);
 
     DIconButton::enterEvent(ev);
 }

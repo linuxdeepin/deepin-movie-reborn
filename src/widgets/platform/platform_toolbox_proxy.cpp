@@ -101,7 +101,7 @@ protected:
         case QEvent::Enter: {
             m_object = obj;
             if (!m_showTime.isActive())
-                m_showTime.start(2000);
+                m_showTime.start(1000);
             return true;
         }
 
