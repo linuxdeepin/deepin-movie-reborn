@@ -23,6 +23,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 find_package(PkgConfig REQUIRED)
+find_package(Qt5Core)
 
 pkg_check_modules(MPRIS REQUIRED IMPORTED_TARGET mpris-qt5)
 
@@ -33,6 +34,7 @@ try_compile(USE_FORK_MPRIS
               ${CMAKE_CURRENT_SOURCE_DIR}/tests/mpris_test.cc
             LINK_LIBRARIES
               PkgConfig::MPRIS
+              Qt5::Core
             OUTPUT_VARIABLE TRY_COMPILE_OUTPUT
 )
 
