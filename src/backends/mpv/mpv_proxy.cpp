@@ -452,6 +452,12 @@ mpv_handle *MpvProxy::mpv_init()
         } else {
             my_set_property(pHandle, "hwdec", "auto");
         }
+
+#if defined (__sw_64__)
+        //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
+        my_set_property(pHandle, "vo", "gpu,x11");
+        m_sInitVo = "gpu,x11";
+#endif
     }
 
     if (composited) {
