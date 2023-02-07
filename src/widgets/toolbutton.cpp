@@ -29,6 +29,14 @@ VolumeButton::VolumeButton(QWidget *parent)
     });
 }
 
+void VolumeButton::hideTip()
+{
+    if (m_showTime.isActive())
+        m_showTime.stop();
+    if (m_pToolTip->isVisible())
+        m_pToolTip->hide();
+}
+
 void VolumeButton::setVolume(int nVolume)
 {
     m_nVolume = nVolume;

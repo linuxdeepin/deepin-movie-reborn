@@ -357,6 +357,7 @@ public:
     void setVolume(int nVolume);
     void setMute(bool bMute);
     void setButtonEnable(bool bFlag);
+    void hideTip();
 
 signals:
     void entered();
