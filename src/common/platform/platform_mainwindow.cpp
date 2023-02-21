@@ -49,6 +49,7 @@
 #include <X11/Xlib.h>
 #include "moviewidget.h"
 #include <QJsonObject>
+#include <QScreen>
 
 #include "../accessibility/ac-deepin-movie-define.h"
 
@@ -2047,13 +2048,14 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
                 return;
             m_bMaximized = isMaximized();  // 记录全屏前是否是最大化窗口
             mipsShowFullScreen();
-            if (isFullScreen()) {
+            if (m_pProgIndicator && isFullScreen()) {
+                QRect screenGeo = windowHandle()->screen()->geometry();
+                m_pProgIndicator->move(screenGeo.width() + screenGeo.x() - m_pProgIndicator->width() - 18, 8 + screenGeo.y());
                 if (CompositingManager::get().platform() != Platform::Mips) {
                     if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
                         int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
-                        QRect deskRect = QApplication::desktop()->availableGeometry();
                         pixelsWidth = qMax(117, pixelsWidth);
-                        m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
+                        m_pFullScreenTimeLable->setGeometry(screenGeo.width() + screenGeo.x() - pixelsWidth - 60, 40 + screenGeo.y(), pixelsWidth + 60, 36);
                         m_pFullScreenTimeLable->show();
                     }
                 }
@@ -3432,9 +3434,6 @@ void Platform_MainWindow::LimitWindowize()
 void Platform_MainWindow::resizeEvent(QResizeEvent *pEvent)
 {
     qInfo() << __func__ << geometry();
-    if (m_pProgIndicator && isFullScreen()) {
-        m_pProgIndicator->move(geometry().width() - m_pProgIndicator->width() - 18, 8);
-    }
     // modify 4.1  Limit video to mini mode size by thx
     LimitWindowize();
 
