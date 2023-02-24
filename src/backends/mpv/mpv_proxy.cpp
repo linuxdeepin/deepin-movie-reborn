@@ -1169,7 +1169,7 @@ void MpvProxy::refreshDecode()
     } else { //3.设置硬解
 #ifndef _LIBDMR_
 
-#if defined (__aarch64__) || defined (__sw_64__)
+#if defined (__aarch64__)
         // 鲲鹏920 || 曙光+英伟达 || 浪潮
         if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
             my_set_property(m_handle, "hwdec", "no");
