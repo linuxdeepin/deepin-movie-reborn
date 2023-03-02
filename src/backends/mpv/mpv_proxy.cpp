@@ -360,8 +360,8 @@ mpv_handle *MpvProxy::mpv_init()
                 m_sInitVo = "vdpau";
             }else if (jmfi.exists() && jmdir.exists()) {
                 my_set_property(pHandle, "hwdec", "vaapi");
-                my_set_property(pHandle, "vo", "vaapi");
-                m_sInitVo = "vaapi";
+                my_set_property(pHandle, "vo", "gpu");
+                m_sInitVo = "gpu";
             }else {
                 my_set_property(pHandle, "hwdec", "auto");
                 my_set_property(pHandle, "vo", "vdpau,xv,x11");
@@ -439,8 +439,8 @@ mpv_handle *MpvProxy::mpv_init()
                 m_sInitVo = "vdpau";
             }else if (jmfi.exists() && jmdir.exists()) {
                 my_set_property(pHandle, "hwdec", "vaapi");
-                my_set_property(pHandle, "vo", "vaapi");
-                m_sInitVo = "vaapi";
+                my_set_property(pHandle, "vo", "gpu");
+                m_sInitVo = "gpu";
             } else {
                 my_set_property(pHandle, "hwdec", "auto");
                 my_set_property(pHandle, "vo", "vdpau,xv,x11");
