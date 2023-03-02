@@ -1419,7 +1419,7 @@ void ToolboxProxy::closeAnyPopup()
 
     if (m_pVolSlider->isVisible()) {
         m_pVolSlider->stopTimer();
-        m_pVolSlider->popup();
+        m_pVolSlider->hide();
     }
 }
 /**
@@ -1681,9 +1681,11 @@ void ToolboxProxy::slotVolumeButtonClicked()
      */
     if (!m_pVolSlider->isVisible()) {
         m_pVolSlider->show();
-        m_pVolSlider->popup();
+        m_pVolSlider->raise();
+//        m_pVolSlider->popup();
     } else {
-        m_pVolSlider->popup();
+//        m_pVolSlider->popup();
+        m_pVolSlider->hide();
     }
 }
 
@@ -2599,7 +2601,7 @@ bool ToolboxProxy::getbAnimationFinash()
 void ToolboxProxy::setVolSliderHide()
 {
     if (m_pVolSlider->isVisible()) {
-        m_pVolSlider->popup();
+        m_pVolSlider->hide();
     }
 }
 

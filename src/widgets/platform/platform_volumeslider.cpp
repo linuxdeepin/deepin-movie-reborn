@@ -77,7 +77,7 @@ Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *p
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
             this, &Platform_VolumeSlider::setThemeType);
     m_autoHideTimer.setSingleShot(true);
-    connect(&m_autoHideTimer, &QTimer::timeout, this, &Platform_VolumeSlider::popup);
+    connect(&m_autoHideTimer, &QTimer::timeout, this, &Platform_VolumeSlider::hide);
 }
 
 void Platform_VolumeSlider::initVolume()
@@ -205,12 +205,12 @@ void Platform_VolumeSlider::delayedHide()
     if(adRect.contains(QCursor::pos())){
         DUtil::TimerSingleShot(2000, [=]() {
             if (!m_mouseIn)
-                popup();
+                hide();
         });
     } else {
         DUtil::TimerSingleShot(100, [=]() {
             if (!m_mouseIn)
-                popup();
+                hide();
         });
     }
 }
@@ -346,6 +346,15 @@ void Platform_VolumeSlider::enterEvent(QEvent *e)
 }
 void Platform_VolumeSlider::showEvent(QShowEvent *se)
 {
+    QRect main_rect = _mw->rect();
+    QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
+
+    int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
+    int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
+    QPoint p = _mw->mapToGlobal(QPoint(0, 0));
+    QRect end(x + p.x(), y + p.y(), VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
+    setGeometry(end);
+
     QWidget::showEvent(se);
 }
 void Platform_VolumeSlider::leaveEvent(QEvent *e)

@@ -74,7 +74,7 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
             this, &VolumeSlider::setThemeType);
     m_autoHideTimer.setSingleShot(true);
-    connect(&m_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::popup);
+    connect(&m_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
 }
 
 void VolumeSlider::initVolume()
@@ -205,7 +205,7 @@ void VolumeSlider::delayedHide()
     m_mouseIn = false;
     DUtil::TimerSingleShot(100, [this]() {
         if (!m_mouseIn)
-            popup();
+            hide();
     });
 }
 void VolumeSlider::changeVolume(int nVolume)
@@ -341,6 +341,14 @@ void VolumeSlider::enterEvent(QEvent *e)
 }
 void VolumeSlider::showEvent(QShowEvent *se)
 {
+    QRect main_rect = _mw->rect();
+    QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
+
+    int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
+    int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
+    QRect end(x, y, VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
+    setGeometry(end);
+
     QWidget::showEvent(se);
 }
 void VolumeSlider::leaveEvent(QEvent *e)
