@@ -3254,7 +3254,8 @@ void Platform_MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const 
     } else if (sErrorMessage.toLower().contains(QString("incomplete frame")) ||
                sErrorMessage.toLower().contains(QString("MVs not available"))) {
     } else if ((sErrorMessage.toLower().contains(QString("can't"))) &&
-               (sErrorMessage.toLower().contains(QString("open")))) {
+               (sErrorMessage.toLower().contains(QString("open"))) &&
+               sErrorMessage.toLower().contains(m_pEngine->getplaylist()->currentInfo().info.fileName())) {
         m_pCommHintWid->updateWithMessage(tr("No video file found"));
     }
 }
