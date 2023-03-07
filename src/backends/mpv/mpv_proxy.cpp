@@ -343,6 +343,14 @@ mpv_handle *MpvProxy::mpv_init()
 
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
         my_set_property(pHandle, "hwdec", "no");
+#if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
+        if (!CompositingManager::get().hascard()) {
+            qInfo() << "修改音视频同步模式";
+            my_set_property(pHandle, "video-sync", "desync");
+            my_set_property(pHandle, "vo", "x11");
+            m_sInitVo = "x11";
+        }
+#endif
     } else if (DecodeMode::AUTO == m_decodeMode) { //2.设置自动
         //2.1特殊硬件
         //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
@@ -457,6 +465,15 @@ mpv_handle *MpvProxy::mpv_init()
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
         my_set_property(pHandle, "vo", "gpu,x11");
         m_sInitVo = "gpu,x11";
+#elif defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
+        if (!CompositingManager::get().hascard()) {
+            qInfo() << "修改音视频同步模式";
+            my_set_property(pHandle, "video-sync", "desync");
+        }
+        if (!fi.exists() && !jmfi.exists()) {
+            my_set_property(pHandle, "vo", "x11");
+            m_sInitVo = "x11";
+        }
 #endif
     }
 
