@@ -3091,16 +3091,6 @@ void MainWindow::slotFileLoaded()
         }
     }
     this->resizeByConstraints();
-
-    if (utils::check_wayland_env()) {
-        QDesktopWidget desktop;
-        if (desktop.screenCount() > 1) {
-            if (!isFullScreen() && !isMaximized() && !m_bMiniMode) {
-                QRect geom = qApp->desktop()->availableGeometry(this);
-                move((geom.width() - this->width()) / 2 + geom.x(), (geom.height() - this->height()) / 2 + geom.y());
-            }
-        }
-    }
     m_bIsFree = true;
 }
 
