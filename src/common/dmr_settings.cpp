@@ -35,7 +35,7 @@ Settings::Settings()
     if(!CompositingManager::isMpvExists()) {
         m_pSettings = DSettings::fromJsonFile(":/resources/data/GstSettings.json");
     } else {
-#if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)
+#if !defined (__x86_64__)
     m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
 #else
     m_pSettings = DSettings::fromJsonFile(":/resources/data/settings.json");
