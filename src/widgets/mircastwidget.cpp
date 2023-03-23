@@ -547,6 +547,7 @@ void MircastWidget::stopDlnaTP()
     m_ControlURLPro.clear();
     m_URLAddrPro.clear();
     m_sLocalUrl.clear();
+    emit updatePlayStatus();
 }
 /**
  * @brief getPosInfoDlnaTp 获取投屏播放视频信息
