@@ -4306,7 +4306,7 @@ void MainWindow::sleepStateChanged(bool bSleep)
     }
     if (bSleep && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
         m_bStartSleep = true;
-        requestAction(ActionFactory::ActionKind::TogglePause);
+        //requestAction(ActionFactory::ActionKind::TogglePause);
     } else if (!bSleep && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
         m_bStartSleep = false;
         m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));      //保证休眠后不管是否播放都不会卡帧
