@@ -25,6 +25,8 @@
 #include "drecentmanager.h"
 DCORE_USE_NAMESPACE
 DGUI_USE_NAMESPACE
+#define AV_CODEC_ID_AVS2 192
+#define AV_CODEC_ID_AVS3 193
 
 namespace dmr {
 
@@ -960,7 +962,11 @@ bool PlayerEngine::currFileIsAudio()
     }
 
     if (CompositingManager::isMpvExists()) {
-        bAudio = pif.thumbnail.isNull() && pif.url.isLocalFile();
+        if(pif.mi.vCodecID == AV_CODEC_ID_AVS2 || pif.mi.vCodecID == AV_CODEC_ID_AVS3) {
+            bAudio = false;
+        } else {
+            bAudio = pif.thumbnail.isNull() && pif.url.isLocalFile();
+        }
     } else {
         bAudio = isAudioFile(pif.url.toString());
     }
