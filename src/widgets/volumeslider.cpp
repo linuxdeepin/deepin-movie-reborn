@@ -14,7 +14,7 @@ namespace dmr {
 VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     : QWidget(parent), _mw(mw)
 {
-    if (CompositingManager::get().platform() != Platform::X86)
+    if (CompositingManager::get().platform() != Platform::X86 && !utils::check_wyland_env())
         setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
     m_iStep = 0;
     m_bIsWheel = false;
