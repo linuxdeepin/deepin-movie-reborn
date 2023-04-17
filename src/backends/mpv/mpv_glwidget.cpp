@@ -466,11 +466,7 @@ namespace dmr {
         connect(window()->windowHandle(), &QWindow::windowStateChanged, [=]() {
             QWidget* pTopWid = this->topLevelWidget();
             bool rounded = !pTopWid->isFullScreen() && !pTopWid->isMaximized();
-            if(utils::check_wayland_env()){
-                toggleRoundedClip(true);
-            } else {
-                toggleRoundedClip(rounded);
-            }
+            toggleRoundedClip(rounded);
         });
 #endif
 #endif
