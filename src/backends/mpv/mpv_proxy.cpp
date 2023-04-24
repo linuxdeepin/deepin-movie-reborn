@@ -430,7 +430,21 @@ mpv_handle *MpvProxy::mpv_init()
         }
         //TODO(xxxxpengfei)：暂未处理intel集显情况
         if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
-            my_set_property(pHandle, "vo", "gpu");
+            QProcess process;
+            QStringList options;
+            options << "-c" << QString("apt policy cx4-linux-graphics-driver-dri | sed -n \'2p\'");
+            process.start("/bin/bash", options);
+            process.waitForFinished();
+            process.waitForReadyRead();
+
+            QString comStr = process.readAllStandardOutput();
+            comStr = comStr.right(4).left(2);
+            int version = comStr.toInt();
+            if (version > 10) {
+                my_set_property(pHandle, "vo", "vaapi");
+                my_set_property(pHandle, "hwdec", "vaapi");
+            } else
+                my_set_property(pHandle, "vo", "gpu");
         }
 #endif
     } else { //3.设置硬解
