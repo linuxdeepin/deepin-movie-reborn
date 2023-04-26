@@ -79,7 +79,7 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
 
 void VolumeSlider::initVolume()
 {
-    QTimer::singleShot(500, this, [ = ] { //延迟加载等待信号槽连接
+    QTimer::singleShot(1500, this, [ = ] { //延迟加载等待信号槽连接
         int nVolume = Settings::get().internalOption("global_volume").toInt();
         bool bMute = Settings::get().internalOption("mute").toBool();
 
