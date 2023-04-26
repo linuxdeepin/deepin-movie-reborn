@@ -218,6 +218,10 @@ FileFilter::MediaType FileFilter::typeJudgeByFFmpeg(const QUrl &url)
 
     QString strMimeType = m_mimeDB.mimeTypeForUrl(url).name();
 
+    if (strMimeType.contains("mpegurl")) {
+        return MediaType::Other;
+    }
+
     AVFormatContext *av_ctx = nullptr;
 
     nRet = g_mvideo_avformat_open_input(&av_ctx, url.toLocalFile().toUtf8().constData(), nullptr, nullptr);
