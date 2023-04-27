@@ -447,6 +447,11 @@ mpv_handle *MpvProxy::mpv_init()
                 my_set_property(pHandle, "vo", "gpu");
         }
 #endif
+        QDir innodir("/sys/bus/platform/drivers/inno-codec");
+        if ( innodir.exists()) {
+            my_set_property(pHandle, "vo", "gpu,x11");
+            m_sInitVo = "gpu,x11";
+        }
     } else { //3.设置硬解
         QFileInfo fi("/dev/mwv206_0");
         QFileInfo jmfi("/dev/jmgpu");
@@ -489,6 +494,11 @@ mpv_handle *MpvProxy::mpv_init()
             m_sInitVo = "x11";
         }
 #endif
+        QDir innodir("/sys/bus/platform/drivers/inno-codec");
+        if ( innodir.exists()) {
+            my_set_property(pHandle, "vo", "gpu,x11");
+            m_sInitVo = "gpu,x11";
+        }
     }
 
     if (composited) {
