@@ -1887,6 +1887,18 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             break;
         }
 
+        QProcess process;
+        process.start("dmidecode", QStringList() << "-s" << "system-product-name");
+        process.waitForStarted();
+        process.waitForFinished();
+        QString result(process.readAll());
+        bool boardVendorFlag = result.contains("PGUW", Qt::CaseInsensitive);
+//                    || result.contains("KLVU", Qt::CaseInsensitive)
+//                    || result.contains("PGUV", Qt::CaseInsensitive)
+//                    || result.contains("KLVV", Qt::CaseInsensitive)
+//                    || result.contains("L540", Qt::CaseInsensitive);
+        process.close();
+
         int nDelayTime = 0;
         if (m_pPlaylist->state() == PlaylistWidget::Opened) {
             requestAction(ActionFactory::TogglePlaylist);
@@ -1904,6 +1916,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             {
                 reflectActionToUI(actionKind);
             }
+            if (boardVendorFlag)
+                m_pEngine->makeCurrent();
             toggleUIMode();
         });
         //Prevent abnormal focus position due to window state changes
