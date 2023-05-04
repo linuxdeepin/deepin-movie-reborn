@@ -231,6 +231,7 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
     if (m_mircastState == MircastState::Screening) {
         int absTime = timeConversion(info.sAbsTime);
         int duration = timeConversion(info.sTrackDuration);
+        m_sTrackURI = info.sTrackURI;
         updateTime(absTime);
         if (info.sAbsTime == info.sTrackDuration ||
                 (info.sAbsTime.toUpper() == "NOT_IMPLEMENTED" && duration != 0)) {
@@ -246,6 +247,9 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
             }
             m_attempts = 0;
         } else if (info.sAbsTime.toUpper() == "NOT_IMPLEMENTED" && duration == 0) {
+            emit mircastState(MIRCAST_EXIT);
+            slotExitMircast();
+        } else if (m_sTrackURI != m_sLocalUrl) {
             emit mircastState(MIRCAST_EXIT);
             slotExitMircast();
         }
@@ -270,7 +274,7 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
             emit mircastState(MIRCAST_SUCCESSED, m_connectDevice.miracastDevice.name);
         }
         qWarning() << "miracast failed!";
-        if (m_attempts >= MAXMIRCAST) {
+        if (m_attempts >= MAXMIRCAST * 10) {
             qWarning() << "attempts time out! try next.";
             m_attempts = 0;
             m_mircastTimeOut.stop();
@@ -287,7 +291,7 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
                 m_mircastState = Connecting;
             }
         } else {
-            qInfo() << "miracast failed! curret attempts:" << m_attempts << "Max:" << MAXMIRCAST;
+            qInfo() << "miracast failed! curret attempts:" << m_attempts << "Max:" << MAXMIRCAST * 10;
             m_attempts++;
             m_mircastState = Connecting;
         }
@@ -543,7 +547,8 @@ void MircastWidget::stopDlnaTP()
 {
     m_nPlayStatus = MircastWidget::Stop;
     if (m_ControlURLPro.isNull() || m_ControlURLPro.isEmpty()) return;
-    m_pDlnaSoapPost->SoapOperPost(DLNA_Stop, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
+    if(m_sTrackURI == m_sLocalUrl)//当前播放自身投屏的视频才启动停止投屏操作
+        m_pDlnaSoapPost->SoapOperPost(DLNA_Stop, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
     m_ControlURLPro.clear();
     m_URLAddrPro.clear();
     m_sLocalUrl.clear();

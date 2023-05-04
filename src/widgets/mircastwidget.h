@@ -308,6 +308,8 @@ private:
     QString m_URLAddrPro;
     //本地准备的投屏url地址
     QString m_sLocalUrl;
+    //返回播放视频地址
+    QString m_sTrackURI;
     void *m_pEngine;            ///播放引擎
     int m_nCurDuration;   //当前播放视频总时长
     int m_nCurAbsTime;    //当前播放视频播放时长
