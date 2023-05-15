@@ -487,6 +487,7 @@ bool CompositingManager::isDriverLoadedCorrectly()
     static QRegExp swrast("GLX: Initialized DRISWRAST");
     static QRegExp regZX("loading driver: zx");
     static QRegExp regCX4("loading driver: cx4");
+    static QRegExp arise("loading driver: arise");
     static QRegExp controller("1ec8");
 
     QString xorglog = QString("/var/log/Xorg.%1.log").arg(QX11Info::appScreen());
@@ -515,7 +516,7 @@ bool CompositingManager::isDriverLoadedCorrectly()
             return false;
         }
 
-        if (regZX.indexIn(ln) != -1 || regCX4.indexIn(ln) != -1) {
+        if (regZX.indexIn(ln) != -1 || regCX4.indexIn(ln) != -1 || arise.indexIn(ln) != -1) {
             m_bZXIntgraphics = true;
         }
 
