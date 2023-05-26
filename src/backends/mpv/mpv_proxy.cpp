@@ -1240,14 +1240,12 @@ void MpvProxy::refreshDecode()
         if (fi.exists() || jmfi.exists()) {
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
-            if(sdir.exists())
-            {
-                 my_set_property(m_handle, "hwdec", "vdpau");
-            } else {
-                 my_set_property(m_handle, "hwdec", "auto");
-            }
-            if (!sdir.exists() && jmdir.exists()) {
+            if(sdir.exists() && fi.exists()) {
+                my_set_property(m_handle, "hwdec", "vdpau");
+            }else if (jmfi.exists() && jmdir.exists()) {
                 my_set_property(m_handle, "hwdec", "vaapi");
+            }else {
+                my_set_property(m_handle, "hwdec", "auto");
             }
         } else if (X100GPU.exists() && X100VPU.exists()) {
             my_set_property(m_handle, "hwdec", "ftomx-copy");
