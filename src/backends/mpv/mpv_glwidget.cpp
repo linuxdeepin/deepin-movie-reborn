@@ -14,6 +14,9 @@
 
 #include <dthememanager.h>
 #include <DApplication>
+
+#define GLAPIENTRY
+
 //#include <wayland-client.h>
 //#include "../../window/qplatformnativeinterface.h"
 //qpa/qplatformnativeinterface.h
