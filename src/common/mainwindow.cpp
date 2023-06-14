@@ -1887,17 +1887,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             break;
         }
 
-        QProcess process;
-        process.start("dmidecode", QStringList() << "-s" << "system-product-name");
-        process.waitForStarted();
-        process.waitForFinished();
-        QString result(process.readAll());
-        bool boardVendorFlag = result.contains("PGUW", Qt::CaseInsensitive);
+        QString result(cpuHardwareByDBus());
+        bool boardVendorFlag = result.contains("PGUW", Qt::CaseInsensitive)
+                      || result.contains("PANGU M900", Qt::CaseInsensitive);
 //                    || result.contains("KLVU", Qt::CaseInsensitive)
 //                    || result.contains("PGUV", Qt::CaseInsensitive)
 //                    || result.contains("KLVV", Qt::CaseInsensitive)
 //                    || result.contains("L540", Qt::CaseInsensitive);
-        process.close();
 
         int nDelayTime = 0;
         if (m_pPlaylist->state() == PlaylistWidget::Opened) {
@@ -3201,6 +3197,25 @@ void MainWindow::exitMircast()
     updateActionsState();
     m_pToolbox->getMircast()->slotExitMircast();
     m_pMircastShowWidget->hide();
+}
+
+QString MainWindow::cpuHardwareByDBus()
+{
+    QString validFrequency = "CurrentSpeed";
+    QDBusInterface systemInfoInterface("com.deepin.daemon.SystemInfo",
+                                       "/com/deepin/daemon/SystemInfo",
+                                       "org.freedesktop.DBus.Properties",
+                                       QDBusConnection::sessionBus());
+    qDebug() << "systemInfoInterface.isValid: " << systemInfoInterface.isValid();
+    QDBusMessage replyCpu = systemInfoInterface.call("Get", "com.deepin.daemon.SystemInfo", "CPUHardware");
+    QList<QVariant> outArgsCPU = replyCpu.arguments();
+    if (outArgsCPU.count()) {
+        QString CPUHardware = outArgsCPU.at(0).value<QDBusVariant>().variant().toString();
+        qInfo() << __FUNCTION__ << __LINE__ << "Current CPUHardware: " << CPUHardware;
+
+        return CPUHardware;
+    }
+    return "";
 }
 
 void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString sText)

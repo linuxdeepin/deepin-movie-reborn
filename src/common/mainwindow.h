@@ -497,6 +497,11 @@ private:
     void mircastSuccess(QString name);
     void exitMircast();
 
+    /**
+     * @brief 使用dbus获取当前机器CPU型号
+     */
+    QString cpuHardwareByDBus();
+
 private:
     MessageWindow *m_pPopupWid;                     ///截图提示窗口
     QLabel *m_pFullScreenTimeLable;                 ///全屏时右上角的影片进度
