@@ -3299,9 +3299,11 @@ void Platform_MainWindow::wheelEvent(QWheelEvent *pEvent)
         return;
     }
 
-    if (pEvent->buttons() == Qt::NoButton && pEvent->modifiers() == Qt::NoModifier && m_pToolbox->getVolSliderIsHided()) {
-        m_iAngleDelta = pEvent->angleDelta().y() ;
-        requestAction(pEvent->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
+    if (m_bLocked) {
+        if (pEvent->buttons() == Qt::NoButton && pEvent->modifiers() == Qt::NoModifier && m_pToolbox->getVolSliderIsHided()) {
+            m_iAngleDelta = pEvent->angleDelta().y() ;
+            requestAction(pEvent->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
+        }
     }
 }
 
@@ -4301,6 +4303,12 @@ void Platform_MainWindow::lockStateChanged(bool bLock)
     //锁屏退出投屏
     if(bLock && m_pMircastShowWidget && m_pMircastShowWidget->isVisible()) {
         slotExitMircast();
+    }
+    if (!bLock) {
+        m_bLocked = false;
+        QTimer::singleShot(1000, [=](){
+            m_bLocked = true;
+        });
     }
     if (bLock && m_pEngine->state() == PlayerEngine::CoreState::Playing && !m_bStateInLock) {
         m_bStateInLock = true;

@@ -581,7 +581,8 @@ private:
     qint64 m_nFullscreenTime;                         ///全屏操作间隔时间
     QDBusInterface *m_pWMDBus {nullptr};              ///窗口特效dbus接口
     bool m_bIsWM {true};                              ///是否开启窗口特效
-    bool m_bMaximized;                                ///全屏前最大化窗口记录        
+    bool m_bMaximized;                                ///全屏前最大化窗口记录
+    bool m_bLocked{true};
 };
 };
 
