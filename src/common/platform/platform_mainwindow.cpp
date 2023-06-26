@@ -3284,6 +3284,28 @@ void Platform_MainWindow::closeEvent(QCloseEvent *pEvent)
     m_pEngine->savePlaybackPosition();
 
     pEvent->accept();
+
+#ifndef _LIBDMR_
+        if (Settings::get().isSet(Settings::ClearWhenQuit)) {
+            m_pEngine->playlist().clearPlaylist();
+        } else {
+            //persistently save current playlist
+            m_pEngine->playlist().savePlaylist();
+        }
+#endif
+        // xcb close slow so add this for wayland  by xxj
+        DMainWindow::closeEvent(pEvent);
+        m_pEngine->stop();
+        disconnect(m_pEngine, nullptr, nullptr, nullptr);
+        disconnect(&m_pEngine->playlist(), nullptr, nullptr, nullptr);
+        if (m_pEngine) {
+            delete m_pEngine;
+            m_pEngine = nullptr;
+        }
+        CompositingManager::get().setTestFlag(true);
+        /*lmh0724临时规避退出崩溃问题*/
+        QApplication::quit();
+        _Exit(0);
 }
 
 void Platform_MainWindow::wheelEvent(QWheelEvent *pEvent)
