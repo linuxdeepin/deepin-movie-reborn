@@ -1895,6 +1895,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 //                    || result.contains("KLVV", Qt::CaseInsensitive)
 //                    || result.contains("L540", Qt::CaseInsensitive);
 
+        QProcess process;
+        process.start("bash", QStringList() << "-c" << "dmidecode | grep -i \"String 4\"");
+        process.waitForStarted();
+        process.waitForFinished();
+        result = process.readAll();
+        boardVendorFlag = boardVendorFlag || result.contains("PWC30", Qt::CaseInsensitive);    //w525
+        process.close();
+
         int nDelayTime = 0;
         if (m_pPlaylist->state() == PlaylistWidget::Opened) {
             requestAction(ActionFactory::TogglePlaylist);
