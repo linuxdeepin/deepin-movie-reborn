@@ -26,6 +26,7 @@ find_package(Qt5Svg)
 find_package(Qt5Multimedia)
 find_package(Qt5MultimediaWidgets)
 find_package(Qt5Xml)
+find_package(DtkWidget REQUIRED)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
@@ -98,6 +99,14 @@ install(FILES ${PROJECT_SOURCE_DIR}/assets/resources/icons/logo-big.svg
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps
     RENAME deepin-movie.svg)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/deepin-movie DESTINATION ${CMAKE_INSTALL_DATADIR}/deepin-manual/manual-assets/application/)
+
+#hw机型增加DConfig配置
+set(APPID org.deepin.movie)
+set(configFile ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json)
+if (DEFINED DSG_DATA_DIR)
+    message("-- DConfig is supported by DTK")
+    dconfig_meta_files(APPID ${APPID} FILES ${configFile})
+endif()
 
 # 加速编译优化参数
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")

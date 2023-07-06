@@ -42,6 +42,9 @@
 #include <DInputDialog>
 #include <DImageButton>
 #include <DWidgetUtil>
+#ifdef DTKCORE_CLASS_DConfigFile
+#include <DConfig>
+#endif
 #include <DSettingsWidgetFactory>
 #include <DLineEdit>
 #include <DFileDialog>
@@ -1886,22 +1889,36 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         if (m_bMouseMoved) { // can't toggle minimode,when window is moving
             break;
         }
+        bool boardVendorFlag = false;
+        int miniModeSpecialHandling = -1;
+#ifdef DTKCORE_CLASS_DConfigFile
+        //需要查询是否支持特殊特殊机型打开迷你模式，例如hw机型
+        DConfig *dconfig = DConfig::create("org.deepin.movie","org.deepin.movie.minimode");
+        if(dconfig && dconfig->isValid() && dconfig->keyList().contains("miniModeSpecialHandling")){
+            miniModeSpecialHandling = dconfig->value("miniModeSpecialHandling").toInt();
+        }
+#endif
+        qInfo() << "miniModeSpecialHandling value is:" << miniModeSpecialHandling;
+        if(miniModeSpecialHandling != -1){
+            boardVendorFlag = miniModeSpecialHandling? true:false;
+        }else{
+            QString result(cpuHardwareByDBus());
+            boardVendorFlag = result.contains("PGUW", Qt::CaseInsensitive)
+                          || result.contains("PANGU M900", Qt::CaseInsensitive);
+    //                    || result.contains("KLVU", Qt::CaseInsensitive)
+    //                    || result.contains("PGUV", Qt::CaseInsensitive)
+    //                    || result.contains("KLVV", Qt::CaseInsensitive)
+    //                    || result.contains("L540", Qt::CaseInsensitive);
 
-        QString result(cpuHardwareByDBus());
-        bool boardVendorFlag = result.contains("PGUW", Qt::CaseInsensitive)
-                      || result.contains("PANGU M900", Qt::CaseInsensitive);
-//                    || result.contains("KLVU", Qt::CaseInsensitive)
-//                    || result.contains("PGUV", Qt::CaseInsensitive)
-//                    || result.contains("KLVV", Qt::CaseInsensitive)
-//                    || result.contains("L540", Qt::CaseInsensitive);
-
-        QProcess process;
-        process.start("bash", QStringList() << "-c" << "dmidecode | grep -i \"String 4\"");
-        process.waitForStarted();
-        process.waitForFinished();
-        result = process.readAll();
-        boardVendorFlag = boardVendorFlag || result.contains("PWC30", Qt::CaseInsensitive);    //w525
-        process.close();
+            QProcess process;
+            process.start("bash", QStringList() << "-c" << "dmidecode | grep -i \"String 4\"");
+            process.waitForStarted();
+            process.waitForFinished();
+            result = process.readAll();
+            boardVendorFlag = boardVendorFlag || result.contains("PWC30", Qt::CaseInsensitive);    //w525
+            process.close();
+        }
+        qInfo() << "Whether special mini mode is supported? " << boardVendorFlag;
 
         int nDelayTime = 0;
         if (m_pPlaylist->state() == PlaylistWidget::Opened) {
