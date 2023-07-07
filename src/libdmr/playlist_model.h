@@ -18,6 +18,8 @@
 #define THUMBNAIL_SIZE 500
 #define SEEK_TIME "00:00:01"
 
+using namespace Dtk::Gui;
+
 typedef video_thumbnailer *(*mvideo_thumbnailer)();
 typedef void (*mvideo_thumbnailer_destroy)(video_thumbnailer *thumbnailer);
 /* create image_data structure */
