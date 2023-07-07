@@ -228,7 +228,7 @@ void PlayerEngine::onBackendStateChanged()
             this->setPalette(pal);
         } else {
             QPalette pal(this->palette());
-            pal.setColor(QPalette::Background, Qt::black);
+            pal.setColor(QPalette::Window, Qt::black);
             this->setAutoFillBackground(true);
             this->setPalette(pal);
         }
