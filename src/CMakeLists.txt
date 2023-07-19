@@ -106,6 +106,8 @@ set(configFile ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json)
 if (DEFINED DSG_DATA_DIR)
     message("-- DConfig is supported by DTK")
     dconfig_meta_files(APPID ${APPID} FILES ${configFile})
+else()
+    install(FILES ${configFile} DESTINATION ${CMAKE_INSTALL_DATADIR}/dsg/configs/org.deepin.movie/)
 endif()
 
 # 加速编译优化参数
