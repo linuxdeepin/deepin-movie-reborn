@@ -767,6 +767,10 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
         if (m_pEngine->state() == PlayerEngine::CoreState::Playing) {
             if (CompositingManager::get().platform() != Platform::Mips) {
                 if (isFullScreen()) {
+                    QRect screenGeo = windowHandle()->screen()->geometry();
+                    int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
+                    pixelsWidth = qMax(117, pixelsWidth);
+                    m_pFullScreenTimeLable->setGeometry(screenGeo.width() + screenGeo.x() - pixelsWidth - 60, 40 + screenGeo.y(), pixelsWidth + 60, 36);
                     m_pFullScreenTimeLable->show();
                     m_pProgIndicator->setVisible(true);
                     QTimer::singleShot(200, [ = ]() {
