@@ -348,6 +348,21 @@ void CompositingManager::softDecodeCheck()
         board.close();
     }
 
+    if (m_cpuModelName.contains("KX-U6780A")) {
+        QFile modaInfo("/sys/class/dmi/id/modalias");
+        if (modaInfo.open(QIODevice::ReadOnly)) {
+            QString data = modaInfo.readAll();
+            QStringList modaList = data.split(":");
+            qInfo() << data;
+            if (modaList.size() >= 7) {
+                if (modaList[6].contains("M630Z"))
+                    m_bOnlySoftDecode = true;
+            }
+
+            modaInfo.close();
+        }
+    }
+
     if ((runningOnNvidia() && m_boardVendor.contains("Sugon"))
             || m_cpuModelName.contains("Kunpeng 920")) {
         m_bOnlySoftDecode = true;
