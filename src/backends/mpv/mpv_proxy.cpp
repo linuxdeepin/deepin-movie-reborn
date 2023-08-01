@@ -438,7 +438,7 @@ mpv_handle *MpvProxy::mpv_init()
             process.waitForReadyRead();
 
             QString comStr = process.readAllStandardOutput();
-            comStr = comStr.right(4).left(2);
+            comStr = comStr.right(3).left(2);
             int version = comStr.toInt();
             if (version > 10) {
                 my_set_property(pHandle, "vo", "vaapi");
