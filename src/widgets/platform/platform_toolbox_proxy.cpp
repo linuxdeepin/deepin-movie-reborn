@@ -1360,7 +1360,6 @@ void Platform_ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     if (!pm.isNull()) {
         QPoint point { showPoint.x(), showPoint.y() };
         m_pPreviewer->updateWithPreview(pm, secs, m_pEngine->videoRotation());
-        m_pPreviewer->updateWithPreview(point);
     }
 }
 
