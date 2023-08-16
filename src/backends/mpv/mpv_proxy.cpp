@@ -443,8 +443,11 @@ mpv_handle *MpvProxy::mpv_init()
             if (version > 10) {
                 my_set_property(pHandle, "vo", "vaapi");
                 my_set_property(pHandle, "hwdec", "vaapi");
-            } else
+                m_sInitVo = "vaapi";
+            } else {
                 my_set_property(pHandle, "vo", "gpu");
+                m_sInitVo = "gpu";
+            }
         }
 #endif
         QDir innodir("/sys/bus/platform/drivers/inno-codec");
