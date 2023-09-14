@@ -4179,7 +4179,7 @@ void MainWindow::toggleUIMode()
         m_pCommHintWid->setAnchorPoint(QPoint(30, 58));
 	QRect tmp = m_lastRectInNormalMode;
         this->setMinimumSize(614, 500);
-        this->setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+        this->setMaximumSize(QSize(QWIDGETSIZE_MAX-1, QWIDGETSIZE_MAX-1));
         m_lastRectInNormalMode = tmp;
         setEnableSystemResize(true);
         if (m_nStateBeforeMiniMode & SBEM_Maximized) {
