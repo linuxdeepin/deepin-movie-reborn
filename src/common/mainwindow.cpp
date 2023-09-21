@@ -3353,6 +3353,11 @@ void MainWindow::wheelEvent(QWheelEvent *pEvent)
 
     if (pEvent->buttons() == Qt::NoButton && pEvent->modifiers() == Qt::NoModifier && m_pToolbox->getVolSliderIsHided()) {
         m_iAngleDelta = pEvent->angleDelta().y() ;
+        if( m_iAngleDelta < -240){     //对滚轮距离出现异常值时的约束处理
+            m_iAngleDelta = -120;
+        }else if(m_iAngleDelta > 240 ){
+            m_iAngleDelta = 120;
+        }
         requestAction(pEvent->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
     }
 }
