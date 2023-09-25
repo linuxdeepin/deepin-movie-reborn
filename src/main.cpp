@@ -120,9 +120,8 @@ int main(int argc, char *argv[])
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
 #endif
-    QFileInfo fi("/dev/mwv206_0");
     QFileInfo jmfi("/dev/jmgpu");
-    if ((fi.exists() || jmfi.exists())) {
+    if (jmfi.exists()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
     }
     /**
