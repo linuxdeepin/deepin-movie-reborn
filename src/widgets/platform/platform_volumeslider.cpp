@@ -352,6 +352,12 @@ void Platform_VolumeSlider::showEvent(QShowEvent *se)
 
     int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
     int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        x += 50;
+        y += 30;
+    }
+#endif
     QPoint p = _mw->mapToGlobal(QPoint(0, 0));
     QRect end(x + p.x(), y + p.y(), VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
     setGeometry(end);

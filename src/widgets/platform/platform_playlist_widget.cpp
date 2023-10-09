@@ -195,6 +195,41 @@ public:
         m_opacityEffect_1 = new QGraphicsOpacityEffect;
         _index->setGraphicsEffect(m_opacityEffect_1);
         setState(ItemState::Normal);
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        setFixedHeight(24);
+        _closeBtn->setIconSize(QSize(18, 18));
+        _closeBtn->setFixedSize(17, 17);
+        _name->setFixedHeight(24);
+        if (_thumb)
+            _thumb->setFixedSize(28, 16);
+        else
+            m_pSvgWidget->setFixedSize(28, 16);
+    }
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            setFixedHeight(36);
+            _closeBtn->setIconSize(QSize(28, 28));
+            _closeBtn->setFixedSize(25, 25);
+            _name->setFixedHeight(36);
+            if (_thumb)
+                _thumb->setFixedSize(42, 24);
+            else
+                m_pSvgWidget->setFixedSize(42, 24);
+        } else {
+            setFixedHeight(24);
+            _closeBtn->setIconSize(QSize(18, 18));
+            _closeBtn->setFixedSize(17, 17);
+            _name->setFixedHeight(24);
+            if (_thumb)
+                _thumb->setFixedSize(28, 16);
+            else
+                m_pSvgWidget->setFixedSize(28, 16);
+        }
+        updateClosePosition();
+    });
+#endif
     }
     
     ~Platform_PlayItemWidget() override
@@ -406,10 +441,6 @@ protected:
     }
     bool event(QEvent *ee) override
     {
-        if (ee->type() == QEvent::Resize) {
-            _name->setFixedHeight(36);
-        }
-
         if (ee->type() == QEvent::Move) {
         }
 
@@ -420,7 +451,6 @@ protected:
         _name->setText(utils::ElideText(_pif.mi.title, {width() - 242, 36}, QTextOption::NoWrap,
                                         _name->font(), Qt::ElideRight, 18, width() - 242));
         _name->setCursor(Qt::ArrowCursor);
-        _name->setFixedHeight(36);
     }
     void showEvent(QShowEvent *se) override
     {
@@ -771,6 +801,22 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
                 static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped), this, &Platform_PlaylistWidget::slotDoubleClickedItem);
 
     }
+
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            for (int i = 0; i < _playlist->count(); i++) {
+                QListWidgetItem *item = _playlist->item(i);
+                item->setSizeHint(QSize(_playlist->itemWidget(item)->width(), 36));
+            }
+        } else {
+            for (int i = 0; i < _playlist->count(); i++) {
+                QListWidgetItem *item = _playlist->item(i);
+                item->setSizeHint(QSize(_playlist->itemWidget(item)->width(), 24));
+            }
+        }
+    });
+#endif
 
     connect(&_engine->playlist(), &PlaylistModel::emptied, this, &Platform_PlaylistWidget::clear);
     connect(&_engine->playlist(), &PlaylistModel::itemsAppended, this, &Platform_PlaylistWidget::appendItems);

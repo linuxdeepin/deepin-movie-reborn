@@ -134,6 +134,11 @@ void NotificationWidget::popup(const QString &msg, bool flag)
         m_pMainLayout->addWidget(m_pMsgLabel);
     }
     setFixedHeight(30);
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        setFixedHeight(20);
+    }
+#endif
     m_pMsgLabel->setText(msg);
     show();
     raise();

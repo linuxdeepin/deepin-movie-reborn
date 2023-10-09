@@ -38,7 +38,10 @@ Settings::Settings()
 #if !defined (__x86_64__)
     m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
 #else
-    m_pSettings = DSettings::fromJsonFile(":/resources/data/settings.json");
+        if (CompositingManager::get().composited())
+            m_pSettings = DSettings::fromJsonFile(":/resources/data/settings.json");
+        else
+            m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
 #endif
     }
     m_pSettings->setBackend(pBackend);

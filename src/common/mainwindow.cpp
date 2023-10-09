@@ -166,9 +166,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
     pMainWid->setLayout(pLayout);
     DIconButton *pIconButton = new DIconButton(nullptr);
     pIconButton->setIcon(DStyle::SP_SelectElement);
-    pIconButton->setFixedHeight(40);
 
-    pLineEdit->setFixedHeight(40);
     pLineEdit->setObjectName("OptionSelectableLineEdit");
     pLineEdit->setText(pSettingOption->value().toString());
     QFontMetrics fontMetrics = pLineEdit->fontMetrics();
@@ -194,11 +192,9 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
 
     pMainWid->setMinimumWidth(240);
     QLabel *title = new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str()));
-    title->setFixedHeight(40);
     title->setContentsMargins(0, 0, 16, 0);
     pOptionLayout->addRow(title, pMainWid);
 
-    //auto optionWidget = settingWidget->createWidget(option);
     workaround_updateStyle(pOptionWidget, "light");
 
     DDialog *pPrompt = new DDialog(pMainWid);
@@ -827,6 +823,57 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_pEngine, &PlayerEngine::tracksChanged, this, &MainWindow::updateActionsState);
     connect(m_pEngine, &PlayerEngine::stateChanged, this, &MainWindow::updateActionsState);
     updateActionsState();
+
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        m_pTitlebar->setFixedHeight(40);
+        m_pMiniPlayBtn->setIconSize(QSize(19, 19));
+        m_pMiniPlayBtn->setFixedSize(QSize(23, 23));
+        m_pMiniCloseBtn->setIconSize(QSize(19, 19));
+        m_pMiniCloseBtn->setFixedSize(QSize(23, 23));
+        m_pMiniQuitMiniBtn->setIconSize(QSize(19, 19));
+        m_pMiniQuitMiniBtn->setFixedSize(QSize(23, 23));
+    }
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            m_pTitlebar->setFixedHeight(50);
+            m_pMiniPlayBtn->setIconSize(QSize(30, 30));
+            m_pMiniPlayBtn->setFixedSize(QSize(35, 35));
+            m_pMiniCloseBtn->setIconSize(QSize(30, 30));
+            m_pMiniCloseBtn->setFixedSize(QSize(35, 35));
+            m_pMiniQuitMiniBtn->setIconSize(QSize(30, 30));
+            m_pMiniQuitMiniBtn->setFixedSize(QSize(35, 35));
+        } else {
+            m_pTitlebar->setFixedHeight(40);
+            m_pMiniPlayBtn->setIconSize(QSize(19, 19));
+            m_pMiniPlayBtn->setFixedSize(QSize(23, 23));
+            m_pMiniCloseBtn->setIconSize(QSize(19, 19));
+            m_pMiniCloseBtn->setFixedSize(QSize(23, 23));
+            m_pMiniQuitMiniBtn->setIconSize(QSize(19, 19));
+            m_pMiniQuitMiniBtn->setFixedSize(QSize(23, 23));
+        }
+    });
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (m_bMiniMode) return;
+        m_pCommHintWid->hide();
+        if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened)
+            return;
+        QRect rfs = QRect(5, height() - TOOLBOX_HEIGHT - rect().top() - 5,
+                    rect().width() - 10, TOOLBOX_HEIGHT);
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            m_pToolbox->setGeometry(rfs);
+        } else {
+            int h = rfs.height() * 0.66;
+            int offect = rfs.height() - h;
+            rfs.setHeight(h);
+            rfs.moveTop(rfs.y() + offect);
+            m_pToolbox->setGeometry(rfs);
+        }
+        m_pToolbox->updateMircastWidget(rfs.topRight());
+    });
+#endif
 
     //勾选右键菜单默认选项
     reflectActionToUI(ActionFactory::ActionKind::OneTimes);
@@ -2789,6 +2836,16 @@ void MainWindow::updateProxyGeometry()
                 rfs = QRect(5, height() - TOOLBOX_HEIGHT - rect().top() - 5,
                             rect().width() - 10, TOOLBOX_HEIGHT);
             }
+
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        int h = rfs.height() * 0.66;
+        int offect = rfs.height() - h;
+        rfs.setHeight(h);
+        rfs.moveTop(rfs.y() + offect);
+    }
+#endif
+
             m_pToolbox->setGeometry(rfs);
             m_pToolbox->updateMircastWidget(rfs.topRight());
         }

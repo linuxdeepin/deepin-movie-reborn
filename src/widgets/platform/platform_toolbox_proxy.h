@@ -134,6 +134,24 @@ public:
     void setPressed(bool bPressed)
     {
         m_bIsPressed = bPressed;
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        if (bPressed)
+            resize(2, 42);
+        else
+            resize(6, 42);
+    } else {
+        if (bPressed)
+            resize(2, 60);
+        else
+            resize(6, 60);
+    }
+#else
+    if (bPressed)
+        resize(2, 60);
+    else
+        resize(6, 60);
+#endif
     }
 
 protected:
