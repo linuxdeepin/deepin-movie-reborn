@@ -450,6 +450,14 @@ mpv_handle *MpvProxy::mpv_init()
             }
         }
 #endif
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+            my_set_property(pHandle, "hwdec", "no");
+            my_set_property(pHandle, "vo", "x11");
+            my_set_property(pHandle, "video-sync", "desync");
+            my_set_property(pHandle, "profile", "sw-fast");
+            m_sInitVo = "x11";
+        }
+
         QDir innodir("/sys/bus/platform/drivers/inno-codec");
         if ( innodir.exists()) {
             my_set_property(pHandle, "vo", "gpu,x11");
@@ -497,6 +505,14 @@ mpv_handle *MpvProxy::mpv_init()
             m_sInitVo = "gpu,x11";
         }
 #endif
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+            my_set_property(pHandle, "hwdec", "no");
+            my_set_property(pHandle, "vo", "x11");
+            my_set_property(pHandle, "video-sync", "desync");
+            my_set_property(pHandle, "profile", "sw-fast");
+            m_sInitVo = "x11";
+        }
+
         QDir innodir("/sys/bus/platform/drivers/inno-codec");
         if ( innodir.exists()) {
             my_set_property(pHandle, "vo", "gpu,x11");
@@ -1210,6 +1226,14 @@ void MpvProxy::refreshDecode()
                 //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
             }
         }
+
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+            my_set_property(m_handle, "hwdec", "no");
+            my_set_property(m_handle, "vo", "x11");
+            my_set_property(m_handle, "video-sync", "desync");
+            my_set_property(m_handle, "profile", "sw-fast");
+            m_sInitVo = "x11";
+        }
     } else { //3.设置硬解
 #ifndef _LIBDMR_
 
@@ -1253,6 +1277,14 @@ void MpvProxy::refreshDecode()
         } else if (X100GPU.exists() && X100VPU.exists()) {
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
+        }
+
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+            my_set_property(m_handle, "hwdec", "no");
+            my_set_property(m_handle, "vo", "x11");
+            my_set_property(m_handle, "video-sync", "desync");
+            my_set_property(m_handle, "profile", "sw-fast");
+            m_sInitVo = "x11";
         }
 
         //play.conf
