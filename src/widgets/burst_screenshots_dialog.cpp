@@ -89,6 +89,36 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo &PlayItemInfo)
     pMainlayout->addLayout(pMainContent);
 
     setLayout(pMainlayout);
+
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        m_pTitlebar->setFixedSize(389, 33);
+        setFixedSize(396, 462);
+        m_pGrid->setHorizontalSpacing(8);
+        m_pGrid->setVerticalSpacing(10);
+        m_pSaveBtn->setFixedSize(46, 20);
+        pMainlayout->setContentsMargins(7, 0, 7, 10);
+    }
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            m_pTitlebar->setFixedSize(590, 50);
+            setFixedSize(600, 700);
+            m_pGrid->setHorizontalSpacing(12);
+            m_pGrid->setVerticalSpacing(15);
+            m_pSaveBtn->setFixedSize(70, 30);
+            layout()->setContentsMargins(10, 0, 10, 15);
+        } else {
+            m_pTitlebar->setFixedSize(389, 33);
+            setFixedSize(396, 462);
+            m_pGrid->setHorizontalSpacing(8);
+            m_pGrid->setVerticalSpacing(10);
+            m_pSaveBtn->setFixedSize(46, 20);
+            layout()->setContentsMargins(7, 0, 7, 10);
+        }
+        this->moveToCenter();
+    });
+#endif
 }
 
 /**
@@ -112,12 +142,38 @@ void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>>
 
         QPixmap pixmap = QPixmap::fromImage(image);
         pixmap = pixmap.scaled(size.width() - 2, size.height() - 2, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        pixmap.setDevicePixelRatio(devicePixelRatio);
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        pThumbnailFrame->setFixedSize(118, 67);
+        pixmap = pixmap.scaled(pixmap.width() * 0.66, pixmap.height() * 0.66, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        pixmap = utils::MakeRoundedPixmap(size*0.66, pixmap, 2, 2, frame.second);
+    } else {
         pixmap = utils::MakeRoundedPixmap(size, pixmap, 2, 2, frame.second);
-        pThumbnailFrame->setAlignment(Qt::AlignCenter);
-        pThumbnailFrame->setPixmap(pixmap);
-        m_pGrid->addWidget(pThumbnailFrame, nRowCount, nColumn);
-        nCount++;
+    }
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, pThumbnailFrame, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            pThumbnailFrame->setFixedSize(178, 100);
+            auto pixmap = pThumbnailFrame->pixmap();
+            auto new_pix = pixmap->scaled(178, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+//            new_pix = utils::MakeRoundedPixmap(QSize(180, 102), new_pix, 2, 2, frame.second);
+            pThumbnailFrame->setPixmap(new_pix);
+        } else {
+            pThumbnailFrame->setFixedSize(118, 67);
+            auto pixmap = pThumbnailFrame->pixmap();
+            auto new_pix = pixmap->scaled(118, 67, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+//            new_pix = utils::MakeRoundedPixmap(QSize(120, 69), new_pix, 2, 2, frame.second);
+            pThumbnailFrame->setPixmap(new_pix);
+        }
+    });
+#else
+        pixmap = utils::MakeRoundedPixmap(size, pixmap, 2, 2, frame.second);
+#endif
+    pixmap.setDevicePixelRatio(devicePixelRatio);
+    pThumbnailFrame->setAlignment(Qt::AlignCenter);
+    pThumbnailFrame->setPixmap(pixmap);
+    m_pGrid->addWidget(pThumbnailFrame, nRowCount, nColumn);
+    nCount++;
     }
 }
 

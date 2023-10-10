@@ -292,7 +292,25 @@ public:
         m_pViewProgBarLayout_black = new QHBoxLayout(m_pFront);
         m_pViewProgBarLayout_black->setContentsMargins(0, 5, 0, 5);
         m_pFront->setLayout(m_pViewProgBarLayout_black);
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        setFixedHeight(46);
+        m_pBack->setFixedHeight(40);
+        m_pFront->setFixedHeight(40);
+    }
 
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            setFixedHeight(70);
+            m_pBack->setFixedHeight(60);
+            m_pFront->setFixedHeight(60);
+        } else {
+            setFixedHeight(46);
+            m_pBack->setFixedHeight(40);
+            m_pFront->setFixedHeight(40);
+        }
+    });
+#endif
     }
 //    virtual ~ViewProgBar();
     void setIsBlockSignals(bool isBlockSignals)
@@ -352,19 +370,26 @@ public:
         /*这段代码将胶片添加到两个label中，一个label置灰，一个彩色，通过光标调整两个label的位置
          *以实现通过光标来显示播放过的位置
          */
-        const int nPixWidget = 40/*m_pProgBar->width() / 100*/;
+        int nPixWidget = 40/*m_pProgBar->width() / 100*/;
+        int npixHeight = 50;
+#ifdef DTKWIDGET_CLASS_DSizeMode
+            if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::SizeMode::CompactMode) {
+                nPixWidget = nPixWidget * 0.66;
+                npixHeight = npixHeight * 0.66;
+            }
+#endif
         m_nViewLength = (nPixWidget + 1) * pmList.count() - 1;
         m_nStartPoint = (m_pProgBar->width() - m_nViewLength) / 2; //开始位置
         for (int i = 0; i < pmList.count(); i++) {
             Platform_ImageItem *label = new Platform_ImageItem(pmList.at(i), false, m_pBack);
             label->setMouseTracking(true);
             label->move(i * (nPixWidget + 1) + m_nStartPoint, 5);
-            label->setFixedSize(nPixWidget, 50);
+            label->setFixedSize(nPixWidget, npixHeight);
 
             Platform_ImageItem *label_black = new Platform_ImageItem(pmBlackList.at(i), true, m_pFront);
             label_black->setMouseTracking(true);
             label_black->move(i * (nPixWidget + 1) + m_nStartPoint, 5);
-            label_black->setFixedSize(nPixWidget, 50);
+            label_black->setFixedSize(nPixWidget, npixHeight);
         }
         update();
     }
@@ -758,6 +783,11 @@ void Platform_viewProgBarLoad::loadViewProgBar(QSize size)
 {
     int pixWidget =  40;
     int num = int(m_pProgBar->width() / (40 + 1)); //number of thumbnails
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        num = int(m_pProgBar->width() / (26 + 1));
+    }
+#endif
     int tmp = (num == 0) ? 0: (m_pEngine->duration() * 1000) / num;
 
     QList<QPixmap> pmList;
@@ -1190,6 +1220,82 @@ void Platform_ToolboxProxy::setup()
     connect(m_pEngine, &PlayerEngine::fileLoaded, this, &Platform_ToolboxProxy::updateButtonStates);
     connect(&m_pEngine->playlist(), &PlaylistModel::countChanged, this, &Platform_ToolboxProxy::updateButtonStates);
     connect(m_pMainWindow, &Platform_MainWindow::initChanged, this, &Platform_ToolboxProxy::updateButtonStates);
+
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        m_pBotToolWgt->setFixedHeight((TOOLBOX_HEIGHT - 12)*0.66);
+        progBarspec->setContentsMargins(0, 0, 0, 0);
+        m_pBotSpec->setFixedHeight(20);
+        m_pPalyBox->setFixedWidth(79);
+        m_pPrevBtn->setIconSize(QSize(24, 24));
+        m_pPrevBtn->setFixedSize(26, 33);
+        m_pPlayBtn->setIconSize(QSize(24, 24));
+        m_pPlayBtn->setFixedSize(26, 33);
+        m_pNextBtn->setIconSize(QSize(24, 24));
+        m_pNextBtn->setFixedSize(26, 33);
+        m_pFullScreenBtn->setIconSize(QSize(24, 24));
+        m_pFullScreenBtn->setFixedSize(33, 33);
+        m_pVolBtn->setFixedSize(33, 33);
+        m_pMircastBtn->setIconSize(QSize(16, 16));
+        m_pMircastBtn->setFixedSize(33, 33);
+        m_pListBtn->setIconSize(QSize(24, 24));
+        m_pListBtn->setFixedSize(33, 33);
+    }
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            m_pBotToolWgt->setFixedHeight(TOOLBOX_HEIGHT - 12);
+            m_pBotSpec->setFixedHeight(30);
+            m_pPalyBox->setFixedWidth(120);
+            m_pPrevBtn->setIconSize(QSize(36, 36));
+            m_pPrevBtn->setFixedSize(40, 50);
+            m_pPlayBtn->setIconSize(QSize(36, 36));
+            m_pPlayBtn->setFixedSize(40, 50);
+            m_pNextBtn->setIconSize(QSize(36, 36));
+            m_pNextBtn->setFixedSize(40, 50);
+            m_pFullScreenBtn->setIconSize(QSize(36, 36));
+            m_pFullScreenBtn->setFixedSize(50, 50);
+            m_pVolBtn->setFixedSize(50, 50);
+            m_pMircastBtn->setIconSize(QSize(24, 24));
+            m_pMircastBtn->setFixedSize(50, 50);
+            m_pListBtn->setIconSize(QSize(36, 36));
+            m_pListBtn->setFixedSize(50, 50);
+        } else {
+            m_pBotToolWgt->setFixedHeight((TOOLBOX_HEIGHT - 12)*0.66);
+            m_pBotSpec->setFixedHeight(20);
+            m_pPalyBox->setFixedWidth(79);
+            m_pPrevBtn->setIconSize(QSize(24, 24));
+            m_pPrevBtn->setFixedSize(26, 33);
+            m_pPlayBtn->setIconSize(QSize(24, 24));
+            m_pPlayBtn->setFixedSize(26, 33);
+            m_pNextBtn->setIconSize(QSize(24, 24));
+            m_pNextBtn->setFixedSize(26, 33);
+            m_pFullScreenBtn->setIconSize(QSize(24, 24));
+            m_pFullScreenBtn->setFixedSize(33, 33);
+            m_pVolBtn->setFixedSize(33, 33);
+            m_pMircastBtn->setIconSize(QSize(16, 16));
+            m_pMircastBtn->setFixedSize(33, 33);
+            m_pListBtn->setIconSize(QSize(24, 24));
+            m_pListBtn->setFixedSize(33, 33);
+        }
+        if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+            if (m_bThumbnailmode) {  //如果进度条为胶片模式，重新加载缩略图并显示
+                if(CompositingManager::get().platform() == Platform::X86) {
+                    updateThumbnail();
+                }
+                updateMovieProgress();
+            }
+            m_pProgBar_Widget->setCurrentIndex(1);
+        }
+    });
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, progBarspec, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            progBarspec->setContentsMargins(0, 5, 0, 0);
+        } else {
+            progBarspec->setContentsMargins(0, 0, 0, 0);
+        }
+    });
+#endif
 
     updatePlayState();
     updateFullState();
@@ -1662,6 +1768,10 @@ void Platform_ToolboxProxy::slotPlayListStateChange(bool isShortcut)
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
+#ifdef DTKWIDGET_CLASS_DSizeMode
+        if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode)
+            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 37);
+#endif
         setGeometry(rcEnd);
         m_pListBtn->setChecked(true);
     } else {
@@ -1669,6 +1779,10 @@ void Platform_ToolboxProxy::slotPlayListStateChange(bool isShortcut)
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
+#ifdef DTKWIDGET_CLASS_DSizeMode
+        if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode)
+            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 37);
+#endif
         setGeometry(rcEnd);
         m_pListBtn->setChecked(false);
     }
@@ -2317,17 +2431,6 @@ void Platform_ToolboxProxy::resizeEvent(QResizeEvent *event)
             m_pPlaylist->endAnimation();
             m_pPaOpen->setDuration(0);
             m_pPaClose->setDuration(0);
-        }
-        //使偏移位置与初始化偏移的位置相同
-        int widthOffset = 0;
-        if (m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::State::Opened && m_bAnimationFinash == true) {
-            QRect r(widthOffset, m_pMainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - m_pMainWindow->rect().top() - widthOffset,
-                    m_pMainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
-            this->setGeometry(r);
-        } else if (m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::State::Closed && m_bAnimationFinash == true) {
-            QRect r(widthOffset, m_pMainWindow->height() - TOOLBOX_HEIGHT - m_pMainWindow->rect().top() - widthOffset,
-                    m_pMainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
-            this->setGeometry(r);
         }
 
         updateTimeLabel();

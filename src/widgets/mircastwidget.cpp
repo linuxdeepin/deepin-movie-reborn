@@ -63,12 +63,16 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     topWdiget->setFixedHeight(40);
     mainLayout->addWidget(topWdiget);
 
+    QHBoxLayout *topLayout = new QHBoxLayout;
+    topLayout->setContentsMargins(20, 8, 20, 0);
+    topWdiget->setLayout(topLayout);
+
     DLabel *projet = new DLabel(topWdiget);
     projet->setText(tr("Project to"));
-    projet->move(20, 8);
+    topLayout->addWidget(projet);
 
     m_refreshBtn = new RefreButtonWidget(topWdiget);
-    m_refreshBtn->move(206, 8);
+    topLayout->addWidget(m_refreshBtn);
     connect(m_refreshBtn, &RefreButtonWidget::buttonClicked, this, &MircastWidget::slotRefreshBtnClicked);
 
     QFrame *spliter = new QFrame(this);
@@ -106,6 +110,31 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     mainLayout->addWidget(m_mircastArea);
     m_mircastArea->hide();
     connect(m_listWidget, &ListWidget::connectDevice, this, &MircastWidget::slotConnectDevice);
+
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        m_refreshBtn->setFixedSize(16, 16);
+        topWdiget->setFixedHeight(26);
+        topLayout->setContentsMargins(20, 4, 20, 0);
+    }
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            m_refreshBtn->setFixedSize(24, 24);
+        } else {
+            m_refreshBtn->setFixedSize(16, 16);
+        }
+    });
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, topWdiget, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            topWdiget->setFixedHeight(40);
+            topWdiget->layout()->setContentsMargins(20, 8, 20, 0);
+        } else {
+            topWdiget->setFixedHeight(26);
+            topWdiget->layout()->setContentsMargins(20, 4, 20, 0);
+        }
+    });
+#endif
 
     mainLayout->addStretch();
     m_dlnaContentServer = nullptr;
@@ -580,6 +609,27 @@ RefreButtonWidget::RefreButtonWidget(QWidget *parent)
     m_refreBtn->setFixedSize(size());
     m_refreBtn->hide();
     mainLayout->addWidget(m_refreBtn);
+
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        m_spinner->setFixedSize(16, 16);
+        m_refreBtn->setFixedSize(16, 16);
+        m_refreBtn->setPixmap(QIcon::fromTheme("dcc_update").pixmap(QSize(16, 16)));
+    }
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            m_spinner->setFixedSize(24, 24);
+            m_refreBtn->setFixedSize(24, 24);
+            m_refreBtn->setPixmap(QIcon::fromTheme("dcc_update").pixmap(QSize(24, 24)));
+        } else {
+            m_spinner->setFixedSize(16, 16);
+            m_refreBtn->setFixedSize(16, 16);
+            m_refreBtn->setPixmap(QIcon::fromTheme("dcc_update").pixmap(QSize(16, 16)));
+        }
+    });
+#endif
+
 }
 
 void RefreButtonWidget::refershTimeout()
@@ -643,6 +693,20 @@ ItemWidget* ListWidget::createListeItem(MiracastDevice device, const QByteArray 
     m_items.append(itemWidget);
     layout()->addWidget(itemWidget);
     resize(MIRCASTWIDTH, count() * 34);
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        resize(MIRCASTWIDTH, count() * 25);
+    }
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            resize(MIRCASTWIDTH, count() * 34);
+        } else {
+            resize(MIRCASTWIDTH, count() * 25);
+        }
+        update();
+    });
+#endif
     return itemWidget;
 }
 
@@ -712,7 +776,7 @@ ItemWidget::ItemWidget(MiracastDevice device, const QByteArray &data, const QNet
         m_rotate += ROTATE_VALUE;
     });
     setToolTip(m_device.name);
-    setFixedSize(MIRCASTWIDTH, 34);
+    setFixedWidth(MIRCASTWIDTH);
     setAttribute(Qt::WA_TranslucentBackground, true);
     m_displayName = convertDisplay();
     GetDlnaXmlValue dlnaxml(m_data);
@@ -728,6 +792,20 @@ ItemWidget::ItemWidget(MiracastDevice device, const QByteArray &data, const QNet
         setProperty(controlURLPro, urlAddrProValue +strControlURL);
     }
     setProperty(friendlyNamePro, sName);
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        setFixedSize(MIRCASTWIDTH, 25);
+    }
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            setFixedSize(MIRCASTWIDTH, 34);
+        } else {
+            setFixedSize(MIRCASTWIDTH, 25);
+        }
+        update();
+    });
+#endif
 }
 
 void ItemWidget::clearSelect()
@@ -770,6 +848,15 @@ void ItemWidget::mousePressEvent(QMouseEvent *pEvent)
 void ItemWidget::paintEvent(QPaintEvent *pEvent)
 {
     Q_UNUSED(pEvent);
+    bool isCompactMode = false;
+    QPoint centerPos(218, 17);
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        isCompactMode = true;
+        centerPos.setX(226);
+        centerPos.setY(11);
+    }
+#endif
 
     QPainter paint(this);
     paint.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
@@ -785,9 +872,8 @@ void ItemWidget::paintEvent(QPaintEvent *pEvent)
         paint.fillPath(path, QBrush(QColor(0, 0, 0, 0.05 * 255)));
     }
     paint.setPen(TextColor);
-    paint.drawText(QRect(20, 7, 176, 20), m_displayName, QTextOption(Qt::AlignVCenter));
+    paint.drawText(QRect(20, (rect().height() - 20) / 2, 176, 20), m_displayName, QTextOption(Qt::AlignVCenter));
 
-    QPoint centerPos(218, 17);
     QIcon icon;
     switch (m_state) {
     case Normal:
@@ -799,7 +885,10 @@ void ItemWidget::paintEvent(QPaintEvent *pEvent)
         paint.save();
         paint.translate(centerPos);
         paint.rotate(m_rotate);
-        paint.drawPixmap(-12, -12, QPixmap(icon.pixmap(QSize(24, 24))));
+        if (!isCompactMode)
+            paint.drawPixmap(-12, -12, QPixmap(icon.pixmap(QSize(24, 24))));
+        else
+            paint.drawPixmap(-8, -8, QPixmap(icon.pixmap(QSize(16, 16))));
         paint.restore();
         update();
 
@@ -808,7 +897,11 @@ void ItemWidget::paintEvent(QPaintEvent *pEvent)
         QColor selectColor(Qt::black);
         if (m_selected) selectColor.setRgb(255, 255, 255);
         paint.setPen(QPen(selectColor, 2));
-        QList<QPointF> points = QList<QPointF>() << QPointF(214, 17) << QPointF(219, 22) << QPointF(227, 11);
+        QList<QPointF> points = QList<QPointF>();
+        if (!isCompactMode)
+            points << QPointF(214, 17) << QPointF(219, 22) << QPointF(227, 11);
+        else
+            points << QPointF(217, 16) << QPointF(220, 18) << QPointF(225, 10);
         QPainterPath path(points[0]);
         for (int i = 1; i < points.size(); i++) {
             path.lineTo(points[i]);

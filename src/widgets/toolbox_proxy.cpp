@@ -308,7 +308,6 @@ public:
         m_pFront->setContentsMargins(0, 0, 0, 0);
 
         m_pIndicator = new IndicatorItem(this);
-        m_pIndicator->resize(6, 60);
         m_pIndicator->setObjectName("indicator");
 
         m_pSliderTime = new SliderTime;
@@ -344,6 +343,26 @@ public:
         m_pViewProgBarLayout_black = new QHBoxLayout(m_pFront);
         m_pViewProgBarLayout_black->setContentsMargins(0, 5, 0, 5);
         m_pFront->setLayout(m_pViewProgBarLayout_black);
+
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        setFixedHeight(46);
+        m_pBack->setFixedHeight(40);
+        m_pFront->setFixedHeight(40);
+    }
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            setFixedHeight(70);
+            m_pBack->setFixedHeight(60);
+            m_pFront->setFixedHeight(60);
+        } else {
+            setFixedHeight(46);
+            m_pBack->setFixedHeight(40);
+            m_pFront->setFixedHeight(40);
+        }
+    });
+#endif
     }
 //    virtual ~ViewProgBar();
     void setIsBlockSignals(bool isBlockSignals)
@@ -403,19 +422,26 @@ public:
         /*这段代码将胶片添加到两个label中，一个label置灰，一个彩色，通过光标调整两个label的位置
          *以实现通过光标来显示播放过的位置
          */
-        const int nPixWidget = 40/*m_pProgBar->width() / 100*/;
+        int nPixWidget = 40/*m_pProgBar->width() / 100*/;
+        int npixHeight = 50;
+#ifdef DTKWIDGET_CLASS_DSizeMode
+            if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::SizeMode::CompactMode) {
+                nPixWidget = nPixWidget * 0.66;
+                npixHeight = npixHeight * 0.66;
+            }
+#endif
         m_nViewLength = (nPixWidget + 1) * pmList.count() - 1;
         m_nStartPoint = (m_pProgBar->width() - m_nViewLength) / 2; //开始位置
         for (int i = 0; i < pmList.count(); i++) {
             ImageItem *label = new ImageItem(pmList.at(i), false, m_pBack);
             label->setMouseTracking(true);
             label->move(i * (nPixWidget + 1) + m_nStartPoint, 5);
-            label->setFixedSize(nPixWidget, 50);
+            label->setFixedSize(nPixWidget, npixHeight);
 
             ImageItem *label_black = new ImageItem(pmBlackList.at(i), true, m_pFront);
             label_black->setMouseTracking(true);
             label_black->move(i * (nPixWidget + 1) + m_nStartPoint, 5);
-            label_black->setFixedSize(nPixWidget, 50);
+            label_black->setFixedSize(nPixWidget, npixHeight);
         }
         update();
     }
@@ -441,7 +467,6 @@ public:
         // 清除状态时还原初始显示状态
         m_bPress = false;
         m_pIndicator->setPressed(m_bPress);
-        m_pIndicator->resize(6, 60);
     }
 
     int getViewLength()
@@ -461,11 +486,9 @@ private:
 
         if (press) {
             m_pIndicator->setPressed(press);
-            m_pIndicator->resize(2, 60);
 
         } else {
             m_pIndicator->setPressed(press);
-            m_pIndicator->resize(6, 60);
         }
     }
 
@@ -811,6 +834,11 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 {
     int pixWidget =  40;
     int num = int(m_pProgBar->width() / (40 + 1)); //number of thumbnails
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        num = int(m_pProgBar->width() / (26 + 1));
+    }
+#endif
     int tmp = (num == 0) ? 0: (m_pEngine->duration() * 1000) / num;
 
     QList<QPixmap> pmList;
@@ -1023,6 +1051,7 @@ void ToolboxProxy::setup()
     QVBoxLayout *botv = new QVBoxLayout(bot_widget);
     botv->setContentsMargins(0, 0, 0, 0);
     botv->setSpacing(10);
+    botv->setAlignment(Qt::AlignVCenter);
 
     m_pBotSpec = new QWidget(bot_widget);
     m_pBotSpec->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -1038,6 +1067,7 @@ void ToolboxProxy::setup()
     QHBoxLayout *bot_layout = new QHBoxLayout(m_pBotToolWgt);
     bot_layout->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
     bot_layout->setSpacing(0);
+    bot_layout->setAlignment(Qt::AlignVCenter);
     m_pBotToolWgt->setLayout(bot_layout);
     botv->addWidget(m_pBotToolWgt);
 
@@ -1193,7 +1223,6 @@ void ToolboxProxy::setup()
 
     _right = new QHBoxLayout(m_pBotToolWgt);
     _right->setContentsMargins(0, 0, 0, 0);
-    _right->setSizeConstraint(QLayout::SetFixedSize);
     _right->setSpacing(0);
     bot_layout->addLayout(_right);
 
@@ -1315,6 +1344,75 @@ void ToolboxProxy::setup()
     connect(m_pEngine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::updateButtonStates);
     connect(&m_pEngine->playlist(), &PlaylistModel::countChanged, this, &ToolboxProxy::updateButtonStates);
     connect(m_pMainWindow, &MainWindow::initChanged, this, &ToolboxProxy::updateButtonStates);
+
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        m_pBotToolWgt->setFixedHeight((TOOLBOX_HEIGHT - 12)*0.66);
+        progBarspec->setContentsMargins(0, 0, 0, 0);
+        m_pBotSpec->setFixedHeight(20);
+        m_pPalyBox->setFixedWidth(79);
+        m_pPrevBtn->setIconSize(QSize(24, 24));
+        m_pPrevBtn->setFixedSize(26, 33);
+        m_pPlayBtn->setIconSize(QSize(24, 24));
+        m_pPlayBtn->setFixedSize(26, 33);
+        m_pNextBtn->setIconSize(QSize(24, 24));
+        m_pNextBtn->setFixedSize(26, 33);
+        m_pFullScreenBtn->setIconSize(QSize(24, 24));
+        m_pFullScreenBtn->setFixedSize(33, 33);
+        m_pVolBtn->setFixedSize(33, 33);
+        m_pMircastBtn->setIconSize(QSize(16, 16));
+        m_pMircastBtn->setFixedSize(33, 33);
+        m_pListBtn->setIconSize(QSize(24, 24));
+        m_pListBtn->setFixedSize(33, 33);
+    }
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            m_pBotToolWgt->setFixedHeight(TOOLBOX_HEIGHT - 12);
+            m_pBotSpec->setFixedHeight(30);
+            m_pPalyBox->setFixedWidth(120);
+            m_pPrevBtn->setIconSize(QSize(36, 36));
+            m_pPrevBtn->setFixedSize(40, 50);
+            m_pPlayBtn->setIconSize(QSize(36, 36));
+            m_pPlayBtn->setFixedSize(40, 50);
+            m_pNextBtn->setIconSize(QSize(36, 36));
+            m_pNextBtn->setFixedSize(40, 50);
+            m_pFullScreenBtn->setIconSize(QSize(36, 36));
+            m_pFullScreenBtn->setFixedSize(50, 50);
+            m_pVolBtn->setFixedSize(50, 50);
+            m_pMircastBtn->setIconSize(QSize(24, 24));
+            m_pMircastBtn->setFixedSize(50, 50);
+            m_pListBtn->setIconSize(QSize(36, 36));
+            m_pListBtn->setFixedSize(50, 50);
+        } else {
+            m_pBotToolWgt->setFixedHeight((TOOLBOX_HEIGHT - 12)*0.66);
+            m_pBotSpec->setFixedHeight(20);
+            m_pPalyBox->setFixedWidth(79);
+            m_pPrevBtn->setIconSize(QSize(24, 24));
+            m_pPrevBtn->setFixedSize(26, 33);
+            m_pPlayBtn->setIconSize(QSize(24, 24));
+            m_pPlayBtn->setFixedSize(26, 33);
+            m_pNextBtn->setIconSize(QSize(24, 24));
+            m_pNextBtn->setFixedSize(26, 33);
+            m_pFullScreenBtn->setIconSize(QSize(24, 24));
+            m_pFullScreenBtn->setFixedSize(33, 33);
+            m_pVolBtn->setFixedSize(33, 33);
+            m_pMircastBtn->setIconSize(QSize(16, 16));
+            m_pMircastBtn->setFixedSize(33, 33);
+            m_pListBtn->setIconSize(QSize(24, 24));
+            m_pListBtn->setFixedSize(33, 33);
+        }
+        updateThumbnail();
+        updateMovieProgress();
+    });
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, progBarspec, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            progBarspec->setContentsMargins(0, 5, 0, 0);
+        } else {
+            progBarspec->setContentsMargins(0, 0, 0, 0);
+        }
+    });
+#endif
 
     updatePlayState();
     updateFullState();
@@ -1793,7 +1891,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
             }
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
+            rcEnd.setY(194);
             m_bAnimationFinash = false;
             m_pPaOpen = new QPropertyAnimation(this, "geometry");
             m_pPaOpen->setEasingCurve(QEasingCurve::Linear);
@@ -1806,11 +1904,16 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
             Q_UNUSED(isShortcut);
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
+            rcEnd.setY(194);
             setGeometry(rcEnd);
             m_pListBtn->setChecked(true);
         }
     } else {
+        int y = 515;
+#ifdef DTKWIDGET_CLASS_DSizeMode
+        if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode)
+            y = 543;
+#endif
         if(CompositingManager::get().platform() == Platform::X86) {
             m_bAnimationFinash = false;
 
@@ -1823,7 +1926,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
 
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
+            rcEnd.setY(y);
             m_pPaClose = new QPropertyAnimation(this, "geometry");
             m_pPaClose->setEasingCurve(QEasingCurve::Linear);
             m_pPaClose->setDuration(POPUP_DURATION);
@@ -1835,7 +1938,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
             Q_UNUSED(isShortcut);
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
+            rcEnd.setY(y);
             setGeometry(rcEnd);
             m_pListBtn->setChecked(false);
         }
