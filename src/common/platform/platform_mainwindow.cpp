@@ -3201,15 +3201,15 @@ void Platform_MainWindow::slotUrlpause(bool bStatus)
 
 void Platform_MainWindow::slotFontChanged(const QFont &/*font*/)
 {
-#ifndef __mips__
-    QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
-    m_pToolbox->getfullscreentimeLabel()->setMinimumWidth(fm.width(m_pToolbox->getfullscreentimeLabel()->text()));
-    m_pToolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.width(m_pToolbox->getfullscreentimeLabelend()->text()));
+    if (CompositingManager::get().platform() != Platform::Mips) {
+        QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+        m_pToolbox->getfullscreentimeLabel()->setMinimumWidth(fm.width(m_pToolbox->getfullscreentimeLabel()->text()));
+        m_pToolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.width(m_pToolbox->getfullscreentimeLabelend()->text()));
 
-    int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
-    QRect deskRect = QApplication::desktop()->availableGeometry();
-    m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
-#endif
+        int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
+        QRect deskRect = QApplication::desktop()->availableGeometry();
+        m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
+    }
 }
 
 void Platform_MainWindow::slotMuteChanged(bool bMute)
