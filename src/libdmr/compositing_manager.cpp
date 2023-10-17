@@ -371,7 +371,7 @@ void CompositingManager::softDecodeCheck()
         m_bHasCard = true;
     }
 
-    m_setSpecialControls = m_boardVendor.contains("Ruijie");
+    m_setSpecialControls = m_boardVendor.contains("PHYTIUM");
 
     //判断N卡驱动版本
     QFile nvidiaVersion("/proc/driver/nvidia/version");
