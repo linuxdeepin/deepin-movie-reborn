@@ -18,6 +18,11 @@ void set_wayland(bool);
 bool IsNamesSimilar(const QString &s1, const QString &s2);
 QFileInfoList FindSimilarFiles(const QFileInfo &fi);
 QString FastFileHash(const QFileInfo &fi);
+/**
+ * @brief FullFileHash 对整个文件做hash运算
+ * @param fi 文件信息
+ * @return 十六进制表示的MD5 hash值
+ */
 QString FullFileHash(const QFileInfo &fi);
 
 QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation = 0);
