@@ -98,6 +98,7 @@ CompositingManager::CompositingManager()
 {
     initMember();
     bool isDriverLoaded = isDriverLoadedCorrectly();
+    setProperty("directRendering", isDriverLoaded); //是否支持直接渲染
     softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
 //    bool isI915 = false;
