@@ -405,8 +405,13 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "video-sync", "desync");
         }
         if (!fi.exists() && !jmfi.exists() && !mtfi.exists()) {
-            my_set_property(pHandle, "vo", "gpu,x11");
-            m_sInitVo = "gpu,x11";
+            if(CompositingManager::get().property("directRendering").toBool()) {
+                my_set_property(pHandle, "vo", "gpu,x11");
+                m_sInitVo = "gpu,x11";
+            } else {
+                my_set_property(pHandle, "vo", "x11");
+                m_sInitVo = "x11";
+            }
         }
 #elif defined (__sw_64__)
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
@@ -506,8 +511,13 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "video-sync", "desync");
         }
         if (!fi.exists() && !jmfi.exists()) {
-            my_set_property(pHandle, "vo", "gpu,x11");
-            m_sInitVo = "gpu,x11";
+            if(CompositingManager::get().property("directRendering").toBool()) {
+                my_set_property(pHandle, "vo", "gpu,x11");
+                m_sInitVo = "gpu,x11";
+            } else {
+                my_set_property(pHandle, "vo", "x11");
+                m_sInitVo = "x11";
+            }
         }
 #endif
         if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
