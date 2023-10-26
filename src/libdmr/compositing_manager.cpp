@@ -505,7 +505,9 @@ bool CompositingManager::isDriverLoadedCorrectly()
     static QRegExp regCX4("loading driver: cx4");
     static QRegExp arise("loading driver: arise");
     static QRegExp controller("1ec8");
-
+#if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
+    static QRegExp rendering("direct rendering");
+#endif
     QString xorglog = QString("/var/log/Xorg.%1.log").arg(QX11Info::appScreen());
     qInfo() << "check " << xorglog;
     QFile f(xorglog);
@@ -526,7 +528,12 @@ bool CompositingManager::isDriverLoadedCorrectly()
             qInfo() << "dri enabled successfully";
             return true;
         }
-
+#if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
+        if (rendering.indexIn(ln.toLower()) != -1) {
+            qInfo() << "_loongarch dri enabled successfully";
+            return true;
+        }
+#endif
         if (swrast.indexIn(ln) != -1) {
             qInfo() << "swrast driver used";
             return false;
@@ -542,6 +549,9 @@ bool CompositingManager::isDriverLoadedCorrectly()
         }
     }
     f.close();
+#if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
+    return false;
+#endif
     return true;
 }
 
