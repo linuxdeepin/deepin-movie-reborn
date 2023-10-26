@@ -21,10 +21,25 @@ namespace dmr {
         setOnButtonClickedClose(false);
         setDefaultButton(1);
         setIcon(QIcon::fromTheme("deepin-movie"));
-        setMessage(QApplication::translate("UrlDialog", "Please enter the URL:"));
 
-        m_lineEdit = new LineEdit(this);
-        addContent(m_lineEdit);
+        QLabel* m_messageLabel=new QLabel;
+        m_messageLabel->setText(QApplication::translate("UrlDialog", "Please enter the URL:"));
+        m_messageLabel->setAlignment(Qt::AlignHCenter|Qt::AlignBottom);
+        m_lineEdit = new LineEdit;
+
+        /**
+         * m_widget包含一个垂直布局
+         * 存放了m_messageLabel和m_lineEdit
+         */
+        QWidget* m_widget=new QWidget;
+        QVBoxLayout* m_contentLayout=new QVBoxLayout;
+        m_contentLayout->setSpacing(10);
+        m_contentLayout->setContentsMargins({0,0,0,0});
+        m_contentLayout->addWidget(m_messageLabel);
+        m_contentLayout->addWidget(m_lineEdit);
+        m_widget->setLayout(m_contentLayout);
+        addContent(m_widget);
+
         m_lineEdit->setFocusPolicy(Qt::StrongFocus);
         this->setFocusProxy(m_lineEdit);
 
