@@ -324,6 +324,9 @@ public:
         }
         if (!_pif.url.isLocalFile() || _pif.info.exists()) {
             emit doubleClicked();
+        }else{
+            //fixed:影院循环播放10个smb上的视频一段时间后，点击播放按钮或点击列表中的视频没反应
+            emit _playlist->engine()->sigInvalidFile(QFileInfo(_pif.url.toLocalFile()).fileName());
         }
     }
 

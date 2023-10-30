@@ -114,7 +114,14 @@ public:
      * @param atr true为执行，false为跳过
      */
     void resetFocusAttribute(bool &atr);
-
+    /**
+     * @brief 返回_engine
+     * PlayItemWidget类中的文件url无效时，需要给用户提示。需要通过PlayerEngine给MainWindow发送信号
+     * @return engine的指针
+     */
+    inline PlayerEngine *engine() noexcept{
+        return _engine;
+    }
 signals:
     void stateChange(bool isShortcut);
     void sizeChange();
