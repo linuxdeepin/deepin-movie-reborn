@@ -1349,6 +1349,13 @@ void Platform_PlaylistWidget::togglePopup(bool isShortcut)
     fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10) + 5),
                   view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
 
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_DSIZEMODE_HEIGHT + 10) + 5),
+                      view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
+    }
+#endif
+
     QRect shrunk = fixed;
     shrunk.setHeight(0);
     shrunk.moveBottom(fixed.bottom());
