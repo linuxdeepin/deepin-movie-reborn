@@ -395,6 +395,12 @@ public:
     ToolButton *fsBtn() {return m_pFullScreenBtn;}
     VolumeButton *volBtn() {return m_pVolBtn;}
     void setThumbnailmode(bool is_thumbnailmode) {m_bThumbnailmode = is_thumbnailmode;}
+    /**
+     * @brief 在紧凑模式正常模式之间切换的时候调用
+     */
+    inline void dSizeModeChanged() noexcept {
+        m_bDsizeModeChanged = !m_bDsizeModeChanged;
+    }
 
 public slots:
     /**
@@ -658,6 +664,7 @@ private:
     bool m_bAnimationFinash;        ///动画是否完成
     bool m_bCanPlay;                ///判断是否能进行曲目切换的标志位
     bool m_bSetListBtnFocus;        ///设置播放列表按钮焦点标志位
+    bool m_bDsizeModeChanged;       ///是否在正常模式和紧凑模式之间切换，主要用于播放列表的升降
 
     float m_processAdd;
 };
@@ -751,6 +758,8 @@ private:
 #define TOOLBOX_TOP_EXTENT  0
 #define TOOLBOX_SPACE_HEIGHT 314
 #define TOOLBOX_HEIGHT  80
+/*紧凑模式下toolbox的高度*/
+#define TOOLBOX_DSIZEMODE_HEIGHT 50
 #define TOOLBOX_HEIGHT_EXT (TOOLBOX_HEIGHT + TOOLBOX_TOP_EXTENT)
 #define TOOLBOX_BUTTON_WIDTH 50
 #define TOOLBOX_BUTTON_HEIGHT 50

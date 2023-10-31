@@ -856,6 +856,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        m_pToolbox->dSizeModeChanged();
         if (m_bMiniMode) return;
         m_pCommHintWid->hide();
         if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened)

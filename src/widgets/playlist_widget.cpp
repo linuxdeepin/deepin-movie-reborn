@@ -1344,15 +1344,21 @@ void PlaylistWidget::togglePopup(bool isShortcut)
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 #endif
 
+    int toolbox_height=TOOLBOX_HEIGHT;
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        toolbox_height = TOOLBOX_DSIZEMODE_HEIGHT;
+    }
+#endif
+
     QRect fixed;
     if(CompositingManager::get().platform() == X86) {
-        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
+        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height + 10)),
                       view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
-
     }
     else {
-        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10) + 5),
-                             view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
+        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height + 10) + 5),
+                      view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
     }
 
     QRect shrunk = fixed;

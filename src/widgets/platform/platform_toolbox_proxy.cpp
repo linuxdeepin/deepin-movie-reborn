@@ -1383,6 +1383,7 @@ void Platform_ToolboxProxy::initMember()
     m_bAnimationFinash = true;
     m_bCanPlay = false;
     m_bSetListBtnFocus = false;
+    m_bDsizeModeChanged = false;
 }
 
 /**
@@ -1763,6 +1764,7 @@ void Platform_ToolboxProxy::slotPlayListStateChange(bool isShortcut)
 
     closeAnyPopup();
     if (m_pPlaylist->state() == Platform_PlaylistWidget::State::Opened) {
+        m_bDsizeModeChanged = false;
         //窗口绑定渲染不展示动画,故按键状态不做限制
         Q_UNUSED(isShortcut);
         QRect rcBegin = this->geometry();
@@ -1780,11 +1782,18 @@ void Platform_ToolboxProxy::slotPlayListStateChange(bool isShortcut)
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
 #ifdef DTKWIDGET_CLASS_DSizeMode
-        if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode)
-            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 37);
+        constexpr int8_t height_diff = static_cast<int8_t>(TOOLBOX_HEIGHT - TOOLBOX_DSIZEMODE_HEIGHT);
+        int y = 0;
+        if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode){
+            y= m_bDsizeModeChanged ? (rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7 + height_diff) : (rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 37);
+        } else {
+            y= m_bDsizeModeChanged ? (rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 37 - height_diff) : (rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
+        }
+        rcEnd.setY(y);
 #endif
         setGeometry(rcEnd);
         m_pListBtn->setChecked(false);
+        m_bDsizeModeChanged = false;
     }
 }
 

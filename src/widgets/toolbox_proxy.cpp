@@ -1499,6 +1499,7 @@ void ToolboxProxy::initMember()
     m_bAnimationFinash = true;
     m_bCanPlay = false;
     m_bSetListBtnFocus = false;
+    m_bDsizeModeChanged = false;
 }
 
 /**
@@ -1825,7 +1826,7 @@ void ToolboxProxy::slotFileLoaded()
         if(nIndex == -1) return;
         if(nIndex < nNextIndex && !sNextVideoName.isNull()) {
             m_pMainWindow->play({sNextVideoName});
-        } else{
+        } else {
             bool isNext = true;
             for(int i = nIndex; i < lstItemInfo.count(); i++) {
                 PlayItemInfo iteminfo = lstItemInfo.at(i);
@@ -1881,6 +1882,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
 
     closeAnyPopup();
     if (m_pPlaylist->state() == PlaylistWidget::State::Opened) {
+        m_bDsizeModeChanged = false;
         //非x86平台播放列表切换不展示动画,故按键状态不做限制
         if(CompositingManager::get().platform() == Platform::X86) {
             if (isShortcut && m_pListBtn->isChecked()) {
@@ -1891,7 +1893,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
             }
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
-            rcEnd.setY(194);
+            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
             m_bAnimationFinash = false;
             m_pPaOpen = new QPropertyAnimation(this, "geometry");
             m_pPaOpen->setEasingCurve(QEasingCurve::Linear);
@@ -1904,16 +1906,11 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
             Q_UNUSED(isShortcut);
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
-            rcEnd.setY(194);
+            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
             setGeometry(rcEnd);
             m_pListBtn->setChecked(true);
         }
     } else {
-        int y = 515;
-#ifdef DTKWIDGET_CLASS_DSizeMode
-        if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode)
-            y = 543;
-#endif
         if(CompositingManager::get().platform() == Platform::X86) {
             m_bAnimationFinash = false;
 
@@ -1926,7 +1923,20 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
 
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
-            rcEnd.setY(y);
+            if(m_bDsizeModeChanged){
+                constexpr int8_t height_diff = static_cast<int8_t>(TOOLBOX_HEIGHT - TOOLBOX_DSIZEMODE_HEIGHT);
+                int y = rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7;
+#ifdef DTKWIDGET_CLASS_DSizeMode
+                if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+                    y =  rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7 + height_diff;
+                } else {
+                    y =  rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7 - height_diff;
+                }
+#endif
+                rcEnd.setY(y);
+            } else {
+                rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
+            }
             m_pPaClose = new QPropertyAnimation(this, "geometry");
             m_pPaClose->setEasingCurve(QEasingCurve::Linear);
             m_pPaClose->setDuration(POPUP_DURATION);
@@ -1938,10 +1948,21 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
             Q_UNUSED(isShortcut);
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
-            rcEnd.setY(y);
+            if(m_bDsizeModeChanged){
+                int8_t height_diff = static_cast<int>(TOOLBOX_HEIGHT - TOOLBOX_DSIZEMODE_HEIGHT);
+#ifdef DTKWIDGET_CLASS_DSizeMode
+                if (DGuiApplicationHelper::instance()->sizeMode() != DGuiApplicationHelper::CompactMode) {
+                    height_diff = -height_diff;
+                }
+#endif
+                rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7 + height_diff);
+            } else {
+                rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
+            }
             setGeometry(rcEnd);
             m_pListBtn->setChecked(false);
         }
+        m_bDsizeModeChanged = false;
     }
 }
 
