@@ -467,8 +467,8 @@ namespace dmr {
         connect(window()->windowHandle(), &QWindow::windowStateChanged, [=]() {
             QWidget* pTopWid = this->topLevelWidget();
             bool rounded = !pTopWid->isFullScreen() && !pTopWid->isMaximized();
-            //PANGU M900
-            if(this->property("hardware").toString().contains("PANGU M900", Qt::CaseInsensitive)) {
+            //wayland
+            if(utils::check_wayland_env()) {
                 rounded = true;
             }
             toggleRoundedClip(rounded);
@@ -754,19 +754,6 @@ namespace dmr {
         m_renderContexRender = nullptr;
         m_renderContextUpdate = nullptr;
         m_bRawFormat = false;
-        QDBusInterface systemInfoInterface("com.deepin.daemon.SystemInfo",
-                                           "/com/deepin/daemon/SystemInfo",
-                                           "org.freedesktop.DBus.Properties",
-                                           QDBusConnection::sessionBus());
-        qDebug() << "systemInfoInterface.isValid: " << systemInfoInterface.isValid();
-        QDBusMessage replyCpu = systemInfoInterface.call("Get", "com.deepin.daemon.SystemInfo", "CPUHardware");
-        QList<QVariant> outArgsCPU = replyCpu.arguments();
-        QString CPUHardware = "";
-        if (outArgsCPU.count()) {
-            CPUHardware = outArgsCPU.at(0).value<QDBusVariant>().variant().toString();
-            qInfo() << __FUNCTION__ << __LINE__ << "Current CPUHardware: " << CPUHardware;
-        }
-        setProperty("hardware", CPUHardware);
     }
 
     /*not used yet*/
