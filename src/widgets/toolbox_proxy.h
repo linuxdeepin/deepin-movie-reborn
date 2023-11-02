@@ -396,12 +396,6 @@ public:
     VolumeButton *volBtn() {return m_pVolBtn;}
     void setThumbnailmode(bool is_thumbnailmode) {m_bThumbnailmode = is_thumbnailmode;}
     MircastWidget *getMircastWidget() {return m_mircastWidget;}
-    /**
-     * @brief 在紧凑模式正常模式之间切换的时候调用
-     */
-    inline void dSizeModeChanged() noexcept {
-        m_bDsizeModeChanged = !m_bDsizeModeChanged;
-    }
 
 public slots:
     /**
@@ -526,7 +520,7 @@ protected slots:
      */
     void slotApplicationStateChanged(Qt::ApplicationState e);
     /**
-     * @brief slotPlayListStateChange 播放列表状态变化槽函数
+     * @brief slotPlayListStateChange 播放列表状态变化槽函数,仅playlist_widget升起或者降下的时候被调用
      */
     void slotPlayListStateChange(bool isShortcut);
     /**
@@ -662,7 +656,6 @@ private:
     bool m_bAnimationFinash;        ///动画是否完成
     bool m_bCanPlay;                ///判断是否能进行曲目切换的标志位
     bool m_bSetListBtnFocus;        ///设置播放列表按钮焦点标志位
-    bool m_bDsizeModeChanged;       ///是否在正常模式和紧凑模式之间切换，主要用于播放列表的升降
 
     float m_processAdd;
 };

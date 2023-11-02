@@ -1336,7 +1336,10 @@ void Platform_PlaylistWidget::togglePopup(bool isShortcut)
     if (paOpen != nullptr || paClose != nullptr) {
         return ;
     }
-
+/**
+ * 此处在动画执行前设定好Platform_PlaylistWidget起始位置和终止位置
+ * 基于 Platform_MainWindow::updateProxyGeometry 所设置的初始状态 以及 是否是紧凑模式 定位Platform_PlaylistWidget的起始位置和终止位置。
+*/
     QRect main_rect = _mw->rect();
 #ifdef USE_DXCB
     QRect view_rect = main_rect;
@@ -1344,17 +1347,17 @@ void Platform_PlaylistWidget::togglePopup(bool isShortcut)
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 #endif
 
-    QRect fixed;
-    // y坐标下移5个像素点,避免播放列表上部超出toolbox范围
-    fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10) + 5),
-                  view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
-
+    int toolbox_height = TOOLBOX_HEIGHT;
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
-        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_DSIZEMODE_HEIGHT + 10) + 5),
-                      view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
+        toolbox_height = TOOLBOX_DSIZEMODE_HEIGHT;
     }
 #endif
+
+    QRect fixed;
+    // y坐标下移5个像素点,避免播放列表上部超出toolbox范围
+    fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height + 10) + 5),
+                  view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
 
     QRect shrunk = fixed;
     shrunk.setHeight(0);

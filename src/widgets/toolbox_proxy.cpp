@@ -1499,7 +1499,6 @@ void ToolboxProxy::initMember()
     m_bAnimationFinash = true;
     m_bCanPlay = false;
     m_bSetListBtnFocus = false;
-    m_bDsizeModeChanged = false;
 }
 
 /**
@@ -1877,12 +1876,32 @@ void ToolboxProxy::slotApplicationStateChanged(Qt::ApplicationState e)
 void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
 {
     if (m_bAnimationFinash == false) {
-        return ;
+        return;
     }
 
     closeAnyPopup();
+
+/**
+ * 此处在动画执行前设定好ToolboxProxy的起始位置和终止位置
+ * 基于 MainWindow::updateProxyGeometry所设置的初始状态 以及 是否是紧凑模式 定位ToolboxProxy的起始位置和终止位置
+*/
+    QRect rc_view=m_pMainWindow->rect();
+    QRect rc_opened;
+    rc_opened = QRect(5, rc_view.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - rc_view.top() - 5,
+                      rc_view.width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
+    QRect rc_closed = QRect(5, rc_view.height() - TOOLBOX_HEIGHT - rc_view.top() - 5,
+                            rc_view.width() - 10, TOOLBOX_HEIGHT);
+
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        rc_opened = QRect(5, rc_view.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_DSIZEMODE_HEIGHT) - rc_view.top() - 5,
+                          rc_view.width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_DSIZEMODE_HEIGHT + 7));
+        rc_closed = QRect(5, rc_view.height() - TOOLBOX_DSIZEMODE_HEIGHT - rc_view.top() - 5,
+                                rc_view.width() - 10, TOOLBOX_DSIZEMODE_HEIGHT);
+    }
+#endif  
+
     if (m_pPlaylist->state() == PlaylistWidget::State::Opened) {
-        m_bDsizeModeChanged = false;
         //非x86平台播放列表切换不展示动画,故按键状态不做限制
         if(CompositingManager::get().platform() == Platform::X86) {
             if (isShortcut && m_pListBtn->isChecked()) {
@@ -1891,23 +1910,18 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
                 m_pListBtn->setChecked(true);
                 m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
             }
-            QRect rcBegin = this->geometry();
-            QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
+
             m_bAnimationFinash = false;
             m_pPaOpen = new QPropertyAnimation(this, "geometry");
             m_pPaOpen->setEasingCurve(QEasingCurve::Linear);
             m_pPaOpen->setDuration(POPUP_DURATION) ;
-            m_pPaOpen->setStartValue(rcBegin);
-            m_pPaOpen->setEndValue(rcEnd);
+            m_pPaOpen->setStartValue(rc_closed);
+            m_pPaOpen->setEndValue(rc_opened);
             m_pPaOpen->start();
             connect(m_pPaOpen, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
         } else {
             Q_UNUSED(isShortcut);
-            QRect rcBegin = this->geometry();
-            QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
-            setGeometry(rcEnd);
+            setGeometry(rc_opened);
             m_pListBtn->setChecked(true);
         }
     } else {
@@ -1920,49 +1934,18 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
                 m_pListBtn->setChecked(false);
                 m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
             }
-
-            QRect rcBegin = this->geometry();
-            QRect rcEnd = rcBegin;
-            if(m_bDsizeModeChanged){
-                constexpr int8_t height_diff = static_cast<int8_t>(TOOLBOX_HEIGHT - TOOLBOX_DSIZEMODE_HEIGHT);
-                int y = rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7;
-#ifdef DTKWIDGET_CLASS_DSizeMode
-                if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
-                    y =  rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7 + height_diff;
-                } else {
-                    y =  rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7 - height_diff;
-                }
-#endif
-                rcEnd.setY(y);
-            } else {
-                rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
-            }
             m_pPaClose = new QPropertyAnimation(this, "geometry");
             m_pPaClose->setEasingCurve(QEasingCurve::Linear);
             m_pPaClose->setDuration(POPUP_DURATION);
-            m_pPaClose->setStartValue(rcBegin);
-            m_pPaClose->setEndValue(rcEnd);
+            m_pPaClose->setStartValue(rc_opened);
+            m_pPaClose->setEndValue(rc_closed);
             m_pPaClose->start();
             connect(m_pPaClose, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
         } else {
             Q_UNUSED(isShortcut);
-            QRect rcBegin = this->geometry();
-            QRect rcEnd = rcBegin;
-            if(m_bDsizeModeChanged){
-                int8_t height_diff = static_cast<int>(TOOLBOX_HEIGHT - TOOLBOX_DSIZEMODE_HEIGHT);
-#ifdef DTKWIDGET_CLASS_DSizeMode
-                if (DGuiApplicationHelper::instance()->sizeMode() != DGuiApplicationHelper::CompactMode) {
-                    height_diff = -height_diff;
-                }
-#endif
-                rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7 + height_diff);
-            } else {
-                rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
-            }
-            setGeometry(rcEnd);
+            setGeometry(rc_closed);
             m_pListBtn->setChecked(false);
         }
-        m_bDsizeModeChanged = false;
     }
 }
 

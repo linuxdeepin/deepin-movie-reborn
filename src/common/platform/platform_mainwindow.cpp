@@ -882,23 +882,9 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     });
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
-        m_pToolbox->dSizeModeChanged();
         if (m_bMiniMode) return;
         m_pCommHintWid->hide();
-        if (m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::State::Opened)
-            return;
-        QRect rfs = QRect(5, height() - TOOLBOX_HEIGHT - rect().top() - 5,
-                    rect().width() - 10, TOOLBOX_HEIGHT);
-        if (sizeMode == DGuiApplicationHelper::NormalMode) {
-            m_pToolbox->setGeometry(rfs);
-        } else {
-            int h = rfs.height() * 0.66;
-            int offect = rfs.height() - h;
-            rfs.setHeight(h);
-            rfs.moveTop(rfs.y() + offect);
-            m_pToolbox->setGeometry(rfs);
-        }
-        m_pToolbox->updateMircastWidget(rfs.topRight());
+        updateProxyGeometry();
     });
 #endif
 
@@ -2847,25 +2833,39 @@ void Platform_MainWindow::updateProxyGeometry()
                 rfs = QRect(5, height() - TOOLBOX_HEIGHT - rect().top() - 5,
                             rect().width() - 10, TOOLBOX_HEIGHT);
             }
+
 #ifdef DTKWIDGET_CLASS_DSizeMode
-    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
-        int h = rfs.height() * 0.66;
-        int offect = rfs.height() - h;
-        rfs.setHeight(h);
-        rfs.moveTop(rfs.y() + offect);
-    }
+            if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+                if (m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::State::Opened) {
+                    rfs = QRect(5, height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_DSIZEMODE_HEIGHT) - rect().top() - 5,
+                                rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_DSIZEMODE_HEIGHT + 7));
+                } else {
+                    rfs = QRect(5, height() - TOOLBOX_DSIZEMODE_HEIGHT - rect().top() - 5,
+                                rect().width() - 10, TOOLBOX_DSIZEMODE_HEIGHT);
+                }
+            }
 #endif
             m_pToolbox->setGeometry(rfs);
-            m_pToolbox->updateMircastWidget(QRect(5, height() - TOOLBOX_HEIGHT - rect().top() - 5,
-                                                  rect().width() - 10, TOOLBOX_HEIGHT).topRight());
+            m_pToolbox->updateMircastWidget(rfs.topRight());
         }
 
         if (m_pPlaylist && !m_pPlaylist->toggling()) {
+            int toolbox_height = TOOLBOX_HEIGHT;
+#ifdef DTKWIDGET_CLASS_DSizeMode
+            if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+                toolbox_height = TOOLBOX_DSIZEMODE_HEIGHT;
+            }
+#endif
+
 #ifndef __sw_64__
-            QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 5)),
+            QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height + 5)),
                         view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+            if (utils::check_wayland_env()) {
+                fixed = QRect((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height)),
+                              view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+            }
 #else
-            QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT - 1)),
+            QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height - 1)),
                         view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
 #endif
             m_pPlaylist->setGeometry(fixed);

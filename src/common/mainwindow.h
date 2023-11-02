@@ -335,6 +335,9 @@ public slots:
      */
     void play(const QList<QString> &listFiles);
     void slotFinishedAddFiles(QList<QUrl>);
+    /**
+     * @brief 该函数主要设置 m_pToolbox 和 m_pPlaylist 的Geometry，在(初始化)、(紧凑/正常终模式之间切换时)以及(全屏/非全屏模式之间切换时）调用
+     */
     void updateProxyGeometry();
     void suspendToolsWindow();
     void resumeToolsWindow();
