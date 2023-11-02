@@ -1344,13 +1344,17 @@ void PlaylistWidget::togglePopup(bool isShortcut)
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 #endif
 
-    int toolbox_height=TOOLBOX_HEIGHT;
+    int toolbox_height = TOOLBOX_HEIGHT;
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
         toolbox_height = TOOLBOX_DSIZEMODE_HEIGHT;
     }
 #endif
 
+/**
+ * 此处在动画执行前设定好PlaylistWidget的起始位置和终止位置
+ * 基于 MainWindow::updateProxyGeometry所设置的初始状态 以及 是否是紧凑模式 定位PlaylistWidget的起始位置和终止位置。
+*/
     QRect fixed;
     if(CompositingManager::get().platform() == X86) {
         fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height + 10)),

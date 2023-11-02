@@ -129,7 +129,7 @@ signals:
 public slots:
     /**
      * @brief togglePopup
-     * 播放列表升起/降下
+     * 播放列表升起/降下，此函数会触发PlaylistWidget::stateChange信号，调用ToolboxProxy::slotPlayListStateChange
      *
      * @param isShortcut 该函数是否通过快捷键触发
      */
