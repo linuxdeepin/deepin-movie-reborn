@@ -37,13 +37,18 @@ public:
      * @return 方法的返回值
      */
     static QVariant redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod);
-
+    /**
+     * @brief 通过uos-ai服务播放视频
+     * @param 视频路径集合
+     */
+    void funOpenFile(const QString &sFile);
 public slots:
     /**
      * @brief 通过d-bus服务播放视频
      * @param 视频路径
      */
     void openFile(const QString &sFile);
+
     /**
      * @brief 通过d-bus服务播放视频
      * @param 视频路径集合

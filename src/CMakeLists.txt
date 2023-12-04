@@ -99,6 +99,7 @@ install(FILES ${PROJECT_SOURCE_DIR}/assets/resources/icons/logo-big.svg
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps
     RENAME deepin-movie.svg)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/deepin-movie DESTINATION ${CMAKE_INSTALL_DATADIR}/deepin-manual/manual-assets/application/)
+install(FILES ${PROJECT_SOURCE_DIR}/assets/deepin-movie.json DESTINATION /usr/lib/uos-ai-assistant/functions)
 
 #hw机型增加DConfig配置
 set(APPID org.deepin.movie)

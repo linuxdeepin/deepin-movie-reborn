@@ -5,3 +5,4 @@ usr/share/deepin-movie/translations/*.qm
 usr/share/icons/*
 usr/share/deepin-manual/manual-assets/application/*
 usr/share/dsg/configs/org.deepin.movie/*
+usr/lib/uos-ai-assistant/functions/*

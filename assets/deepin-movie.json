@@ -1,0 +1,18 @@
+{
+	"appid": "deepin-movie",
+	"exec": "/usr/bin/deepin-movie",
+	"functions": [{
+		"name": "playOneMovie",
+		"description": "播放某首影片",
+		"parameters": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "影片名称"
+				}
+			},
+			"required": []
+		}
+	}]
+}
