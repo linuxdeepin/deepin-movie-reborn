@@ -86,6 +86,62 @@ void checkIsCanHwdec(int argc, char *argv[])
     exit(status);
 }
 #endif
+//UOS_AI调用函数
+QString getFunctionMovieName()
+{
+    QString movieName = "";
+    qInfo() << "single uos ai function call";
+    bool isCopilotConnected = false;
+    QDBusInterface aiDbus("com.deepin.copilot", "/com/deepin/copilot", "com.deepin.copilot", QDBusConnection::sessionBus());
+    if (aiDbus.isValid())
+        isCopilotConnected = true;
+    if(isCopilotConnected) {
+        QDBusReply<QString> functions = aiDbus.call("cachedFunctions");
+        QJsonDocument jsonDocu = QJsonDocument::fromJson(functions.value().toUtf8());
+        qInfo() << "UOS_AI jsonDocu is: " << jsonDocu;
+        if (jsonDocu.isObject()) {
+            QJsonObject objRoot = jsonDocu.object();
+
+            for (QString key : objRoot.keys()) {
+                QJsonValue valueRoot = objRoot.value(key);
+
+                if (valueRoot.isArray() && key == "functions") {
+                    QJsonArray array = valueRoot.toArray();
+
+                    for (int i = 0; i < array.count(); ++i) {
+                        if (array[i].isObject()) {
+                            //解析每个function的名称和参数
+                            QJsonObject funcObj = array[i].toObject();
+                            QString functionName = nullptr;
+                            QMap<QString, QString>functionArguments;
+
+                            for (QString funcKey : funcObj.keys()) {
+                                if (funcKey == "arguments") {
+                                    QByteArray arr = funcObj[funcKey].toString().toUtf8();
+                                    QJsonDocument argDoc = QJsonDocument::fromJson(arr);
+                                    if (argDoc.isObject()) {
+                                        QJsonObject argObj= argDoc.object();
+                                        for (QString argKey : argObj.keys()) {
+                                            functionArguments[argKey] = argObj[argKey].toString();
+                                            if(argKey == "name") {
+                                                qInfo() << "UOS_AI function argument:  " << argKey << ": " << functionArguments[argKey];
+                                                movieName = "UOS_AI"+functionArguments[argKey];
+                                                return movieName;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        qInfo() << "isCopilotConnected is false!";
+    }
+    return movieName;
+}
 
 int main(int argc, char *argv[])
 {
@@ -169,6 +225,8 @@ int main(int argc, char *argv[])
 
     qInfo() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
     auto &clm = dmr::CommandLineManager::get();
+    QCommandLineOption functionCallOption("functioncall", "AI function call.");
+    clm.addOption(functionCallOption);
     clm.process(*app);
 
     QStringList toOpenFiles;
@@ -193,11 +251,21 @@ int main(int argc, char *argv[])
     Dtk::Core::DLogManager::registerFileAppender();
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
+    QString movieName = "";
+    if (clm.isSet("functioncall")) {
+        movieName = getFunctionMovieName();
+    }
 
     if (singleton && !runSingleInstance()) {
+        QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
+        if (clm.isSet("functioncall")) {
+            if(!movieName.isEmpty()) {
+                iface.asyncCall("openFile", movieName);
+            }
+        }
         qInfo() << "another deepin movie instance has started";
         if (!toOpenFiles.isEmpty()) {
-            QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
+            // QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
             if (toOpenFiles.size() == 1) {
                 if (!toOpenFiles[0].contains("QProcess"))
                     iface.asyncCall("openFile", toOpenFiles[0]);
@@ -206,7 +274,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
+        // QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
         if (iface.isValid()) {
             qWarning() << "deepin-movie raise";
             iface.asyncCall("Raise");

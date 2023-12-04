@@ -5,6 +5,9 @@
 
 #include "platform_dbus_adpator.h"
 #include "utils.h"
+#include "platform/platform_playlist_widget.h"
+#include "player_engine.h"
+#include "playlist_model.h"
 
 Platform_ApplicationAdaptor::Platform_ApplicationAdaptor(Platform_MainWindow *pMainWid)
     : QDBusAbstractAdaptor(pMainWid)
@@ -30,6 +33,12 @@ void Platform_ApplicationAdaptor::openFiles(const QStringList &listFiles)
 //cppcheck 单元测试在用
 void Platform_ApplicationAdaptor::openFile(const QString &sFile)
 {
+    if(sFile.startsWith("UOS_AI")) {
+        QString uosAiStr = sFile.mid(6);
+        qInfo() << "sFile: " << sFile << " midd: " << uosAiStr;
+        funOpenFile(uosAiStr);
+        return;
+    }
     QRegExp url_re("\\w+://");
 
     QUrl url;
@@ -43,6 +52,20 @@ void Platform_ApplicationAdaptor::openFile(const QString &sFile)
     if (abs(m_oldTime.msecsTo(current)) > 800) {
         m_oldTime = current;
         m_pMainWindow->play({url.toString()});
+    }
+}
+
+void Platform_ApplicationAdaptor::funOpenFile(const QString &sFile)
+{
+    if(m_pMainWindow) {
+        QList<PlayItemInfo> lstItem = m_pMainWindow->playlist()->engine()->playlist().items();
+        for (PlayItemInfo info: lstItem) {
+            if(QFileInfo(info.mi.filePath).fileName().toLower().contains(sFile.toLower())) {
+                qInfo() << "Platform_funOpenFile: " << info.mi.filePath;
+                m_pMainWindow->play({QUrl::fromLocalFile(info.mi.filePath).toString()});
+                break;
+            }
+        }
     }
 }
 
