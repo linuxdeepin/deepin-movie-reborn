@@ -27,6 +27,135 @@
 #include <QLibrary>
 #include <va/va_x11.h>
 
+struct gpuInfo_t {          // null 表无效值
+    int index;              // 序号索引 请将 集显排最后，不同卡可相同，值越大优先级越低；  同一款GPU 有多种配置选择时，值越小优选 ,使用待实现
+    QString vendorId;       // input  vendor ID  lspci -nnk可询
+    QString productId;      // input productID  lspci -nnk可询  0xffff 为通配符 代表该厂商所有设备
+    QString kerneldriver;   // input vendor ID  lspci -nnk可询
+    QString dev_filename;   // input /dev/filename
+    QString vaapi_filename; // input /usr/lib/${arch}-linux-gnu/dri/file?_drv_video.so
+    QString vdpau_filename; // input /usr/lib/${arch}-linux-gnu/vdpau/libvdpau_file?.so
+    QString hwdec;          // res
+    QString vo;             // res
+    QString classId;        // input  vendor ID  lspci -nnk可询  refence to   http://pci-ids.ucw.cz/
+    QString maxWidth;       // input 宽最大值，解码能力参考规格值 不同压缩格式可能不同
+    QString maxHeigh;       // input 高最大值， 同上
+    QString message;        // debug 信息
+};
+
+static    QList<gpuInfo_t> m_dbInfoGPU;        //硬解库
+static    QList<int>       mychoice_dbindex;  //存上选中的队列
+static    bool  isMatchGPU = false;           //是否匹配硬解库
+
+static bool isFileExist(const QString &absolutepathfile)
+{
+    QFile fi(absolutepathfile);
+    return fi.exists() ? true : false;
+}
+
+static QString readfile(const QString &absolutepathfile)
+{
+    QString ret = QString();
+    QFile fi(absolutepathfile);
+    if(fi.exists() && fi.open(QFile::ReadOnly)) {
+        QByteArray data = fi.readAll();
+        ret = QString(data);
+        fi.close();
+    }
+    return ret;
+}
+
+static bool  readDrmCardVidPid()
+{
+    bool ret = false;
+    QList<gpuInfo_t> m_localGPUlist;
+    m_localGPUlist.clear();
+
+    for(int id=0; id < 3; id++) {  // 目前不超过 3 张 显卡
+        QString kernelDriverdir = QString("/sys/class/drm/card%1").arg(id);
+        QDir dirdrmcard(kernelDriverdir);
+        if(!dirdrmcard.exists())
+            continue;
+
+        QString  kmdname;
+        QString classID   = readfile(kernelDriverdir  + QString("/device/class"));
+        QString vendorID  = readfile(kernelDriverdir  + QString("/device/vendor"));
+        QString productID = readfile(kernelDriverdir  + QString("/device/device"));
+        QString kernelDriverPath = kernelDriverdir  + QString("/device/driver");
+        QFileInfo kerneldriver(kernelDriverPath);
+        QString kernelDriverName = kerneldriver.symLinkTarget();
+        if(kerneldriver.exists() && kerneldriver.isSymLink()) {
+            QString kernelDriverName = kerneldriver.symLinkTarget();
+            QFileInfo driverfile(kernelDriverName);
+             kmdname = driverfile.fileName();
+        }
+        if(!vendorID.isEmpty() || !productID.isEmpty() || !kmdname.isEmpty()) {
+            gpuInfo_t gpu;
+            gpu.index     = id;
+            gpu.classId   = classID.trimmed();
+            gpu.vendorId  = vendorID.trimmed();
+            gpu.productId = productID.trimmed();
+            gpu.kerneldriver = kmdname.trimmed();
+            m_localGPUlist.append(gpu);
+        }
+    }
+
+    if(m_localGPUlist.size() > 0){
+        // after iterator local GPU ;   blow  find the best data base;
+
+        QList<int>       ivaapi;
+        QList<int>       ivdpau;
+        for (int i = 0; i < m_localGPUlist.size(); ++i) {
+            gpuInfo_t gpu_this =  m_localGPUlist.at(i);
+            int indexlevel = m_dbInfoGPU.size() + 1;
+            for (int j = 0; j <m_dbInfoGPU.size(); ++j) {
+                gpuInfo_t dbinfo = m_dbInfoGPU.at(j);
+                if(dbinfo.vendorId != gpu_this.vendorId)
+                    continue;
+                if(!((gpu_this.productId == dbinfo.productId) || (0xffff == dbinfo.productId)))
+                    continue;
+
+                QString   dev_file = "/dev/" + dbinfo.dev_filename; \
+                QString vaapi_file = QLibraryInfo::location(QLibraryInfo::LibrariesPath) + QDir::separator() + "dri" + QDir::separator() + dbinfo.vaapi_filename + "_drv_video.so";
+                QString vdpau_file = QLibraryInfo::location(QLibraryInfo::LibrariesPath) + QDir::separator() + "vdpau/libvdpau_" + dbinfo.vdpau_filename + ".so";
+                if(isFileExist(dev_file) || dbinfo.kerneldriver == gpu_this.kerneldriver) {
+                    if(isFileExist(vaapi_file)  ) {
+                        ivaapi.append(j);
+                        ret = true;
+                        qInfo() << "iterator  choice vaapi: " << dbinfo.vo << dbinfo.message;
+                    }
+                    if(isFileExist(vdpau_file)) {
+                        ivdpau.append(j);
+                        ret = true;
+                        qInfo() << "iterator  choice vdpau:" << dbinfo.vo << dbinfo.message;
+                    }
+                }
+            }
+        }
+        if(ret) {
+            mychoice_dbindex =  ivaapi + ivdpau;
+        }
+    }
+     return ret;
+}
+
+#define  set_property_by_gpu_driverfile()   \
+do{             int index = mychoice_dbindex[0];        \
+                if(!m_dbInfoGPU.at(index).hwdec.toLower().contains("null")) {\
+                    my_set_property(m_handle, "hwdec", m_dbInfoGPU.at(index).hwdec); \
+                    if(!m_dbInfoGPU.at(index).vo.toLower().contains("null")) {\
+                        my_set_property(m_handle, "vo", m_dbInfoGPU.at(index).vo);  \
+                        m_sInitVo = m_dbInfoGPU.at(index).vo;                    \
+                    }\
+                }\
+}while(0)
+
+#define  refresh_decode_by_gpu_driverfile()   \
+do{  int index = mychoice_dbindex[0];        \
+    if(!m_dbInfoGPU.at(index).hwdec.toLower().contains("null"))\
+        my_set_property(m_handle, "hwdec", m_dbInfoGPU.at(index).hwdec); \
+}while(0)
+
 namespace dmr {
 using namespace mpv::qt;
 
@@ -119,6 +248,32 @@ MpvProxy::MpvProxy(QWidget *parent)
 #if defined (__mips__) || defined (__aarch64__)
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
 #endif
+
+                                    //index,      vid,   pid,  kerneldriver,  dev_file,vaapi_file,vdpau_file,       hwdec,        vo,        classid   maxWidth maxHeigh  message
+    const struct  gpuInfo_t   ljm1 =    { 0, "0x0709", "0x0201", "ljmcore",  "ljmcore",     "ljm",    "null",     "vaapi",   "vaapi",  "0x0300", "4096", "4096",   "ljm gp201 gpu vaapi  "};
+    const struct  gpuInfo_t   ljm2 =    { 1, "0x0709", "0x0201", "ljmcore",  "ljmcore",    "null",     "ljm",     "vdpau",   "vdpau",  "0x0300", "4096", "4096",   "ljm gp201 gpu vdpau  "};
+    // const struct  gpuInfo_t moore_1 =    { 2, "0x1ed5", "0x0101",    "mtgpu",    "null",   "mtjpu",    "null",     "vaapi",   "vaapi",  "0x0302", "4096", "4096",   "Moore Threads gpu vaapi"};
+
+
+    // const struct  gpuInfo_t moore_ff =  {900, "0x1ed5", "0xffff", "mtgpu",  "null",   "mtjpu",    "null",     "vaapi",   "vaapi",  "0x0302", "4096", "4096",   "Moore Threads gpu vaapi"};
+    const struct  gpuInfo_t nvidia_ff1= { 900, "0x10de", "0xffff", "nvidia",  "null",   "null",    "nouveau",   "vdpau",   "vdpau",  "0x0300", "4032", "4080",   "nvidia  normal gpu vdpau  "};
+    const struct  gpuInfo_t nvidia_ff2= { 900, "0x10de", "0xffff", "nouveau", "null",   "null",    "nouveau",   "vdpau",   "vdpau",  "0x0300", "4032", "4080",   "nvidia  nouveau  vdpau  "};
+    // const struct  gpuInfo_t amd_ff1   = {1000, "0x1002", "0xffff", "amdgpu",  "null","radeonsi",    "null",     "vaapi",   "vaapi",  "0x0300", "2048", "2048",   "AMD normal  gpu vaapi"};
+    // const struct  gpuInfo_t amd_ff2   = {1000, "0x1002", "0xffff", "radeon",  "null","radeonsi",    "null",     "vaapi",   "vaapi",  "0x0300", "2048", "2048",   "AMD radeon  gpu vaapi"};
+    // const struct  gpuInfo_t intel_ff  = {1000, "0x8086", "0xffff",   "i915",  "null",    "i965",    "null",     "vaapi",   "vaapi",  "0x0300", "4096", "4096",   "intel normal  gpu vaapi"};
+    // const struct  gpuInfo_t zx_c960   = {1000, "0x1d17", "0x3a04",     "zx",  "null",      "zx",    "null",     "vaapi",   "vaapi",  "0x0300", "4096", "4096",   "zx normal  gpu vaapi"};
+
+    m_dbInfoGPU.append(ljm1);
+    m_dbInfoGPU.append(ljm2);
+    // m_dbInfoGPU.append(moore_1);
+    m_dbInfoGPU.append(nvidia_ff1);
+    m_dbInfoGPU.append(nvidia_ff2);
+    // m_dbInfoGPU.append(amd_ff1);
+    // m_dbInfoGPU.append(amd_ff2);
+    // m_dbInfoGPU.append(intel_ff);
+    // m_dbInfoGPU.append(zx_c960);
+
+    isMatchGPU = readDrmCardVidPid();
 }
 
 MpvProxy::~MpvProxy()
@@ -347,8 +502,10 @@ mpv_handle *MpvProxy::mpv_init()
         if (!CompositingManager::get().hascard()) {
             qInfo() << "修改音视频同步模式";
             my_set_property(pHandle, "video-sync", "desync");
-            my_set_property(pHandle, "vo", "x11");
-            m_sInitVo = "x11";
+            if(!(m_dbInfoGPU.at(mychoice_dbindex[0]).hwdec.toLower().contains("vaapi") || m_dbInfoGPU.at(mychoice_dbindex[0]).hwdec.toLower().contains("vdpau"))) {
+                my_set_property(pHandle, "vo", "x11");
+                m_sInitVo = "x11";
+            }
         }
 #endif
     } else if (DecodeMode::AUTO == m_decodeMode) { //2.设置自动
@@ -387,6 +544,8 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(m_handle, "vo", "gpu");
         } else if (CompositingManager::get().isOnlySoftDecode()) {//2.1.3 鲲鹏920 || 曙光+英伟达 || 浪潮
             my_set_property(pHandle, "hwdec", "no");
+        } else if (isMatchGPU) {
+            set_property_by_gpu_driverfile();
         } else { //2.2非特殊硬件
             my_set_property(pHandle, "hwdec", "auto");
         }
@@ -404,7 +563,7 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "修改音视频同步模式";
             my_set_property(pHandle, "video-sync", "desync");
         }
-        if (!fi.exists() && !jmfi.exists() && !mtfi.exists()) {
+        if (!fi.exists() && !jmfi.exists() && !mtfi.exists() && !(m_dbInfoGPU.at(mychoice_dbindex[0]).hwdec.toLower().contains("vaapi") || m_dbInfoGPU.at(mychoice_dbindex[0]).hwdec.toLower().contains("vdpau"))) {
             if(CompositingManager::get().property("directRendering").toBool()) {
                 my_set_property(pHandle, "vo", "gpu,x11");
                 m_sInitVo = "gpu,x11";
@@ -497,6 +656,8 @@ mpv_handle *MpvProxy::mpv_init()
         } else if (X100GPU.exists() && X100VPU.exists()) {
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
+        } else if (isMatchGPU) {
+            set_property_by_gpu_driverfile();
         } else {
             my_set_property(pHandle, "hwdec", "auto");
         }
@@ -510,7 +671,7 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "修改音视频同步模式";
             my_set_property(pHandle, "video-sync", "desync");
         }
-        if (!fi.exists() && !jmfi.exists()) {
+        if (!fi.exists() && !jmfi.exists() &&  !(m_dbInfoGPU.at(mychoice_dbindex[0]).hwdec.toLower().contains("vaapi") || m_dbInfoGPU.at(mychoice_dbindex[0]).hwdec.toLower().contains("vdpau"))) {
             if(CompositingManager::get().property("directRendering").toBool()) {
                 my_set_property(pHandle, "vo", "gpu,x11");
                 m_sInitVo = "gpu,x11";
@@ -1206,7 +1367,7 @@ void MpvProxy::refreshDecode()
             }
 #if !defined(_loongarch) && !defined(__loongarch__) && !defined(__loongarch64)
             //探测硬解码
-            if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag && !x100flag) {
+            if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag && !x100flag &&  !(m_dbInfoGPU.at(mychoice_dbindex[0]).hwdec.toLower().contains("vaapi") || m_dbInfoGPU.at(mychoice_dbindex[0]).hwdec.toLower().contains("vdpau"))) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
 #endif
@@ -1243,6 +1404,8 @@ void MpvProxy::refreshDecode()
                 my_set_property(m_handle, "hwdec", "no");
             } else if (CompositingManager::get().isSpecialControls()) {
                 my_set_property(m_handle, "hwdec", "vaapi");
+            } else if (isMatchGPU) {
+                refresh_decode_by_gpu_driverfile();
             } else { //2.2.2 非特殊硬件 + 非特殊格式
                  my_set_property(m_handle, "hwdec","auto");
                 //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
@@ -1301,6 +1464,8 @@ void MpvProxy::refreshDecode()
         } else if (X100GPU.exists() && X100VPU.exists()) {
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
+        } else if (isMatchGPU) {
+            refresh_decode_by_gpu_driverfile();
         }
 
         if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
