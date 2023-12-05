@@ -280,6 +280,15 @@ int main(int argc, char *argv[])
             iface.asyncCall("Raise");
         }
         exit(0);
+    } else {
+        if (clm.isSet("functioncall")) {
+            QTimer::singleShot(2000, [=]() {
+                QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
+                if(!movieName.isEmpty()) {
+                    iface.asyncCall("openFile", movieName);
+                }
+            });
+        }
     }
 
 //    app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
