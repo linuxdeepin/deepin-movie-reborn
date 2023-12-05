@@ -3,7 +3,7 @@
 	"exec": "/usr/bin/deepin-movie",
 	"functions": [{
 		"name": "playOneMovie",
-		"description": "播放某首影片",
+		"description": "播放某部影片",
 		"parameters": {
 			"type": "object",
 			"properties": {
