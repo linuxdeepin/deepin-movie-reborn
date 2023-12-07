@@ -679,9 +679,11 @@ public:
         QImage image;
         QPalette palette;
         image = rounded.toImage();
+
+        auto dpr = qApp->devicePixelRatio();
         palette.setBrush(_thumb->backgroundRole(),
                          QBrush(image.scaled(// 缩放背景图.
-                                    QSize(_thumb->width(), _thumb->height()),
+                                    _thumb->size() * dpr,
                                     Qt::IgnoreAspectRatio,
                                     Qt::SmoothTransformation)));
         _thumb->setPalette(palette);
