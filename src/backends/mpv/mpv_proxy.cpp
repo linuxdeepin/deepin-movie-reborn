@@ -558,6 +558,11 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(pHandle, "wid", m_pParentWidget->winId());
     }
 
+
+    if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+        my_set_property(pHandle, "update-on-pause", "yes");
+    }
+
     qInfo() << __func__ << "vo:" << my_get_property(pHandle, "vo").toString();
     qInfo() << __func__  << "hwdec:" << my_get_property(pHandle, "hwdec").toString();
 
