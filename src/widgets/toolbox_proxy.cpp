@@ -714,8 +714,9 @@ public:
     void updateWithPreview(const QPoint &pos)
     {
         move(pos.x() - this->width() / 2, pos.y() - this->height() + 10);
-
-        show();
+        if(geometry().isValid()) {
+            show();
+        }
     }
 public slots:
     void slotWMChanged(QString msg)
