@@ -613,6 +613,7 @@ public:
         setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
         setAttribute(Qt::WA_TranslucentBackground);
         setObjectName("ThumbnailPreview");
+        resize(0, 0);
 
         m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher", "/com/deepin/WMSwitcher", "com.deepin.WMSwitcher", QDBusConnection::sessionBus());
         QDBusReply<QString> reply = m_pWMDBus->call("CurrentWM");
@@ -663,8 +664,9 @@ public:
     void updateWithPreview(const QPoint &pos)
     {
         move(pos.x() - this->width() / 2, pos.y() - this->height() + 10);
-
-        show();
+        if(geometry().isValid()) {
+            show();
+        }
     }
 public slots:
     void slotWMChanged(QString msg)
