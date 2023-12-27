@@ -460,6 +460,13 @@ mpv_handle *MpvProxy::mpv_init()
             }
         }
 #endif
+
+        if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
+            my_set_property(pHandle, "vo", "vaapi");
+            my_set_property(pHandle, "hwdec", "vaapi");
+            m_sInitVo = "vaapi";
+        }
+
         if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
             my_set_property(pHandle, "hwdec", "no");
             my_set_property(pHandle, "vo", "x11");
@@ -533,6 +540,12 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "vo", "gpu,x11");
             m_sInitVo = "gpu,x11";
         }
+        if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
+            my_set_property(pHandle, "vo", "vaapi");
+            my_set_property(pHandle, "hwdec", "vaapi");
+            m_sInitVo = "vaapi";
+        }
+
         if (CompositingManager::get().isSpecialControls()) {
             my_set_property(pHandle, "hwdec", "vaapi");
             my_set_property(pHandle, "vo", "vaapi");
@@ -1254,6 +1267,10 @@ void MpvProxy::refreshDecode()
             }
         }
 
+        if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
+            my_set_property(m_handle, "hwdec", "vaapi");
+        }
+
         if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
             my_set_property(m_handle, "hwdec", "no");
             my_set_property(m_handle, "vo", "x11");
@@ -1306,6 +1323,10 @@ void MpvProxy::refreshDecode()
         } else if (X100GPU.exists() && X100VPU.exists()) {
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
+        }
+
+        if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
+            my_set_property(m_handle, "hwdec", "vaapi");
         }
 
         if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
