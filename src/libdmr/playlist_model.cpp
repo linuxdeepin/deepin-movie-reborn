@@ -413,7 +413,7 @@ void PlaylistModel::slotStateChanged()
     case PlayerEngine::Idle:
         if (!_userRequestingItem) {
             stop();
-			//WINID方式渲染结束时，保证gpu渲染资源的正常释放与切换，延时5ms执行下部视频的播放
+	    //WINID方式渲染结束时，保证gpu渲染资源的正常释放与切换，延时5ms执行下部视频的播放
             if(!CompositingManager::get().composited()) {
                 QTimer::singleShot(5, [=]() {
                     playNext(false);
