@@ -423,9 +423,9 @@ mpv_handle *MpvProxy::mpv_init()
             m_sInitVo = "gpu,xv,x11";
         }
         if (CompositingManager::get().isSpecialControls()) {
-            my_set_property(pHandle, "hwdec", "vaapi");
-            my_set_property(pHandle, "vo", "vaapi");
-            m_sInitVo = "vaapi";
+            my_set_property(pHandle, "hwdec", "vdpau");
+            my_set_property(pHandle, "vo", "vdpau");
+            m_sInitVo = "vdpau";
         }
 #else
         //去除9200显卡适配
@@ -547,9 +547,9 @@ mpv_handle *MpvProxy::mpv_init()
         }
 
         if (CompositingManager::get().isSpecialControls()) {
-            my_set_property(pHandle, "hwdec", "vaapi");
-            my_set_property(pHandle, "vo", "vaapi");
-            m_sInitVo = "vaapi";
+            my_set_property(pHandle, "hwdec", "vdpau");
+            my_set_property(pHandle, "vo", "vdpau");
+            m_sInitVo = "vdpau";
         }
     }
 
@@ -1260,7 +1260,7 @@ void MpvProxy::refreshDecode()
             } else if (CompositingManager::get().isOnlySoftDecode()) { //2.2.1.2 鲲鹏920 || 曙光+英伟达 || 浪潮
                 my_set_property(m_handle, "hwdec", "no");
             } else if (CompositingManager::get().isSpecialControls()) {
-                my_set_property(m_handle, "hwdec", "vaapi");
+                my_set_property(m_handle, "hwdec", "vdpau");
             } else { //2.2.2 非特殊硬件 + 非特殊格式
                  my_set_property(m_handle, "hwdec","auto");
                 //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
@@ -1286,7 +1286,7 @@ void MpvProxy::refreshDecode()
         if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
             my_set_property(m_handle, "hwdec", "no");
         } else if (CompositingManager::get().isSpecialControls()) {
-            my_set_property(m_handle, "hwdec", "vaapi");
+            my_set_property(m_handle, "hwdec", "vdpau");
         } else {
             my_set_property(m_handle, "hwdec","auto");
         }
