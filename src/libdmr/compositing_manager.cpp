@@ -158,14 +158,11 @@ CompositingManager::CompositingManager()
     }
 #endif
 
-    //针对9200显卡适配
+    //针对jm显卡适配
     QFileInfo jmfi("/dev/jmgpu");
-    if (jmfi.exists()) {
-        //判断是否安装核外驱动  因为9200 不能通过opengl渲染
-        QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
-        if ( jmdir.exists()) {
-           _composited = false;
-        }
+    QFileInfo fi("/dev/mwv206_0");
+    if (jmfi.exists() || fi.exists()) {
+        _composited = false;
     }
 
     //判断xd显卡不能通过opengl渲染
