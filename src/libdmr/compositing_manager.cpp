@@ -260,8 +260,9 @@ void CompositingManager::setCanHwdec(bool bCanHwdec)
 
 bool CompositingManager::isMpvExists()
 {
-    QString path  = libPath("libmpv.so.1");
-    if (path.contains("libmpv.so.1")) {
+    QString path  = libPath("libmpv.so.");
+    if (path.contains("libmpv.so.")) {
+        qInfo() << "curreng load mpv is :" << path;
         return true;
     }
     return false;
