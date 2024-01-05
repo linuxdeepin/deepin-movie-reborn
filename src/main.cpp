@@ -30,6 +30,9 @@
 #include <QSettings>
 
 #include <DStandardPaths>
+#ifdef DTKCORE_CLASS_DConfigFile
+#include <DConfig>
+#endif
 
 #include <stdio.h>
 #include <unistd.h>
@@ -254,6 +257,47 @@ int main(int argc, char *argv[])
     QString movieName = "";
     if (clm.isSet("functioncall")) {
         movieName = getFunctionMovieName();
+        bool boardVendorFlag = false;
+        int miniModeSpecialHandling = -1;
+        QString CPUHardware;
+#ifdef DTKCORE_CLASS_DConfigFile
+        //需要查询是否支持特殊特殊机型打开迷你模式，例如hw机型
+        DConfig *dconfig = DConfig::create("org.deepin.movie","org.deepin.movie.minimode");
+        if(dconfig && dconfig->isValid() && dconfig->keyList().contains("miniModeSpecialHandling")){
+            miniModeSpecialHandling = dconfig->value("miniModeSpecialHandling").toInt();
+        }
+#endif
+        qInfo() << "miniModeSpecialHandling value is:" << miniModeSpecialHandling;
+        if(miniModeSpecialHandling != -1){
+            boardVendorFlag = miniModeSpecialHandling? true:false;
+        }else{
+            QString validFrequency = "CurrentSpeed";
+            QDBusInterface systemInfoInterface("com.deepin.daemon.SystemInfo",
+                                               "/com/deepin/daemon/SystemInfo",
+                                               "org.freedesktop.DBus.Properties",
+                                               QDBusConnection::sessionBus());
+            qDebug() << "systemInfoInterface.isValid: " << systemInfoInterface.isValid();
+            QDBusMessage replyCpu = systemInfoInterface.call("Get", "com.deepin.daemon.SystemInfo", "CPUHardware");
+            QList<QVariant> outArgsCPU = replyCpu.arguments();
+            if (outArgsCPU.count()) {
+                QString CPUHardware = outArgsCPU.at(0).value<QDBusVariant>().variant().toString();
+                qInfo() << __FUNCTION__ << __LINE__ << "Current CPUHardware: " << CPUHardware;
+            }
+
+            QString result(CPUHardware);
+            boardVendorFlag = result.contains("PGUW", Qt::CaseInsensitive);
+
+            QProcess process;
+            process.start("bash", QStringList() << "-c" << "dmidecode | grep -i \"String 4\"");
+            process.waitForStarted();
+            process.waitForFinished();
+            result = process.readAll();
+            boardVendorFlag = boardVendorFlag || result.contains("PWC30", Qt::CaseInsensitive);    //w525
+            process.close();
+        }
+        qInfo() << "Whether special mini mode is supported? " << boardVendorFlag;
+        if (boardVendorFlag)
+            qputenv("QT_WAYLAND_CLIENT_BUFFER_INTEGRATION", "wayland-egl");
     }
 
     if (singleton && !runSingleInstance()) {
