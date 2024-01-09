@@ -1,3 +1,10 @@
+deepin-movie-reborn (5.10.41) unstable; urgency=medium
+
+  * New version 5.10.41
+  * fix: Playback HEVC black screen on some devices.(Bug: 234565)
+
+ -- renbin <renbin@uniontech.com>  Tue, 09 Jan 2024 21:48:27 +0800
+
 deepin-movie-reborn (5.10.40) unstable; urgency=medium
 
   * NNew version 5.10.40.
