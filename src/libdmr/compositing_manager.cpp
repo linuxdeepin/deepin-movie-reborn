@@ -82,6 +82,33 @@ private:
     Platform _pf {Platform::Unknown};
 };
 
+/**
+   @brief 检测当前显卡是否为550系列显卡，若为则使用 hwdec=vaapi vo=vaapi
+    1002:699f Lexa PRO [Radeon 540/540X/550/550X / RX 540X/550/550X]
+    1002:6987 Lexa [Radeon 540X/550X/630 / RX 640 / E9171 MCM]
+
+   @note 影响启动性能
+ */
+static bool detect550Series()
+{
+    QProcess pcicheck;
+    pcicheck.start("bash -c \"lspci -nk | grep -i 'in use' -B 2 | grep -iE '1002:699f|1002:6987' \"");
+    if (pcicheck.waitForFinished(1000)) {
+        QByteArray readData = pcicheck.readAllStandardOutput();
+        if (!readData.isEmpty()) {
+            qInfo() << qPrintable("Detect 550 series, using vaapi. ") << readData;
+            return true;
+        }
+
+        qInfo() << qPrintable("Detect NOT 550 series, using default.");
+    } else {
+        pcicheck.terminate();
+        qWarning() << qPrintable("Detect 550 series, run lspci -n failed. ") << pcicheck.errorString();
+    }
+
+    return false;
+}
+
 
 CompositingManager &CompositingManager::get()
 {
@@ -100,6 +127,11 @@ CompositingManager::CompositingManager()
     bool isDriverLoaded = isDriverLoadedCorrectly();
     setProperty("directRendering", isDriverLoaded); //是否支持直接渲染
     softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
+
+    // 检测是否为 AMD 550 系列显卡，若为则走vaapi
+    if (!m_setSpecialControls) {
+        m_setSpecialControls = detect550Series();
+    }
 
 //    bool isI915 = false;
 //    for (int id = 0; id <= 10; id++) {
