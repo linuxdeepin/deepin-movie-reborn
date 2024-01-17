@@ -1173,10 +1173,6 @@ void Platform_MainWindow::onWindowStateChanged()
             }
         }
 
-        if (m_lastRectInNormalMode.isValid() && !m_bMiniMode) {
-            setGeometry(m_lastRectInNormalMode);
-        }
-
         m_bMovieSwitchedInFsOrMaxed = false;
     }
     update();
@@ -1638,14 +1634,10 @@ void Platform_MainWindow::setCurrentHwdec(QString str)
 
 void Platform_MainWindow::mipsShowFullScreen()
 {
-//    QPropertyAnimation *pAn = new QPropertyAnimation(this, "windowOpacity");
-//    pAn->setDuration(100);
-//    pAn->setEasingCurve(QEasingCurve::Linear);
-//    pAn->setEndValue(1);
-//    pAn->setStartValue(0);
-//    pAn->start(QAbstractAnimation::DeleteWhenStopped);
-
-    showFullScreen();
+    ensurePolished();
+    // 保留 WindowMinimized 旧状态标识
+    setWindowState(windowState() | Qt::WindowFullScreen);
+    setVisible(true);
 }
 
 void Platform_MainWindow::menuItemInvoked(QAction *pAction)
@@ -2068,17 +2060,19 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         m_pToolbox->closeAnyPopup();
 
         if (isFullScreen()) {
+            // 和 mainwindow.cpp 保持一致，在 mipsShowFullScreen() 时保留 Qt::WindowMaximized 的状态以正常切换。
+            setWindowState(windowState() & ~Qt::WindowFullScreen);
+
             if (m_bMaximized) {
-                showNormal();           //直接最大化会失败
                 showMaximized();
             } else {
-                setWindowState(windowState() & ~Qt::WindowFullScreen);
                 if (m_lastRectInNormalMode.isValid() && !m_bMiniMode && !isMaximized()) {
                     setGeometry(m_lastRectInNormalMode);
                     move(m_lastRectInNormalMode.x(), m_lastRectInNormalMode.y());
                     resize(m_lastRectInNormalMode.width(), m_lastRectInNormalMode.height());
                 }
             }
+
             if (m_pFullScreenTimeLable && !isFullScreen()) {
                 m_pFullScreenTimeLable->close();
             }
