@@ -1,3 +1,11 @@
+deepin-movie-reborn (5.10.42) unstable; urgency=medium
+
+  * New version 5.10.42
+  * fix: Widget flickering when switching between
+         maximized/full screen.(Bug: 239775)
+
+ -- renbin <renbin@uniontech.com>  Fri, 19 Jan 2024 11:13:02 +0800
+
 deepin-movie-reborn (5.10.41) unstable; urgency=medium
 
   * New version 5.10.41
