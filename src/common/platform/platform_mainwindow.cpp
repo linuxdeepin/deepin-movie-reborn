@@ -1139,6 +1139,10 @@ bool Platform_MainWindow::event(QEvent *pEvent)
         onWindowStateChanged();
     }
 
+    if (pEvent->type() == QEvent::WindowDeactivate) {
+        m_pCommHintWid->hide();
+    }
+
     return DMainWindow::event(pEvent);
 }
 

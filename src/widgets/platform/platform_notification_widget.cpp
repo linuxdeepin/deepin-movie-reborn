@@ -10,6 +10,8 @@
 #include "utils.h"
 
 #include <DPlatformWindowHandle>
+#include <DWindowManagerHelper>
+#include <DForeignWindow>
 #include <dthememanager.h>
 #include <dapplication.h>
 #include <QPainterPath>
@@ -137,12 +139,52 @@ void Platform_NotificationWidget::popup(const QString &msg, bool flag)
     }
     setFixedHeight(30);
     m_pMsgLabel->setText(msg);
-    show();
-    raise();
 
     if (flag) {
-        m_pTimer->start();
+        if (!m_pMainWindow->isActiveWindow()) {
+            QList<WId> currentApplicationWindowList;
+            const QWindowList &list = qApp->allWindows();
+
+            currentApplicationWindowList.reserve(list.size());
+
+            for (auto window : list) {
+                if (window->property("_q_foreignWinId").isValid()) {
+                    continue;
+                }
+
+                currentApplicationWindowList.append(window->winId());
+            }
+
+            QVector<quint32> wmClientList = DWindowManagerHelper::instance()->currentWorkspaceWindowIdList();
+
+            bool currentWindow = false;
+            for (WId wid : wmClientList) {
+                if (currentApplicationWindowList.contains(wid)){
+                    currentWindow = true;
+                    continue;
+                }
+                if (false == currentWindow){
+                    continue;
+                }
+                if (DForeignWindow *w = DForeignWindow::fromWinId(wid)) {
+                    QRect msgRect = this->geometry();
+                    if (w) {
+                        QRect wRect = w->geometry();
+                        if (msgRect.x() < wRect.x() + wRect.width() &&
+                            msgRect.x() + msgRect.width() > wRect.x() &&
+                            msgRect.y() < wRect.y() + wRect.height() &&
+                            msgRect.y() + msgRect.height() > wRect.y()) {
+                            return; // 重叠
+                        }
+                    }
+                }
+            }
+            m_pTimer->start(500);
+        } else
+            m_pTimer->start(2000);
     }
+    show();
+    raise();
 }
 /**
  * @brief updateWithMessage 更新显示信息
@@ -167,7 +209,10 @@ void Platform_NotificationWidget::updateWithMessage(const QString &newMsg, bool 
         adjustSize();
 
         if (flag) {
-            m_pTimer->start();
+            if (!m_pMainWindow->isActiveWindow())
+                m_pTimer->start(500);
+            else
+                m_pTimer->start(2000);
         }
         syncPosition();
     } else {
