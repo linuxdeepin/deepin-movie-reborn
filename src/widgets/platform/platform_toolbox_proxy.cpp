@@ -1674,6 +1674,7 @@ void Platform_ToolboxProxy::slotFileLoaded()
 {
     m_pProgBar->slider()->setRange(0, static_cast<int>(m_pEngine->duration()));
     m_pProgBar_Widget->setCurrentIndex(1);
+    m_pPreviewer->setFixedSize(0, 0);
     update();
     //正在投屏时如果当前播放为音频直接播放下一首。
     if(m_pEngine->currFileIsAudio()&&m_mircastWidget->getMircastState() != MircastWidget::Idel) {
