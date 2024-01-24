@@ -965,7 +965,7 @@ bool PlayerEngine::currFileIsAudio()
         if(pif.mi.vCodecID == AV_CODEC_ID_AVS2 || pif.mi.vCodecID == AV_CODEC_ID_AVS3) {
             bAudio = false;
         } else {
-            bAudio = pif.thumbnail.isNull() && pif.url.isLocalFile();
+            bAudio = pif.url.isLocalFile() && (pif.mi.width <= 0 && pif.mi.height <= 0);
         }
     } else {
         bAudio = isAudioFile(pif.url.toString());
