@@ -141,7 +141,6 @@ void Platform_NotificationWidget::popup(const QString &msg, bool flag)
     m_pMsgLabel->setText(msg);
 
     if (flag) {
-        if (!m_pMainWindow->isActiveWindow()) {
             QList<WId> currentApplicationWindowList;
             const QWindowList &list = qApp->allWindows();
 
@@ -179,6 +178,7 @@ void Platform_NotificationWidget::popup(const QString &msg, bool flag)
                     }
                 }
             }
+        if (!m_pMainWindow->isActiveWindow()) {
             m_pTimer->start(500);
         } else
             m_pTimer->start(2000);
