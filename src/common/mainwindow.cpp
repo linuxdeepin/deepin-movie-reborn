@@ -4114,6 +4114,10 @@ void MainWindow::toggleUIMode()
     m_pEngine->toggleRoundedClip(!m_bMiniMode);
 
     if (utils::check_wayland_env()) {
+        // 在拖拽进度等操作，高占用播放时，使用右键菜单可能使 wayland 未能正确切换窗体，导致 surface destroy ，程序闪退
+        // 在执行 show 操作前，主动创建上下文，生成 surface 以正常填入数据。
+        m_pEngine->makeCurrent();
+
         Qt::WindowFlags flags = windowFlags();
         if (m_bMiniMode) {
             flags |= Qt::X11BypassWindowManagerHint;
