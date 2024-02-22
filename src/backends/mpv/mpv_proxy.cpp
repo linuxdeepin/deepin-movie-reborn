@@ -1461,9 +1461,13 @@ int MpvProxy::my_set_property(mpv_handle *pHandle, const QString &sName, const Q
     }
 #endif
 #else
-   if(sName.compare("hwdec") == 0) {
-       sValue = "no";
-   }
+    if(sName.compare("hwdec") == 0) {
+        if( property("dmrhwdec-switch").isValid() && property("dmrhwdec-switch").toBool()) {
+            sValue = v;
+        } else {
+            sValue = "no";
+        }
+    }
 #endif
 
     node_builder node(sValue);
@@ -1796,6 +1800,10 @@ void MpvProxy::setProperty(const QString &sName, const QVariant &val)
         m_bPauseOnStart = val.toBool();
     } else if (sName == "video-zoom") {
         my_set_property(m_handle, sName, val.toDouble());
+    }  else if (sName == "color") {
+        QObject::setProperty("color", val);
+    } else if (sName == "dmrhwdec-switch") {
+        QObject::setProperty("dmrhwdec-switch", val);
     } else {
         my_set_property(m_handle, sName.toUtf8().data(), val);
     }
