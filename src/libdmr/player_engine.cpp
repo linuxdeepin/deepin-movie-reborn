@@ -204,8 +204,21 @@ void PlayerEngine::onBackendStateChanged()
             m_bAudio = currFileIsAudio();
         }
         //playing . emit thumbnail progress mode signal with setting file
-        if (old == CoreState::Idle)
+        if (old == CoreState::Idle) {
             emit siginitthumbnailseting();
+            PlayItemInfo pif = _playlist->currentInfo();
+            QJsonObject obj{
+                {"tid", EventLogUtils::StartPlaying},
+                {"version", VERSION},
+                {"successful", pif.url.isLocalFile() ? "true" : ""},
+                {"type", currFileIsAudio() ? "audio" : "video"},
+                {"origin", pif.url.isLocalFile() ? "local" : "http"},
+                {"encapsulation_format", pif.mi.fileType},
+                {"coding_format",  utils::videoIndex2str(pif.mi.vCodecID)}
+            };
+
+            EventLogUtils::get().writeLogs(obj);
+        }
         break;
     case Backend::PlayState::Paused:
         _state = CoreState::Paused;
@@ -548,18 +561,6 @@ void PlayerEngine::requestPlay(int id)
     } else {
         // TODO: delete and try next backend?
     }
-
-    QJsonObject obj{
-        {"tid", EventLogUtils::StartPlaying},
-        {"version", VERSION},
-        {"successful", item.url.isLocalFile() ? "true" : ""},
-        {"type", currFileIsAudio() ? "audio" : "video"},
-        {"origin", item.url.isLocalFile() ? "local" : "http"},
-        {"encapsulation_format", item.mi.fileType},
-        {"coding_format",  utils::videoIndex2str(item.mi.vCodecID)}
-    };
-
-    EventLogUtils::get().writeLogs(obj);
 }
 
 void PlayerEngine::savePlaybackPosition()
