@@ -1403,8 +1403,14 @@ void ToolboxProxy::setup()
             m_pListBtn->setIconSize(QSize(24, 24));
             m_pListBtn->setFixedSize(33, 33);
         }
-        updateThumbnail();
-        updateMovieProgress();
+        if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+            if (m_bThumbnailmode) {  //如果进度条为胶片模式，重新加载缩略图并显示
+                if(CompositingManager::get().platform() == Platform::X86 && CompositingManager::isMpvExists()) {
+                    updateThumbnail();
+                }
+                updateMovieProgress();
+            }
+        }
     });
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, progBarspec, [=](DGuiApplicationHelper::SizeMode sizeMode) {
         if (sizeMode == DGuiApplicationHelper::NormalMode) {
@@ -1425,9 +1431,6 @@ void ToolboxProxy::setup()
 void ToolboxProxy::updateThumbnail()
 {
     disconnect(m_pWorker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
-
-    //如果打开的是音乐
-    QString suffix = m_pEngine->playlist().currentInfo().info.suffix();
 
     if (m_pEngine->currFileIsAudio()) {
         return;

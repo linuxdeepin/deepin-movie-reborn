@@ -1311,9 +1311,6 @@ void Platform_ToolboxProxy::updateThumbnail()
 {
     disconnect(m_pWorker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
 
-    //如果打开的是音乐
-    QString suffix = m_pEngine->playlist().currentInfo().info.suffix();
-
     if (m_pEngine->currFileIsAudio()) {
         return;
     }
