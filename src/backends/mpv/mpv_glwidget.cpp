@@ -495,7 +495,12 @@ namespace dmr {
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
             a = static_cast<float>(252.0 / 255.0);
         }
-        pGLFunction->glClearColor(a, a, a, 1.0);
+        if(parent()->property("color").isValid()) {
+            QColor clr = parent()->property("color").value<QColor>();
+            pGLFunction->glClearColor(clr.red()/255.f, clr.green()/255.f, clr.blue()/255.f, 1.0);
+        } else {
+            pGLFunction->glClearColor(a, a, a, 1.0);
+        }
 
         prepareSplashImages();
         setupIdlePipe();
@@ -953,7 +958,12 @@ namespace dmr {
                 color = QColor(252, 252, 252, 255);
                 fRation = 252.0f / 255.0f;
             }
-            pGLFunction->glClearColor(fRation, fRation, fRation, 1.0);
+            if(parent()->property("color").isValid()) {
+                QColor clr = parent()->property("color").value<QColor>();
+                pGLFunction->glClearColor(clr.red()/255.f, clr.green()/255.f, clr.blue()/255.f, 1.0);
+            } else {
+                pGLFunction->glClearColor(fRation, fRation, fRation, 1.0);
+            }
             pGLFunction->glClear(GL_COLOR_BUFFER_BIT);
 
             for(int i = 0;i < 2 ;i ++){
