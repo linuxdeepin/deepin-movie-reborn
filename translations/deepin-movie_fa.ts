@@ -1153,6 +1153,10 @@ Please do not exit the Movie app during the process.</source>
         <source>Miracast</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Volume</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::VolumeButton</name>
