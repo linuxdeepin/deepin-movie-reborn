@@ -79,14 +79,16 @@ Settings::Settings()
                      << tr("Single loop")
                      << tr("List loop");
     auto playmodeFamily = m_pSettings->option("base.play.playmode");
-    playmodeFamily->setData("items", playmodeDatabase);
+    if (playmodeFamily)
+        playmodeFamily->setData("items", playmodeDatabase);
 
     QStringList hwaccelDatabase;
     hwaccelDatabase << tr("Auto")
                     << tr("Open")
                     << tr("Close");
     auto hwaccelFamily = m_pSettings->option("base.play.hwaccel");
-    hwaccelFamily->setData("items", hwaccelDatabase);
+    if (hwaccelFamily)
+        hwaccelFamily->setData("items", hwaccelDatabase);
 
     QFontDatabase fontDatabase;
     QPointer<DSettingsOption> fontFamliy = m_pSettings->option("subtitle.font.family");
