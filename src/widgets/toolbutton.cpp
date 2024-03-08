@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "toolbutton.h"
+#include "utils.h"
 #include <dthememanager.h>
 #include <DApplication>
 
@@ -79,7 +80,7 @@ void VolumeButton::changeStyle()
 void VolumeButton::enterEvent(QEvent *ev)
 {
     emit entered();
-    if (!m_showTime.isActive())
+    if (!utils::check_wayland_env() && !m_showTime.isActive())
         m_showTime.start(1000);
 
     DIconButton::enterEvent(ev);
@@ -89,7 +90,7 @@ void VolumeButton::leaveEvent(QEvent *ev)
 {
     emit leaved();
     m_showTime.stop();
-    if (nullptr != m_pToolTip && m_pToolTip->isVisible()) {
+    if (!utils::check_wayland_env() && nullptr != m_pToolTip && m_pToolTip->isVisible()) {
         QThread::msleep(10);
         m_pToolTip->hide();
     }

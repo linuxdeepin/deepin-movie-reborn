@@ -638,6 +638,8 @@ private:
     ButtonToolTip *m_pNextBtnTip;        ///下一个按钮的悬浮提示
     ButtonToolTip *m_pFullScreenBtnTip;  ///全屏按钮的悬浮提示
     ButtonToolTip *m_pListBtnTip;        ///播放列表按钮的悬浮提示
+    ButtonToolTip *m_pMircastBtnTip;
+    ButtonToolTip *m_pVolBtnTip;
 
     viewProgBarLoad *m_pWorker;          ///获取胶片的线程
     QPropertyAnimation *m_pPaOpen;       ///工具栏升起动画

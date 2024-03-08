@@ -2785,7 +2785,7 @@ void ToolboxProxy::initToolTip()
     m_pFullScreenBtnTip = new ButtonToolTip(m_pMainWindow);
     m_pFullScreenBtnTip->setText(tr("Fullscreen"));
     connect(m_pFullScreenBtn, &ToolButton::entered, [ = ]() {
-        m_pFullScreenBtnTip->move(m_pMainWindow->width() - m_pFullScreenBtn->width() / 2 /*- m_pPlayBtn->width()*/ - 140,
+        m_pFullScreenBtnTip->move(m_pMainWindow->width() - m_pFullScreenBtn->width() / 2 /*- m_pPlayBtn->width()*/ - 195,
                                   m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
         m_pFullScreenBtnTip->show();
         m_pFullScreenBtnTip->update();
@@ -2811,6 +2811,40 @@ void ToolboxProxy::initToolTip()
     connect(m_pListBtn, &ToolButton::leaved, [ = ]() {
         QTimer::singleShot(0, [ = ] {
             m_pListBtnTip->hide();
+        });
+    });
+
+    //lmh0910vol按键
+    m_pVolBtnTip = new ButtonToolTip(m_pMainWindow);
+    m_pVolBtnTip->setText(tr("Volume"));
+    connect(m_pVolBtn, &VolumeButton::entered, [ = ]() {
+        m_pVolBtnTip->move(m_pMainWindow->width() - m_pVolBtn->width() / 2 /*- m_pPlayBtn->width()*/ - 135,
+                            m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+        m_pVolBtnTip->show();
+        m_pVolBtnTip->update();
+        m_pVolBtnTip->releaseMouse();
+
+    });
+    connect(m_pVolBtn, &VolumeButton::leaved, [ = ]() {
+        QTimer::singleShot(0, [ = ] {
+            m_pVolBtnTip->hide();
+        });
+    });
+
+    //lmh0910mircast按键
+    m_pMircastBtnTip = new ButtonToolTip(m_pMainWindow);
+    m_pMircastBtnTip->setText(tr("Miracast"));
+    connect(m_pMircastBtn, &ToolButton::entered, [ = ]() {
+        m_pMircastBtnTip->move(m_pMainWindow->width() - m_pMircastBtn->width() / 2 /*- m_pPlayBtn->width()*/ - 80,
+                            m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+        m_pMircastBtnTip->show();
+        m_pMircastBtnTip->update();
+        m_pMircastBtnTip->releaseMouse();
+
+    });
+    connect(m_pMircastBtn, &ToolButton::leaved, [ = ]() {
+        QTimer::singleShot(0, [ = ] {
+            m_pMircastBtnTip->hide();
         });
     });
 }
