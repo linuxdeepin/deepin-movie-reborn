@@ -52,6 +52,7 @@
 #include <X11/Xlib.h>
 #include "moviewidget.h"
 #include <QtConcurrent>
+#include <QFileSystemWatcher>
 
 #include "../accessibility/ac-deepin-movie-define.h"
 
@@ -3357,8 +3358,19 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
             Settings::get().setInternalOption("playlist_pos", nCur);
         }
     }
-    //关闭窗口时保存音量值
-    Settings::get().setInternalOption("global_volume", m_nDisplayVolume > 100 ? 100 : m_nDisplayVolume);
+
+    int volume = Settings::get().internalOption("global_volume").toInt();
+    if (m_nDisplayVolume != volume) {
+        static QEventLoop loop;
+        QFileSystemWatcher fileWatcher;
+        fileWatcher.addPath(Settings::get().configPath());
+        connect(&fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](){
+            loop.quit();
+        });
+        //关闭窗口时保存音量值
+        Settings::get().setInternalOption("global_volume", m_nDisplayVolume > 100 ? 100 : m_nDisplayVolume);
+        loop.exec();
+    }
     m_pEngine->savePlaybackPosition();
 
     pEvent->accept();
