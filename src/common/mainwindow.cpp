@@ -2813,7 +2813,7 @@ void MainWindow::updateProxyGeometry()
 
         if (m_pToolbox) {
             QRect rfs;
-            if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened) {
+            if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened && !utils::check_wayland_env()) {
                 rfs = QRect(5, height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - rect().top() - 5,
                             rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
             } else {
@@ -2823,7 +2823,7 @@ void MainWindow::updateProxyGeometry()
 
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
-        if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened) {
+        if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened && !utils::check_wayland_env()) {
             rfs = QRect(5, height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_DSIZEMODE_HEIGHT) - rect().top() - 5,
                         rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_DSIZEMODE_HEIGHT + 7));
         } else {

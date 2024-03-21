@@ -972,6 +972,8 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     m_pPreviewTime->hide();
     m_mircastWidget = new MircastWidget(mainWindow, proxy);
     m_mircastWidget->hide();
+    m_pListWgt = new PlaylistBack(mainWindow);
+    m_pListWgt->hide();
 
     setup();
     slotThemeTypeChanged();
@@ -1409,6 +1411,10 @@ void ToolboxProxy::setup()
                 updateMovieProgress();
             }
             m_pProgBar_Widget->setCurrentIndex(1);
+        }
+        if (utils::check_wayland_env() && m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened)
+        {
+            slotPlayListStateChange(true);
         }
     });
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, progBarspec, [=](DGuiApplicationHelper::SizeMode sizeMode) {
@@ -1925,7 +1931,16 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
             connect(m_pPaOpen, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
         } else {
             Q_UNUSED(isShortcut);
-            setGeometry(rc_opened);
+            if(utils::check_wayland_env()) {
+                m_pListWgt->setGeometry(rc_opened.adjusted(-10,-10,10,10));
+                m_pListWgt->show();
+                m_pListWgt->raise();
+                m_pPlaylist->raise();
+                raise();
+            } else {
+                setGeometry(rc_opened);
+            }
+
             m_pListBtn->setChecked(true);
         }
     } else {
@@ -1947,7 +1962,11 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
             connect(m_pPaClose, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
         } else {
             Q_UNUSED(isShortcut);
-            setGeometry(rc_closed);
+            if(utils::check_wayland_env()) {
+                m_pListWgt->hide();
+            } else {
+                setGeometry(rc_closed);
+            }
             m_pListBtn->setChecked(false);
         }
     }
@@ -2606,6 +2625,10 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
                 updateMovieProgress();
             }
             m_pProgBar_Widget->setCurrentIndex(1);
+        }
+        if (utils::check_wayland_env() && m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened)
+        {
+            slotPlayListStateChange(true);
         }
     }
 
