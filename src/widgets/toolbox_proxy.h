@@ -197,6 +197,29 @@ protected:
 private:
     bool m_bIsPressed;    ///鼠标是否按下
 };
+//wayland下防止窗口抖动背景窗口
+class PlaylistBack: public QWidget {
+public:
+    explicit PlaylistBack(QWidget *parent = nullptr): QWidget(parent)
+    {
+        setWindowFlags(windowFlags() | Qt::FramelessWindowHint); // 设置无边框
+        setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
+    }
+protected:
+    /**
+     * @brief paintEvent 绘制事件函数
+     */
+    void paintEvent(QPaintEvent *)
+    {
+        QPainter painter(this);
+        if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
+        } else {
+            painter.fillRect(rect(), this->palette().background());
+        }
+    }
+};
+
 /**
  * @brief The ToolboxProxy class
  * 实现影院工具栏
@@ -601,7 +624,7 @@ private:
 
     MainWindow *m_pMainWindow;          ///主窗口
     PlayerEngine *m_pEngine;            ///播放引擎
-    PlaylistWidget *m_pPlaylist;        ///播放列表窗口
+    PlaylistWidget *m_pPlaylist = nullptr;        ///播放列表窗口
 
     DWidget *m_pProgBarspec;             ///空白进度条窗口
     QWidget *m_pBotSpec;                 ///
@@ -644,6 +667,7 @@ private:
     viewProgBarLoad *m_pWorker;          ///获取胶片的线程
     QPropertyAnimation *m_pPaOpen;       ///工具栏升起动画
     QPropertyAnimation *m_pPaClose;      ///工具栏降下动画
+    PlaylistBack *m_pListWgt = nullptr;  ///wayland播放列表背景窗口
 
     QList<QPixmap > m_pmList;
     QList<QPixmap > m_pmBlackList;
