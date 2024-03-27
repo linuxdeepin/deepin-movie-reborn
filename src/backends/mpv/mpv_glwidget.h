@@ -93,7 +93,8 @@ private:
 
     bool m_bPlaying;                   //记录播放状态
     bool m_bInMiniMode;                //是否是最小化
-    bool m_bDoRoundedClipping;         //
+    bool m_bUseCustomFBO;              // 使用自定的 QOpenGLFramebufferObject 进行绘制
+    bool m_bDoRoundedClipping;         // 裁剪圆角
 
     QOpenGLVertexArrayObject m_vao;    //顶点数组对象
     QOpenGLBuffer m_vbo;               //顶点缓冲对象

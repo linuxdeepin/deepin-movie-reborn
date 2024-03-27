@@ -463,8 +463,10 @@ namespace dmr {
 
 #ifdef _LIBDMR_
         if(utils::check_wayland_env()){
+            m_bDoRoundedClipping = true;
             toggleRoundedClip(true);
         }else{
+            m_bDoRoundedClipping = false;
             toggleRoundedClip(false);
         }
 #else
@@ -472,6 +474,9 @@ namespace dmr {
         connect(window()->windowHandle(), &QWindow::windowStateChanged, [=]() {
             QWidget* pTopWid = this->topLevelWidget();
             bool rounded = !pTopWid->isFullScreen() && !pTopWid->isMaximized();
+            // 全屏和最大化下不裁剪圆角
+            m_bDoRoundedClipping = rounded;
+
             //wayland
             if(utils::check_wayland_env()) {
                 rounded = true;
@@ -519,7 +524,7 @@ namespace dmr {
 
     void MpvGLWidget::updateMovieFbo()
     {
-        if (!m_bDoRoundedClipping) return;
+        if (!m_bUseCustomFBO) return;
 
         auto desiredSize = size() * qApp->devicePixelRatio();
 
@@ -535,7 +540,7 @@ namespace dmr {
 
     void MpvGLWidget::updateCornerMasks()
     {
-        if (!utils::check_wayland_env() && !m_bDoRoundedClipping) return;
+        if (!utils::check_wayland_env() && !m_bUseCustomFBO) return;
 
         for (int i = 0; i < 4; i++) {
             QSize sz(RADIUS, RADIUS);
@@ -717,7 +722,7 @@ namespace dmr {
 
         updateMovieFbo();
         updateVbo();
-        if (m_bDoRoundedClipping){
+        if (m_bUseCustomFBO){
             updateVboCorners();
         }
         qInfo() << "GL resize" << nWidth << nHeight;
@@ -726,7 +731,9 @@ namespace dmr {
 
     void MpvGLWidget::toggleRoundedClip(bool bFalse)
     {
-        m_bDoRoundedClipping = bFalse;
+        // 设置圆角时使用自定的FBO，但在全屏和最大化时，通过
+        // m_bDoRoundedClipping 设置是否实际应用圆角
+        m_bUseCustomFBO = bFalse;
         makeCurrent();
         updateMovieFbo();
         update();
@@ -739,7 +746,8 @@ namespace dmr {
         m_bPlaying = false;
         m_bInMiniMode= false;
 
-        m_bDoRoundedClipping=true;
+        m_bUseCustomFBO = true;
+        m_bDoRoundedClipping = true;
         m_pDarkTex = nullptr;
         m_pLightTex = nullptr;
         m_pGlProg = nullptr;
@@ -776,7 +784,7 @@ namespace dmr {
             QSize scaled = size() * dpr;
             int nFlip = 1;
 
-            if (!m_bDoRoundedClipping) {
+            if (!m_bUseCustomFBO) {
                 mpv_opengl_fbo fbo {
                     static_cast<int>(defaultFramebufferObject()), scaled.width(), scaled.height(), 0
                 };
