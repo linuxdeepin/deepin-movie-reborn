@@ -1255,8 +1255,10 @@ void MpvProxy::refreshDecode()
                     QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
                     if(sdir.exists() && fi.exists()) {
                         my_set_property(m_handle, "hwdec", "vdpau");
+                        my_set_property(m_handle, "vo", "vdpau");
                     }else if (jmfi.exists() && jmdir.exists()) {
                         my_set_property(m_handle, "hwdec", "vaapi");
+                        my_set_property(m_handle, "vo", "vaapi");
                     }else {
                         my_set_property(m_handle, "hwdec", "auto");
                     }
@@ -1322,8 +1324,10 @@ void MpvProxy::refreshDecode()
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
             if(sdir.exists() && fi.exists()) {
                 my_set_property(m_handle, "hwdec", "vdpau");
+                my_set_property(m_handle, "vo", "vdpau");
             }else if (jmfi.exists() && jmdir.exists()) {
                 my_set_property(m_handle, "hwdec", "vaapi");
+                my_set_property(m_handle, "vo", "vaapi");
             }else {
                 my_set_property(m_handle, "hwdec", "auto");
             }

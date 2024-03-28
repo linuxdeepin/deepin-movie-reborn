@@ -150,8 +150,9 @@ void Platform_NotificationWidget::popup(const QString &msg, bool flag)
                 if (window->property("_q_foreignWinId").isValid()) {
                     continue;
                 }
-
-                currentApplicationWindowList.append(window->winId());
+                if(window->isVisible()) {
+                    currentApplicationWindowList.append(window->winId());
+                }
             }
 
             QVector<quint32> wmClientList = DWindowManagerHelper::instance()->currentWorkspaceWindowIdList();
