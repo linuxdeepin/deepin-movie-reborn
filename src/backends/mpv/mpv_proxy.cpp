@@ -1228,6 +1228,13 @@ void MpvProxy::refreshDecode()
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
 #endif
+            if(utils::check_wayland_env()){
+                PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
+                QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
+                if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
+                    isSoftCodec = true;
+                }
+            }
         }
         if (isSoftCodec) {
             qInfo() << "my_set_property hwdec no";
@@ -1335,6 +1342,15 @@ void MpvProxy::refreshDecode()
             my_set_property(m_handle, "video-sync", "desync");
             my_set_property(m_handle, "profile", "sw-fast");
             m_sInitVo = "x11";
+        }
+
+        if(utils::check_wayland_env()){
+            PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
+            PlayItemInfo currentInfo = playMode->currentInfo();
+            QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
+            if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
+                my_set_property(m_handle, "hwdec","no");
+            }
         }
 
         //play.conf
