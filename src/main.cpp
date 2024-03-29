@@ -13,6 +13,7 @@
 #include <DApplication>
 #include <DWidgetUtil>
 #include <DApplicationSettings>
+#include <qsettingbackend.h>
 
 #include "config.h"
 
@@ -143,6 +144,50 @@ QString getFunctionMovieName()
     return movieName;
 }
 
+void killOldMovie()
+{
+    QString processName = "deepin-movie";
+
+    QProcess psProcess;
+    psProcess.start("bash", QStringList() << "-c" << "ps -eo pid,lstart,cmd | grep deepin-movie");
+    psProcess.waitForFinished();
+    QString output = psProcess.readAllStandardOutput();
+
+    QStringList lines = output.split("\n");
+    QStringList earlierProcessPids;
+    QDateTime earliestStartTime;
+
+    for (const QString &line : lines) {
+        QStringList parts = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+        if (parts.size() < 3) continue;
+        if (!parts[6].startsWith("deepin-movie")) continue;
+
+        int pid = parts[0].toInt();
+        if(QCoreApplication::applicationPid() == pid) continue;
+        QString time;
+//        for (int i = 1; i < 6; i++) {
+//            time += parts[i];
+//            time += " ";
+//        }
+        time = parts[3] + " " + parts[4];
+        QDateTime startTime = QDateTime::fromString(time, "dd HH:mm:ss");
+
+        if (earlierProcessPids.isEmpty() || startTime < earliestStartTime) {
+            earlierProcessPids.clear();
+            earlierProcessPids << QString::number(pid);
+            earliestStartTime = startTime;
+        }
+    }
+
+    // 杀死较早启动的进程
+    for (const QString &pid : earlierProcessPids) {
+        QProcess killProcess;
+        killProcess.start("kill", QStringList() << pid);
+        killProcess.waitForFinished();
+        qInfo() << "Killed process with PID:" << pid;
+    }
+}
+
 int main(int argc, char *argv[])
 {
     //for qt5platform-plugins load DPlatformIntegration or DPlatformIntegrationParent
@@ -226,7 +271,9 @@ int main(int argc, char *argv[])
     qInfo() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
     auto &clm = dmr::CommandLineManager::get();
     QCommandLineOption functionCallOption("functioncall", "AI function call.");
+    QCommandLineOption restartCallOption("restart", "deepin movie restart");
     clm.addOption(functionCallOption);
+    clm.addOption(restartCallOption);
     clm.process(*app);
 
     QStringList toOpenFiles;
@@ -250,36 +297,55 @@ int main(int argc, char *argv[])
     }
     Dtk::Core::DLogManager::registerFileAppender();
 
+    if (dmr::Settings::get().settings()->getOption("set.start.crash").toInt() == 1) {
+        dmr::Settings::get().settings()->setOption("base.decode.select", 0);
+        dmr::Settings::get().settings()->setOption("base.decode.Decodemode", 0);
+        dmr::Settings::get().settings()->setOption("base.decode.Videoout", 0);
+    }
+
+    dmr::Settings::get().crashCheck();
+
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
     QString movieName = "";
     if (clm.isSet("functioncall")) {
         movieName = getFunctionMovieName();
     }
 
-    if (singleton && !runSingleInstance()) {
-        QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
-        if (clm.isSet("functioncall")) {
-            if(!movieName.isEmpty()) {
-                iface.asyncCall("openFile", movieName);
-            }
-        }
-        qInfo() << "another deepin movie instance has started";
-        if (!toOpenFiles.isEmpty()) {
-            // QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
-            if (toOpenFiles.size() == 1) {
-                if (!toOpenFiles[0].contains("QProcess"))
-                    iface.asyncCall("openFile", toOpenFiles[0]);
-            } else {
-                iface.asyncCall("openFiles", toOpenFiles);
-            }
-        }
+    for (int i = 0; i < argc; i++) {
+        qInfo() << argv[i];
+    }
 
-        // QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
-        if (iface.isValid()) {
-            qWarning() << "deepin-movie raise";
-            iface.asyncCall("Raise");
+    if (singleton && !runSingleInstance()) {
+        if (clm.isSet("restart")) {
+            sleep(2);
+            if (!runSingleInstance()) {
+                killOldMovie();
+            }
+        } else {
+            QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
+            if (clm.isSet("functioncall")) {
+                if(!movieName.isEmpty()) {
+                    iface.asyncCall("openFile", movieName);
+                }
+            }
+            qInfo() << "another deepin movie instance has started";
+            if (!toOpenFiles.isEmpty()) {
+                // QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
+                if (toOpenFiles.size() == 1) {
+                    if (!toOpenFiles[0].contains("QProcess"))
+                        iface.asyncCall("openFile", toOpenFiles[0]);
+                } else {
+                    iface.asyncCall("openFiles", toOpenFiles);
+                }
+            }
+
+            // QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
+            if (iface.isValid()) {
+                qWarning() << "deepin-movie raise";
+                iface.asyncCall("Raise");
+            }
+            exit(0);
         }
-        exit(0);
     } else {
         if (clm.isSet("functioncall")) {
             QTimer::singleShot(2000, [=]() {
@@ -303,7 +369,6 @@ int main(int argc, char *argv[])
     if (CompositingManager::get().composited()) {
         dmr::MainWindow mw;
         Presenter *presenter = new Presenter(&mw);
-    //    mw.setMinimumSize(QSize(1070, 680));
         mw.setPresenter(presenter);
         if (CompositingManager::isPadSystem()) {
             ///平板模式下全屏显示
@@ -328,7 +393,6 @@ int main(int argc, char *argv[])
     } else {
         dmr::Platform_MainWindow platform_mw;
         Presenter *presenter = new Presenter(&platform_mw);
-    //    mw.setMinimumSize(QSize(1070, 680));
         platform_mw.setPresenter(presenter);
         if (CompositingManager::isPadSystem()) {
             ///平板模式下全屏显示
@@ -351,13 +415,5 @@ int main(int argc, char *argv[])
 
         return app->exec();
     }
-
-//    if (!toOpenFiles.isEmpty()) {
-//        if (toOpenFiles.size() == 1) {
-//            mw.play(toOpenFiles[0]);
-//        } else {
-//            mw.playList(toOpenFiles);
-//        }
-//    }
 }
 

@@ -12,9 +12,9 @@
                     "options": [
                         {
                             "key": "crash",
-                            "type": "checkbox",
+                            "type": "combobox",
                             "hide": true,
-                            "default": false
+                            "default": 0
                         }
                     ]
                 }
@@ -156,7 +156,47 @@
                             "items": [
                                 "Auto select (Recommended)",
                                 "Hardware decoding",
-                                "Software decoding"
+                                "Software decoding",
+                                "Customize"
+                            ],
+                            "default": 0
+                        }
+                    ]
+                },
+                {
+                    "key": "Customize",
+                    "name": "Customize",
+                    "hide": false,
+                    "options": [
+                        {
+                            "key": "Decodemode",
+                            "name": "Decode mode",
+                            "hide": false,
+                            "type": "combobox",
+                            "default": 0
+                        },
+                        {
+                            "key": "Videoout",
+                            "name": "Video out",
+                            "hide": false,
+                            "type": "combobox",
+                            "default": 0
+                        }
+                    ]
+                },
+                {
+                    "key": "Effectmode",
+                    "name": "Effect mode",
+                    "hide": false,
+                    "options": [
+                        {
+                            "key": "select",
+                            "text": "",
+                            "type": "radiogroup",
+                            "items": [
+                                "Auto select (Recommended)",
+                                "Force OpenGL",
+                                "Force binding window"
                             ],
                             "default": 0
                         }

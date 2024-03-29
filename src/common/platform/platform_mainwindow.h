@@ -25,6 +25,8 @@
 #include "compositing_manager.h"
 #include "mircastshowwidget.h"
 
+#define EXIT_RESTRAT 666
+
 class Presenter;
 
 namespace Dtk {
@@ -586,6 +588,7 @@ private:
     bool m_bIsWM {true};                              ///是否开启窗口特效
     bool m_bMaximized;                                ///全屏前最大化窗口记录
     bool m_bLocked{true};
+    DSettingsDialog *m_pDSettingDilog{nullptr};
 };
 };
 

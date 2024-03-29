@@ -270,6 +270,30 @@ Please do not exit the Movie app during the process.</source>
         <source>Software decoding</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Customize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decode mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Force OpenGL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Force binding window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Effect mode</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -683,6 +707,14 @@ Please do not exit the Movie app during the process.</source>
         <source>Miracast disconnected</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Whether you want to restart immediately?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VO or Hwdec changes and the app needs to be restarted.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
@@ -990,6 +1022,14 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Miracast disconnected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whether you want to restart immediately?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VO or Hwdec changes and the app needs to be restarted.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

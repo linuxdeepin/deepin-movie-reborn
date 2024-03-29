@@ -61,5 +61,11 @@ void GenerateSettingTranslate()
     auto group_decoding_auto = QObject::tr("Auto select (Recommended)");
     auto group_decoding_hardware = QObject::tr("Hardware decoding");
     auto group_decoding_software = QObject::tr("Software decoding");
+    auto group_decoding_customize = QObject::tr("Customize");
+    auto group_customize_Decodemode = QObject::tr("Decode mode");
+    auto group_customize_Videoout = QObject::tr("Video out");
+    auto group_effectmode_Effectmode = QObject::tr("Effect mode");
+    auto group_effectmode_opengl = QObject::tr("Force OpenGL");
+    auto group_effectmode_window = QObject::tr("Force binding window");
 }
 

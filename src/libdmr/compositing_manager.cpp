@@ -6,6 +6,7 @@
 #include "config.h"
 #include "compositing_manager.h"
 #include "utils.h"
+#include "dmr_settings.h"
 #ifndef _LIBDMR_
 #include "options.h"
 #endif
@@ -16,6 +17,7 @@
 #include <QtGui>
 #include <QX11Info>
 #include <QDBusInterface>
+#include <DStandardPaths>
 
 #define GLX_GLXEXT_PROTOTYPES
 #include <GL/glx.h>
@@ -144,6 +146,33 @@ CompositingManager::CompositingManager()
 //    }
 //    if (isI915) qInfo() << "is i915!";
 //    m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
+
+    QString settingPath = DStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    settingPath += "/config.conf";
+    QFile file(settingPath);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&file);
+        QString line;
+        while (!in.atEnd()) {
+            line = in.readLine();
+            if (line.contains("[base.Effectmode.select]")) {
+                line = in.readLine();
+                int index = line.indexOf("value=");
+                if (index != -1) {
+                    QString value = line.mid(index + 6); // 6 is the length of "value="
+                    value = value.trimmed(); // Remove leading and trailing whitespace
+                    file.close();
+                    if (value.toInt() != 0) {
+                        _composited = value.toInt() == 1 ? true : false;
+                        m_pMpvConfig = new QMap<QString, QString>;
+                        utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    file.close();
 
     if (dmr::utils::check_wayland_env()) {
         _composited = true;
