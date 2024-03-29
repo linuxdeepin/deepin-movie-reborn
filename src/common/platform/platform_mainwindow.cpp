@@ -1186,6 +1186,7 @@ void Platform_MainWindow::onWindowStateChanged()
         if (m_pPlaylist->state() == Platform_PlaylistWidget::Opened) {
             m_pPlaylist->togglePopup(false);
         }
+        m_pAnimationlable->hide();
     }
     if (isMaximized()) {
         m_pAnimationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - 100
@@ -1276,7 +1277,7 @@ void Platform_MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
 
 void Platform_MainWindow::animatePlayState()
 {
-    if (m_bMiniMode) {
+    if (m_bMiniMode || isMinimized()) {
         return;
     }
 
