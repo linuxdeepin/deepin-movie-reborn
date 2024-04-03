@@ -738,7 +738,7 @@ bool isSpecialHWHardware()
             return false;
         }
 
-        QStringList specilDev{"KLVV", "KLVU", "PGUV", "PGUW", "PGUX", "L540", "W585"};
+        QStringList specilDev{"KLVV", "KLVU", "PGUV", "PGUW", "L540", "W585"};
         for (const QString &dev : specilDev) {
             if (info.contains(dev)) {
                 s_DevType = IsHWDev;
@@ -748,10 +748,10 @@ bool isSpecialHWHardware()
 
         if (NotHWDev == s_DevType) {
             // dmidecode | grep -i “String 4”中的值来区分主板类型,PWC30表示PanguW（也就是W525）
-            process.start("bash", {"-c", "dmidecode | grep -i \"String 4\""});
+            process.start("bash", {"-c", "dmidecode -t 11 | grep -i \"String 4\""});
             process.waitForFinished(100);
             info = process.readAll();
-            if (info.contains("PWC30")) {
+            if (info.contains("PWC30") || info.contains("PGUX")) {
                 s_DevType = IsHWDev;
             }
         }
