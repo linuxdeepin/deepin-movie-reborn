@@ -45,7 +45,7 @@ bool ApplicationAdaptor::openFile(const QString &sFile)
 //        m_oldTime = current;
         m_pMainWindow->play({url.toString()});
 //    }
-
+    Raise();//激活窗口
     return true;
 }
 
