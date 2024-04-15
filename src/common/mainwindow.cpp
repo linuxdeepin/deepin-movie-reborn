@@ -4132,6 +4132,9 @@ void MainWindow::toggleUIMode()
 
         Qt::WindowFlags flags = windowFlags();
         if (m_bMiniMode) {
+            // 记录之前的状态，尝试saveGeometry()也存在其它问题。
+            m_waylandRectInNormalMode = normalGeometry();
+
             flags |= Qt::X11BypassWindowManagerHint;
             m_preMiniWindowState = windowState();
             setWindowFlags(flags);
@@ -4139,16 +4142,28 @@ void MainWindow::toggleUIMode()
         } else {
             flags &= ~Qt::X11BypassWindowManagerHint;
             setWindowFlags(flags);
+
+            // 触发更新 windowState() 时可能更新 normalGeometry() 在设置最大化/全屏前还原之前的 normalGeometry() 信息
+            setMinimumSize(614, 500);
+            setMaximumSize(QSize(QWIDGETSIZE_MAX-1, QWIDGETSIZE_MAX-1));
+            // 还原为原始窗口大小，迷你模式前为最大化或/全屏时，m_lastRectInNormalMode记录的是最大化/全屏的窗口大小
+            setGeometry(m_waylandRectInNormalMode);
             show();
-            if (m_preMiniWindowState == Qt::WindowMaximized) {
-                move(0, 0);
-                showMaximized();
-            } else if (m_preMiniWindowState & Qt::WindowFullScreen) {
-                move(0, 0);
-                showFullScreen();
-            } else {
-                showNormal();
-            }
+
+           if (m_preMiniWindowState == Qt::WindowMaximized) {
+               // 使用迷你模式前记录的坐标，在多屏中显示正确位置
+               move(m_lastRectInNormalMode.topLeft());
+               showMaximized();
+               setGeometry(m_lastRectInNormalMode);
+           } else if (m_preMiniWindowState & Qt::WindowFullScreen) {
+               move(m_lastRectInNormalMode.topLeft());
+               showFullScreen();
+           } else {
+               showNormal();
+           }
+
+           // 复原原始控件记录大小
+           m_lastRectInNormalMode = m_waylandRectInNormalMode;
         }
     }
     m_isSettingMiniMode = false;
@@ -4280,15 +4295,18 @@ void MainWindow::toggleUIMode()
                 m_pToolbox->listBtn()->setChecked(false);
             }
 
-            if (m_lastRectInNormalMode.isValid()) {
-                QRect deskRect = QApplication::desktop()->availableGeometry(m_lastRectInNormalMode.topLeft());
-                if(m_lastRectInNormalMode.intersects(deskRect)) {
-                    setGeometry(m_lastRectInNormalMode);
+            // Wayland流程区分处理
+            if (!utils::check_wayland_env()) {
+                if (m_lastRectInNormalMode.isValid()) {
+                    QRect deskRect = QApplication::desktop()->availableGeometry(m_lastRectInNormalMode.topLeft());
+                    if(m_lastRectInNormalMode.intersects(deskRect)) {
+                        setGeometry(m_lastRectInNormalMode);
+                    } else {
+                        setGeometry(QRect(deskRect.x(), deskRect.y(), m_lastRectInNormalMode.width(), m_lastRectInNormalMode.height()));
+                    }
                 } else {
-                    setGeometry(QRect(deskRect.x(), deskRect.y(), m_lastRectInNormalMode.width(), m_lastRectInNormalMode.height()));
+                    resizeByConstraints();
                 }
-            } else {
-                resizeByConstraints();
             }
         }
 
