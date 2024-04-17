@@ -43,17 +43,17 @@ Ju lutemi, mos e mbyllni aplikacionin Film gjatë procesit.</translation>
     <name>QObject</name>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="582"/>
-        <location filename="../src/main.cpp" line="238"/>
-        <location filename="../src/main.cpp" line="295"/>
+        <location filename="../src/main.cpp" line="288"/>
+        <location filename="../src/main.cpp" line="360"/>
         <location filename="../src/widgets/volumeslider.cpp" line="113"/>
         <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="116"/>
         <location filename="../src/common/volumemonitoring.cpp" line="68"/>
-        <location filename="../src/common/dmr_settings.cpp" line="195"/>
+        <location filename="../src/common/dmr_settings.cpp" line="285"/>
         <source>Movie</source>
         <translation>Film</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="239"/>
+        <location filename="../src/main.cpp" line="289"/>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
         <translation>Movie është një lojtës videosh i plotë, që mbulon luajtje mediash vendore dhe atyre të transmetuara, në formate të shumtë videosh.</translation>
     </message>
@@ -323,32 +323,61 @@ Ju lutemi, mos e mbyllni aplikacionin Film gjatë procesit.</translation>
         <translation>Shkodim nga  software-i</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="200"/>
-        <location filename="../src/common/mainwindow.cpp" line="202"/>
+        <location filename="../src/common/settings_translation.cpp" line="64"/>
+        <source>Customize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/settings_translation.cpp" line="65"/>
+        <source>Decode mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/settings_translation.cpp" line="66"/>
+        <source>Video out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/settings_translation.cpp" line="67"/>
+        <source>Rendering engine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
+        <location filename="../src/common/mainwindow.cpp" line="326"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>S’keni leje të bëni veprime në këtë dosje</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="202"/>
-        <location filename="../src/common/mainwindow.cpp" line="204"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="324"/>
+        <location filename="../src/common/mainwindow.cpp" line="328"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="218"/>
-        <location filename="../src/common/mainwindow.cpp" line="220"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="340"/>
+        <location filename="../src/common/mainwindow.cpp" line="344"/>
         <source>Invalid folder</source>
         <translation>Dosje e pavlefshme</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="238"/>
-        <location filename="../src/common/mainwindow.cpp" line="240"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="360"/>
+        <location filename="../src/common/mainwindow.cpp" line="364"/>
         <source>Open folder</source>
         <translation>Hap dosje</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2981"/>
-        <location filename="../src/common/mainwindow.cpp" line="2972"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2872"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2898"/>
+        <location filename="../src/common/mainwindow.cpp" line="2847"/>
+        <location filename="../src/common/mainwindow.cpp" line="2872"/>
+        <source>The custom decoding method needs to be restarted before it can take effect,
+and whether to restart it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3261"/>
+        <location filename="../src/common/mainwindow.cpp" line="3268"/>
         <source>Network disconnected</source>
         <translation>Rrjeti u shkëput</translation>
     </message>
@@ -687,258 +716,270 @@ Ju lutemi, mos e mbyllni aplikacionin Film gjatë procesit.</translation>
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="889"/>
-        <location filename="../src/common/mainwindow.cpp" line="2423"/>
-        <location filename="../src/common/mainwindow.cpp" line="4362"/>
+        <location filename="../src/common/mainwindow.cpp" line="1013"/>
+        <location filename="../src/common/mainwindow.cpp" line="2547"/>
+        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load successfully</source>
         <translation>Ngarkim i suksesshëm</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="889"/>
-        <location filename="../src/common/mainwindow.cpp" line="2423"/>
-        <location filename="../src/common/mainwindow.cpp" line="2426"/>
-        <location filename="../src/common/mainwindow.cpp" line="4362"/>
+        <location filename="../src/common/mainwindow.cpp" line="1013"/>
+        <location filename="../src/common/mainwindow.cpp" line="2547"/>
+        <location filename="../src/common/mainwindow.cpp" line="2550"/>
+        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load failed</source>
         <translation>Ngarkimi dështoi</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1728"/>
-        <location filename="../src/common/mainwindow.cpp" line="2753"/>
+        <location filename="../src/common/mainwindow.cpp" line="1852"/>
+        <location filename="../src/common/mainwindow.cpp" line="3049"/>
         <source>Cannot play the disc</source>
         <translation>S’luhet dot disku</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1745"/>
-        <location filename="../src/common/mainwindow.cpp" line="3312"/>
+        <location filename="../src/common/mainwindow.cpp" line="1869"/>
+        <location filename="../src/common/mainwindow.cpp" line="3608"/>
         <source>Parse failed</source>
         <translation>Përtypja dështoi</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1753"/>
+        <location filename="../src/common/mainwindow.cpp" line="1877"/>
         <source>Open folder</source>
         <translation>Hap dosje</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2160"/>
-        <location filename="../src/common/mainwindow.cpp" line="2168"/>
-        <location filename="../src/common/mainwindow.cpp" line="2176"/>
-        <location filename="../src/common/mainwindow.cpp" line="2184"/>
-        <location filename="../src/common/mainwindow.cpp" line="2192"/>
-        <location filename="../src/common/mainwindow.cpp" line="2398"/>
-        <location filename="../src/common/mainwindow.cpp" line="4546"/>
+        <location filename="../src/common/mainwindow.cpp" line="2284"/>
+        <location filename="../src/common/mainwindow.cpp" line="2292"/>
+        <location filename="../src/common/mainwindow.cpp" line="2300"/>
+        <location filename="../src/common/mainwindow.cpp" line="2308"/>
+        <location filename="../src/common/mainwindow.cpp" line="2316"/>
+        <location filename="../src/common/mainwindow.cpp" line="2522"/>
+        <location filename="../src/common/mainwindow.cpp" line="4854"/>
         <source>Speed: %1x</source>
         <translation>Shpejtësi: %1x</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2199"/>
+        <location filename="../src/common/mainwindow.cpp" line="2323"/>
         <source>Stereo</source>
         <translation>Stereo</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2204"/>
+        <location filename="../src/common/mainwindow.cpp" line="2328"/>
         <source>Left channel</source>
         <translation>Kanali majtas</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2209"/>
+        <location filename="../src/common/mainwindow.cpp" line="2333"/>
         <source>Right channel</source>
         <translation>Kanali djathtas</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2314"/>
+        <location filename="../src/common/mainwindow.cpp" line="2438"/>
         <source>Track: %1</source>
         <translation>Pjesa: %1</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2356"/>
-        <location filename="../src/common/mainwindow.cpp" line="2373"/>
+        <location filename="../src/common/mainwindow.cpp" line="2480"/>
+        <location filename="../src/common/mainwindow.cpp" line="2497"/>
         <source>Unable to adjust the subtitle</source>
         <translation>S’arrihet të rregullohet titri</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2361"/>
-        <location filename="../src/common/mainwindow.cpp" line="2378"/>
+        <location filename="../src/common/mainwindow.cpp" line="2485"/>
+        <location filename="../src/common/mainwindow.cpp" line="2502"/>
         <source>Subtitle %1: %2s</source>
         <translation>Titra %1: %2s</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2362"/>
-        <location filename="../src/common/mainwindow.cpp" line="2379"/>
+        <location filename="../src/common/mainwindow.cpp" line="2486"/>
+        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>delayed</source>
         <translation>e vonuar</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2362"/>
-        <location filename="../src/common/mainwindow.cpp" line="2379"/>
+        <location filename="../src/common/mainwindow.cpp" line="2486"/>
+        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>advanced</source>
         <translation>e avancuar</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2520"/>
+        <location filename="../src/common/mainwindow.cpp" line="2644"/>
         <source>View</source>
         <translation>Shihni</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2529"/>
+        <location filename="../src/common/mainwindow.cpp" line="2653"/>
         <source>Film screenshot</source>
         <translation>Foto ekrani filmi</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2530"/>
+        <location filename="../src/common/mainwindow.cpp" line="2654"/>
         <source>Saved to</source>
         <translation>U ruajt te</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2551"/>
-        <location filename="../src/common/mainwindow.cpp" line="2679"/>
+        <location filename="../src/common/mainwindow.cpp" line="2675"/>
+        <location filename="../src/common/mainwindow.cpp" line="2803"/>
         <source>The screenshot is saved</source>
         <translation>Fotoja e ekranit u ruajt</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2555"/>
-        <location filename="../src/common/mainwindow.cpp" line="2683"/>
+        <location filename="../src/common/mainwindow.cpp" line="2679"/>
+        <location filename="../src/common/mainwindow.cpp" line="2807"/>
         <source>Failed to save the screenshot</source>
         <translation>S’u arrit të ruhet foto ekrani</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2639"/>
+        <location filename="../src/common/mainwindow.cpp" line="2763"/>
         <source>Taking the screenshots, please wait...</source>
         <translation>Po bëhet fotoja e ekranit, ju lutemi, pritni…</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2758"/>
+        <location filename="../src/common/mainwindow.cpp" line="2848"/>
+        <location filename="../src/common/mainwindow.cpp" line="2873"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Anuloje</translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="2849"/>
+        <location filename="../src/common/mainwindow.cpp" line="2874"/>
+        <source>Restart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="3054"/>
         <source>Reading DVD files...</source>
         <translation>Po lexohen kartela DVD…</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4658"/>
+        <location filename="../src/common/mainwindow.cpp" line="4966"/>
         <source>Invalid file: %1</source>
         <translation>Kartelë e pavlefshme: %1</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4689"/>
+        <location filename="../src/common/mainwindow.cpp" line="4997"/>
         <source>Miracast disconnected</source>
         <translation>Shkëputur nga Miracast-i</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2979"/>
+        <location filename="../src/common/mainwindow.cpp" line="3275"/>
         <source>No matching online subtitles</source>
         <translation>S’u gjetën titra me përputhje në internet</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1789"/>
-        <location filename="../src/common/mainwindow.cpp" line="1826"/>
+        <location filename="../src/common/mainwindow.cpp" line="1913"/>
+        <location filename="../src/common/mainwindow.cpp" line="1950"/>
         <source>All (*)</source>
         <translation>Krejt (*)</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2995"/>
+        <location filename="../src/common/mainwindow.cpp" line="3291"/>
         <source>4K video may be stuck</source>
         <translation>Videoja 4K mund të ngecë</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2996"/>
+        <location filename="../src/common/mainwindow.cpp" line="3292"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3028"/>
-        <location filename="../src/common/mainwindow.cpp" line="3980"/>
+        <location filename="../src/common/mainwindow.cpp" line="3324"/>
+        <location filename="../src/common/mainwindow.cpp" line="4288"/>
         <source>Order play</source>
         <translation>Luaji të renditura</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3031"/>
-        <location filename="../src/common/mainwindow.cpp" line="3983"/>
+        <location filename="../src/common/mainwindow.cpp" line="3327"/>
+        <location filename="../src/common/mainwindow.cpp" line="4291"/>
         <source>Shuffle play</source>
         <translation>Luaji kuturu</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3034"/>
-        <location filename="../src/common/mainwindow.cpp" line="3986"/>
+        <location filename="../src/common/mainwindow.cpp" line="3330"/>
+        <location filename="../src/common/mainwindow.cpp" line="4294"/>
         <source>Single play</source>
         <translation>Një luajtje</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3037"/>
-        <location filename="../src/common/mainwindow.cpp" line="3989"/>
+        <location filename="../src/common/mainwindow.cpp" line="3333"/>
+        <location filename="../src/common/mainwindow.cpp" line="4297"/>
         <source>Single loop</source>
         <translation>Ripërsëritje pjese</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3040"/>
-        <location filename="../src/common/mainwindow.cpp" line="3992"/>
+        <location filename="../src/common/mainwindow.cpp" line="3336"/>
+        <location filename="../src/common/mainwindow.cpp" line="4300"/>
         <source>List loop</source>
         <translation>Ripërsëritje liste</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3184"/>
+        <location filename="../src/common/mainwindow.cpp" line="3480"/>
         <source>Buffering...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3207"/>
-        <location filename="../src/common/mainwindow.cpp" line="3232"/>
+        <location filename="../src/common/mainwindow.cpp" line="3503"/>
+        <location filename="../src/common/mainwindow.cpp" line="3528"/>
         <source>Mute</source>
         <translation>Pa zë</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3209"/>
-        <location filename="../src/common/mainwindow.cpp" line="3234"/>
+        <location filename="../src/common/mainwindow.cpp" line="3505"/>
+        <location filename="../src/common/mainwindow.cpp" line="3530"/>
         <source>Volume: %1%</source>
         <translation>Volum: %1%</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3252"/>
-        <location filename="../src/common/mainwindow.cpp" line="3303"/>
+        <location filename="../src/common/mainwindow.cpp" line="3548"/>
+        <location filename="../src/common/mainwindow.cpp" line="3599"/>
         <source>Cannot open file or stream</source>
         <translation>S’hapet dot kartelë ose rrjedhë</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4647"/>
+        <location filename="../src/common/mainwindow.cpp" line="4955"/>
         <source>The action is not supported in this video</source>
         <translation>Veprimi nuk mbulohet në këtë video</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4682"/>
+        <location filename="../src/common/mainwindow.cpp" line="4990"/>
         <source>Connection failed</source>
         <translation>Lidhja dështoi</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3320"/>
-        <location filename="../src/common/mainwindow.cpp" line="3325"/>
+        <location filename="../src/common/mainwindow.cpp" line="3616"/>
+        <location filename="../src/common/mainwindow.cpp" line="3621"/>
         <source>Invalid file</source>
         <translation>Kartelë e pavlefshme</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2407"/>
+        <location filename="../src/common/mainwindow.cpp" line="2531"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <comment>All (*)</comment>
         <translation>Titra (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3327"/>
+        <location filename="../src/common/mainwindow.cpp" line="3623"/>
         <source>Please insert a CD/DVD</source>
         <translation>Ju lutemi, futni një CD/DVD</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3332"/>
+        <location filename="../src/common/mainwindow.cpp" line="3628"/>
         <source>No video file found</source>
         <translation>S’u gjet kartelë video</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3971"/>
+        <location filename="../src/common/mainwindow.cpp" line="4279"/>
         <source>Please load the video first</source>
         <translation>Ju lutemi, së pari ngarkoni videon</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4094"/>
-        <location filename="../src/common/mainwindow.cpp" line="4104"/>
+        <location filename="../src/common/mainwindow.cpp" line="4402"/>
+        <location filename="../src/common/mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
         <translation>Ju lutemi, dilni nga paneli i mençur</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4407"/>
+        <location filename="../src/common/mainwindow.cpp" line="4715"/>
         <source>The CD/DVD has been ejected</source>
         <translation>CD-ja/DVD-ia u nxor</translation>
     </message>
@@ -1090,7 +1131,7 @@ Ju lutemi, mos e mbyllni aplikacionin Film gjatë procesit.</translation>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1885"/>
+        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1990"/>
         <source>Internal</source>
         <translation>I brendshëm</translation>
     </message>
@@ -1098,257 +1139,269 @@ Ju lutemi, mos e mbyllni aplikacionin Film gjatë procesit.</translation>
 <context>
     <name>dmr::Platform_MainWindow</name>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="915"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2440"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4318"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load successfully</source>
         <translation>Ngarkim i suksesshëm</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="915"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2440"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2443"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4318"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2566"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load failed</source>
         <translation>Ngarkimi dështoi</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1792"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2779"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1915"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3059"/>
         <source>Cannot play the disc</source>
         <translation>S’luhet dot disku</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1809"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3299"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1932"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3579"/>
         <source>Parse failed</source>
         <translation>Përtypja dështoi</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1817"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1940"/>
         <source>Open folder</source>
         <translation>Hap dosje</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1845"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1874"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1968"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1997"/>
         <source>All (*)</source>
         <translation>Krejt (*)</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2177"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2185"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2193"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2201"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2209"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2415"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4508"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2300"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2308"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2316"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2324"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2332"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2538"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4800"/>
         <source>Speed: %1x</source>
         <translation>Shpejtësi: %1x</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2216"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2339"/>
         <source>Stereo</source>
         <translation>Stereo</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2221"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2344"/>
         <source>Left channel</source>
         <translation>Kanali majtas</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2226"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2349"/>
         <source>Right channel</source>
         <translation>Kanali djathtas</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2331"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2454"/>
         <source>Track: %1</source>
         <translation>Pjesa: %1</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2373"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2390"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2496"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2513"/>
         <source>Unable to adjust the subtitle</source>
         <translation>S’arrihet të rregullohet titri</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2378"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2395"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2501"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2518"/>
         <source>Subtitle %1: %2s</source>
         <translation>Titra %1: %2s</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2379"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2396"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>delayed</source>
         <translation>e vonuar</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2379"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2396"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>advanced</source>
         <translation>e avancuar</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2424"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2547"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <comment>All (*)</comment>
         <translation>Titra (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2547"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2670"/>
         <source>View</source>
         <translation>Shiheni</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2556"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2679"/>
         <source>Film screenshot</source>
         <translation>Foto ekrani filmi</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2557"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2680"/>
         <source>Saved to</source>
         <translation>U ruajt te</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2578"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2705"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2701"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2828"/>
         <source>The screenshot is saved</source>
         <translation>Fotoja e ekranit u ruajt</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2582"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2709"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2705"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2832"/>
         <source>Failed to save the screenshot</source>
         <translation>S’u arrit të ruhej foto ekrani</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2666"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2789"/>
         <source>Taking the screenshots, please wait...</source>
         <translation>Po bëhet fotoja e ekranit, ju lutemi, pritni…</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2784"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Anuloje</translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2874"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2900"/>
+        <source>Restart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3064"/>
         <source>Reading DVD files...</source>
         <translation>Po lexohen kartela DVD…</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2988"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3268"/>
         <source>No matching online subtitles</source>
         <translation>S’u gjetën titra me përputhje në internet</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3004"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3284"/>
         <source>4K video may be stuck</source>
         <translation>Videoja 4K mund të ngecë</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3005"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3285"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3046"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4000"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3326"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4292"/>
         <source>Order play</source>
         <translation>Luajtje sipas radhës</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3049"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4003"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3329"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4295"/>
         <source>Shuffle play</source>
         <translation>Luajtje kuturu</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3052"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4006"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3332"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4298"/>
         <source>Single play</source>
         <translation>Një luajtje</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3055"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4009"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3335"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4301"/>
         <source>Single loop</source>
         <translation>Ripërsëritje pjese</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3058"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4012"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3338"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4304"/>
         <source>List loop</source>
         <translation>Ripërsëritje liste</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3196"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3476"/>
         <source>Buffering...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3219"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3244"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3499"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3524"/>
         <source>Mute</source>
         <translation>Pa zë</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3221"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3246"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3501"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3526"/>
         <source>Volume: %1%</source>
         <translation>Volum: %1%</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3290"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3570"/>
         <source>Cannot open file or stream</source>
         <translation>S’hapet dot kartelë ose rrjedhë</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3307"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3312"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3587"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3592"/>
         <source>Invalid file</source>
         <translation>Kartelë e pavlefshme</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3314"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3594"/>
         <source>Please insert a CD/DVD</source>
         <translation>Ju lutemi, futni një CD/DVD</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3320"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3600"/>
         <source>No video file found</source>
         <translation>S’u gjet kartelë video</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3991"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4283"/>
         <source>Please load the video first</source>
         <translation>Ju lutemi, së pari ngarkoni videon</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4111"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4120"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4403"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
         <translation>Ju lutemi, dilni nga paneli i mençur</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4363"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4655"/>
         <source>The CD/DVD has been ejected</source>
         <translation>CD-ja/DVD-ia u nxor</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4609"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4901"/>
         <source>The action is not supported in this video</source>
         <translation>Veprimi nuk mbulohet në këtë video</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4620"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4912"/>
         <source>Invalid file: %1</source>
         <translation>Kartelë e pavlefshme: %1</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4644"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4936"/>
         <source>Connection failed</source>
         <translation>Lidhja dështoi</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4651"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4943"/>
         <source>Miracast disconnected</source>
         <translation>Shkëputur nga Miracast-i</translation>
     </message>
@@ -1471,47 +1524,47 @@ Ju lutemi, mos e mbyllni aplikacionin Film gjatë procesit.</translation>
 <context>
     <name>dmr::Settings</name>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="76"/>
+        <location filename="../src/common/dmr_settings.cpp" line="119"/>
         <source>Order play</source>
         <translation>Luaji të renditura</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="77"/>
+        <location filename="../src/common/dmr_settings.cpp" line="120"/>
         <source>Shuffle play</source>
         <translation>Luaji kuturu</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="78"/>
+        <location filename="../src/common/dmr_settings.cpp" line="121"/>
         <source>Single play</source>
         <translation>Një luajtje</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="79"/>
+        <location filename="../src/common/dmr_settings.cpp" line="122"/>
         <source>Single loop</source>
         <translation>Ripërsëritje pjese</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="80"/>
+        <location filename="../src/common/dmr_settings.cpp" line="123"/>
         <source>List loop</source>
         <translation>Ripërsëritje liste</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="85"/>
+        <location filename="../src/common/dmr_settings.cpp" line="129"/>
         <source>Auto</source>
         <translation>Auto</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="86"/>
+        <location filename="../src/common/dmr_settings.cpp" line="130"/>
         <source>Open</source>
         <translation>Hap</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="87"/>
+        <location filename="../src/common/dmr_settings.cpp" line="131"/>
         <source>Close</source>
         <translation>Mbylle</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="204"/>
+        <location filename="../src/common/dmr_settings.cpp" line="294"/>
         <source>%1/Movie%2(%3).jpg</source>
         <translation>%1/Movie%2(%3).jpg</translation>
     </message>
@@ -1519,63 +1572,63 @@ Ju lutemi, mos e mbyllni aplikacionin Film gjatë procesit.</translation>
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1311"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
         <source>Play/Pause</source>
         <translation>Luaje/Pushoje</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1311"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2752"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2775"/>
         <source>Previous</source>
         <translation>E mëparshmja</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1311"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2769"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2792"/>
         <source>Next</source>
         <translation>Pasuesja</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1312"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2293"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2295"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2786"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2312"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2314"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2809"/>
         <source>Fullscreen</source>
         <translation>Sa krejt ekrani</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1312"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2802"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2825"/>
         <source>Playlist</source>
         <translation>Luajlistë</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1312"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2836"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2859"/>
         <source>Miracast</source>
         <translation>Miracast</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2287"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2289"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2306"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2308"/>
         <source>Exit fullscreen</source>
         <translation>Dil nga mënyra sa krejt ekrani</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2383"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2385"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2402"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2404"/>
         <source>Pause</source>
         <translation>Pushoje</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2448"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2450"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2737"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2467"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2469"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2760"/>
         <source>Play</source>
         <translation>Luaje</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2819"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2842"/>
         <source>Volume</source>
         <translation type="unfinished">Volum</translation>
     </message>

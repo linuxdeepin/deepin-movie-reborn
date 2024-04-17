@@ -55,10 +55,53 @@ Settings::Settings()
         else if (key.startsWith("base.decode.select")) {
             //设置解码模式
             emit setDecodeModel(key, value);
-            //刷新解码模式
-            emit refreshDecode();
-            //崩溃检测
-            crashCheck();
+            if (value.toInt() == 3) {
+                auto list = m_pSettings->groups();
+                auto hwdecFamily = m_pSettings->option("base.decode.Decodemode");
+            } else {
+                //刷新解码模式
+                emit refreshDecode();
+                //崩溃检测
+                crashCheck();
+            }
+        }
+        else if (key.startsWith("base.decode.Effect")) {
+            auto effectFamily = m_pSettings->option("base.decode.Effect");
+            int index = value.toInt();
+            auto voFamily = m_pSettings->option("base.decode.Videoout");
+            if (index  == 1) {
+                if (voFamily) {
+                    voFamily->setData("items", QStringList() << "OpenGL");
+                }
+            } else if (index == 2) {
+                if (voFamily)
+                    voFamily->setData("items", QStringList() << "" << "gpu" << "vaapi" << "vdpau" << "xv" << "x11");
+            }
+            emit baseChanged(key, value);
+        }
+        else if (key.startsWith("base.decode.Videoout")) {
+            if (value.toInt() < 0)
+                return;
+            auto videoFamily = m_pSettings->option("base.decode.Videoout");
+            QString vo = videoFamily.data()->data("items").toStringList().at(value.toInt());
+            if (vo.contains("vaapi")) {
+                auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                if (decodeFamily)
+                    decodeFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy");
+            } else if (vo.contains("vdpau")) {
+                auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                if (decodeFamily)
+                    decodeFamily->setData("items", QStringList() << "vdpau" << "vdpau-copy");
+            } else if (vo.contains("xv") || vo.contains("x11")) {
+                auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                if (decodeFamily)
+                    decodeFamily->setData("items", QStringList() << "vdpau" << "vdpau-copy");
+            } else {
+                auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                if (decodeFamily)
+                    decodeFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy" << "nvdec" << "nvdec-copy" << "rkmpp");
+            }
+            emit baseChanged(key, value);
         }
         else if (key.startsWith("base.play.hwaccel"))
             emit hwaccelModeChanged(key, value);
@@ -100,6 +143,51 @@ Settings::Settings()
     QFileInfo jmfi("/dev/jmgpu");
     if ((fi.exists() || jmfi.exists()) && utils::check_wayland_env()) {
         setInternalOption("mousepreview", false);
+    }
+
+    if (utils::check_wayland_env()) {
+        auto voFamily = m_pSettings->option("base.decode.Videoout");
+        if (voFamily)
+            voFamily->setData("items", QStringList() << "OpenGL");
+    } else {
+        QStringList hwdecList, voList;
+        hwdecList << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy" << "nvdec" << "nvdec-copy" << "rkmpp";
+        voList << "gpu" << "vaapi" << "vdpau" << "xv" << "x11";
+        int effectIndex = m_pSettings->getOption("base.decode.Effect").toInt();
+        auto hwdecFamily = m_pSettings->option("base.decode.Decodemode");
+        if (effectIndex == 1) {
+            auto voFamily = m_pSettings->option("base.decode.Videoout");
+            if (voFamily)
+                voFamily->setData("items", QStringList() << "OpenGL");
+            if (hwdecFamily)
+                hwdecFamily->setData("items", hwdecList);
+        } else {
+            auto voFamily = m_pSettings->option("base.decode.Videoout");
+            if (voFamily)
+                voFamily->setData("items", QStringList() << "" << "gpu" << "vaapi" << "vdpau" << "xv" << "x11");
+            int voValue = m_pSettings->getOption("base.decode.Videoout").toInt();
+            if (voValue != 0) {
+                auto videoFamily = m_pSettings->option("base.decode.Videoout");
+                QString vo = videoFamily.data()->data("items").toStringList().at(voValue);
+                if (vo.contains("vaapi")) {
+                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                    if (decodeFamily)
+                        decodeFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy");
+                } else if (vo.contains("vdpau")) {
+                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                    if (decodeFamily)
+                        decodeFamily->setData("items", QStringList() << "vdpau" << "vdpau-copy");
+                } else if (vo.contains("xv") || vo.contains("x11")) {
+                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                    if (decodeFamily)
+                        decodeFamily->setData("items", QStringList() << "vdpau" << "vdpau-copy");
+                } else {
+                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                    if (decodeFamily)
+                        decodeFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy" << "nvdec" << "nvdec-copy" << "rkmpp");
+                }
+            }
+        }
     }
 }
 
@@ -209,7 +297,7 @@ QString Settings::screenshotNameSeqTemplate()
 
 void Settings::onSetCrash()
 {
-    settings()->setOption(QString("set.start.crash"),false);
+    settings()->setOption(QString("set.start.crash"), 0);
     settings()->sync();
 }
 
@@ -222,10 +310,8 @@ void Settings::setGeneralOption(const QString &sOpt, const QVariant &var)
 void Settings::crashCheck()
 {
     //重置崩溃检测状态位
-    settings()->setOption(QString("set.start.crash"),true);
+    settings()->setOption(QString("set.start.crash"), 1);
     settings()->sync();
-    //崩溃检测
-    QTimer::singleShot(1000, this, &Settings::onSetCrash);
 }
 
 QVariant Settings::generalOption(const QString &sOpt)
