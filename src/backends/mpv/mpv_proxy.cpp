@@ -653,6 +653,23 @@ mpv_handle *MpvProxy::mpv_init()
 
     //设置hwdec和vo配置
     CompositingManager::get().getMpvConfig(m_pConfig);
+#ifndef _LIBDMR_
+    if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == 3) {
+        int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
+        auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
+        QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
+        decodeMode = decodeMode.isEmpty() ? "auto" : decodeMode;
+        m_pConfig->insert("hwdec", decodeMode);
+
+        if (!CompositingManager::get().composited()) {
+            int voIndex = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();
+            auto voOpt = Settings::get().settings()->option("base.decode.Videoout");
+            QString voMode = voOpt.data()->data("items").toStringList()[voIndex];
+            voMode = voMode.isEmpty() ? "auto" : voMode;
+            m_pConfig->insert("vo", voMode);
+        }
+    }
+#endif
     QMap<QString, QString>::iterator iter = m_pConfig->begin();
     qInfo() << __func__ << "First set mpv propertys!!";
     while (iter != m_pConfig->end()) {
@@ -1406,6 +1423,23 @@ void MpvProxy::refreshDecode()
 
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
+#ifndef _LIBDMR_
+        if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == 3) {
+            int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
+            auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
+            QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
+            decodeMode = decodeMode.isEmpty() ? "auto" : decodeMode;
+            m_pConfig->insert("hwdec", decodeMode);
+
+            if (!CompositingManager::get().composited()) {
+                int voIndex = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();
+                auto voOpt = Settings::get().settings()->option("base.Customize.Videoout");
+                QString voMode = voOpt.data()->data("items").toStringList()[voIndex];
+                voMode = voMode.isEmpty() ? "auto" : voMode;
+                m_pConfig->insert("vo", voMode);
+            }
+        }
+#endif
         QMap<QString, QString>::iterator iter = m_pConfig->begin();
         while (iter != m_pConfig->end()) {
             if (iter.key().contains(QString("hwdec"))) {

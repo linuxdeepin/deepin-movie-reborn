@@ -270,6 +270,27 @@ Please do not exit the Movie app during the process.</source>
         <source>Software decoding</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Customize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decode mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The custom decoding method needs to be restarted before it can take effect,
+and whether to restart it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rendering engine</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -683,6 +704,14 @@ Please do not exit the Movie app during the process.</source>
         <source>Miracast disconnected</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Atsisakyti</translation>
+    </message>
+    <message>
+        <source>Restart</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
@@ -990,6 +1019,14 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Miracast disconnected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Atsisakyti</translation>
+    </message>
+    <message>
+        <source>Restart</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
