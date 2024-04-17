@@ -6,18 +6,19 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="57"/>
         <source>Exit Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>ཕྱིར་འཐེན་ཡོལ་བ།</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="74"/>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"></translation>
+        <translation>གྲིབ་གཟུགས་འཕེན་པ། 
+བརྒྱུད་རིམ་འདིའི་ཁྲོད་དུ་གློག་བརྙན་བཀོལ་སྤྱོད་ཀྱི་གོ་རིམ་ལས་ཕྱིར་འབུད་མི་རུང།。</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="102"/>
         <source>Display device</source>
-        <translation type="unfinished"></translation>
+        <translation>སྒྲིག་ཆས་མངོན་པ།</translation>
     </message>
 </context>
 <context>
@@ -25,17 +26,17 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="71"/>
         <source>Project to</source>
-        <translation type="unfinished"></translation>
+        <translation>རྣམ་གྲངས་ཐོན་པ།</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="369"/>
         <source>Searching for devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>འཚོལ་ཞིབ་སྒྲིག་ཆས་འཚོལ་ཞིབ་བྱེད་བཞིན་ཡོད།...</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="378"/>
         <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mirrasttstst སྒྲིག་ཆས་དང་རྩིས་འཁོར་གཉིས་WLANདྲ་རྒྱ་གཅིག་ཏུ་སྦྲེལ་རོགས།</translation>
     </message>
 </context>
 <context>
@@ -324,22 +325,22 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="64"/>
         <source>Customize</source>
-        <translation type="unfinished"></translation>
+        <translation>རང་ཉིད་མཚན་ཉིད་འཇོག་པ།</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="65"/>
         <source>Decode mode</source>
-        <translation type="unfinished"></translation>
+        <translation>མ་དཔེ་འགྲེལ་སྟངས།</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="66"/>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>བརྙན་ལམ་ཕྱིར་གཏོང་།</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="67"/>
         <source>Rendering engine</source>
-        <translation type="unfinished"></translation>
+        <translation>སྒུལ་བྱེད་འཕྲུལ་འཁོར་ལ་ཚོས་རྒྱག་དགོས།</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
@@ -372,7 +373,8 @@ Please do not exit the Movie app during the process.</source>
         <location filename="../src/common/mainwindow.cpp" line="2872"/>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
-        <translation type="unfinished"></translation>
+        <translation>མཚན་ཉིད་འཇོག་པའི་ཨང་སྒྲིག་བྱེད་ཐབས་ལ་བསྐྱར་དུ་སྒོ་འབྱེད་དགོས་ན་གཞི་ནས་ནུས་པ་འཐོན་
+དེ་བཞིན་བསྐྱར་དུ་འགོ་ཚུགས་པ་ཡིན་ནམ།</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3261"/>
@@ -837,13 +839,13 @@ and whether to restart it?</source>
         <location filename="../src/common/mainwindow.cpp" line="2848"/>
         <location filename="../src/common/mainwindow.cpp" line="2873"/>
         <source>Cancel</source>
-        <translation type="unfinished">འདོར་བ། </translation>
+        <translation>མེད་པར་བཟོ་དགོས།</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2849"/>
         <location filename="../src/common/mainwindow.cpp" line="2874"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>བསྐྱར་དུ་འགོ་འཛུགས་དགོས།</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3054"/>
@@ -1272,13 +1274,13 @@ and whether to restart it?</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
         <source>Cancel</source>
-        <translation type="unfinished">འདོར་བ། </translation>
+        <translation>མེད་པར་བཟོ་དགོས།</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2874"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2900"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>བསྐྱར་དུ་འགོ་འཛུགས་དགོས།</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3064"/>
@@ -1470,7 +1472,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>སྨི་ལ་ཁ་སི་ཐེ།</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2132"/>
@@ -1605,7 +1607,7 @@ and whether to restart it?</source>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2859"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>སྨི་ལ་ཁ་སི་ཐེ།</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2306"/>
@@ -1629,7 +1631,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2842"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>རྒྱུགས་ཤོག</translation>
     </message>
 </context>
 <context>
@@ -1637,7 +1639,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/toolbutton.cpp" line="19"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>རྒྱུགས་ཤོག</translation>
     </message>
 </context>
 </TS>
