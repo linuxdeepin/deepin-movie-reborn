@@ -190,6 +190,9 @@ void killOldMovie()
 
 int main(int argc, char *argv[])
 {
+    // Task 326583 不参与合成器崩溃重连
+    unsetenv("QT_WAYLAND_RECONNECT");
+
     //for qt5platform-plugins load DPlatformIntegration or DPlatformIntegrationParent
     if (!QString(qgetenv("XDG_CURRENT_DESKTOP")).toLower().startsWith("deepin")){
         setenv("XDG_CURRENT_DESKTOP", "Deepin", 1);

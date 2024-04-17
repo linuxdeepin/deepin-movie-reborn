@@ -765,8 +765,55 @@ const PlayingMovieInfo &MpvProxy::playingMovieInfo()
     return m_movieInfo;
 }
 
+/**
+ * @return 返回当前设备是否为特殊的HW设备类型,用于进行软/硬解码支持的判断
+ */
+bool isSpecialHWHardware()
+{
+    enum HWDevice { Unknown, IsHWDev, NotHWDev };
+    static HWDevice s_DevType = Unknown;
+
+    if (Unknown == s_DevType) {
+        s_DevType = NotHWDev;
+
+        QProcess process;
+        process.start("dmidecode", {"-s", "system-product-name"});
+        process.waitForFinished(100);
+        QString info = process.readAllStandardOutput();
+        if (info.isEmpty()) {
+            return false;
+        }
+
+        QStringList specilDev{"KLVV", "KLVU", "PGUV", "PGUW", "L540", "W585"};
+        for (const QString &dev : specilDev) {
+            if (info.contains(dev)) {
+                s_DevType = IsHWDev;
+                break;
+            }
+        }
+
+        if (NotHWDev == s_DevType) {
+            // dmidecode | grep -i “String 4”中的值来区分主板类型,PWC30表示PanguW（也就是W525）
+            process.start("bash", {"-c", "dmidecode -t 11 | grep -i \"String 4\""});
+            process.waitForFinished(100);
+            info = process.readAll();
+            if (info.contains("PWC30") || info.contains("PGUX")) {
+                s_DevType = IsHWDev;
+            }
+        }
+
+        qInfo() << QString("Detect HW device, current type is: %1").arg((IsHWDev == s_DevType) ? "true" : "false");
+    }
+
+    return bool(s_DevType == IsHWDev);
+}
+
 bool MpvProxy::isSurportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight)
 {
+    if (utils::check_wayland_env() && isSpecialHWHardware()) {
+        return true;
+    }
+
     bool isHardWare = true;//未安装探测工具默认支持硬解
     decoder_profile decoderValue = decoder_profile::UN_KNOW; //初始化支持解码值
     decoderValue = (decoder_profile)getDecodeProbeValue(sDecodeName); //根据视频格式获取解码值
@@ -1274,6 +1321,13 @@ void MpvProxy::refreshDecode()
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
 #endif
+            if(utils::check_wayland_env()){
+                PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
+                QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
+                if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
+                    isSoftCodec = true;
+                }
+            }
         }
         if (isSoftCodec) {
             qInfo() << "my_set_property hwdec no";
@@ -1294,8 +1348,10 @@ void MpvProxy::refreshDecode()
                     QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
                     if(sdir.exists() && fi.exists()) {
                         my_set_property(m_handle, "hwdec", "vdpau");
+                        my_set_property(m_handle, "vo", "vdpau");
                     }else if (jmfi.exists() && jmdir.exists()) {
                         my_set_property(m_handle, "hwdec", "vaapi");
+                        my_set_property(m_handle, "vo", "vaapi");
                     }else {
                         my_set_property(m_handle, "hwdec", "auto");
                     }
@@ -1361,8 +1417,10 @@ void MpvProxy::refreshDecode()
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
             if(sdir.exists() && fi.exists()) {
                 my_set_property(m_handle, "hwdec", "vdpau");
+                my_set_property(m_handle, "vo", "vdpau");
             }else if (jmfi.exists() && jmdir.exists()) {
                 my_set_property(m_handle, "hwdec", "vaapi");
+                my_set_property(m_handle, "vo", "vaapi");
             }else {
                 my_set_property(m_handle, "hwdec", "auto");
             }
@@ -1381,6 +1439,15 @@ void MpvProxy::refreshDecode()
             my_set_property(m_handle, "video-sync", "desync");
             my_set_property(m_handle, "profile", "sw-fast");
             m_sInitVo = "x11";
+        }
+
+        if(utils::check_wayland_env()){
+            PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
+            PlayItemInfo currentInfo = playMode->currentInfo();
+            QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
+            if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
+                my_set_property(m_handle, "hwdec","no");
+            }
         }
 
         //play.conf

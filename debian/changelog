@@ -1,3 +1,27 @@
+deepin-movie-reborn (5.10.49) unstable; urgency=medium
+
+  * fix: Minimode display error after showfullscreen().(Bug: 249413)
+
+ -- renbin <renbin@uniontech.com>  Tue, 16 Apr 2024 16:41:52 +0800
+
+deepin-movie-reborn (5.10.48) unstable; urgency=medium
+
+  * New version 5.10.48
+  * fix: yuv444p format uses software decoding (Bug: 247589)
+  * fix: sw jmgpu uses hardware decoding (Bug: 240393)
+  * fix: cropped rounded corners exist during full-screen playback (Bug: 247735)
+  * fix: pause icon still displayed when minimized (Bug: 247791)
+  * fix: HW device hardware decoding detection adjustment (Bug: 249087)
+  * fix: Adjust device detection strategy (Bug: 249087)
+
+ -- renbin <renbin@uniontech.com>  Wed, 03 Apr 2024 14:56:28 +0800
+
+deepin-movie-reborn (5.10.47) unstable; urgency=medium
+
+  * New version 5.10.47
+
+ -- renbin <renbin@uniontech.com>  Wed, 27 Mar 2024 15:51:03 +0800
+
 deepin-movie-reborn (5.10.46) unstable; urgency=medium
 
   * New version 5.10.46

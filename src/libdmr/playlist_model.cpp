@@ -311,6 +311,8 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         } else {
             mi.proportion = 0;
         }
+        //用唯一的文件名绑定对应视频的对应pix_fmt值
+        setProperty(fi.filePath().toUtf8(), videoStream->codec->pix_fmt);
     }
     if (audioRet >= 0) {
         int audio_stream_index = -1;
