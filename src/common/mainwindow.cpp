@@ -2916,13 +2916,6 @@ DSettingsDialog *MainWindow::initSettings()
     pPushButton->setDefault(false);
     pPushButton->setAutoDefault(false);
 
-    if (utils::check_wayland_env()) {
-        QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
-        dynamic_cast<QWidget*>(effectFrame->parent())->hide();
-        QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
-        dynamic_cast<QWidget*>(videoFrame->parent())->show();
-    }
-
     int decodeType = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
     if (decodeType != 3) {
         QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
@@ -2933,8 +2926,12 @@ DSettingsDialog *MainWindow::initSettings()
         dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
     } else {
         if (utils::check_wayland_env()) {
+            QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
             QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
-            dynamic_cast<QWidget*>(videoFrame->parent())->show();
+            QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+            dynamic_cast<QWidget*>(effectFrame->parent())->hide();
+            dynamic_cast<QWidget*>(videoFrame->parent())->hide();
+            dynamic_cast<QWidget*>(decodeFrame->parent())->show();
         } else {
             int effectIndex = Settings::get().settings()->getOption(QString("base.decode.Effect")).toInt();
             if (effectIndex == 0) {
@@ -2972,8 +2969,8 @@ DSettingsDialog *MainWindow::initSettings()
                 dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
             } else {
                 if (utils::check_wayland_env()) {
-                    QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
-                    dynamic_cast<QWidget*>(videoFrame->parent())->show();
+                    QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+                    dynamic_cast<QWidget*>(decodeFrame->parent())->show();
                 } else {
                     QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
                     dynamic_cast<QWidget*>(effectFrame->parent())->show();
