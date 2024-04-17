@@ -2874,8 +2874,7 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
         msgBox.addButton(tr("Restart"), true, DDialog::ButtonType::ButtonWarning);
         msgBox.setOnButtonClickedClose(true);
         if (msgBox.exec() == 1) {
-            if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == 3)
-                Settings::get().settings()->setOption("set.start.crash", "2");
+            Settings::get().settings()->setOption("set.start.crash", "2");
             qApp->exit();
             QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
         } else {

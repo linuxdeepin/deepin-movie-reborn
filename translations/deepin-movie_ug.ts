@@ -319,27 +319,27 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="63"/>
         <source>Software decoding</source>
-        <translation>يۇمشال دېتال ئارقىلىق كود يېيىش</translation>
+        <translation>يۇمشال دېتال ئارقىلىق كود يېيىشيۇمشاق دېتاللارنى سىزىش</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="64"/>
         <source>Customize</source>
-        <translation type="unfinished"></translation>
+        <translation>خاسلاشتۇرۇش</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="65"/>
         <source>Decode mode</source>
-        <translation type="unfinished"></translation>
+        <translation>كودنى يوقىتىش ھالىتى</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="66"/>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>ۋىدېئو چىقىرىش</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="67"/>
         <source>Rendering engine</source>
-        <translation type="unfinished"></translation>
+        <translation>يوقىتىش ماتورى</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
@@ -372,7 +372,8 @@ Please do not exit the Movie app during the process.</source>
         <location filename="../src/common/mainwindow.cpp" line="2872"/>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
-        <translation type="unfinished"></translation>
+        <translation>ئۆزى بەلگىلەش ئۇسۇلىنى قوللىنىشتىن بۇرۇن قايتا قوزغىتىشقا توغرا كېلىدۇ ،
+يەنە قايتا قوزغىتىش كېرەكمۇ يوق؟</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3261"/>
@@ -837,13 +838,13 @@ and whether to restart it?</source>
         <location filename="../src/common/mainwindow.cpp" line="2848"/>
         <location filename="../src/common/mainwindow.cpp" line="2873"/>
         <source>Cancel</source>
-        <translation type="unfinished">بىكار قىلىش</translation>
+        <translation>بىكار قىلىشئەمەلدىن قالدۇرۇش</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2849"/>
         <location filename="../src/common/mainwindow.cpp" line="2874"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>قايتا قوزغىتىش</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3054"/>
@@ -1272,13 +1273,13 @@ and whether to restart it?</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
         <source>Cancel</source>
-        <translation type="unfinished">بىكار قىلىش</translation>
+        <translation>ئەمەلدىن قالدۇرۇش</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2874"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2900"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>قايتا قوزغىتىش</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3064"/>
@@ -1629,7 +1630,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2842"/>
         <source>Volume</source>
-        <translation type="unfinished">ئاۋاز</translation>
+        <translation>ئاۋازئاۋاز چوڭلۇقى</translation>
     </message>
 </context>
 <context>

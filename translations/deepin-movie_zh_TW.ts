@@ -838,13 +838,13 @@ and whether to restart it?</source>
         <location filename="../src/common/mainwindow.cpp" line="2848"/>
         <location filename="../src/common/mainwindow.cpp" line="2873"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2849"/>
         <location filename="../src/common/mainwindow.cpp" line="2874"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>重啓</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3054"/>
@@ -1273,13 +1273,13 @@ and whether to restart it?</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2874"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2900"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>重啓</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3064"/>
