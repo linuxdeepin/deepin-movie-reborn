@@ -149,6 +149,9 @@ Settings::Settings()
         auto voFamily = m_pSettings->option("base.decode.Videoout");
         if (voFamily)
             voFamily->setData("items", QStringList() << "OpenGL");
+        auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+        if (decodeFamily)
+            decodeFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy" << "nvdec" << "nvdec-copy" << "rkmpp");
     } else {
         QStringList hwdecList, voList;
         hwdecList << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy" << "nvdec" << "nvdec-copy" << "rkmpp";
