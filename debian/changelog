@@ -1,9 +1,3 @@
-deepin-movie-reborn (5.10.51) unstable; urgency=medium
-
-  * feat: Added new settings for movie
-
- -- xiepengfei <xiepengfei@uniontech.com>  Wed, 02 Jul 2024 15:48:47 +0800
-
 deepin-movie-reborn (5.10.50) unstable; urgency=medium
 
   * fix: Volume greater than 100 cannot be exited.(Bug: 251965)
