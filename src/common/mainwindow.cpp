@@ -3360,15 +3360,19 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
     }
 
     int volume = Settings::get().internalOption("global_volume").toInt();
-    if (m_nDisplayVolume != volume) {
+    int displayVolume = m_nDisplayVolume > 100 ? 100 : m_nDisplayVolume;
+    if (displayVolume != volume) {
         static QEventLoop loop;
         QFileSystemWatcher fileWatcher;
         fileWatcher.addPath(Settings::get().configPath());
         connect(&fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](){
             loop.quit();
         });
+        QTimer::singleShot(2000, this, [=](){
+            loop.quit();
+        });
         //关闭窗口时保存音量值
-        Settings::get().setInternalOption("global_volume", m_nDisplayVolume > 100 ? 100 : m_nDisplayVolume);
+        Settings::get().setInternalOption("global_volume", displayVolume);
         loop.exec();
     }
     m_pEngine->savePlaybackPosition();
