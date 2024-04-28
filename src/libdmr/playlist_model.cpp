@@ -16,6 +16,7 @@
 #include <QSvgRenderer>
 
 #include <random>
+#include <libffmpegthumbnailer/videothumbnailerc.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -33,6 +34,23 @@ typedef AVCodec *(*mvideo_avcodec_find_decoder)(enum AVCodecID id);
 typedef const char *(*mvideo_av_get_media_type_string)(enum AVMediaType media_type);
 typedef AVCodecContext *(*mvideo_avcodec_alloc_context3)(const AVCodec *codec);
 typedef int (*mvideo_avcodec_parameters_to_context)(AVCodecContext *codec, const AVCodecParameters *par);
+
+video_thumbnailer *m_video_thumbnailer = nullptr;
+image_data *m_image_data = nullptr;
+
+typedef video_thumbnailer *(*mvideo_thumbnailer)();
+typedef void (*mvideo_thumbnailer_destroy)(video_thumbnailer *thumbnailer);
+/* create image_data structure */
+typedef image_data *(*mvideo_thumbnailer_create_image_data)(void);
+/* destroy image_data structure */
+typedef void (*mvideo_thumbnailer_destroy_image_data)(image_data *data);
+typedef int (*mvideo_thumbnailer_generate_thumbnail_to_buffer)(video_thumbnailer *thumbnailer, const char *movie_filename, image_data *generated_image_data);
+
+mvideo_thumbnailer m_mvideo_thumbnailer = nullptr;
+mvideo_thumbnailer_destroy m_mvideo_thumbnailer_destroy = nullptr;
+mvideo_thumbnailer_create_image_data m_mvideo_thumbnailer_create_image_data = nullptr;
+mvideo_thumbnailer_destroy_image_data m_mvideo_thumbnailer_destroy_image_data = nullptr;
+mvideo_thumbnailer_generate_thumbnail_to_buffer m_mvideo_thumbnailer_generate_thumbnail_to_buffer = nullptr;
 
 
 mvideo_avformat_open_input g_mvideo_avformat_open_input = nullptr;
