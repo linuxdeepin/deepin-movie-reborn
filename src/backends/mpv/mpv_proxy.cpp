@@ -566,12 +566,6 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "vo", "x11,gpu,xv");
             m_sInitVo = "x11,gpu,xv";
         }
-        if (CompositingManager::get().isSpecialControls()) {
-            qDebug() << "DEBUG: AARCH64: Special controls detected. Setting hwdec to vaapi and vo to vaapi.";
-            my_set_property(pHandle, "hwdec", "vaapi");
-            my_set_property(pHandle, "vo", "vaapi");
-            m_sInitVo = "vaapi";
-        }
 #else
         //去除9200显卡适配
         QFileInfo sjmfi("/dev/jmgpu");
@@ -644,6 +638,12 @@ mpv_handle *MpvProxy::mpv_init()
             qDebug() << "DEBUG: Inno-codec driver detected. Setting vo to gpu,x11.";
             my_set_property(pHandle, "vo", "gpu,x11");
             m_sInitVo = "gpu,x11";
+        }
+
+        if (CompositingManager::get().isSpecialControls()) {
+            my_set_property(pHandle, "hwdec", "vaapi");
+            my_set_property(pHandle, "vo", "vaapi");
+            m_sInitVo = "vaapi";
         }
     } else { //3.设置硬解
         qDebug() << "DEBUG: Decode mode set to HARDWARE. Checking specific hardware.";
