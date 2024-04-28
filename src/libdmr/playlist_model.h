@@ -8,27 +8,13 @@
 #include <QtWidgets>
 //#include <QtConcurrent>
 #include <DApplicationHelper>
-#include <DGuiApplicationHelper>
-#include <libffmpegthumbnailer/videothumbnailerc.h>
 
 #include "utils.h"
 #include <QNetworkReply>
 #include <QMutex>
 
-#include <libffmpegthumbnailer/videothumbnailerc.h>
-
 #define THUMBNAIL_SIZE 500
 #define SEEK_TIME "00:00:01"
-
-DGUI_USE_NAMESPACE
-
-typedef video_thumbnailer *(*mvideo_thumbnailer)();
-typedef void (*mvideo_thumbnailer_destroy)(video_thumbnailer *thumbnailer);
-/* create image_data structure */
-typedef image_data *(*mvideo_thumbnailer_create_image_data)(void);
-/* destroy image_data structure */
-typedef void (*mvideo_thumbnailer_destroy_image_data)(image_data *data);
-typedef int (*mvideo_thumbnailer_generate_thumbnail_to_buffer)(video_thumbnailer *thumbnailer, const char *movie_filename, image_data *generated_image_data);
 
 namespace dmr {
 class PlayerEngine;
@@ -286,15 +272,6 @@ private:
     QQueue<UrlList> _pendingAppendReq;
 
     bool _userRequestingItem {false};
-
-    video_thumbnailer *m_video_thumbnailer = nullptr;
-    image_data *m_image_data = nullptr;
-
-    mvideo_thumbnailer m_mvideo_thumbnailer = nullptr;
-    mvideo_thumbnailer_destroy m_mvideo_thumbnailer_destroy = nullptr;
-    mvideo_thumbnailer_create_image_data m_mvideo_thumbnailer_create_image_data = nullptr;
-    mvideo_thumbnailer_destroy_image_data m_mvideo_thumbnailer_destroy_image_data = nullptr;
-    mvideo_thumbnailer_generate_thumbnail_to_buffer m_mvideo_thumbnailer_generate_thumbnail_to_buffer = nullptr;
 
     PlayerEngine *_engine {nullptr};
 
