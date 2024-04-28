@@ -422,11 +422,6 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "vo", "gpu,xv,x11");
             m_sInitVo = "gpu,xv,x11";
         }
-        if (CompositingManager::get().isSpecialControls()) {
-            my_set_property(pHandle, "hwdec", "vaapi");
-            my_set_property(pHandle, "vo", "vaapi");
-            m_sInitVo = "vaapi";
-        }
 #else
         //去除9200显卡适配
         QFileInfo sjmfi("/dev/jmgpu");
@@ -479,6 +474,12 @@ mpv_handle *MpvProxy::mpv_init()
         if ( innodir.exists()) {
             my_set_property(pHandle, "vo", "gpu,x11");
             m_sInitVo = "gpu,x11";
+        }
+
+        if (CompositingManager::get().isSpecialControls()) {
+            my_set_property(pHandle, "hwdec", "vaapi");
+            my_set_property(pHandle, "vo", "vaapi");
+            m_sInitVo = "vaapi";
         }
     } else { //3.设置硬解
         QFileInfo fi("/dev/mwv206_0");
