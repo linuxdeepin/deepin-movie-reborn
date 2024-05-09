@@ -9,6 +9,8 @@
 
 #include <QDebug>
 
+#define URL_SIZE 200    //in parseFileByGst for file buffer
+
 namespace dmr {
 
 static mvideo_gst_discoverer_info_get_uri g_mvideo_gst_discoverer_info_get_uri = nullptr;
@@ -203,7 +205,7 @@ MovieInfo GstUtils::parseFileByGst(const QFileInfo &fi)
 {
     qDebug() << "Parsing file by GStreamer:" << fi.filePath();
     char *uri = nullptr;
-    uri = new char[200];
+    uri = new char[URL_SIZE];
 
     m_movieInfo = MovieInfo();
 
@@ -221,7 +223,8 @@ MovieInfo GstUtils::parseFileByGst(const QFileInfo &fi)
              << "Size:" << m_movieInfo.fileSize 
              << "Type:" << m_movieInfo.fileType;
 
-    uri = strcpy(uri, QUrl::fromLocalFile(fi.filePath()).toString().toUtf8().constData());
+    uri = strncpy(uri, QUrl::fromLocalFile(fi.filePath()).toString().toUtf8().constData(), URL_SIZE - 1);
+    uri[URL_SIZE - 1] = '\0';
 
     if (!g_mvideo_gst_discoverer_discover_uri_async (m_gstData.discoverer, uri)) {
         qWarning() << "Failed to start discovering URI:" << uri;
@@ -231,7 +234,7 @@ MovieInfo GstUtils::parseFileByGst(const QFileInfo &fi)
 
     g_main_loop_run (m_gstData.loop);
 
-    delete []uri;
+    delete [] uri;
 
     qDebug() << "File parsing completed";
     return m_movieInfo;
