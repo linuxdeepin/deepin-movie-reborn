@@ -1246,6 +1246,20 @@ MainWindow::MainWindow(QWidget *parent)
                                          SLOT(slotProperChanged(QString, QVariantMap, QStringList)));
     qInfo() << "session Path is :" << path;
     connect(dynamic_cast<MpvProxy *>(m_pEngine->getMpvProxy()),&MpvProxy::crashCheck,&Settings::get(),&Settings::crashCheck);
+    if(utils::check_wayland_env()) {
+        connect(qApp, &QGuiApplication::screenRemoved, this, [=](){
+            QRect geoRect = geometry();
+#if QT_VERSION_MAJOR == 6
+            QRect deskRect = this->screen()->availableGeometry();
+#else
+            QRect deskRect = QApplication::desktop()->availableGeometry(geoRect.topLeft());
+#endif
+
+            if(!deskRect.intersects(geoRect)) {
+                move(deskRect.x(), deskRect.y());
+            }
+        });
+    }
     //解码初始化
    decodeInit();
 }
