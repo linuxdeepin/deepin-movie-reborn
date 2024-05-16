@@ -1543,6 +1543,12 @@ void MpvProxy::refreshDecode()
                     qWarning() << "Using SoftCodec because of check SupportHardWareDecode";
                 }
             }
+            if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
+                isSoftCodec = codec.contains("vp8") && (currentInfo.mi.width > 1920 || currentInfo.mi.height > 1080);
+                if (isSoftCodec) {
+                    qWarning() << "Using SoftCodec because of codec OR size";
+                }
+            }
 #endif
             if(utils::check_wayland_env()){
                 PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
