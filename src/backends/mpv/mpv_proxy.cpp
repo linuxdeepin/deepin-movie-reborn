@@ -1275,6 +1275,9 @@ void MpvProxy::refreshDecode()
             if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag && !x100flag) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
+            if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
+                isSoftCodec = codec.contains("vp8") && (currentInfo.mi.width > 1920 || currentInfo.mi.height > 1080);
+            }
 #endif
             if(utils::check_wayland_env()){
                 PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
