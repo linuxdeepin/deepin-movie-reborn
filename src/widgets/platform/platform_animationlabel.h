@@ -62,6 +62,11 @@ private:
      * @param pMainWindow 主窗口
      */
     void setGeometryByMainWindow(QWidget *pMainWindow);
+    /**
+     * @brief 根据覆盖区域是否显示此窗口
+     * @return true为显示
+     */
+    bool isShowPopup();
 
 public slots:
     /**
