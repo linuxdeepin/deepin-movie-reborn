@@ -15,6 +15,8 @@
 
 #include "platform_animationlabel.h"
 #include "mainwindow.h"
+#include <DWindowManagerHelper>
+#include <DForeignWindow>
 
 #define ANIMATION_TIME 250  ///动画时长
 #define DELAY_TIME 2000 ///显示动画与隐藏动画间隔
@@ -52,6 +54,7 @@ void Platform_AnimationLabel::pauseAnimation()
         setFixedSize(200, 200);
     else
         setFixedSize(100, 100);
+    if(!isShowPopup()) return;
     m_pPlayAnimationGroup->start();
     if(!isVisible()) {
         show();
@@ -70,6 +73,7 @@ void Platform_AnimationLabel::playAnimation()
         setFixedSize(200, 200);
     else
         setFixedSize(100, 100);
+    if(!isShowPopup()) return;
     m_pPauseAnimationGroup->start();
     if(!isVisible()) {
         show();
@@ -169,6 +173,52 @@ void Platform_AnimationLabel::setGeometryByMainWindow(QWidget *pMainWindow)
         QPoint pt = pMainWindow->mapToGlobal(rect.center())- QPoint(nWidth/2, nHeight/2);
         setGeometry(pt.x(), pt.y(), nWidth, nHeight);
     }
+}
+
+bool Platform_AnimationLabel::isShowPopup()
+{
+    QList<WId> currentApplicationWindowList;
+    const QWindowList &list = qApp->allWindows();
+
+    currentApplicationWindowList.reserve(list.size());
+
+    for (auto window : list) {
+        if (window->property("_q_foreignWinId").isValid()) {
+            continue;
+        }
+        if(window->isVisible()) {
+            currentApplicationWindowList.append(window->winId());
+        }
+    }
+
+    QVector<quint32> wmClientList = DWindowManagerHelper::instance()->currentWorkspaceWindowIdList();
+
+    bool currentWindow = false;
+    for (WId wid : wmClientList) {
+        if (currentApplicationWindowList.contains(wid)){
+            currentWindow = true;
+            continue;
+        }
+        if (false == currentWindow){
+            continue;
+        }
+        if (DForeignWindow *w = DForeignWindow::fromWinId(wid)) {
+            if(m_pMainWindow) {
+                QRect rect = m_pMainWindow->rect();
+                int nWidth = width(), nHeight = height();
+                QPoint pt = m_pMainWindow->mapToGlobal(rect.center())- QPoint(nWidth/2, nHeight/2);
+                QRect msgRect(pt.x(), pt.y(), nWidth, nHeight);
+                QRect wRect = w->geometry();
+                if (msgRect.x() < wRect.x() + wRect.width() &&
+                    msgRect.x() + msgRect.width() > wRect.x() &&
+                    msgRect.y() < wRect.y() + wRect.height() &&
+                    msgRect.y() + msgRect.height() > wRect.y()) {
+                    return false; // 重叠
+                }
+            }
+        }
+    }
+    return true;
 }
 
 /**
