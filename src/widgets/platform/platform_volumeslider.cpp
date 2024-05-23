@@ -88,7 +88,7 @@ Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *p
 void Platform_VolumeSlider::initVolume()
 {
     qDebug() << "Entering initVolume function";
-    QTimer::singleShot(500, this, [ = ] { //延迟加载等待信号槽连接
+    QTimer::singleShot(50, this, [ = ] { //延迟加载等待信号槽连接
         int nVolume = Settings::get().internalOption("global_volume").toInt();
         bool bMute = Settings::get().internalOption("mute").toBool();
 
