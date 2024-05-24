@@ -3113,6 +3113,7 @@ void Platform_MainWindow::updateProxyGeometry()
 
         if (m_pToolbox) {
             QRect rfs;
+            QPoint mircastPoint;
             if (m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::State::Opened) {
                 rfs = QRect(5, height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - rect().top() - 5,
                             rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
@@ -3120,7 +3121,8 @@ void Platform_MainWindow::updateProxyGeometry()
                 rfs = QRect(5, height() - TOOLBOX_HEIGHT - rect().top() - 5,
                             rect().width() - 10, TOOLBOX_HEIGHT);
             }
-
+            mircastPoint.setX(5 + rect().width() - 10);
+            mircastPoint.setY(height() - TOOLBOX_HEIGHT - rect().top() - 5);
 #ifdef DTKWIDGET_CLASS_DSizeMode
             if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
                 if (m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::State::Opened) {
@@ -3130,10 +3132,12 @@ void Platform_MainWindow::updateProxyGeometry()
                     rfs = QRect(5, height() - TOOLBOX_DSIZEMODE_HEIGHT - rect().top() - 5,
                                 rect().width() - 10, TOOLBOX_DSIZEMODE_HEIGHT);
                 }
+                mircastPoint.setX(5 + rect().width() - 10);
+                mircastPoint.setY(height() - TOOLBOX_DSIZEMODE_HEIGHT - rect().top() - 5);
             }
 #endif
             m_pToolbox->setGeometry(rfs);
-            m_pToolbox->updateMircastWidget(rfs.topRight());
+            m_pToolbox->updateMircastWidget(mircastPoint);
         }
 
         if (m_pPlaylist && !m_pPlaylist->toggling()) {
