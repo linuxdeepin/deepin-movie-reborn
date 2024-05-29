@@ -1646,6 +1646,8 @@ void MainWindow::menuItemInvoked(QAction *pAction)
 
 bool MainWindow::isActionAllowed(ActionFactory::ActionKind actionKind, bool fromUI, bool isShortcut)
 {
+    Q_ASSERT(m_pEngine);
+
     if (m_bInBurstShootMode) {
         return false;
     }
@@ -1715,6 +1717,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                                QList<QVariant> args, bool bIsShortcut)
 {
     qInfo() << "actionKind = " << actionKind << "fromUI " << bFromUI << (bIsShortcut ? "shortcut" : "");
+
+    Q_ASSERT(m_pToolbox);
+    Q_ASSERT(m_pCommHintWid);
 
     if (!m_pToolbox->getbAnimationFinash() || m_bStartAnimation) {
         return;
@@ -2751,6 +2756,8 @@ DSettingsDialog *MainWindow::initSettings()
 
 void MainWindow::play(const QList<QString> &listFiles)
 {
+    Q_ASSERT(m_pEngine);
+
     QList<QUrl> lstValid;
     QList<QString> lstDir;
     QList<QString> lstFile;
@@ -3780,7 +3787,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 
     qInfo() << __func__ << "进入mouseReleaseEvent";
 
-    if (!insideResizeArea(ev->globalPos()) && !m_bMouseMoved && (m_pPlaylist->state() != PlaylistWidget::Opened)) {
+    if (!insideResizeArea(ev->globalPos()) && !m_bMouseMoved && m_pPlaylist && (m_pPlaylist->state() != PlaylistWidget::Opened)) {
         if (!insideToolsArea(ev->pos())) {
             m_delayedMouseReleaseTimer.start(120);
         } else {
