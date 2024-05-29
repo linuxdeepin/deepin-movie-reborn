@@ -13,6 +13,8 @@ PlayerWidget::PlayerWidget(QWidget *parent)
     : QWidget (parent)
 {
     utils::first_check_wayland_env();
+    if (parent.getProperty("composited").isValid() && !parent.getProperty("composited").tobool())
+        setProperty("composited", false);
     _engine = new PlayerEngine(this);
     auto *l = new QVBoxLayout;
     l->setContentsMargins(0, 0, 0, 0);

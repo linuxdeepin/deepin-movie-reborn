@@ -49,6 +49,8 @@ PlayerEngine::PlayerEngine(QWidget *parent)
     m_stopRunningThread = false;
     auto *l = new QVBoxLayout(this);
     l->setContentsMargins(0, 0, 0, 0);
+    if (parent.getProperty("composited").isValid() && !parent.getProperty("composited").tobool())
+        setProperty("composited", false);
 
     if(CompositingManager::isMpvExists()){
         _current = new MpvProxy(this);

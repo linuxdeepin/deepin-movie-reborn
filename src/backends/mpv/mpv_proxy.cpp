@@ -105,8 +105,12 @@ MpvProxy::MpvProxy(QWidget *parent)
     initMember();
 
     m_pParentWidget = parent;
+    if (parent.getProperty("composited").isValid() && !parent.getProperty("composited").toBool())
+        m_composited = false;
+    else
+        m_composited = CompositingManager::get().composited();
 
-    if (!CompositingManager::get().composited()) {
+    if (!m_composited) {
         setWindowFlags(Qt::FramelessWindowHint);
         setAttribute(Qt::WA_NativeWindow);
         winId();
@@ -126,7 +130,7 @@ MpvProxy::~MpvProxy()
     disconnect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events);
     m_bConnectStateChange = false;
     disconnect(window()->windowHandle(), &QWindow::windowStateChanged, nullptr, nullptr);
-    if (CompositingManager::get().composited()) {
+    if (m_composited) {
         disconnect(this, &MpvProxy::stateChanged, nullptr, nullptr);
         delete m_pMpvGLwidget;
     }
@@ -197,7 +201,7 @@ void MpvProxy::firstInit()
     initGpuInfoFuns();
     if (m_creat) {
         m_handle = MpvHandle::fromRawHandle(mpv_init());
-        if (CompositingManager::get().composited()) {
+        if (m_composited) {
             m_pMpvGLwidget = new MpvGLWidget(this, m_handle);
             connect(this, &MpvProxy::stateChanged, this, &MpvProxy::slotStateChanged);
 #ifdef __x86_64__
@@ -246,7 +250,6 @@ void MpvProxy::updateRoundClip(bool roundClip)
 mpv_handle *MpvProxy::mpv_init()
 {
     mpv_handle *pHandle =  static_cast<mpv_handle *>(m_creat());
-    bool composited = CompositingManager::get().composited();
 
     switch (_debugLevel) {
     case DebugLevel::Info:
@@ -268,7 +271,7 @@ mpv_handle *MpvProxy::mpv_init()
     }
 
 #ifdef _LIBDMR_
-    if (composited) {
+    if (m_composited) {
         auto interop = QString::fromUtf8("vaapi-glx");
         if (!qEnvironmentVariableIsEmpty("QT_XCB_GL_INTERGRATION")) {
             auto gl_int = qgetenv("QT_XCB_GL_INTERGRATION");
@@ -286,7 +289,7 @@ mpv_handle *MpvProxy::mpv_init()
     my_set_property(pHandle, "hwdec", "auto");
 
 #else
-    if (composited) {
+    if (m_composited) {
         auto disable = Settings::get().disableInterop();
         auto forced = Settings::get().forcedInterop();
 
@@ -554,7 +557,7 @@ mpv_handle *MpvProxy::mpv_init()
         }
     }
 
-    if (composited) {
+    if (m_composited) {
 #ifdef __mips__
         m_setOptionString(pHandle, "vo", "opengl-cb");
         m_setOptionString(pHandle, "hwdec-preload", "auto");
@@ -1667,9 +1670,8 @@ int MpvProxy::my_set_property(mpv_handle *pHandle, const QString &sName, const Q
     QVariant sValue = v;
 #ifndef _LIBDMR_
 #ifdef __x86_64__
-    bool composited = CompositingManager::get().composited();
     //设置mpv硬解码时，检测是否支持硬解，不支持则设置为软解
-    if(sName.compare("hwdec") == 0 && v.toString().compare("auto") == 0 && !utils::check_wayland_env() && composited)
+    if(sName.compare("hwdec") == 0 && v.toString().compare("auto") == 0 && !utils::check_wayland_env() && m_composited)
     {
         if(!CompositingManager::isCanHwdec())
         {
@@ -1786,7 +1788,7 @@ QImage MpvProxy::takeOneScreenshot()
         auto img = QImage(static_cast<const uchar *>(pData), w, h, stride, QImage::Format_RGB32);
         img.bits();
         int rotationdegree = videoRotation();
-        if (rotationdegree && (CompositingManager::get().composited() || bNeedRotate)) {      //只有opengl窗口需要自己旋转
+        if (rotationdegree && (m_composited || bNeedRotate)) {      //只有opengl窗口需要自己旋转
             QMatrix matrix;
             matrix.rotate(rotationdegree);
             img = QPixmap::fromImage(img).transformed(matrix, Qt::SmoothTransformation).toImage();
