@@ -38,7 +38,16 @@ Settings::Settings()
 #if !defined (__x86_64__)
     m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
 #else
-        if (CompositingManager::get().composited())
+        auto isThumbnailerExists = [=](){
+            QDir  dir;
+            QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+            dir.setPath(path);
+            QStringList list = dir.entryList(QStringList() << (QString("libffmpegthumbnailer.so") + "*"), QDir::NoDotAndDotDot | QDir::Files);
+            if (!list.isEmpty())
+                return true;
+            return false;
+        };
+        if (CompositingManager::get().composited() && isThumbnailerExists())
             m_pSettings = DSettings::fromJsonFile(":/resources/data/settings.json");
         else
             m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
