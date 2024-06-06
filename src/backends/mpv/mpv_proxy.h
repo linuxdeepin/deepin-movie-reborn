@@ -448,6 +448,7 @@ private:
     bool m_bInited;                        //mpv是否已经初始化
     bool m_bHwaccelAuto;                   //如果设置为不为自动，则不允许此类改变硬件设置
     bool m_bLastIsSpecficFormat;           //上一曲是否是特殊格式的影片，如果是则应该重新设置vo
+    bool m_composited;                     //是否使用窗口合成
     QMap<QString, QVariant> m_mapWaitSet;  //等待mpv初始化后设置的参数
     QVector<QVariant> m_vecWaitCommand;    //等待mpv初始化后设置的参数
     //mpv播放配置
