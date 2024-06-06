@@ -4616,6 +4616,17 @@ void Platform_MainWindow::resizeEvent(QResizeEvent *pEvent)
             m_pMiniQuitMiniBtn->setVisible(m_bMiniMode);
         }
     }
+    //判断屏幕可用坐标与应用的geometry是否有交集，没有就移动到屏幕可见位置
+    QRect geoRect = geometry();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QRect deskRect = QApplication::desktop()->availableGeometry(geoRect.topLeft());
+#else
+    QRect deskRect = this->screen()->availableGeometry();
+#endif
+
+    if(!deskRect.intersects(geoRect)) {
+        move(deskRect.x(), deskRect.y());
+    }
     qDebug() << "Exiting resizeEvent function";
 }
 
