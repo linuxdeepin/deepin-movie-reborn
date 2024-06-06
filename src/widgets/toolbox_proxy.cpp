@@ -800,13 +800,16 @@ static QString libPath(const QString &strlib)
         list.sort();
     }
 
-    Q_ASSERT(list.size() > 0);
-    return list.last();
+    if (!list.isEmpty())
+        return list.last();
+    return QString();
 }
 
-void viewProgBarLoad::initThumb()
+bool viewProgBarLoad::initThumb()
 {
     QLibrary library(libPath("libffmpegthumbnailer.so"));
+    if (!library.load())
+        return false;
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
     m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
@@ -817,10 +820,11 @@ void viewProgBarLoad::initThumb()
             || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
             || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr)
     {
-        return;
+        return false;
     }
 
     m_video_thumbnailer = m_mvideo_thumbnailer();
+    return true;
 }
 
 void viewProgBarLoad::initMember()
