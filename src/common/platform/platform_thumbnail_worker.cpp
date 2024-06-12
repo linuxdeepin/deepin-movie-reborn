@@ -80,8 +80,8 @@ void Platform_ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 
 Platform_ThumbnailWorker::Platform_ThumbnailWorker()
 {
-    if (initThumb())
-        m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
+    initThumb();
+    m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
 
     m_pCharTime = (char *)malloc(20);
 }
@@ -98,16 +98,13 @@ QString Platform_ThumbnailWorker::libPath(const QString &strlib)
         list.sort();
     }
 
-    if (!list.isEmpty())
-        return list.last();
-    return QString();
+    Q_ASSERT(list.size() > 0);
+    return list.last();
 }
 
-bool Platform_ThumbnailWorker::initThumb()
+void Platform_ThumbnailWorker::initThumb()
 {
     QLibrary library(libPath("libffmpegthumbnailer.so"));
-    if (!library.load())
-        return false;
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
     m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
@@ -118,15 +115,12 @@ bool Platform_ThumbnailWorker::initThumb()
             || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
             || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr
             || m_video_thumbnailer == nullptr) {
-        return false;
+        return;
     }
-    return true;
 }
 
 QPixmap Platform_ThumbnailWorker::genThumb(const QUrl &url, int secs)
 {
-    if (!m_mvideo_thumbnailer_create_image_data)
-        return QPixmap();
     auto dpr = qApp->devicePixelRatio();
     QPixmap pm;
     pm.setDevicePixelRatio(dpr);
