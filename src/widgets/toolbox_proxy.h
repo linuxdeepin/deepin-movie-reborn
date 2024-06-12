@@ -748,7 +748,7 @@ private:
     /**
      * @brief initThumb 动态初始化缩略图获取
      */
-    bool initThumb();
+    void initThumb();
     /**
      * @brief initMember 初始化成员变量
      */
