@@ -65,7 +65,7 @@ private:
     char *m_pCharTime;
 
     ThumbnailWorker();
-    bool initThumb();
+    void initThumb();
     void run() override;
     void runSingle(QPair<QUrl, int> w);
     QPixmap genThumb(const QUrl &url, int secs);
