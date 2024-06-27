@@ -1314,6 +1314,9 @@ void MpvProxy::refreshDecode()
                         my_set_property(m_handle, "hwdec", "auto");
                     }
                 }
+#ifdef _LIBDMR_
+    my_set_property(m_handle, "vo", "libmpv,opengl-cb");
+#endif
             } else if (X100GPU.exists() && X100VPU.exists()) {
                 my_set_property(m_handle, "hwdec", "ftomx-copy");
                 my_set_property(m_handle, "vo", "gpu");
@@ -1382,6 +1385,9 @@ void MpvProxy::refreshDecode()
             }else {
                 my_set_property(m_handle, "hwdec", "auto");
             }
+#ifdef _LIBDMR_
+    my_set_property(m_handle, "vo", "libmpv,opengl-cb");
+#endif
         } else if (X100GPU.exists() && X100VPU.exists()) {
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
