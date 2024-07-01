@@ -11,6 +11,15 @@ set(CMAKE_CXX_FLAGS "-std=c++1y -fpermissive -Wno-error")
 
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 
+if(DEFINED LINGLONG_BUILD_ON)
+    # 玲珑构建编译开关
+    add_definitions(-DLINGLONG_BUILD)
+    include_directories(/runtime/include)
+    message(STATUS "LINGLONG_BUILD is ON")
+else()
+    message(STATUS "LINGLONG_BUILD is OFF")
+endif()
+
 find_package(Qt5Widgets)
 find_package(Qt5Concurrent)
 find_package(Qt5Network)
