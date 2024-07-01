@@ -24,7 +24,7 @@ add_library(${CMD_NAME} SHARED ${SRCS})
 set_target_properties(${CMD_NAME} PROPERTIES VERSION 0.1.0 SOVERSION 0.1)
 
 target_include_directories(${CMD_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mediaplayer ${PROJECT_SOURCE_DIR}/../backends/mpv /usr/include/glib-2.0 /usr/include/gstreamer-1.0)
+    ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mediaplayer ${PROJECT_SOURCE_DIR}/../backends/mpv ${CMAKE_INSTALL_PREFIX}/include/glib-2.0 ${CMAKE_INSTALL_PREFIX}/include/gstreamer-1.0)
 
 target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
     Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::Svg Qt5::Multimedia Qt5::MultimediaWidgets Qt5::DBus PkgConfig::Gst GL)
