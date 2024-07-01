@@ -35,6 +35,10 @@ pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gobject-2.0)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
 pkg_check_modules(Other REQUIRED  gsettings-qt)
 
+# make linglong build success
+pkg_check_modules(3rd REQUIRED libavformat mpv libavcodec libffmpegthumbnailer)
+include_directories(${3rd_INCLUDE_DIRS})
+
 qt5_add_resources(RCS ../assets/resources.qrc)
 qt5_add_resources(RCS ../assets/icons/theme-icons.qrc)
 if (${Dtk_VERSION} LESS 2.0.6.1)
@@ -51,7 +55,7 @@ file(GLOB_RECURSE MEDIAPLAYER_SRCS LIST_DIRECTORIES false backends/mediaplayer/*
 list(APPEND SRCS ${MPV_SRCS} ${MEDIAPLAYER_SRCS})
 list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/mpv)
 list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/mediaplayer)
-list(APPEND PROJECT_INCLUDE /usr/include/glib-2.0 /usr/include/gstreamer-1.0)
+list(APPEND PROJECT_INCLUDE ${CMAKE_INSTALL_PREFIX}/include/glib-2.0 ${CMAKE_INSTALL_PREFIX}/include/gstreamer-1.0)
 #~
 
 set (DTK_SETTINGS_TOOLS_EXECUTABLE ${DTKCORE_TOOL_DIR}/dtk-settings)
