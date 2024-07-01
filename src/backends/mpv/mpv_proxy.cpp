@@ -16,7 +16,6 @@
 #include "movie_configuration.h"
 #endif
 #include <mpv/client.h>
-
 #include <random>
 #include <QtWidgets>
 #include <QtGlobal>
@@ -1318,7 +1317,11 @@ void MpvProxy::play()
     }
 
     if (listOpts.size()) {
-        listArgs << "replace" << listOpts.join(',');
+        listArgs << "replace";
+        if (MPV_CLIENT_API_VERSION >= MPV_MAKE_VERSION(2,3)) {
+             listArgs << "-1";
+        }
+        listArgs << listOpts.join(',');
     }
 
     qInfo() << listArgs;
