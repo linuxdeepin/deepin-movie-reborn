@@ -15,6 +15,15 @@ add_definitions(-D_MOVIE_USE_)
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+if(DEFINED LINGLONG_BUILD_ON)
+    # 玲珑构建编译开关
+    add_definitions(-DLINGLONG_BUILD)
+    include_directories(/runtime/include)
+    message(STATUS "LINGLONG_BUILD is ON")
+else()
+    message(STATUS "LINGLONG_BUILD is OFF")
+endif()
+
 find_package(Qt5Widgets)
 find_package(Qt5DBus)
 find_package(Qt5X11Extras)
