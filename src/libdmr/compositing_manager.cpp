@@ -340,6 +340,36 @@ bool CompositingManager::isCanHwdec()
     return m_bCanHwdec;
 }
 
+QString  CompositingManager::libPath(const QString &strlib)
+{
+#ifdef LINGLONG_BUILD
+    QString libName;
+    if (strlib.endsWith(".so"))
+        libName = strlib.mid(0, strlib.indexOf(".so"));
+    else
+        libName = strlib;
+
+    qDebug() << "libName:" << libName;
+
+    return libName;
+#else
+    QDir dir;
+    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+    dir.setPath(path);
+    QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
+    if (list.contains(strlib)) {
+        return (path+ QDir::separator() + strlib);
+    } else {
+        list.sort();
+    }
+
+    if(list.size() > 0)
+        return (path + QDir::separator() + list.last());
+    else
+        return QString();
+#endif
+}
+
 void CompositingManager::setCanHwdec(bool bCanHwdec)
 {
     m_bCanHwdec = bCanHwdec;

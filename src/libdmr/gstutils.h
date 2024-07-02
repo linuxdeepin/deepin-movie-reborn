@@ -65,7 +65,6 @@ public:
 
 private:
     GstUtils();
-    QString libPath(const QString &strlib);
 
 private:
     static MovieInfo m_movieInfo;
