@@ -4,7 +4,6 @@
 
 #include <QLibrary>
 #include <QDir>
-#include <QLibraryInfo>
 #include <QJsonDocument>
 
 #include "eventlogutils.h"

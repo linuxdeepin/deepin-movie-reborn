@@ -119,8 +119,6 @@ public:
 private:
     FileFilter();
 
-    QString libPath(const QString &strlib);
-
 private:
     static FileFilter* m_pFileFilter;
     QMap<QUrl, bool> m_mapCheckAudio;//检测播放文件中的音视频信息

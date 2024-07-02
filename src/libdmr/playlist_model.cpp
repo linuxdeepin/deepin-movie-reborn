@@ -312,7 +312,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
             mi.proportion = 0;
         }
         //用唯一的文件名绑定对应视频的对应pix_fmt值
-        setProperty(fi.filePath().toUtf8(), videoStream->codec->pix_fmt);
+        setProperty(fi.filePath().toUtf8(), videoStream->codecpar->format);
     }
     if (audioRet >= 0) {
         int audio_stream_index = -1;
@@ -456,26 +456,9 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 #endif
 }
 
-QString PlaylistModel::libPath(const QString &strlib)
-{
-    QDir  dir;
-    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
-    dir.setPath(path);
-    QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
-    if (list.contains(strlib)) {
-        return strlib;
-    } else {
-        list.sort();
-    }
-    if (list.size()>0)
-        return list.last();
-    else
-        return QString();
-}
-
 void PlaylistModel::initThumb()
 {
-    QLibrary library(libPath("libffmpegthumbnailer.so"));
+    QLibrary library(CompositingManager::libPath("libffmpegthumbnailer.so"));
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
     m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
@@ -499,9 +482,9 @@ void PlaylistModel::initThumb()
 
 void PlaylistModel::initFFmpeg()
 {
-    QLibrary avcodecLibrary(libPath("libavcodec.so"));
-    QLibrary avformatLibrary(libPath("libavformat.so"));
-    QLibrary avutilLibrary(libPath("libavutil.so"));
+    QLibrary avcodecLibrary(CompositingManager::libPath("libavcodec.so"));
+    QLibrary avformatLibrary(CompositingManager::libPath("libavformat.so"));
+    QLibrary avutilLibrary(CompositingManager::libPath("libavutil.so"));
 
     g_mvideo_avformat_open_input = (mvideo_avformat_open_input) avformatLibrary.resolve("avformat_open_input");
     g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) avformatLibrary.resolve("avformat_find_stream_info");
@@ -1389,7 +1372,7 @@ bool PlaylistModel::getMusicPix(const QFileInfo &fi, QPixmap &rImg)
         return false;
     }
 
-    QLibrary library(libPath("libavformat.so"));
+    QLibrary library(CompositingManager::libPath("libavformat.so"));
     mvideo_avformat_open_input g_mvideo_avformat_open_input_temp = (mvideo_avformat_open_input) library.resolve("avformat_open_input");
     mvideo_avformat_close_input g_mvideo_avformat_close_input = (mvideo_avformat_close_input) library.resolve("avformat_close_input");
     mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info_temp = (mvideo_avformat_find_stream_info) library.resolve("avformat_find_stream_info");
