@@ -54,6 +54,9 @@ public:
     static bool isCanHwdec();
     static void setCanHwdec(bool bCanHwdec);
     static QString libPath(const QString &strlib);
+#ifdef LINGLONG_BUILD
+    static bool isLibExist(const QString &libName);
+#endif
     /**
      * @brief 判断是否可以使用mpv
      */
@@ -119,6 +122,9 @@ private:
     static bool is_device_viable(int id);
     static bool is_card_exists(int id, const std::vector<std::string> &drivers);
 
+#ifdef LINGLONG_BUILD
+    static QMap<QString, bool> m_mapSo2Exist;
+#endif
     bool _composited {false};
     Platform _platform {Platform::Unknown};
     bool _isCoreFlag {false};

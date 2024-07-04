@@ -139,7 +139,8 @@ void MpvProxy::setDecodeModel(const QVariant &value)
 
 void MpvProxy::initMpvFuns()
 {
-    QLibrary mpvLibrary(CompositingManager::libPath("libmpv.so.1"));
+    QString libPath = CompositingManager::libPath("libmpv.so.");
+    QLibrary mpvLibrary(libPath);
 
     m_waitEvent = reinterpret_cast<mpv_waitEvent>(mpvLibrary.resolve("mpv_wait_event"));
     m_setOptionString = reinterpret_cast<mpv_set_optionString>(mpvLibrary.resolve("mpv_set_option_string"));
@@ -160,10 +161,15 @@ void MpvProxy::initMpvFuns()
 void MpvProxy::initGpuInfoFuns()
 {
     QString path = CompositingManager::libPath("libgpuinfo.so");
+#ifdef LINGLONG_BUILD
+    if (!isLibExist(path))
+        return;
+#else
     if(!QFileInfo(path).exists()) {
         m_gpuInfo = NULL;
         return;
     }
+#endif
     QLibrary mpvLibrary(CompositingManager::libPath("libgpuinfo.so"));
     m_gpuInfo = reinterpret_cast<void *>(mpvLibrary.resolve("vdp_Iter_decoderInfo"));
 }

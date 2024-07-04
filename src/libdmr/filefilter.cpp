@@ -29,7 +29,8 @@ FileFilter::FileFilter()
     m_pLoop = nullptr;
     m_miType = MediaType::Other;
 
-    QLibrary avformatLibrary(CompositingManager::libPath("libavformat.so"));
+    QString libPath = CompositingManager::libPath("libavformat.so");
+    QLibrary avformatLibrary(libPath);
 
     g_mvideo_avformat_open_input = (mvideo_avformat_open_input) avformatLibrary.resolve("avformat_open_input");
     g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) avformatLibrary.resolve("avformat_find_stream_info");
