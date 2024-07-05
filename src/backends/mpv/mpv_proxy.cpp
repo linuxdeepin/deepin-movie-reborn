@@ -162,7 +162,7 @@ void MpvProxy::initGpuInfoFuns()
 {
     QString path = CompositingManager::libPath("libgpuinfo.so");
 #ifdef LINGLONG_BUILD
-    if (!isLibExist(path))
+    if (!CompositingManager::isLibExist(path))
         return;
 #else
     if(!QFileInfo(path).exists()) {
