@@ -38,7 +38,7 @@ using namespace std;
 
 static CompositingManager *_compManager = nullptr;
 bool CompositingManager::m_bCanHwdec = true;
-QMap<QString, bool> m_mapSo2Exist = QMap<QString, bool>();
+static QMap<QString, bool> m_mapSo2Exist = QMap<QString, bool>();
 
 #define C2Q(cs) (QString::fromUtf8((cs).c_str()))
 
@@ -351,7 +351,7 @@ QString  CompositingManager::libPath(const QString &strlib)
         libName = strlib;
 
     bool bExist = false;
-    if (m_mapSo2Exist.find(libName) == m_mapSo2Exist.end() && !libName.isEmpty()) {
+    if ( !libName.isEmpty() && !m_mapSo2Exist.contains(libName)) {
         QLibrary lib(libName);
         bExist = lib.load();
         m_mapSo2Exist[libName] = bExist;
@@ -381,7 +381,7 @@ QString  CompositingManager::libPath(const QString &strlib)
 #ifdef LINGLONG_BUILD
 bool CompositingManager::isLibExist(const QString &libName)
 {
-    if (!libName.isEmpty())
+    if (!libName.isEmpty() && m_mapSo2Exist.contains(libName))
         return m_mapSo2Exist[libName];
 
     return false;
@@ -395,11 +395,11 @@ void CompositingManager::setCanHwdec(bool bCanHwdec)
 
 bool CompositingManager::isMpvExists()
 {
-    QString path  = libPath("libmpv.so.");
+    QString path  = libPath("libmpv.so");
 #ifdef LINGLONG_BUILD
     return isLibExist(path);
 #else
-    if (path.contains("libmpv.so.")) {
+    if (path.contains("libmpv.so")) {
         qInfo() << "curreng load mpv is :" << path;
         return true;
     }

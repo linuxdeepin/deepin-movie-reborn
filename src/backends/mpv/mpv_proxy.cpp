@@ -139,7 +139,7 @@ void MpvProxy::setDecodeModel(const QVariant &value)
 
 void MpvProxy::initMpvFuns()
 {
-    QString libPath = CompositingManager::libPath("libmpv.so.");
+    QString libPath = CompositingManager::libPath("libmpv.so");
     QLibrary mpvLibrary(libPath);
 
     m_waitEvent = reinterpret_cast<mpv_waitEvent>(mpvLibrary.resolve("mpv_wait_event"));

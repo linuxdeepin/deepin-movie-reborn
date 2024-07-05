@@ -1029,7 +1029,7 @@ namespace dmr {
     void MpvGLWidget::initMpvFuns()
     {
         qInfo() << "MpvGLWidget开始initMpvFuns";
-        QString libPath = CompositingManager::libPath("libmpv.so.");
+        QString libPath = CompositingManager::libPath("libmpv.so");
         QLibrary mpvLibrary(libPath);
  
         m_callback = reinterpret_cast<mpv_render_contextSet_update_callback>(mpvLibrary.resolve("mpv_render_context_set_update_callback"));
