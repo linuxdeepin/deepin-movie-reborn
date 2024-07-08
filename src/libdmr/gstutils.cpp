@@ -61,21 +61,23 @@ GstUtils::GstUtils()
 
     memset(&m_gstData, 0, sizeof(m_gstData));
 
-    g_mvideo_gst_init(nullptr, nullptr);
+    if (g_mvideo_gst_init) {
+        g_mvideo_gst_init(nullptr, nullptr);
 
-    GError *pGErr = nullptr;
-    m_gstData.discoverer = g_mvideo_gst_discoverer_new(5 * GST_SECOND, &pGErr);
-    m_gstData.loop = g_main_loop_new (nullptr, FALSE);
+        GError *pGErr = nullptr;
+        m_gstData.discoverer = g_mvideo_gst_discoverer_new(5 * GST_SECOND, &pGErr);
+        m_gstData.loop = g_main_loop_new (nullptr, FALSE);
 
-    if (!m_gstData.discoverer) {
-        qInfo() << "Error creating discoverer instance: " << pGErr->message;
-        g_clear_error (&pGErr);
+        if (!m_gstData.discoverer) {
+            qInfo() << "Error creating discoverer instance: " << pGErr->message;
+            g_clear_error (&pGErr);
+        }
+
+        g_signal_connect_data (m_gstData.discoverer, "discovered", (GCallback)discovered, &m_gstData, nullptr, GConnectFlags(0));
+        g_signal_connect_data (m_gstData.discoverer, "finished",  (GCallback)(finished), &m_gstData, nullptr, GConnectFlags(0));
+
+        g_mvideo_gst_discoverer_start(m_gstData.discoverer);
     }
-
-    g_signal_connect_data (m_gstData.discoverer, "discovered", (GCallback)discovered, &m_gstData, nullptr, GConnectFlags(0));
-    g_signal_connect_data (m_gstData.discoverer, "finished",  (GCallback)(finished), &m_gstData, nullptr, GConnectFlags(0));
-
-    g_mvideo_gst_discoverer_start(m_gstData.discoverer);
 }
 
 void GstUtils::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GError *err, CustomData *data)
@@ -85,6 +87,9 @@ void GstUtils::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GE
 
     GstDiscovererResult result;
     const gchar *uri;
+
+    if(!g_mvideo_gst_discoverer_info_get_uri)
+        return;
 
     uri = g_mvideo_gst_discoverer_info_get_uri (info);
     result = g_mvideo_gst_discoverer_info_get_result (info);
@@ -166,14 +171,18 @@ void GstUtils::finished(GstDiscoverer *discoverer, CustomData *data)
 {
     Q_UNUSED(discoverer);
 
-    g_main_loop_quit (data->loop);
+    if (g_main_loop_quit)
+        g_main_loop_quit (data->loop);
 }
 
 GstUtils::~GstUtils()
 {
-    g_mvideo_gst_discoverer_stop(m_gstData.discoverer);
-    g_object_unref(m_gstData.discoverer);
-    g_main_loop_unref (m_gstData.loop);
+    if (g_mvideo_gst_discoverer_stop)
+        g_mvideo_gst_discoverer_stop(m_gstData.discoverer);
+    if (m_gstData.discoverer)
+        g_object_unref(m_gstData.discoverer);
+    if (m_gstData.loop)
+        g_main_loop_unref (m_gstData.loop);
 }
 
 GstUtils* GstUtils::get()
@@ -200,13 +209,17 @@ MovieInfo GstUtils:: parseFileByGst(const QFileInfo &fi)
 
     uri = strcpy(uri, QUrl::fromLocalFile(fi.filePath()).toString().toUtf8().constData());
 
+    if (!g_mvideo_gst_discoverer_discover_uri_async)
+        return m_movieInfo;
+
     if (!g_mvideo_gst_discoverer_discover_uri_async (m_gstData.discoverer, uri)) {
       qInfo() << "Failed to start discovering URI " << uri;
       g_object_unref (m_gstData.discoverer);
       return m_movieInfo;
     }
 
-    g_main_loop_run (m_gstData.loop);
+    if (g_main_loop_run)
+        g_main_loop_run (m_gstData.loop);
 
     delete []uri;
 

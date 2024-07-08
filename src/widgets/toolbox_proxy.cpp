@@ -829,6 +829,9 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     QList<QPixmap> pmList;
     QList<QPixmap> pmBlackList;
 
+    if (!m_video_thumbnailer)
+        return;
+
     QTime time(0, 0, 0, 0);
     if (m_pEngine->videoSize().width() > 0 && m_pEngine->videoSize().height() > 0) {
         m_video_thumbnailer->thumbnail_size = (static_cast<int>(50 * (m_pEngine->videoSize().width() / m_pEngine->videoSize().height() * 50)

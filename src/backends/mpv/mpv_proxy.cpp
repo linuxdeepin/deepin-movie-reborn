@@ -128,7 +128,10 @@ MpvProxy::~MpvProxy()
     disconnect(window()->windowHandle(), &QWindow::windowStateChanged, nullptr, nullptr);
     if (CompositingManager::get().composited()) {
         disconnect(this, &MpvProxy::stateChanged, nullptr, nullptr);
-        delete m_pMpvGLwidget;
+        if (m_pMpvGLwidget) {
+            delete m_pMpvGLwidget;
+            m_pMpvGLwidget = nullptr;
+        }
     }
 }
 
@@ -244,6 +247,9 @@ void MpvProxy::initSetting()
 
 void MpvProxy::updateRoundClip(bool roundClip)
 {
+    if (!m_pMpvGLwidget)
+        return;
+
 #ifdef __x86_64__
     m_pMpvGLwidget->toggleRoundedClip(roundClip);
 #endif
@@ -251,6 +257,9 @@ void MpvProxy::updateRoundClip(bool roundClip)
 
 mpv_handle *MpvProxy::mpv_init()
 {
+    if (!m_creat)
+        return nullptr;
+
     mpv_handle *pHandle =  static_cast<mpv_handle *>(m_creat());
     bool composited = CompositingManager::get().composited();
 
@@ -710,6 +719,9 @@ void MpvProxy::setState(PlayState state)
 
 void MpvProxy::pollingEndOfPlayback()
 {
+    if (!m_waitEvent)
+        return;
+
     if (_state != Backend::Stopped) {
         m_bPolling = true;
         blockSignals(true);
@@ -826,6 +838,10 @@ void MpvProxy::handle_mpv_events()
         qInfo() << "not handle mpv events!";
         return;
     }
+
+    if (!m_waitEvent)
+        return;
+
     while (1) {
         mpv_event *pEvent = m_waitEvent(m_handle, 0.0005);
         if (pEvent->event_id == MPV_EVENT_NONE)
@@ -1256,6 +1272,9 @@ void MpvProxy::setMute(bool bMute)
 
 void MpvProxy::slotStateChanged()
 {
+    if (!m_pMpvGLwidget)
+        return;
+
     m_pMpvGLwidget->setPlaying(state() != Backend::PlayState::Stopped);
     m_pMpvGLwidget->update();
 }
@@ -1737,6 +1756,9 @@ int MpvProxy::my_set_property(mpv_handle *pHandle, const QString &sName, const Q
 
 bool MpvProxy::my_command_async(mpv_handle *pHandle, const QVariant &args, uint64_t tag)
 {
+    if (!m_commandNodeAsync)
+        return false;
+
     node_builder node(args);
     int nErr = m_commandNodeAsync(pHandle, tag, node.node());
     return nErr == 0;
@@ -1744,12 +1766,18 @@ bool MpvProxy::my_command_async(mpv_handle *pHandle, const QVariant &args, uint6
 
 int MpvProxy::my_set_property_async(mpv_handle *pHandle, const QString &sName, const QVariant &value, uint64_t tag)
 {
+    if (!m_setPropertyAsync)
+        return -1;
+
     node_builder node(value);
     return m_setPropertyAsync(pHandle, tag, sName.toUtf8().data(), MPV_FORMAT_NODE, node.node());
 }
 
 QVariant MpvProxy::my_get_property_variant(mpv_handle *pHandle, const QString &sName)
 {
+    if (!m_getProperty)
+        return QVariant();
+
     mpv_node node;
     if (m_getProperty(pHandle, sName.toUtf8().data(), MPV_FORMAT_NODE, &node) < 0)
         return QVariant();
@@ -1763,6 +1791,9 @@ QVariant MpvProxy::my_command(mpv_handle *pHandle, const QVariant &args)
         m_vecWaitCommand.append(args);
         return QVariant();
     }
+
+    if (!m_commandNode)
+        return QVariant();
 
     node_builder node(args);
     mpv_node res;
@@ -1783,7 +1814,7 @@ QImage MpvProxy::takeOneScreenshot()
         bNeedRotate = true;
     }
 
-    if (state() == PlayState::Stopped) return QImage();
+    if (state() == PlayState::Stopped || !m_commandNode) return QImage();
 
     QList<QVariant> args = {"screenshot-raw"};
     node_builder node(args);
@@ -1838,7 +1869,7 @@ QImage MpvProxy::takeOneScreenshot()
 
 void MpvProxy::stepBurstScreenshot()
 {
-    if (!m_bInBurstShotting) {
+    if (!m_bInBurstShotting || !m_waitEvent) {
         return;
     }
 
@@ -2039,6 +2070,9 @@ void MpvProxy::changehwaccelMode(hwaccelMode hwaccelMode)
 
 void MpvProxy::makeCurrent()
 {
+    if (!m_pMpvGLwidget)
+        return;
+
     m_pMpvGLwidget->makeCurrent();
 }
 

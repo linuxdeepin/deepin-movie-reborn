@@ -29,7 +29,7 @@ find_package(Qt5DBus)
 find_package(Qt5Svg)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
-pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gstreamer-1.0 glib-2.0)
+pkg_check_modules(Gst REQUIRED IMPORTED_TARGET libffmpegthumbnailer gstreamer-1.0 glib-2.0)
 
 # 定义 source 文件
 FILE (GLOB SRCS

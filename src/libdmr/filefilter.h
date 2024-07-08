@@ -135,8 +135,8 @@ private:
     QMimeDatabase m_mimeDB;
     bool m_bMpvExists;
     bool m_stopRunningThread;
-    GstDiscoverer* m_pDiscoverer;
-    GMainLoop* m_pLoop;
+    GstDiscoverer* m_pDiscoverer = nullptr;
+    GMainLoop* m_pLoop = nullptr;
     MediaType m_miType;
 };
 

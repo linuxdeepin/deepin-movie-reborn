@@ -258,6 +258,9 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         return mi;
     }
 
+    if (!g_mvideo_avformat_open_input)
+        return mi;
+
     auto ret = g_mvideo_avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), nullptr, nullptr);
     if (ret < 0) {
         qWarning() << "avformat: could not open input";
@@ -1178,6 +1181,9 @@ static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
 
 void PlaylistModel::onAsyncFinished()
 {
+    if (!m_getThumanbil)
+        return;
+
     //qInfo() << fil.size();
     m_getThumanbil->clearItem();
     //handleAsyncAppendResults(fil);
@@ -1377,6 +1383,9 @@ bool PlaylistModel::getMusicPix(const QFileInfo &fi, QPixmap &rImg)
     mvideo_avformat_close_input g_mvideo_avformat_close_input = (mvideo_avformat_close_input) library.resolve("avformat_close_input");
     mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info_temp = (mvideo_avformat_find_stream_info) library.resolve("avformat_find_stream_info");
 
+    if (!g_mvideo_avformat_open_input_temp)
+        return false;
+
     auto ret = g_mvideo_avformat_open_input_temp(&av_ctx, fi.filePath().toUtf8().constData(), nullptr, nullptr);
     if (ret < 0) {
         qWarning() << "avformat: could not open input";
@@ -1547,6 +1556,10 @@ static int open_codec_context(int *stream_idx,
     AVStream *st;
     AVCodec *dec = NULL;
     AVDictionary *opts = NULL;
+
+    if (!g_mvideo_av_find_best_stream)
+        return -1;
+
     ret = g_mvideo_av_find_best_stream(fmt_ctx, type, -1, -1, NULL, 0);
     if (ret < 0) {
         qWarning() << "Could not find " << g_mvideo_av_get_media_type_string(type)
@@ -1605,6 +1618,9 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         }
         return mi;
     }
+
+    if (!g_mvideo_avformat_open_input)
+        return mi;
 
     auto ret = g_mvideo_avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), NULL, NULL);
     if (ret < 0) {

@@ -30,11 +30,16 @@ bool HwdecProbe::isFileCanHwdec(const QUrl& url, QList<QString>& hwList)
     AVFormatContext *input_ctx = nullptr;
     int ret = 0;
 
+    if (!m_avformatOpenInput)
+        return false;
+
     // open the input file
     if (m_avformatOpenInput(&input_ctx, url.toString().toStdString().c_str(), nullptr, nullptr) != 0) {// Cannot open input file
-
         return false;
     }
+
+    if (!m_avformatFindStreamInfo)
+        return false;
 
     if (m_avformatFindStreamInfo(input_ctx, nullptr) < 0) { // Cannot find input stream information
         m_avformatCloseInput(&input_ctx);
@@ -119,6 +124,10 @@ void HwdecProbe::initffmpegInterface()
 void HwdecProbe::getHwTypes()
 {
     m_hwTypeList.clear();
+
+    if (!m_avHwdeviceIterateTypes)
+        return;
+
     AVHWDeviceType type = AV_HWDEVICE_TYPE_NONE;
     // find hwdevies
     while ((type = m_avHwdeviceIterateTypes(type)) != AV_HWDEVICE_TYPE_NONE) {
@@ -130,8 +139,11 @@ void HwdecProbe::getHwTypes()
 int HwdecProbe::hwDecoderInit(AVCodecContext *ctx, const int type)
 {
     int err = 0;
-    if(nullptr != m_hwDeviceCtx)
+    if(nullptr != m_hwDeviceCtx && nullptr != m_avBufferUnref)
         m_avBufferUnref(&m_hwDeviceCtx);
+
+    if (!m_avHwdeviceCtxCreate)
+        return err;
 
     if ((err = m_avHwdeviceCtxCreate(&m_hwDeviceCtx, static_cast<AVHWDeviceType>(type),
                                       nullptr, nullptr, 0)) < 0) {
@@ -145,6 +157,9 @@ int HwdecProbe::hwDecoderInit(AVCodecContext *ctx, const int type)
 
 bool HwdecProbe::isTypeHaveHwdec(const AVCodec *pDec, AVHWDeviceType type)
 {
+    if (!m_avcodecGetHwConfig)
+        return false;
+
     bool rs = true;
     //is have tmpType hwdec config
     for (int j = 0;; j++) {

@@ -38,8 +38,9 @@ using namespace std;
 
 static CompositingManager *_compManager = nullptr;
 bool CompositingManager::m_bCanHwdec = true;
+#ifdef LINGLONG_BUILD
 static QMap<QString, bool> m_mapSo2Exist = QMap<QString, bool>();
-
+#endif
 #define C2Q(cs) (QString::fromUtf8((cs).c_str()))
 
 class PlatformChecker
@@ -351,13 +352,19 @@ QString  CompositingManager::libPath(const QString &strlib)
         libName = strlib;
 
     bool bExist = false;
-    if ( !libName.isEmpty() && !m_mapSo2Exist.contains(libName)) {
+    QString errorStr;
+    if (!libName.isEmpty() && !m_mapSo2Exist.contains(libName)) {
         QLibrary lib(libName);
         bExist = lib.load();
+        if (!bExist) {
+            errorStr = lib.errorString();
+        }
         m_mapSo2Exist[libName] = bExist;
+    } else if (!libName.isEmpty() && m_mapSo2Exist.contains(libName)){
+        bExist = m_mapSo2Exist[libName];
     }
 
-    qDebug() << QString("libName: $1 exist: %2").arg(libName).arg(bExist);
+    qInfo() << QString("libName: %1 exist: %2 error:%3").arg(libName).arg(bExist).arg(errorStr);
 
     return libName;
 #else
@@ -397,7 +404,7 @@ bool CompositingManager::isMpvExists()
 {
     QString path  = libPath("libmpv.so");
 #ifdef LINGLONG_BUILD
-    return isLibExist(path);
+    return CompositingManager::isLibExist(path);
 #else
     if (path.contains("libmpv.so")) {
         qInfo() << "curreng load mpv is :" << path;
@@ -707,20 +714,21 @@ bool CompositingManager::is_device_viable(int id)
     char buf[512];
     snprintf(buf, sizeof buf, "%s/device/enable", path);
     if (access(buf, R_OK) == 0) {
-        FILE *fp = fopen(buf, "r");
-        if (!fp) {
+        QFile file(buf);
+        if (!file.open(QIODevice::ReadOnly))
             return false;
-        }
 
         int enabled = 0;
-        int error = fscanf(fp, "%d", &enabled);
-        if (error < 0) {
+        int nValue = 0;
+        QString ret = file.readAll();
+        bool bOk;
+        nValue = ret.toInt(&bOk);
+        if (bOk)
+            enabled = nValue;
+        else
             qInfo() << "someting error";
-        }
-        fclose(fp);
 
-        // nouveau may write 2, others 1
-        return enabled > 0;
+        file.close();
     }
 
     return false;

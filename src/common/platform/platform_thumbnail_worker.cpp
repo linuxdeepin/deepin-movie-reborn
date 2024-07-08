@@ -81,7 +81,10 @@ void Platform_ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 Platform_ThumbnailWorker::Platform_ThumbnailWorker()
 {
     initThumb();
-    m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
+
+    if (m_video_thumbnailer) {
+        m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
+    }
 
     m_pCharTime = (char *)malloc(20);
 }
@@ -108,6 +111,9 @@ QPixmap Platform_ThumbnailWorker::genThumb(const QUrl &url, int secs)
     auto dpr = qApp->devicePixelRatio();
     QPixmap pm;
     pm.setDevicePixelRatio(dpr);
+
+    if (!m_mvideo_thumbnailer_create_image_data)
+        return QPixmap();
 
     if (m_image_data == nullptr) {
         m_image_data = m_mvideo_thumbnailer_create_image_data();

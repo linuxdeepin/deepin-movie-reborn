@@ -228,7 +228,8 @@ namespace dmr {
             context()->swapBuffers(context()->surface());
             doneCurrent();
         } else {
-            m_renderContextUpdate(m_pRenderCtx);
+            if (m_renderContextUpdate)
+                m_renderContextUpdate(m_pRenderCtx);
             update();
         }
     }
@@ -298,11 +299,12 @@ namespace dmr {
 
         if (m_pFbo) delete m_pFbo;
         //add by heyi
-        if (m_pRenderCtx) m_callback(m_pRenderCtx, nullptr, nullptr);
+        if (m_pRenderCtx && m_callback) m_callback(m_pRenderCtx, nullptr, nullptr);
         // Until this call is done, we need to make sure the player remains
         // alive. This is done implicitly with the mpv::qt::Handle instance
         // in this class.
-        m_renderContex(m_pRenderCtx);
+        if (m_renderContex)
+            m_renderContex(m_pRenderCtx);
         //mpv_render_context_free(m_pRenderCtx);
         doneCurrent();
     }
@@ -514,11 +516,12 @@ namespace dmr {
         }
 
         //add by heyi
-        if(!m_renderCreat) return;
+        if(!m_renderCreat || m_pRenderCtx) return;
         if (m_renderCreat(&m_pRenderCtx, m_handle, params) < 0) {
             std::runtime_error("can not init mpv gl");
         }
 
+        if (!m_callback) return;
         m_callback(m_pRenderCtx, gl_update_callback,
                    reinterpret_cast<void*>(this));
     }
@@ -779,6 +782,9 @@ namespace dmr {
     void MpvGLWidget::paintGL() 
     {
         QOpenGLFunctions *pGLFunction = QOpenGLContext::currentContext()->functions();
+        if (!pGLFunction)
+            return;
+
         if (m_bPlaying) {
 
             qreal dpr = qApp->devicePixelRatio();
@@ -796,6 +802,8 @@ namespace dmr {
                     {MPV_RENDER_PARAM_INVALID, nullptr}
                 };
 
+                if (!m_renderContexRender)
+                    return;
                 m_renderContexRender(m_pRenderCtx, params);
             } else {
                 pGLFunction->glEnable(GL_BLEND);
@@ -813,9 +821,14 @@ namespace dmr {
                     {MPV_RENDER_PARAM_INVALID, nullptr}
                 };
 
+                if (!m_renderContexRender)
+                    return;
                 m_renderContexRender(m_pRenderCtx, params);
 
                 m_pFbo->release();
+
+                if (!m_pGlProgBlend)
+                    return;
 
                 {
                     QOpenGLVertexArrayObject::Binder vaoBind(&m_vaoBlend);
@@ -832,6 +845,9 @@ namespace dmr {
                     pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
                     // blend corners
                     //QOpenGLVertexArrayObject::Binder vaoBind(&m_vaoCorner);
+
+                    if (!m_pGlProgBlendCorners)
+                        return;
 
                     for (int i = 0; i < 4; i++) {
                         m_pGlProgBlendCorners->bind();
@@ -930,6 +946,9 @@ namespace dmr {
             }
             pGLFunction->glClear(GL_COLOR_BUFFER_BIT);
 
+            if (!m_pGlProg)
+                return;
+
             for(int i = 0;i < 2 ;i ++){
                 {
                     QOpenGLVertexArrayObject::Binder vaoBind(&m_vao);
@@ -959,6 +978,9 @@ namespace dmr {
                 pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
                 // blend corners
                 QOpenGLVertexArrayObject::Binder vaoBind(&m_vaoCorner);
+
+                if (!m_pGlProgCorner)
+                    return;
 
                 for (int i = 0; i < 4; i++) {
                     m_pGlProgCorner->bind();

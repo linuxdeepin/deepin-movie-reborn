@@ -53,28 +53,33 @@ FileFilter::FileFilter()
     g_mvideo_gst_discoverer_info_get_audio_streams = (mvideo_gst_discoverer_info_get_audio_streams) gstpbutilsLibrary.resolve("gst_discoverer_info_get_audio_streams");
     g_mvideo_gst_discoverer_info_get_subtitle_streams = (mvideo_gst_discoverer_info_get_subtitle_streams) gstpbutilsLibrary.resolve("gst_discoverer_info_get_subtitle_streams");
 
-    g_mvideo_gst_init(nullptr, nullptr);
+    if (g_mvideo_gst_init) {
+        g_mvideo_gst_init(nullptr, nullptr);
 
-    GError *pGErr = nullptr;
-    m_pDiscoverer = g_mvideo_gst_discoverer_new(5 * GST_SECOND, &pGErr);
-    m_pLoop = g_main_loop_new(nullptr, FALSE);
+        GError *pGErr = nullptr;
+        m_pDiscoverer = g_mvideo_gst_discoverer_new(5 * GST_SECOND, &pGErr);
+        m_pLoop = g_main_loop_new(nullptr, FALSE);
 
-    if (!m_pDiscoverer) {
-        qInfo() << "Error creating discoverer instance: " << pGErr->message;
-        g_clear_error (&pGErr);
+        if (!m_pDiscoverer) {
+            qInfo() << "Error creating discoverer instance: " << pGErr->message;
+            g_clear_error (&pGErr);
+        }
+
+        g_signal_connect_data(m_pDiscoverer, "discovered", (GCallback)(discovered), &m_miType, nullptr, GConnectFlags(0));
+        g_signal_connect_data(m_pDiscoverer, "finished",  (GCallback)(finished), m_pLoop, nullptr, GConnectFlags(0));
+
+        g_mvideo_gst_discoverer_start(m_pDiscoverer);
     }
-
-    g_signal_connect_data(m_pDiscoverer, "discovered", (GCallback)(discovered), &m_miType, nullptr, GConnectFlags(0));
-    g_signal_connect_data(m_pDiscoverer, "finished",  (GCallback)(finished), m_pLoop, nullptr, GConnectFlags(0));
-
-    g_mvideo_gst_discoverer_start(m_pDiscoverer);
 }
 
 FileFilter::~FileFilter()
 {
-    g_mvideo_gst_discoverer_stop(m_pDiscoverer);
-    g_object_unref(m_pDiscoverer);
-    g_main_loop_unref(m_pLoop);
+    if (g_mvideo_gst_discoverer_stop)
+        g_mvideo_gst_discoverer_stop(m_pDiscoverer);
+    if (m_pDiscoverer)
+        g_object_unref(m_pDiscoverer);
+    if (m_pLoop)
+        g_main_loop_unref(m_pLoop);
 }
 
 FileFilter *FileFilter::instance()
@@ -208,13 +213,16 @@ FileFilter::MediaType FileFilter::typeJudgeByFFmpeg(const QUrl &url)
 
     AVFormatContext *av_ctx = nullptr;
 
+    if (!g_mvideo_avformat_open_input)
+        return MediaType::Other;
+
     nRet = g_mvideo_avformat_open_input(&av_ctx, url.toLocalFile().toUtf8().constData(), nullptr, nullptr);
 
     if(nRet < 0)
     {
         return MediaType::Other;
     }
-    if(g_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0)
+    if(g_mvideo_avformat_find_stream_info && g_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0)
     {
         return MediaType::Other;
     }
@@ -249,7 +257,8 @@ FileFilter::MediaType FileFilter::typeJudgeByFFmpeg(const QUrl &url)
     if(strFormatName.contains("Tele-typewriter") || strMimeType.startsWith("image/"))       // 排除文本文件，如果只用mimetype判断会遗漏部分原始格式文件如：h264裸流
         miType = MediaType::Other;
 
-    g_mvideo_avformat_close_input(&av_ctx);
+    if (g_mvideo_avformat_close_input)
+        g_mvideo_avformat_close_input(&av_ctx);
 
     return  miType;
 }
@@ -270,12 +279,16 @@ FileFilter::MediaType FileFilter::typeJudgeByGst(const QUrl &url)
 
     uri = strcpy(uri, url.toString().toUtf8().constData());
 
+    if (!g_mvideo_gst_discoverer_discover_uri_async)
+        return MediaType::Other;
+
     if (!g_mvideo_gst_discoverer_discover_uri_async (m_pDiscoverer, uri)) {
       qInfo() << "Failed to start discovering URI " << uri;
       g_object_unref (m_pDiscoverer);
     }
 
-    g_main_loop_run(m_pLoop);
+    if (g_main_loop_run)
+        g_main_loop_run(m_pLoop);
 
     delete []uri;
 
@@ -296,6 +309,9 @@ void FileFilter::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, 
     bool bVideo = false;
     bool bAudio = false;
     bool bSubtitle = false;
+
+    if (!g_mvideo_gst_discoverer_info_get_uri)
+        return;
 
     uri = g_mvideo_gst_discoverer_info_get_uri (info);
     result = g_mvideo_gst_discoverer_info_get_result (info);
@@ -363,6 +379,7 @@ void FileFilter::finished(GstDiscoverer *discoverer, GMainLoop *loop)
 {
     Q_UNUSED(discoverer);
 
-    g_main_loop_quit(loop);
+    if (g_main_loop_quit)
+        g_main_loop_quit(loop);
 }
 
