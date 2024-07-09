@@ -8,6 +8,7 @@
 #include <QtWidgets>
 //#include <QtConcurrent>
 #include <DApplicationHelper>
+#include <DGuiApplicationHelper>
 #include <libffmpegthumbnailer/videothumbnailerc.h>
 
 #include "utils.h"
@@ -18,6 +19,8 @@
 
 #define THUMBNAIL_SIZE 500
 #define SEEK_TIME "00:00:01"
+
+DGUI_USE_NAMESPACE
 
 typedef video_thumbnailer *(*mvideo_thumbnailer)();
 typedef void (*mvideo_thumbnailer_destroy)(video_thumbnailer *thumbnailer);
