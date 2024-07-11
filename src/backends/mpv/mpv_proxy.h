@@ -61,7 +61,7 @@ class MpvHandle
         explicit container(mpv_handle *pHandle) : m_pHandle(pHandle) {}
         ~container()
         {
-            mpv_terminateDestroy func = (mpv_terminateDestroy)QLibrary::resolve(libPath("libmpv.so.1"), "mpv_terminate_destroy");
+            mpv_terminateDestroy func = (mpv_terminateDestroy)QLibrary::resolve(libPath("libmpv.so"), "mpv_terminate_destroy");
             func(m_pHandle);
         }
         mpv_handle *m_pHandle;
