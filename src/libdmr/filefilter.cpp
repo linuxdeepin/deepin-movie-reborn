@@ -9,6 +9,7 @@
 #include <iostream>
 #include <functional>
 using namespace std;
+using namespace dmr;
 
 FileFilter* FileFilter::m_pFileFilter = new FileFilter;
 
@@ -28,14 +29,15 @@ FileFilter::FileFilter()
     m_pLoop = nullptr;
     m_miType = MediaType::Other;
 
-    QLibrary avformatLibrary(libPath("libavformat.so"));
+    QString libPath = CompositingManager::libPath("libavformat.so");
+    QLibrary avformatLibrary(libPath);
 
     g_mvideo_avformat_open_input = (mvideo_avformat_open_input) avformatLibrary.resolve("avformat_open_input");
     g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) avformatLibrary.resolve("avformat_find_stream_info");
     g_mvideo_avformat_close_input = (mvideo_avformat_close_input) avformatLibrary.resolve("avformat_close_input");
 
-    QLibrary gstreamerLibrary(libPath("libgstreamer-1.0.so"));
-    QLibrary gstpbutilsLibrary(libPath("libgstpbutils-1.0.so"));
+    QLibrary gstreamerLibrary(CompositingManager::libPath("libgstreamer-1.0.so"));
+    QLibrary gstpbutilsLibrary(CompositingManager::libPath("libgstpbutils-1.0.so"));
 
     g_mvideo_gst_init = (mvideo_gst_init) gstreamerLibrary.resolve("gst_init");
     g_mvideo_gst_discoverer_new = (mvideo_gst_discoverer_new) gstpbutilsLibrary.resolve("gst_discoverer_new");

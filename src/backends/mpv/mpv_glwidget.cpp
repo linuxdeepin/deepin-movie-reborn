@@ -7,6 +7,7 @@
 
 #include "mpv_proxy.h"
 #include "mpv_glwidget.h"
+#include "compositing_manager.h"
 
 #include <QtX11Extras/QX11Info>
 #include <QLibrary>
@@ -1072,7 +1073,9 @@ namespace dmr {
     void MpvGLWidget::initMpvFuns()
     {
         qInfo() << "MpvGLWidget开始initMpvFuns";
-        QLibrary mpvLibrary(libPath("libmpv.so"));
+        QString libPath = CompositingManager::libPath("libmpv.so");
+        QLibrary mpvLibrary(libPath);
+ 
         m_callback = reinterpret_cast<mpv_render_contextSet_update_callback>(mpvLibrary.resolve("mpv_render_context_set_update_callback"));
         m_context_report = reinterpret_cast<mpv_render_contextReport_swap>(mpvLibrary.resolve("mpv_render_context_report_swap"));
         m_renderContex = reinterpret_cast<mpv_renderContext_free>(mpvLibrary.resolve("mpv_render_context_free"));

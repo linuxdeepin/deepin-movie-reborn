@@ -11,6 +11,15 @@ set(CMAKE_CXX_FLAGS "-std=c++1y -fpermissive -Wno-error")
 
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 
+if(DEFINED LINGLONG_BUILD_ON)
+    # 玲珑构建编译开关
+    add_definitions(-DLINGLONG_BUILD)
+    include_directories(/runtime/include)
+    message(STATUS "LINGLONG_BUILD is ON")
+else()
+    message(STATUS "LINGLONG_BUILD is OFF")
+endif()
+
 find_package(Qt5Widgets)
 find_package(Qt5Concurrent)
 find_package(Qt5Network)
@@ -20,7 +29,7 @@ find_package(Qt5DBus)
 find_package(Qt5Svg)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
-pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gstreamer-1.0 glib-2.0)
+pkg_check_modules(Gst REQUIRED IMPORTED_TARGET libffmpegthumbnailer gstreamer-1.0 glib-2.0)
 
 # 定义 source 文件
 FILE (GLOB SRCS

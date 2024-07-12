@@ -8,6 +8,7 @@
 #include <QJsonDocument>
 
 #include "eventlogutils.h"
+#include "compositing_manager.h"
 
 EventLogUtils *EventLogUtils::m_instance(nullptr);
 
@@ -21,7 +22,7 @@ EventLogUtils &EventLogUtils::get()
 
 EventLogUtils::EventLogUtils()
 {
-    QLibrary library("libdeepin-event-log.so");
+    QLibrary library(dmr::CompositingManager::libPath("libdeepin-event-log.so"));
 
     init =reinterpret_cast<bool (*)(const std::string &, bool)>(library.resolve("Initialize"));
     writeEventLog = reinterpret_cast<void (*)(const std::string &)>(library.resolve("WriteEventLog"));
