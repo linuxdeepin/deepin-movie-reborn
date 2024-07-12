@@ -5,6 +5,7 @@
 
 #include "gstutils.h"
 #include "gstutils.h"
+#include "compositing_manager.h"
 
 #include <QDebug>
 
@@ -32,8 +33,8 @@ GstUtils* GstUtils::m_pGstUtils = new GstUtils;
 
 GstUtils::GstUtils()
 {
-    QLibrary gstreamerLibrary(libPath("libgstreamer-1.0.so"));
-    QLibrary gstpbutilsLibrary(libPath("libgstpbutils-1.0.so"));
+    QLibrary gstreamerLibrary(CompositingManager::libPath("libgstreamer-1.0.so"));
+    QLibrary gstpbutilsLibrary(CompositingManager::libPath("libgstpbutils-1.0.so"));
 
     g_mvideo_gst_init = (mvideo_gst_init) gstreamerLibrary.resolve("gst_init");
     g_mvideo_gst_discoverer_new = (mvideo_gst_discoverer_new) gstpbutilsLibrary.resolve("gst_discoverer_new");

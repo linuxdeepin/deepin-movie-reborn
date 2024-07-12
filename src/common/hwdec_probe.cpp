@@ -5,6 +5,7 @@
 
 
 #include "hwdec_probe.h"
+#include "compositing_manager.h"
 
 namespace dmr {
 
@@ -100,9 +101,9 @@ static QString libPath(const QString &sLib)
 
 void HwdecProbe::initffmpegInterface()
 {
-    QLibrary avcodecLibrary(libPath("libavcodec.so"));
-    QLibrary avformatLibrary(libPath("libavformat.so"));
-    QLibrary avutilLibrary(libPath("libavutil.so"));
+    QLibrary avcodecLibrary(CompositingManager::libPath("libavcodec.so"));
+    QLibrary avformatLibrary(CompositingManager::libPath("libavformat.so"));
+    QLibrary avutilLibrary(CompositingManager::libPath("libavutil.so"));
 
     m_avHwdeviceCtxCreate  = reinterpret_cast<ffmAvHwdeviceCtxCreate>(avutilLibrary.resolve("av_hwdevice_ctx_create"));
     m_avHwdeviceIterateTypes = reinterpret_cast<ffmAvHwdeviceIterateTypes>(avutilLibrary.resolve("av_hwdevice_iterate_types"));

@@ -38,7 +38,9 @@ using namespace std;
 
 static CompositingManager *_compManager = nullptr;
 bool CompositingManager::m_bCanHwdec = true;
-
+#ifdef LINGLONG_BUILD
+static QMap<QString, bool> m_mapSo2Exist = QMap<QString, bool>();
+#endif
 #define C2Q(cs) (QString::fromUtf8((cs).c_str()))
 
 class PlatformChecker
@@ -340,6 +342,59 @@ bool CompositingManager::isCanHwdec()
     return m_bCanHwdec;
 }
 
+QString  CompositingManager::libPath(const QString &strlib)
+{
+#ifdef LINGLONG_BUILD
+    QString libName;
+    if (strlib.endsWith(".so"))
+        libName = strlib.mid(0, strlib.indexOf(".so"));
+    else
+        libName = strlib;
+
+    bool bExist = false;
+    QString errorStr;
+    if (!libName.isEmpty() && !m_mapSo2Exist.contains(libName)) {
+        QLibrary lib(libName);
+        bExist = lib.load();
+        if (!bExist) {
+            errorStr = lib.errorString();
+        }
+        m_mapSo2Exist[libName] = bExist;
+    } else if (!libName.isEmpty() && m_mapSo2Exist.contains(libName)){
+        bExist = m_mapSo2Exist[libName];
+    }
+
+    qInfo() << QString("libName: %1 exist: %2 error:%3").arg(libName).arg(bExist).arg(errorStr);
+
+    return libName;
+#else
+    QDir dir;
+    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+    dir.setPath(path);
+    QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
+    if (list.contains(strlib)) {
+        return (path+ QDir::separator() + strlib);
+    } else {
+        list.sort();
+    }
+
+    if(list.size() > 0)
+        return (path + QDir::separator() + list.last());
+    else
+        return QString();
+#endif
+}
+
+#ifdef LINGLONG_BUILD
+bool CompositingManager::isLibExist(const QString &libName)
+{
+    if (!libName.isEmpty() && m_mapSo2Exist.contains(libName))
+        return m_mapSo2Exist[libName];
+
+    return false;
+}
+#endif
+
 void CompositingManager::setCanHwdec(bool bCanHwdec)
 {
     m_bCanHwdec = bCanHwdec;
@@ -347,14 +402,16 @@ void CompositingManager::setCanHwdec(bool bCanHwdec)
 
 bool CompositingManager::isMpvExists()
 {
-    QDir dir;
-    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
-    dir.setPath(path);
-    static QStringList list = dir.entryList(QStringList() << (QString("libmpv.so") + "*"), QDir::NoDotAndDotDot | QDir::Files);
-    if (list.contains("libmpv.so")) {
+    QString path  = libPath("libmpv.so");
+#ifdef LINGLONG_BUILD
+    return CompositingManager::isLibExist(path);
+#else
+    if (path.contains("libmpv.so")) {
+        qInfo() << "curreng load mpv is :" << path;
         return true;
     }
     return false;
+#endif
 }
 
 bool CompositingManager::isZXIntgraphics() const
@@ -657,20 +714,21 @@ bool CompositingManager::is_device_viable(int id)
     char buf[512];
     snprintf(buf, sizeof buf, "%s/device/enable", path);
     if (access(buf, R_OK) == 0) {
-        FILE *fp = fopen(buf, "r");
-        if (!fp) {
+        QFile file(buf);
+        if (!file.open(QIODevice::ReadOnly))
             return false;
-        }
 
         int enabled = 0;
-        int error = fscanf(fp, "%d", &enabled);
-        if (error < 0) {
+        int nValue = 0;
+        QString ret = file.readAll();
+        bool bOk;
+        nValue = ret.toInt(&bOk);
+        if (bOk)
+            enabled = nValue;
+        else
             qInfo() << "someting error";
-        }
-        fclose(fp);
 
-        // nouveau may write 2, others 1
-        return enabled > 0;
+        file.close();
     }
 
     return false;

@@ -806,7 +806,7 @@ static QString libPath(const QString &strlib)
 
 void viewProgBarLoad::initThumb()
 {
-    QLibrary library(libPath("libffmpegthumbnailer.so"));
+    QLibrary library(CompositingManager::libPath("libffmpegthumbnailer.so"));
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
     m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");

@@ -53,6 +53,10 @@ public:
     static bool isPadSystem();   //是否是平板设备
     static bool isCanHwdec();
     static void setCanHwdec(bool bCanHwdec);
+    static QString libPath(const QString &strlib);
+#ifdef LINGLONG_BUILD
+    static bool isLibExist(const QString &libName);
+#endif
     /**
      * @brief 判断是否可以使用mpv
      */
