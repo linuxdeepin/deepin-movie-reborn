@@ -657,17 +657,21 @@ bool CompositingManager::is_device_viable(int id)
     char buf[512];
     snprintf(buf, sizeof buf, "%s/device/enable", path);
     if (access(buf, R_OK) == 0) {
-        FILE *fp = fopen(buf, "r");
-        if (!fp) {
+        QFile file(buf);
+        if (!file.open(QIODevice::ReadOnly))
             return false;
-        }
 
         int enabled = 0;
-        int error = fscanf(fp, "%d", &enabled);
-        if (error < 0) {
+        int nValue = 0;
+        QString ret = file.readAll();
+        bool bOk;
+        nValue = ret.toInt(&bOk);
+        if (bOk)
+            enabled = nValue;
+        else
             qInfo() << "someting error";
-        }
-        fclose(fp);
+
+        file.close();
 
         // nouveau may write 2, others 1
         return enabled > 0;
