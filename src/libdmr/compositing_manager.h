@@ -17,7 +17,7 @@ namespace dmr {
 enum Platform {
     Unknown,
     X86,  // intel & amd
-    Mips, // loongson
+    Mips, // MIPS-based Loongson
     Alpha, // sunway
     Arm64
 };
