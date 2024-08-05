@@ -92,7 +92,7 @@ private:
 static bool detect550Series()
 {
     QProcess pcicheck;
-    pcicheck.start("bash -c \"lspci -nk | grep -i 'in use' -B 2 | grep -iE '1002:699f|1002:6987' \"");
+    pcicheck.start("bash -c \"lspci -nk | grep -i 'in use' -B 2 | grep -iE '1002:699f|1002:6987|6766:3d02' \""); //use vaapi. add adject Glenfly Tech Co., Ltd. Arise1020 [6766:3d02]
     if (pcicheck.waitForFinished(1000)) {
         QByteArray readData = pcicheck.readAllStandardOutput();
         if (!readData.isEmpty()) {
