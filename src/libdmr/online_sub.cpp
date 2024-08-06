@@ -94,8 +94,6 @@ OnlineSubtitle::OnlineSubtitle()
     QDir d;
     d.mkpath(_defaultLocation);
 
-    _nam = new QNetworkAccessManager(this);
-    connect(_nam, &QNetworkAccessManager::finished, this, &OnlineSubtitle::replyReceived);
 }
 
 void OnlineSubtitle::subtitlesDownloadComplete()
@@ -274,6 +272,11 @@ bool OnlineSubtitle::hasHashConflict(const QString &path, const QString &tmpl, Q
 
 void OnlineSubtitle::downloadSubtitles()
 {
+    if(!_nam) {
+        _nam = new QNetworkAccessManager(this);
+        connect(_nam, &QNetworkAccessManager::finished, this, &OnlineSubtitle::replyReceived);
+    }
+
     _pendingDownloads = _subs.size();
 
     for (auto &sub : _subs) {
@@ -299,6 +302,10 @@ QString OnlineSubtitle::storeLocation()
 
 void OnlineSubtitle::requestSubtitle(const QUrl &url)
 {
+    if(!_nam) {
+        _nam = new QNetworkAccessManager(this);
+        connect(_nam, &QNetworkAccessManager::finished, this, &OnlineSubtitle::replyReceived);
+    }
     QFileInfo fi(url.toLocalFile());
     QString h = hash_file(fi);
     _lastReqVideo = fi;
