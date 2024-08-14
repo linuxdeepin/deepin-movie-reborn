@@ -351,10 +351,7 @@ bool CompositingManager::isMpvExists()
     QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
     dir.setPath(path);
     static QStringList list = dir.entryList(QStringList() << (QString("libmpv.so") + "*"), QDir::NoDotAndDotDot | QDir::Files);
-    if (list.contains("libmpv.so")) {
-        return true;
-    }
-    return false;
+    return !list.isEmpty();
 }
 
 bool CompositingManager::isZXIntgraphics() const
