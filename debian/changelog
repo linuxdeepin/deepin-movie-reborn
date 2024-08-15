@@ -1,3 +1,9 @@
+deepin-movie-reborn (5.15.0) unstable; urgency=medium
+
+  * New version 5.15.0
+
+ -- xiepengfei <xiepengfei@uniontech.com>  Thu, 15 Aug 2024 18:05:41 +0800
+
 deepin-movie-reborn (5.10.51) unstable; urgency=medium
 
   * feat: Added new settings for movie
