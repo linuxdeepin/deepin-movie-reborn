@@ -2975,6 +2975,16 @@ DSettingsDialog *Platform_MainWindow::initSettings()
     }
 
     connect(&Settings::get(), &Settings::setDecodeModel, this, [=](QString key, QVariant value){
+        if (key == "base.decode.select" && value.toInt() == 3){
+                DDialog msgBox;
+                msgBox.setIcon(QIcon(":/resources/icons/warning.svg"));
+                msgBox.setTitle(tr("Professional mode is only for professionals to use"));
+                msgBox.setMessage(tr("During the adaptation process, there may be issues such as screen distortion, freezing, stuttering, torn images, \n"
+                                     "unsynchronized audio and video, and player crashes. Please use with caution."));
+                msgBox.addButton(tr("OK"), true, DDialog::ButtonType::ButtonRecommend);
+                msgBox.setOnButtonClickedClose(true);
+                msgBox.exec();
+        }
         if (key == "base.decode.select") {
             int decodeType = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
             if (decodeType != 3) {
