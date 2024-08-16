@@ -42,12 +42,12 @@ Please do not exit the Movie app during the process.</source>
     <name>QObject</name>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="582"/>
-        <location filename="../src/main.cpp" line="288"/>
-        <location filename="../src/main.cpp" line="360"/>
-        <location filename="../src/widgets/volumeslider.cpp" line="113"/>
-        <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="116"/>
+        <location filename="../src/common/dmr_settings.cpp" line="288"/>
         <location filename="../src/common/volumemonitoring.cpp" line="68"/>
-        <location filename="../src/common/dmr_settings.cpp" line="285"/>
+        <location filename="../src/main.cpp" line="288"/>
+        <location filename="../src/main.cpp" line="354"/>
+        <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="116"/>
+        <location filename="../src/widgets/volumeslider.cpp" line="113"/>
         <source>Movie</source>
         <translation>影院</translation>
     </message>
@@ -57,20 +57,20 @@ Please do not exit the Movie app during the process.</source>
         <translation>影院是一款支持多种视频格式本地播放和流媒体播放的视频播放器。</translation>
     </message>
     <message>
-        <location filename="../src/common/shortcut_manager.cpp" line="186"/>
         <location filename="../src/common/settings_translation.cpp" line="59"/>
+        <location filename="../src/common/shortcut_manager.cpp" line="186"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="../src/common/shortcut_manager.cpp" line="189"/>
         <location filename="../src/common/settings_translation.cpp" line="57"/>
+        <location filename="../src/common/shortcut_manager.cpp" line="189"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../src/common/shortcut_manager.cpp" line="194"/>
         <location filename="../src/common/settings_translation.cpp" line="58"/>
+        <location filename="../src/common/shortcut_manager.cpp" line="194"/>
         <source>Display shortcuts</source>
         <translation>显示快捷键</translation>
     </message>
@@ -342,42 +342,42 @@ Please do not exit the Movie app during the process.</source>
         <translation>渲染引擎</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
         <location filename="../src/common/mainwindow.cpp" line="326"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>此文件夹没有操作权限</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="324"/>
         <location filename="../src/common/mainwindow.cpp" line="328"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="324"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="340"/>
         <location filename="../src/common/mainwindow.cpp" line="344"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="340"/>
         <source>Invalid folder</source>
         <translation>此文件夹无效</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="360"/>
         <location filename="../src/common/mainwindow.cpp" line="364"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="360"/>
         <source>Open folder</source>
         <translation>打开文件夹</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2872"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2898"/>
         <location filename="../src/common/mainwindow.cpp" line="2847"/>
-        <location filename="../src/common/mainwindow.cpp" line="2872"/>
+        <location filename="../src/common/mainwindow.cpp" line="2871"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2872"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2897"/>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
         <translation>自定义解码方式需要重启后才能生效，
 是否重启？</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3261"/>
-        <location filename="../src/common/mainwindow.cpp" line="3268"/>
+        <location filename="../src/common/mainwindow.cpp" line="3274"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3270"/>
         <source>Network disconnected</source>
         <translation>网络已断开</translation>
     </message>
@@ -718,7 +718,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
         <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
+        <location filename="../src/common/mainwindow.cpp" line="4694"/>
         <source>Load successfully</source>
         <translation>载入字幕成功</translation>
     </message>
@@ -726,19 +726,19 @@ and whether to restart it?</source>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
         <location filename="../src/common/mainwindow.cpp" line="2547"/>
         <location filename="../src/common/mainwindow.cpp" line="2550"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
+        <location filename="../src/common/mainwindow.cpp" line="4694"/>
         <source>Load failed</source>
         <translation>载入字幕失败</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1852"/>
-        <location filename="../src/common/mainwindow.cpp" line="3049"/>
+        <location filename="../src/common/mainwindow.cpp" line="3055"/>
         <source>Cannot play the disc</source>
         <translation>无法播放光盘内容</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1869"/>
-        <location filename="../src/common/mainwindow.cpp" line="3608"/>
+        <location filename="../src/common/mainwindow.cpp" line="3614"/>
         <source>Parse failed</source>
         <translation>解析失败</translation>
     </message>
@@ -754,7 +754,7 @@ and whether to restart it?</source>
         <location filename="../src/common/mainwindow.cpp" line="2308"/>
         <location filename="../src/common/mainwindow.cpp" line="2316"/>
         <location filename="../src/common/mainwindow.cpp" line="2522"/>
-        <location filename="../src/common/mainwindow.cpp" line="4854"/>
+        <location filename="../src/common/mainwindow.cpp" line="4878"/>
         <source>Speed: %1x</source>
         <translation>播放速度：%1倍</translation>
     </message>
@@ -836,33 +836,38 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2848"/>
-        <location filename="../src/common/mainwindow.cpp" line="2873"/>
+        <location filename="../src/common/mainwindow.cpp" line="2872"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2849"/>
-        <location filename="../src/common/mainwindow.cpp" line="2874"/>
+        <location filename="../src/common/mainwindow.cpp" line="2873"/>
         <source>Restart</source>
         <translation>重启</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3054"/>
+        <location filename="../src/common/mainwindow.cpp" line="2964"/>
+        <source>Professional mode is only for professionals to use</source>
+        <translation>专业模式仅供专业人员使用</translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="3060"/>
         <source>Reading DVD files...</source>
         <translation>正在读取光盘文件...</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4966"/>
+        <location filename="../src/common/mainwindow.cpp" line="4990"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4997"/>
+        <location filename="../src/common/mainwindow.cpp" line="5021"/>
         <source>Miracast disconnected</source>
         <translation>投屏已断开</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3275"/>
+        <location filename="../src/common/mainwindow.cpp" line="3281"/>
         <source>No matching online subtitles</source>
         <translation>未找到匹配的在线字幕</translation>
     </message>
@@ -873,81 +878,89 @@ and whether to restart it?</source>
         <translation>所有 (*)</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3291"/>
+        <location filename="../src/common/mainwindow.cpp" line="3297"/>
         <source>4K video may be stuck</source>
         <translation>播放4K视频可能会出现卡顿</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3292"/>
+        <location filename="../src/common/mainwindow.cpp" line="2967"/>
+        <location filename="../src/common/mainwindow.cpp" line="3298"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3324"/>
-        <location filename="../src/common/mainwindow.cpp" line="4288"/>
-        <source>Order play</source>
-        <translation>顺序播放</translation>
-    </message>
-    <message>
-        <location filename="../src/common/mainwindow.cpp" line="3327"/>
-        <location filename="../src/common/mainwindow.cpp" line="4291"/>
-        <source>Shuffle play</source>
-        <translation>随机播放</translation>
+        <location filename="../src/common/mainwindow.cpp" line="2965"/>
+        <source>During the adaptation process, there may be issues such as screen distortion, freezing, stuttering, torn images, 
+unsynchronized audio and video, and player crashes. Please use with caution.</source>
+        <translation type="unfinished">适配过程中可能出现花屏、卡死、卡顿、画面撕裂、音画不同步、
+播放器闪退等问题，请谨慎使用。</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3330"/>
         <location filename="../src/common/mainwindow.cpp" line="4294"/>
-        <source>Single play</source>
-        <translation>单个播放</translation>
+        <source>Order play</source>
+        <translation>顺序播放</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3333"/>
         <location filename="../src/common/mainwindow.cpp" line="4297"/>
-        <source>Single loop</source>
-        <translation>单个循环</translation>
+        <source>Shuffle play</source>
+        <translation>随机播放</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3336"/>
         <location filename="../src/common/mainwindow.cpp" line="4300"/>
+        <source>Single play</source>
+        <translation>单个播放</translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="3339"/>
+        <location filename="../src/common/mainwindow.cpp" line="4303"/>
+        <source>Single loop</source>
+        <translation>单个循环</translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="3342"/>
+        <location filename="../src/common/mainwindow.cpp" line="4306"/>
         <source>List loop</source>
         <translation>列表循环</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3480"/>
+        <location filename="../src/common/mainwindow.cpp" line="3486"/>
         <source>Buffering...</source>
         <translation>缓冲中...</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3503"/>
-        <location filename="../src/common/mainwindow.cpp" line="3528"/>
+        <location filename="../src/common/mainwindow.cpp" line="3509"/>
+        <location filename="../src/common/mainwindow.cpp" line="3534"/>
         <source>Mute</source>
         <translation>静音</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3505"/>
-        <location filename="../src/common/mainwindow.cpp" line="3530"/>
+        <location filename="../src/common/mainwindow.cpp" line="3511"/>
+        <location filename="../src/common/mainwindow.cpp" line="3536"/>
         <source>Volume: %1%</source>
         <translation>音量：%1%</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3548"/>
-        <location filename="../src/common/mainwindow.cpp" line="3599"/>
+        <location filename="../src/common/mainwindow.cpp" line="3554"/>
+        <location filename="../src/common/mainwindow.cpp" line="3605"/>
         <source>Cannot open file or stream</source>
         <translation>无法打开文件或者流</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4955"/>
+        <location filename="../src/common/mainwindow.cpp" line="4979"/>
         <source>The action is not supported in this video</source>
         <translation>当前视频不支持该功能</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4990"/>
+        <location filename="../src/common/mainwindow.cpp" line="5014"/>
         <source>Connection failed</source>
         <translation>连接失败</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3616"/>
-        <location filename="../src/common/mainwindow.cpp" line="3621"/>
+        <location filename="../src/common/mainwindow.cpp" line="3622"/>
+        <location filename="../src/common/mainwindow.cpp" line="3627"/>
         <source>Invalid file</source>
         <translation>无效文件</translation>
     </message>
@@ -958,28 +971,28 @@ and whether to restart it?</source>
         <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3623"/>
+        <location filename="../src/common/mainwindow.cpp" line="3629"/>
         <source>Please insert a CD/DVD</source>
         <translation>请插入CD或DVD</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3628"/>
+        <location filename="../src/common/mainwindow.cpp" line="3634"/>
         <source>No video file found</source>
         <translation>没有找到视频文件</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4279"/>
+        <location filename="../src/common/mainwindow.cpp" line="4285"/>
         <source>Please load the video first</source>
         <translation>请先载入影片</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4402"/>
-        <location filename="../src/common/mainwindow.cpp" line="4412"/>
+        <location filename="../src/common/mainwindow.cpp" line="4408"/>
+        <location filename="../src/common/mainwindow.cpp" line="4418"/>
         <source>Please exit smart dock</source>
         <translation>Please exit smart dock</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4715"/>
+        <location filename="../src/common/mainwindow.cpp" line="4739"/>
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVD已弹出</translation>
     </message>
@@ -987,20 +1000,24 @@ and whether to restart it?</source>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
+        <location filename="../src/libdmr/playlist_model.h" line="113"/>
         <source>%1G</source>
-        <translation type="vanished">%1G</translation>
+        <translation>%1G</translation>
     </message>
     <message>
+        <location filename="../src/libdmr/playlist_model.h" line="115"/>
         <source>%1M</source>
-        <translation type="vanished">%1M</translation>
+        <translation>%1M</translation>
     </message>
     <message>
+        <location filename="../src/libdmr/playlist_model.h" line="117"/>
         <source>%1K</source>
-        <translation type="vanished">%1K</translation>
+        <translation>%1K</translation>
     </message>
     <message>
+        <location filename="../src/libdmr/playlist_model.h" line="119"/>
         <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
@@ -1131,7 +1148,7 @@ and whether to restart it?</source>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1990"/>
+        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1994"/>
         <source>Internal</source>
         <translation>内部</translation>
     </message>
@@ -1141,7 +1158,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4619"/>
         <source>Load successfully</source>
         <translation>载入字幕成功</translation>
     </message>
@@ -1149,19 +1166,19 @@ and whether to restart it?</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2566"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4619"/>
         <source>Load failed</source>
         <translation>载入字幕失败</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1915"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3059"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3068"/>
         <source>Cannot play the disc</source>
         <translation>无法播放光盘内容</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1932"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3579"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3588"/>
         <source>Parse failed</source>
         <translation>解析失败</translation>
     </message>
@@ -1183,7 +1200,7 @@ and whether to restart it?</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2324"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2332"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2538"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4800"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4809"/>
         <source>Speed: %1x</source>
         <translation>播放速度：%1倍</translation>
     </message>
@@ -1271,137 +1288,150 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2898"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2874"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2900"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
         <source>Restart</source>
         <translation>重启</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3064"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2981"/>
+        <source>Professional mode is only for professionals to use</source>
+        <translation>专业模式仅供专业人员使用</translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3073"/>
         <source>Reading DVD files...</source>
         <translation>正在读取光盘文件...</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3268"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3277"/>
         <source>No matching online subtitles</source>
         <translation>未找到匹配的在线字幕</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3284"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3293"/>
         <source>4K video may be stuck</source>
         <translation>播放4K视频可能会出现卡顿</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3285"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2984"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3294"/>
         <source>OK</source>
         <translation>确 定</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3326"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4292"/>
-        <source>Order play</source>
-        <translation>顺序播放</translation>
-    </message>
-    <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3329"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4295"/>
-        <source>Shuffle play</source>
-        <translation>随机播放</translation>
-    </message>
-    <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4298"/>
-        <source>Single play</source>
-        <translation>单个播放</translation>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2982"/>
+        <source>During the adaptation process, there may be issues such as screen distortion, freezing, stuttering, torn images, 
+unsynchronized audio and video, and player crashes. Please use with caution.</source>
+        <translation type="unfinished">适配过程中可能出现花屏、卡死、卡顿、画面撕裂、音画不同步、
+播放器闪退等问题，请谨慎使用。</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3335"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4301"/>
-        <source>Single loop</source>
-        <translation>单个循环</translation>
+        <source>Order play</source>
+        <translation>顺序播放</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3338"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4304"/>
+        <source>Shuffle play</source>
+        <translation>随机播放</translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3341"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4307"/>
+        <source>Single play</source>
+        <translation>单个播放</translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3344"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4310"/>
+        <source>Single loop</source>
+        <translation>单个循环</translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3347"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4313"/>
         <source>List loop</source>
         <translation>列表循环</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3476"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3485"/>
         <source>Buffering...</source>
         <translation>缓冲中...</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3499"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3524"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3508"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3533"/>
         <source>Mute</source>
         <translation>静音</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3526"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3510"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3535"/>
         <source>Volume: %1%</source>
         <translation>音量：%1%</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3570"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3579"/>
         <source>Cannot open file or stream</source>
         <translation>无法打开文件或者流</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3587"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3592"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3596"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3601"/>
         <source>Invalid file</source>
         <translation>无效文件</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3594"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3603"/>
         <source>Please insert a CD/DVD</source>
         <translation>请插入CD或DVD</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3600"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3609"/>
         <source>No video file found</source>
         <translation>没有找到视频文件</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4283"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4292"/>
         <source>Please load the video first</source>
         <translation>请先载入影片</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4403"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4412"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4421"/>
         <source>Please exit smart dock</source>
         <translation>Please exit smart dock</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4655"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4664"/>
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVD已弹出</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4901"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4910"/>
         <source>The action is not supported in this video</source>
         <translation>当前视频不支持该功能</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4912"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4921"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4936"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4945"/>
         <source>Connection failed</source>
         <translation>连接失败</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4943"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4952"/>
         <source>Miracast disconnected</source>
         <translation>投屏已断开</translation>
     </message>
@@ -1564,7 +1594,7 @@ and whether to restart it?</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="294"/>
+        <location filename="../src/common/dmr_settings.cpp" line="297"/>
         <source>%1/Movie%2(%3).jpg</source>
         <translation>%1/影院%2（%3）.jpg</translation>
     </message>
