@@ -4205,6 +4205,11 @@ void Platform_MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
     resumeToolsWindow();
     QTimer::singleShot(0, [ = ]() {
         qApp->restoreOverrideCursor();
+        QList<QAction *> lstAct = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::ToggleFullscreen);
+        if(!lstAct.isEmpty()) {
+            QAction *pAct = lstAct.first();
+            if(pAct) pAct->setChecked(isFullScreen());
+        }
         ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
     });
     pEvent->accept();
