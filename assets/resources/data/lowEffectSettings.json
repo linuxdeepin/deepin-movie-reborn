@@ -12,9 +12,9 @@
                     "options": [
                         {
                             "key": "crash",
-                            "type": "combobox",
+                            "type": "checkbox",
                             "hide": true,
-                            "default": 0
+                            "default": false
                         }
                     ]
                 }
@@ -149,34 +149,8 @@
                             "items": [
                                 "Auto select (Recommended)",
                                 "Hardware decoding",
-                                "Software decoding",
-                                "Customize"
+                                "Software decoding"
                             ],
-                            "default": 0
-                        },
-                        {
-                            "key": "Effect",
-                            "name": "Rendering engine",
-                            "type": "effectCombobox",
-                            "items": [
-                                "",
-                                "OpenGL",
-                                "MPV"
-                            ],
-                            "default": 0
-                        },
-                        {
-                            "key": "Videoout",
-                            "name": "Video out",
-                            "hide": false,
-                            "type": "videoOutCombobox",
-                            "default": 0
-                        },
-                        {
-                            "key": "Decodemode",
-                            "name": "Decode mode",
-                            "hide": false,
-                            "type": "decoderCombobox",
                             "default": 0
                         }
                     ]

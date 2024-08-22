@@ -6,19 +6,18 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="57"/>
         <source>Exit Miracast</source>
-        <translation>ཕྱིར་འཐེན་ཡོལ་བ།</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="74"/>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation>གྲིབ་གཟུགས་འཕེན་པ། 
-བརྒྱུད་རིམ་འདིའི་ཁྲོད་དུ་གློག་བརྙན་བཀོལ་སྤྱོད་ཀྱི་གོ་རིམ་ལས་ཕྱིར་འབུད་མི་རུང།。</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="102"/>
         <source>Display device</source>
-        <translation>སྒྲིག་ཆས་མངོན་པ།</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26,34 +25,34 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="71"/>
         <source>Project to</source>
-        <translation>རྣམ་གྲངས་ཐོན་པ།</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="369"/>
         <source>Searching for devices...</source>
-        <translation>འཚོལ་ཞིབ་སྒྲིག་ཆས་འཚོལ་ཞིབ་བྱེད་བཞིན་ཡོད།...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="378"/>
         <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation>Mirrasttstst སྒྲིག་ཆས་དང་རྩིས་འཁོར་གཉིས་WLANདྲ་རྒྱ་གཅིག་ཏུ་སྦྲེལ་རོགས།</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="582"/>
-        <location filename="../src/main.cpp" line="288"/>
-        <location filename="../src/main.cpp" line="360"/>
+        <location filename="../src/main.cpp" line="238"/>
+        <location filename="../src/main.cpp" line="295"/>
         <location filename="../src/widgets/volumeslider.cpp" line="113"/>
         <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="116"/>
         <location filename="../src/common/volumemonitoring.cpp" line="68"/>
-        <location filename="../src/common/dmr_settings.cpp" line="285"/>
+        <location filename="../src/common/dmr_settings.cpp" line="195"/>
         <source>Movie</source>
         <translation>གློག་བརྙན་ཁང་། </translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="289"/>
+        <location filename="../src/main.cpp" line="239"/>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
         <translation>གློག་བརྙན་ཁང་ནི་བརྙན་ཟློས་རྣམ་བཞག་མང་པོ་རང་གནས་སུ་གཏོང་བ་དང་རྒྱུན་སྨྱན་སྦྱོར་གྱིས་གཏོང་བར་རྒྱབ་སྐྱོར་བྱེད་པའི་བརྙན་ཟློས་གཏོང་ཆས་ཞིག་རེད།</translation>
     </message>
@@ -323,62 +322,32 @@ Please do not exit the Movie app during the process.</source>
         <translation>མཉེན་ཆས་གསང་སྒྲོལ།</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="64"/>
-        <source>Customize</source>
-        <translation>རང་ཉིད་མཚན་ཉིད་འཇོག་པ།</translation>
-    </message>
-    <message>
-        <location filename="../src/common/settings_translation.cpp" line="65"/>
-        <source>Decode mode</source>
-        <translation>མ་དཔེ་འགྲེལ་སྟངས།</translation>
-    </message>
-    <message>
-        <location filename="../src/common/settings_translation.cpp" line="66"/>
-        <source>Video out</source>
-        <translation>བརྙན་ལམ་ཕྱིར་གཏོང་།</translation>
-    </message>
-    <message>
-        <location filename="../src/common/settings_translation.cpp" line="67"/>
-        <source>Rendering engine</source>
-        <translation>སྒུལ་བྱེད་འཕྲུལ་འཁོར་ལ་ཚོས་རྒྱག་དགོས།</translation>
-    </message>
-    <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
-        <location filename="../src/common/mainwindow.cpp" line="326"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="200"/>
+        <location filename="../src/common/mainwindow.cpp" line="202"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>ཡིག་ཁུག་འདིར་བཀོལ་སྤྱོད་བྱེད་དབང་མེད།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="324"/>
-        <location filename="../src/common/mainwindow.cpp" line="328"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="202"/>
+        <location filename="../src/common/mainwindow.cpp" line="204"/>
         <source>OK</source>
         <translation>གཏན་ཁེལ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="340"/>
-        <location filename="../src/common/mainwindow.cpp" line="344"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="218"/>
+        <location filename="../src/common/mainwindow.cpp" line="220"/>
         <source>Invalid folder</source>
         <translation>ཡིག་ཁུག་འདི་གོ་མི་ཆོད།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="360"/>
-        <location filename="../src/common/mainwindow.cpp" line="364"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="238"/>
+        <location filename="../src/common/mainwindow.cpp" line="240"/>
         <source>Open folder</source>
         <translation>ཡིག་ཁུག་ཁ་ཕྱེ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2872"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2898"/>
-        <location filename="../src/common/mainwindow.cpp" line="2847"/>
-        <location filename="../src/common/mainwindow.cpp" line="2872"/>
-        <source>The custom decoding method needs to be restarted before it can take effect,
-and whether to restart it?</source>
-        <translation>མཚན་ཉིད་འཇོག་པའི་ཨང་སྒྲིག་བྱེད་ཐབས་ལ་བསྐྱར་དུ་སྒོ་འབྱེད་དགོས་ན་གཞི་ནས་ནུས་པ་འཐོན་
-དེ་བཞིན་བསྐྱར་དུ་འགོ་ཚུགས་པ་ཡིན་ནམ།</translation>
-    </message>
-    <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3261"/>
-        <location filename="../src/common/mainwindow.cpp" line="3268"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2981"/>
+        <location filename="../src/common/mainwindow.cpp" line="2972"/>
         <source>Network disconnected</source>
         <translation>དྲ་བ་བཅད་ཟིན། </translation>
     </message>
@@ -717,270 +686,258 @@ and whether to restart it?</source>
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
+        <location filename="../src/common/mainwindow.cpp" line="889"/>
+        <location filename="../src/common/mainwindow.cpp" line="2423"/>
+        <location filename="../src/common/mainwindow.cpp" line="4362"/>
         <source>Load successfully</source>
         <translation>ཡིག་བརྙན་འཇུག་ཐུབ་སོང་།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="2550"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
+        <location filename="../src/common/mainwindow.cpp" line="889"/>
+        <location filename="../src/common/mainwindow.cpp" line="2423"/>
+        <location filename="../src/common/mainwindow.cpp" line="2426"/>
+        <location filename="../src/common/mainwindow.cpp" line="4362"/>
         <source>Load failed</source>
         <translation>ཡིག་བརྙན་འཇུག་ཐུབ་མ་སོང་།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1852"/>
-        <location filename="../src/common/mainwindow.cpp" line="3049"/>
+        <location filename="../src/common/mainwindow.cpp" line="1728"/>
+        <location filename="../src/common/mainwindow.cpp" line="2753"/>
         <source>Cannot play the disc</source>
         <translation>སྡུད་སྡེར་གྱི་ནང་དོན་གཏོང་ཐབས་བྲལ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1869"/>
-        <location filename="../src/common/mainwindow.cpp" line="3608"/>
+        <location filename="../src/common/mainwindow.cpp" line="1745"/>
+        <location filename="../src/common/mainwindow.cpp" line="3312"/>
         <source>Parse failed</source>
         <translation>དབྱེ་ཞིབ་བྱེད་མི་ཐུབ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1877"/>
+        <location filename="../src/common/mainwindow.cpp" line="1753"/>
         <source>Open folder</source>
         <translation>ཡིག་ཁུག་ཁ་ཕྱེ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2284"/>
-        <location filename="../src/common/mainwindow.cpp" line="2292"/>
-        <location filename="../src/common/mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/mainwindow.cpp" line="2522"/>
-        <location filename="../src/common/mainwindow.cpp" line="4854"/>
+        <location filename="../src/common/mainwindow.cpp" line="2160"/>
+        <location filename="../src/common/mainwindow.cpp" line="2168"/>
+        <location filename="../src/common/mainwindow.cpp" line="2176"/>
+        <location filename="../src/common/mainwindow.cpp" line="2184"/>
+        <location filename="../src/common/mainwindow.cpp" line="2192"/>
+        <location filename="../src/common/mainwindow.cpp" line="2398"/>
+        <location filename="../src/common/mainwindow.cpp" line="4546"/>
         <source>Speed: %1x</source>
         <translation>གཏོང་ཚད། ལྡབ། %1</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2323"/>
+        <location filename="../src/common/mainwindow.cpp" line="2199"/>
         <source>Stereo</source>
         <translation>ལངས་གཟུགས་སྒྲ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2328"/>
+        <location filename="../src/common/mainwindow.cpp" line="2204"/>
         <source>Left channel</source>
         <translation>གཡོན་གྱི་སྒྲ་ལམ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2333"/>
+        <location filename="../src/common/mainwindow.cpp" line="2209"/>
         <source>Right channel</source>
         <translation>གཡས་ཀྱི་སྒྲ་ལམ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2438"/>
+        <location filename="../src/common/mainwindow.cpp" line="2314"/>
         <source>Track: %1</source>
         <translation>སྒྲ་ལམ། %1</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2480"/>
-        <location filename="../src/common/mainwindow.cpp" line="2497"/>
+        <location filename="../src/common/mainwindow.cpp" line="2356"/>
+        <location filename="../src/common/mainwindow.cpp" line="2373"/>
         <source>Unable to adjust the subtitle</source>
         <translation>ད་ལྟའི་ཡི་གེ་སྙོམ་སྒྲིག་བྱེད་ཐབས་མེད།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2485"/>
-        <location filename="../src/common/mainwindow.cpp" line="2502"/>
+        <location filename="../src/common/mainwindow.cpp" line="2361"/>
+        <location filename="../src/common/mainwindow.cpp" line="2378"/>
         <source>Subtitle %1: %2s</source>
         <translation>ཡིག་བརྙན།  %1 སྐར་ཆ།  %2</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
+        <location filename="../src/common/mainwindow.cpp" line="2362"/>
+        <location filename="../src/common/mainwindow.cpp" line="2379"/>
         <source>delayed</source>
         <translation>ཕྱིར་སྣུར། </translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
+        <location filename="../src/common/mainwindow.cpp" line="2362"/>
+        <location filename="../src/common/mainwindow.cpp" line="2379"/>
         <source>advanced</source>
         <translation>སྔ་སྣུར།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2644"/>
+        <location filename="../src/common/mainwindow.cpp" line="2520"/>
         <source>View</source>
         <translation>ལྟ་བཤེར།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2653"/>
+        <location filename="../src/common/mainwindow.cpp" line="2529"/>
         <source>Film screenshot</source>
         <translation>གློག་བརྙན་པར་རིས་གཏུབ་ལེན།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2654"/>
+        <location filename="../src/common/mainwindow.cpp" line="2530"/>
         <source>Saved to</source>
         <translation>ལ་ཉར་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2675"/>
-        <location filename="../src/common/mainwindow.cpp" line="2803"/>
+        <location filename="../src/common/mainwindow.cpp" line="2551"/>
+        <location filename="../src/common/mainwindow.cpp" line="2679"/>
         <source>The screenshot is saved</source>
         <translation>གཏུབ་པའི་བརྙན་ཡོལ་ཉར་ཟིན། </translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2679"/>
-        <location filename="../src/common/mainwindow.cpp" line="2807"/>
+        <location filename="../src/common/mainwindow.cpp" line="2555"/>
+        <location filename="../src/common/mainwindow.cpp" line="2683"/>
         <source>Failed to save the screenshot</source>
         <translation>གཏུབ་པའི་བརྙན་ཡོལ་ཉར་མི་ཐུབ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2763"/>
+        <location filename="../src/common/mainwindow.cpp" line="2639"/>
         <source>Taking the screenshots, please wait...</source>
         <translation>བརྙན་ཡོལ་གཏུབ་ལེན་བྱེད་བཞིན་པས། ཏོག་ཙམ་སྒུག་རོགས།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2848"/>
-        <location filename="../src/common/mainwindow.cpp" line="2873"/>
-        <source>Cancel</source>
-        <translation>མེད་པར་བཟོ་དགོས།</translation>
-    </message>
-    <message>
-        <location filename="../src/common/mainwindow.cpp" line="2849"/>
-        <location filename="../src/common/mainwindow.cpp" line="2874"/>
-        <source>Restart</source>
-        <translation>བསྐྱར་དུ་འགོ་འཛུགས་དགོས།</translation>
-    </message>
-    <message>
-        <location filename="../src/common/mainwindow.cpp" line="3054"/>
+        <location filename="../src/common/mainwindow.cpp" line="2758"/>
         <source>Reading DVD files...</source>
         <translation>འོད་སྡེར་ཡིག་ཆ་ཀློག་འདོན་བྱེད་བཞིན་པ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4966"/>
+        <location filename="../src/common/mainwindow.cpp" line="4658"/>
         <source>Invalid file: %1</source>
         <translation>ཕན་མེད་ཡིག་ཆ། %1</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4997"/>
+        <location filename="../src/common/mainwindow.cpp" line="4689"/>
         <source>Miracast disconnected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3275"/>
+        <location filename="../src/common/mainwindow.cpp" line="2979"/>
         <source>No matching online subtitles</source>
         <translation>སྙོམ་འགྲིག་ཡིན་པའི་དྲ་ཐོག་ཡིག་བརྙན་མིན་འདུག</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1913"/>
-        <location filename="../src/common/mainwindow.cpp" line="1950"/>
+        <location filename="../src/common/mainwindow.cpp" line="1789"/>
+        <location filename="../src/common/mainwindow.cpp" line="1826"/>
         <source>All (*)</source>
         <translation>ཚང་མ་ (*)</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3291"/>
+        <location filename="../src/common/mainwindow.cpp" line="2995"/>
         <source>4K video may be stuck</source>
         <translation>4Kབརྙན་ཟློས་གཏོང་སྐབས་མཚམས་ཆད་བྱེད་སྲིད།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3292"/>
+        <location filename="../src/common/mainwindow.cpp" line="2996"/>
         <source>OK</source>
         <translation>གཏན་ཁེལ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3324"/>
-        <location filename="../src/common/mainwindow.cpp" line="4288"/>
+        <location filename="../src/common/mainwindow.cpp" line="3028"/>
+        <location filename="../src/common/mainwindow.cpp" line="3980"/>
         <source>Order play</source>
         <translation>གོ་རིམ་ལྟར་གཏོང་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3327"/>
-        <location filename="../src/common/mainwindow.cpp" line="4291"/>
+        <location filename="../src/common/mainwindow.cpp" line="3031"/>
+        <location filename="../src/common/mainwindow.cpp" line="3983"/>
         <source>Shuffle play</source>
         <translation>སྐབས་བསྟུན་གཏོང་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3330"/>
-        <location filename="../src/common/mainwindow.cpp" line="4294"/>
+        <location filename="../src/common/mainwindow.cpp" line="3034"/>
+        <location filename="../src/common/mainwindow.cpp" line="3986"/>
         <source>Single play</source>
         <translation>ཁེར་རྐྱང་གཏོང་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3333"/>
-        <location filename="../src/common/mainwindow.cpp" line="4297"/>
+        <location filename="../src/common/mainwindow.cpp" line="3037"/>
+        <location filename="../src/common/mainwindow.cpp" line="3989"/>
         <source>Single loop</source>
         <translation>གཞས་གཅིག་རྒྱུན་འཁོར།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3336"/>
-        <location filename="../src/common/mainwindow.cpp" line="4300"/>
+        <location filename="../src/common/mainwindow.cpp" line="3040"/>
+        <location filename="../src/common/mainwindow.cpp" line="3992"/>
         <source>List loop</source>
         <translation>རེའུ་མིག་རྒྱུན་འཁོར།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3480"/>
+        <location filename="../src/common/mainwindow.cpp" line="3184"/>
         <source>Buffering...</source>
         <translation>བར་ཆོད་བྱེད་བཞིན་པ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3503"/>
-        <location filename="../src/common/mainwindow.cpp" line="3528"/>
+        <location filename="../src/common/mainwindow.cpp" line="3207"/>
+        <location filename="../src/common/mainwindow.cpp" line="3232"/>
         <source>Mute</source>
         <translation>སྒྲ་མེད།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3505"/>
-        <location filename="../src/common/mainwindow.cpp" line="3530"/>
+        <location filename="../src/common/mainwindow.cpp" line="3209"/>
+        <location filename="../src/common/mainwindow.cpp" line="3234"/>
         <source>Volume: %1%</source>
         <translation>སྐད་ཤུགས། %1%</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3548"/>
-        <location filename="../src/common/mainwindow.cpp" line="3599"/>
+        <location filename="../src/common/mainwindow.cpp" line="3252"/>
+        <location filename="../src/common/mainwindow.cpp" line="3303"/>
         <source>Cannot open file or stream</source>
         <translation>ཡིག་ཆའམ་རྒྱུན་ཁ་ཕྱེ་ཐབས་མེད།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4955"/>
+        <location filename="../src/common/mainwindow.cpp" line="4647"/>
         <source>The action is not supported in this video</source>
         <translation>ད་ལྟའི་བརྙན་འཕྲིན་འོག་ནུས་པ་དེར་རྒྱབ་སྐྱོར་མེད།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4990"/>
+        <location filename="../src/common/mainwindow.cpp" line="4682"/>
         <source>Connection failed</source>
         <translation>འབྲེལ་མཐུད་བྱེད་མ་ཐུབ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3616"/>
-        <location filename="../src/common/mainwindow.cpp" line="3621"/>
+        <location filename="../src/common/mainwindow.cpp" line="3320"/>
+        <location filename="../src/common/mainwindow.cpp" line="3325"/>
         <source>Invalid file</source>
         <translation>ཕན་མེད་ཡིག་ཆ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2531"/>
+        <location filename="../src/common/mainwindow.cpp" line="2407"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <comment>All (*)</comment>
         <translation>ཡིག་བརྙན་ཡིག་ཆ། (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3623"/>
+        <location filename="../src/common/mainwindow.cpp" line="3327"/>
         <source>Please insert a CD/DVD</source>
         <translation>CD/DVDབླུགས་རོགས།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3628"/>
+        <location filename="../src/common/mainwindow.cpp" line="3332"/>
         <source>No video file found</source>
         <translation>བརྙན་ཟློས་ཡིག་ཆ་མེད།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4279"/>
+        <location filename="../src/common/mainwindow.cpp" line="3971"/>
         <source>Please load the video first</source>
         <translation>སྔོན་ལ་གློག་བརྙན་སྣོན་འཇུག་བྱ་རྒྱུ།</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4402"/>
-        <location filename="../src/common/mainwindow.cpp" line="4412"/>
+        <location filename="../src/common/mainwindow.cpp" line="4094"/>
+        <location filename="../src/common/mainwindow.cpp" line="4104"/>
         <source>Please exit smart dock</source>
         <translation>Please exit smart dock</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4715"/>
+        <location filename="../src/common/mainwindow.cpp" line="4407"/>
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVDའཕར་ཐོན་ཟིན།</translation>
     </message>
@@ -1132,7 +1089,7 @@ and whether to restart it?</source>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1990"/>
+        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1885"/>
         <source>Internal</source>
         <translation>ནང་ངོས།</translation>
     </message>
@@ -1140,269 +1097,257 @@ and whether to restart it?</source>
 <context>
     <name>dmr::Platform_MainWindow</name>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="915"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2440"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4318"/>
         <source>Load successfully</source>
         <translation>ཡིག་བརྙན་འཇུག་ཐུབ་སོང་།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2566"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="915"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2440"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2443"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4318"/>
         <source>Load failed</source>
         <translation>ཡིག་བརྙན་འཇུག་ཐུབ་མ་སོང་།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1915"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3059"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1792"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2779"/>
         <source>Cannot play the disc</source>
         <translation>སྡུད་སྡེར་གྱི་ནང་དོན་གཏོང་ཐབས་བྲལ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1932"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3579"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1809"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3299"/>
         <source>Parse failed</source>
         <translation>དབྱེ་ཞིབ་བྱེད་མི་ཐུབ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1940"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1817"/>
         <source>Open folder</source>
         <translation>ཡིག་ཁུག་ཁ་ཕྱེ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1968"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1997"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1845"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1874"/>
         <source>All (*)</source>
         <translation>ཚང་མ་ (*)</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2324"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2538"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4800"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2177"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2185"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2193"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2201"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2209"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2415"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4508"/>
         <source>Speed: %1x</source>
         <translation>གཏོང་ཚད། ལྡབ། %1</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2339"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2216"/>
         <source>Stereo</source>
         <translation>ལངས་གཟུགས་སྒྲ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2344"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2221"/>
         <source>Left channel</source>
         <translation>གཡོན་གྱི་སྒྲ་ལམ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2349"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2226"/>
         <source>Right channel</source>
         <translation>གཡས་ཀྱི་སྒྲ་ལམ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2454"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2331"/>
         <source>Track: %1</source>
         <translation>སྒྲ་ལམ། %1</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2496"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2513"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2373"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2390"/>
         <source>Unable to adjust the subtitle</source>
         <translation>ད་ལྟའི་ཡི་གེ་སྙོམ་སྒྲིག་བྱེད་ཐབས་མེད།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2518"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2378"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2395"/>
         <source>Subtitle %1: %2s</source>
         <translation>ཡིག་བརྙན།  %1 སྐར་ཆ།  %2</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2379"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2396"/>
         <source>delayed</source>
         <translation>ཕྱིར་སྣུར། </translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2379"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2396"/>
         <source>advanced</source>
         <translation>སྔ་སྣུར།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2547"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2424"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <comment>All (*)</comment>
         <translation>ཡིག་བརྙན་ཡིག་ཆ། (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2670"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2547"/>
         <source>View</source>
         <translation>ལྟ་བཤེར།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2679"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2556"/>
         <source>Film screenshot</source>
         <translation>གློག་བརྙན་པར་རིས་གཏུབ་ལེན།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2680"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2557"/>
         <source>Saved to</source>
         <translation>ལ་ཉར་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2701"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2828"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2578"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2705"/>
         <source>The screenshot is saved</source>
         <translation>གཏུབ་པའི་བརྙན་ཡོལ་ཉར་ཟིན། </translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2705"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2832"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2582"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2709"/>
         <source>Failed to save the screenshot</source>
         <translation>གཏུབ་པའི་བརྙན་ཡོལ་ཉར་མི་ཐུབ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2789"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2666"/>
         <source>Taking the screenshots, please wait...</source>
         <translation>བརྙན་ཡོལ་གཏུབ་ལེན་བྱེད་བཞིན་པས། ཏོག་ཙམ་སྒུག་རོགས།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
-        <source>Cancel</source>
-        <translation>མེད་པར་བཟོ་དགོས།</translation>
-    </message>
-    <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2874"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2900"/>
-        <source>Restart</source>
-        <translation>བསྐྱར་དུ་འགོ་འཛུགས་དགོས།</translation>
-    </message>
-    <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3064"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2784"/>
         <source>Reading DVD files...</source>
         <translation>འོད་སྡེར་ཡིག་ཆ་ཀློག་འདོན་བྱེད་བཞིན་པ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3268"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2988"/>
         <source>No matching online subtitles</source>
         <translation>སྙོམ་འགྲིག་ཡིན་པའི་དྲ་ཐོག་ཡིག་བརྙན་མིན་འདུག</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3284"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3004"/>
         <source>4K video may be stuck</source>
         <translation>4Kབརྙན་ཟློས་གཏོང་སྐབས་མཚམས་ཆད་བྱེད་སྲིད།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3285"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3005"/>
         <source>OK</source>
         <translation>གཏན་ཁེལ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3326"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4292"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3046"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4000"/>
         <source>Order play</source>
         <translation>གོ་རིམ་ལྟར་གཏོང་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3329"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4295"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3049"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4003"/>
         <source>Shuffle play</source>
         <translation>སྐབས་བསྟུན་གཏོང་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4298"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3052"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4006"/>
         <source>Single play</source>
         <translation>ཁེར་རྐྱང་གཏོང་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3335"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4301"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3055"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4009"/>
         <source>Single loop</source>
         <translation>གཞས་གཅིག་རྒྱུན་འཁོར།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3338"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4304"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3058"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4012"/>
         <source>List loop</source>
         <translation>རེའུ་མིག་རྒྱུན་འཁོར།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3476"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3196"/>
         <source>Buffering...</source>
         <translation>བར་ཆོད་བྱེད་བཞིན་པ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3499"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3524"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3219"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3244"/>
         <source>Mute</source>
         <translation>སྒྲ་མེད།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3526"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3221"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3246"/>
         <source>Volume: %1%</source>
         <translation>སྐད་ཤུགས། %1%</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3570"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3290"/>
         <source>Cannot open file or stream</source>
         <translation>ཡིག་ཆའམ་རྒྱུན་ཁ་ཕྱེ་ཐབས་མེད།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3587"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3592"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3307"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3312"/>
         <source>Invalid file</source>
         <translation>ཕན་མེད་ཡིག་ཆ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3594"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3314"/>
         <source>Please insert a CD/DVD</source>
         <translation>CD/DVDབླུགས་རོགས།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3600"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3320"/>
         <source>No video file found</source>
         <translation>བརྙན་ཟློས་ཡིག་ཆ་མེད།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4283"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3991"/>
         <source>Please load the video first</source>
         <translation>སྔོན་ལ་གློག་བརྙན་སྣོན་འཇུག་བྱ་རྒྱུ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4403"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4412"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4111"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4120"/>
         <source>Please exit smart dock</source>
         <translation>Please exit smart dock</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4655"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4363"/>
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVDའཕར་ཐོན་ཟིན།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4901"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4609"/>
         <source>The action is not supported in this video</source>
         <translation>ད་ལྟའི་བརྙན་འཕྲིན་འོག་ནུས་པ་དེར་རྒྱབ་སྐྱོར་མེད།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4912"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4620"/>
         <source>Invalid file: %1</source>
         <translation>ཕན་མེད་ཡིག་ཆ། %1</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4936"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4644"/>
         <source>Connection failed</source>
         <translation>འབྲེལ་མཐུད་བྱེད་མ་ཐུབ།</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4943"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4651"/>
         <source>Miracast disconnected</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1472,7 +1417,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
         <source>Miracast</source>
-        <translation>སྨི་ལ་ཁ་སི་ཐེ།</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2132"/>
@@ -1525,47 +1470,47 @@ and whether to restart it?</source>
 <context>
     <name>dmr::Settings</name>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="119"/>
+        <location filename="../src/common/dmr_settings.cpp" line="76"/>
         <source>Order play</source>
         <translation>གོ་རིམ་ལྟར་གཏོང་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="120"/>
+        <location filename="../src/common/dmr_settings.cpp" line="77"/>
         <source>Shuffle play</source>
         <translation>སྐབས་བསྟུན་གཏོང་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="121"/>
+        <location filename="../src/common/dmr_settings.cpp" line="78"/>
         <source>Single play</source>
         <translation>ཁེར་རྐྱང་གཏོང་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="122"/>
+        <location filename="../src/common/dmr_settings.cpp" line="79"/>
         <source>Single loop</source>
         <translation>གཞས་གཅིག་རྒྱུན་འཁོར།</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="123"/>
+        <location filename="../src/common/dmr_settings.cpp" line="80"/>
         <source>List loop</source>
         <translation>རེའུ་མིག་རྒྱུན་འཁོར།</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="129"/>
+        <location filename="../src/common/dmr_settings.cpp" line="85"/>
         <source>Auto</source>
         <translation>རང་འགུལ།</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="130"/>
+        <location filename="../src/common/dmr_settings.cpp" line="86"/>
         <source>Open</source>
         <translation>ཁ་ཕྱེ་བ།</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="131"/>
+        <location filename="../src/common/dmr_settings.cpp" line="87"/>
         <source>Close</source>
         <translation>ཁ་རྒྱག</translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="294"/>
+        <location filename="../src/common/dmr_settings.cpp" line="204"/>
         <source>%1/Movie%2(%3).jpg</source>
         <translation>%1/གློག་བརྙན།%2(%3).jpg</translation>
     </message>
@@ -1573,65 +1518,65 @@ and whether to restart it?</source>
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1311"/>
         <source>Play/Pause</source>
         <translation>གཏོང་བ།/སྐབས་སྡོད།</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2775"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1311"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2752"/>
         <source>Previous</source>
         <translation>སྔོན་མ།</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2792"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1311"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2769"/>
         <source>Next</source>
         <translation>རྗེས་མ། </translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2312"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2809"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1312"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2293"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2295"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2786"/>
         <source>Fullscreen</source>
         <translation>ཡོལ་གང་།</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2825"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1312"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2802"/>
         <source>Playlist</source>
         <translation>གཏོང་བའི་རེའུ་མིག</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2859"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1312"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2836"/>
         <source>Miracast</source>
-        <translation>སྨི་ལ་ཁ་སི་ཐེ།</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2306"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2308"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2287"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2289"/>
         <source>Exit fullscreen</source>
         <translation>ཡོལ་གང་ལས་ཕྱིར་འཐེན་པ།</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2402"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2404"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2383"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2385"/>
         <source>Pause</source>
         <translation>སྐབས་སྡོད།</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2467"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2469"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2760"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2448"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2450"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2737"/>
         <source>Play</source>
         <translation>གཏོང་བ།</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2842"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2819"/>
         <source>Volume</source>
-        <translation>རྒྱུགས་ཤོག</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1639,7 +1584,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/toolbutton.cpp" line="19"/>
         <source>Volume</source>
-        <translation>རྒྱུགས་ཤོག</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

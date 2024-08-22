@@ -1,3 +1,9 @@
+deepin-movie-reborn (5.10.51) unstable; urgency=medium
+
+  * merge release 1070. 
+
+ -- muyuanakai <muyuanakai@uniontech.com>  Thu, 22 Aug 2024 16:22:22 +0800
+
 deepin-movie-reborn (5.10.50) unstable; urgency=medium
 
   * fix: Volume greater than 100 cannot be exited.(Bug: 251965)
