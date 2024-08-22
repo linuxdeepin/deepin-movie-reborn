@@ -6,7 +6,6 @@
 #include "config.h"
 #include "compositing_manager.h"
 #include "utils.h"
-#include "dmr_settings.h"
 #ifndef _LIBDMR_
 #include "options.h"
 #endif
@@ -17,7 +16,6 @@
 #include <QtGui>
 #include <QX11Info>
 #include <QDBusInterface>
-#include <DStandardPaths>
 
 #define GLX_GLXEXT_PROTOTYPES
 #include <GL/glx.h>
@@ -163,33 +161,6 @@ CompositingManager::CompositingManager()
         qInfo() << __func__ << "Composited is " << _composited;
         return;
     }
-
-    QString settingPath = DStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
-    settingPath += "/config.conf";
-    QFile file(settingPath);
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream in(&file);
-        QString line;
-        while (!in.atEnd()) {
-            line = in.readLine();
-            if (line.contains("[base.decode.Effect]")) {
-                line = in.readLine();
-                int index = line.indexOf("value=");
-                if (index != -1) {
-                    QString value = line.mid(index + 6); // 6 is the length of "value="
-                    value = value.trimmed(); // Remove leading and trailing whitespace
-                    file.close();
-                    if (value.toInt() != 0) {
-                        _composited = value.toInt() == 1 ? true : false;
-                        m_pMpvConfig = new QMap<QString, QString>;
-                        utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);
-                        return;
-                    }
-                }
-            }
-        }
-    }
-    file.close();
 
     _composited = true;
 #if defined (_MOVIE_USE_)
@@ -350,8 +321,11 @@ bool CompositingManager::isMpvExists()
     QDir dir;
     QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
     dir.setPath(path);
-    static QStringList list = dir.entryList(QStringList() << (QString("libmpv.so") + "*"), QDir::NoDotAndDotDot | QDir::Files);
-    return !list.isEmpty();
+    static QStringList list = dir.entryList(QStringList() << (QString("libmpv.so.1") + "*"), QDir::NoDotAndDotDot | QDir::Files);
+    if (list.contains("libmpv.so.1")) {
+        return true;
+    }
+    return false;
 }
 
 bool CompositingManager::isZXIntgraphics() const

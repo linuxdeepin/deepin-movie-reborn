@@ -34,8 +34,6 @@ typedef AVCodec *(*mvideo_avcodec_find_decoder)(enum AVCodecID id);
 typedef const char *(*mvideo_av_get_media_type_string)(enum AVMediaType media_type);
 typedef AVCodecContext *(*mvideo_avcodec_alloc_context3)(const AVCodec *codec);
 typedef int (*mvideo_avcodec_parameters_to_context)(AVCodecContext *codec, const AVCodecParameters *par);
-typedef int (*mvideo_avcodec_open2)(AVCodecContext *avctx, const AVCodec *codec, AVDictionary **options);
-typedef void (*mvideo_avcodec_free_context)(AVCodecContext **avctx);
 
 video_thumbnailer *m_video_thumbnailer = nullptr;
 image_data *m_image_data = nullptr;
@@ -65,8 +63,6 @@ mvideo_avcodec_find_decoder g_mvideo_avcodec_find_decoder = nullptr;
 mvideo_av_get_media_type_string g_mvideo_av_get_media_type_string = nullptr;
 mvideo_avcodec_alloc_context3 g_mvideo_avcodec_alloc_context3 = nullptr;
 mvideo_avcodec_parameters_to_context g_mvideo_avcodec_parameters_to_context = nullptr;
-mvideo_avcodec_open2 g_mvideo_avcodec_open2 = nullptr;
-mvideo_avcodec_free_context g_mvideo_avcodec_free_context = nullptr;
 
 namespace dmr {
 QDataStream &operator<< (QDataStream &st, const MovieInfo &mi)
@@ -333,15 +329,8 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         } else {
             mi.proportion = 0;
         }
-
-        AVCodecContext *codec_context = g_mvideo_avcodec_alloc_context3(NULL);
-        g_mvideo_avcodec_parameters_to_context(codec_context, video_dec_ctx);
-        AVCodec *videoCodec = g_mvideo_avcodec_find_decoder(video_dec_ctx->codec_id);
-        if (g_mvideo_avcodec_open2(codec_context, videoCodec, 0) > 0) {
-            //用唯一的文件名绑定对应视频的对应pix_fmt值
-            setProperty(fi.filePath().toUtf8(), codec_context->pix_fmt);
-        }
-        g_mvideo_avcodec_free_context(&codec_context);
+        //用唯一的文件名绑定对应视频的对应pix_fmt值
+        setProperty(fi.filePath().toUtf8(), videoStream->codec->pix_fmt);
     }
     if (audioRet >= 0) {
         int audio_stream_index = -1;
@@ -542,8 +531,6 @@ void PlaylistModel::initFFmpeg()
     g_mvideo_av_get_media_type_string = (mvideo_av_get_media_type_string) avutilLibrary.resolve("av_get_media_type_string");
     g_mvideo_avcodec_alloc_context3 = (mvideo_avcodec_alloc_context3) avcodecLibrary.resolve("avcodec_alloc_context3");
     g_mvideo_avcodec_parameters_to_context = (mvideo_avcodec_parameters_to_context) avcodecLibrary.resolve("avcodec_parameters_to_context");
-    g_mvideo_avcodec_open2 = (mvideo_avcodec_open2)(avcodecLibrary.resolve("avcodec_open2"));
-    g_mvideo_avcodec_free_context = (mvideo_avcodec_free_context)(avcodecLibrary.resolve("avcodec_free_context"));
 
     m_initFFmpeg = true;
 }

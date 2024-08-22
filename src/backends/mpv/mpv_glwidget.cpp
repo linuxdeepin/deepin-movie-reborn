@@ -34,11 +34,6 @@ DWIDGET_USE_NAMESPACE
 #endif
 
 static const char *vs_blend = R"(
-#ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
-precision mediump float;
-#endif
 attribute vec2 position;
 attribute vec2 vTexCoord;
 
@@ -51,11 +46,6 @@ void main() {
 )";
 
 static const char* fs_blend = R"(
-#ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
-precision mediump float;
-#endif
 varying vec2 texCoord;
 
 uniform sampler2D movie;
@@ -67,8 +57,6 @@ void main() {
 
 static const char* fs_blend_wayland = R"(
 #ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
 precision mediump float;
 #endif
 varying vec2 texCoord;
@@ -81,11 +69,6 @@ void main() {
 )";
 
 static const char* vs_blend_corner = R"(
-#ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
-precision mediump float;
-#endif
 attribute vec2 position;
 attribute vec2 maskTexCoord;
 attribute vec2 vTexCoord;
@@ -101,11 +84,6 @@ void main() {
 )";
 
 static const char* fs_blend_corner = R"(
-#ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
-precision mediump float;
-#endif
 varying vec2 maskCoord;
 varying vec2 texCoord;
 
@@ -119,8 +97,6 @@ void main() {
 
 static const char* fs_blend_corner_wayland = R"(
 #ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
 precision mediump float;
 #endif
 varying vec2 maskCoord;
@@ -135,12 +111,6 @@ void main() {
 )";
 
 static const char* vs_code = R"(
-#ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
-precision mediump float;
-#endif
-
 attribute vec2 position;
 attribute vec2 vTexCoord;
 
@@ -153,11 +123,6 @@ void main() {
 )";
 
 static const char* fs_code = R"(
-#ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
-precision mediump float;
-#endif
 varying vec2 texCoord;
 
 uniform sampler2D sampler;
@@ -171,8 +136,6 @@ void main() {
 
 static const char* fs_code_wayland = R"(
 #ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
 precision mediump float;
 #endif
 varying vec2 texCoord;
@@ -187,11 +150,6 @@ void main() {
 )";
 
 static const char* fs_corner_code = R"(
-#ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
-precision mediump float;
-#endif
 varying vec2 texCoord;
 
 uniform sampler2D corner;
@@ -205,8 +163,6 @@ void main() {
 
 static const char* fs_corner_code_wayland = R"(
 #ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
 precision mediump float;
 #endif
 varying vec2 texCoord;
@@ -1072,7 +1028,7 @@ namespace dmr {
     void MpvGLWidget::initMpvFuns()
     {
         qInfo() << "MpvGLWidget开始initMpvFuns";
-        QLibrary mpvLibrary(libPath("libmpv.so"));
+        QLibrary mpvLibrary(libPath("libmpv.so.1"));
         m_callback = reinterpret_cast<mpv_render_contextSet_update_callback>(mpvLibrary.resolve("mpv_render_context_set_update_callback"));
         m_context_report = reinterpret_cast<mpv_render_contextReport_swap>(mpvLibrary.resolve("mpv_render_context_report_swap"));
         m_renderContex = reinterpret_cast<mpv_renderContext_free>(mpvLibrary.resolve("mpv_render_context_free"));
