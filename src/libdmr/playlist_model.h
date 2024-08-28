@@ -8,14 +8,14 @@
 #include <QtWidgets>
 //#include <QtConcurrent>
 #include <DApplicationHelper>
-
+#include <DGuiApplicationHelper>
 #include "utils.h"
 #include <QNetworkReply>
 #include <QMutex>
 
 #define THUMBNAIL_SIZE 500
 #define SEEK_TIME "00:00:01"
-
+DGUI_USE_NAMESPACE
 namespace dmr {
 class PlayerEngine;
 class LoadThread;
