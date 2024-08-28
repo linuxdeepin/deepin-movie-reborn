@@ -151,6 +151,127 @@ static QString ElideText(const QString &sText, const QSize &size,
     return sElideText;
 }
 
+static QWidget *createDecodeOptionHandle(QObject *pObj)
+{
+    DSettingsOption *pSettingOption = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(pObj);
+    QWidget *mianWidget = new QWidget;
+    QComboBox *combobox = new QComboBox;
+    QHBoxLayout *pLayout = new QHBoxLayout;
+
+    combobox->addItems(pSettingOption->data("items").toStringList());
+    mianWidget->setLayout(pLayout);
+    pLayout->addStretch();
+    pLayout->addWidget(combobox);
+    combobox->setFixedWidth(245);
+    combobox->setCurrentIndex(pSettingOption->value().toInt());
+
+    QWidget *pOptionWidget = new QWidget;
+    pOptionWidget->setObjectName("decodeOptionFrame");
+
+    QFormLayout *pOptionLayout = new QFormLayout(pOptionWidget);
+    pOptionLayout->setContentsMargins(0, 0, 0, 0);
+    pOptionLayout->setSpacing(0);
+
+    mianWidget->setMinimumWidth(240);
+    pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mianWidget);
+
+    pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value) {
+        if (dataType == "items") {
+            combobox->clear();
+            combobox->addItems(value.toStringList());
+        }
+    });
+
+    pSettingOption->connect(combobox, &QComboBox::currentTextChanged, [=](const QString &) {
+        pSettingOption->setValue(combobox->currentIndex());
+    });
+
+    return pOptionWidget;
+}
+
+static QWidget *createVoOptionHandle(QObject *pObj)
+{
+    DSettingsOption *pSettingOption = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(pObj);
+    QWidget *mianWidget = new QWidget;
+    QComboBox *combobox = new QComboBox;
+    QHBoxLayout *pLayout = new QHBoxLayout;
+
+    combobox->addItems(pSettingOption->data("items").toStringList());
+    mianWidget->setLayout(pLayout);
+    pLayout->addStretch();
+    pLayout->addWidget(combobox);
+    combobox->setFixedWidth(245);
+    combobox->setCurrentIndex(pSettingOption->value().toInt());
+
+    QWidget *pOptionWidget = new QWidget;
+    pOptionWidget->setObjectName("videoOutOptionFrame");
+
+    QFormLayout *pOptionLayout = new QFormLayout(pOptionWidget);
+    pOptionLayout->setContentsMargins(0, 0, 0, 0);
+    pOptionLayout->setSpacing(0);
+
+    mianWidget->setMinimumWidth(240);
+    pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mianWidget);
+
+    pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value) {
+        if (dataType == "items") {
+            combobox->clear();
+            combobox->addItems(value.toStringList());
+        }
+    });
+
+    pSettingOption->connect(combobox, &QComboBox::currentTextChanged, [=](const QString &) {
+        pSettingOption->setValue(combobox->currentIndex());
+    });
+
+    pSettingOption->connect(pSettingOption, &DSettingsOption::valueChanged, [=](QVariant value) {
+        combobox->setCurrentIndex(value.toInt());
+    });
+
+    return pOptionWidget;
+}
+
+static QWidget *createEffectOptionHandle(QObject *pObj)
+{
+    DSettingsOption *pSettingOption = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(pObj);
+    QWidget *mianWidget = new QWidget;
+    QComboBox *combobox = new QComboBox;
+    QHBoxLayout *pLayout = new QHBoxLayout;
+
+    combobox->addItems(pSettingOption->data("items").toStringList());
+    mianWidget->setLayout(pLayout);
+    pLayout->addStretch();
+    pLayout->addWidget(combobox);
+    combobox->setFixedWidth(245);
+    combobox->setCurrentIndex(pSettingOption->value().toInt());
+
+    QWidget *pOptionWidget = new QWidget;
+    pOptionWidget->setObjectName("effectOptionFrame");
+
+    QFormLayout *pOptionLayout = new QFormLayout(pOptionWidget);
+    pOptionLayout->setContentsMargins(0, 0, 0, 0);
+    pOptionLayout->setSpacing(0);
+
+    mianWidget->setMinimumWidth(240);
+    pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mianWidget);
+
+    pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value) {
+        if (dataType == "items") {
+            combobox->addItems(value.toStringList());
+        }
+    });
+
+    pSettingOption->connect(combobox, &QComboBox::currentTextChanged, [=](const QString &) {
+        pSettingOption->setValue(combobox->currentIndex());
+    });
+
+    pSettingOption->connect(pSettingOption, &DSettingsOption::valueChanged, [=](QVariant value) {
+        combobox->setCurrentIndex(value.toInt());
+    });
+
+    return pOptionWidget;
+}
+
 static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
 {
     DSettingsOption *pSettingOption = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(pObj);
@@ -1035,7 +1156,7 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     qInfo() << "session Path is :" << path;
     connect(dynamic_cast<MpvProxy *>(m_pEngine->getMpvProxy()),&MpvProxy::crashCheck,&Settings::get(),&Settings::crashCheck);
     //解码初始化
-    decodeInit();
+    //decodeInit();
 }
 
 void Platform_MainWindow::setupTitlebar()
@@ -2732,38 +2853,203 @@ void Platform_MainWindow::startBurstShooting()
 
 void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
 {
+    int decodeType = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
+    int decodeMode = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
+    int voMode = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();
+    int effectMode = Settings::get().settings()->getOption("base.decode.Effect").toInt();
+
 #ifndef USE_TEST
     dsd->exec();
-    delete dsd;
 #else
     dsd->setObjectName("DSettingsDialog");
     dsd ->show();
 #endif
-
+    if (Settings::get().settings()->getOption("base.decode.select").toInt() != decodeType &&
+        (Settings::get().settings()->getOption("base.decode.select").toInt() == 3 || decodeType == 3)) {
+        DDialog msgBox;
+        msgBox.setIcon(QIcon(":/resources/icons/warning.svg"));
+        msgBox.setMessage(QObject::tr("The custom decoding method needs to be restarted before it can take effect,\nand whether to restart it?"));
+        msgBox.addButton(tr("Cancel"), DDialog::ButtonType::ButtonNormal);
+        msgBox.addButton(tr("Restart"), true, DDialog::ButtonType::ButtonWarning);
+        msgBox.setOnButtonClickedClose(true);
+        if (msgBox.exec() == 1) {
+            Settings::get().settings()->setOption("set.start.crash", "2");
+            qApp->exit();
+            QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
+        } else {
+            if (decodeType != 3) {
+                Settings::get().settings()->setOption("base.decode.select", decodeType);
+            }
+            Settings::get().settings()->setOption("base.decode.Effect", effectMode);
+            Settings::get().settings()->setOption("base.decode.Decodemode", decodeMode);
+            Settings::get().settings()->setOption("base.decode.Videoout", voMode);
+        }
+    } else {
+        if (decodeType == 3) {
+            int newDecodeMode = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
+            int newVoMode = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();
+            int newEffectMode = Settings::get().settings()->getOption("base.decode.Effect").toInt();
+            if (newEffectMode != effectMode || newVoMode != voMode || newDecodeMode != decodeMode) {
+                Settings::get().crashCheck();
+                DDialog msgBox;
+                msgBox.setIcon(QIcon(":/resources/icons/warning.svg"));
+                msgBox.setMessage(QObject::tr("The custom decoding method needs to be restarted before it can take effect,\nand whether to restart it?"));
+                msgBox.addButton(tr("Cancel"), DDialog::ButtonType::ButtonNormal);
+                msgBox.addButton(tr("Restart"), true, DDialog::ButtonType::ButtonWarning);
+                msgBox.setOnButtonClickedClose(true);
+                if (msgBox.exec() == 1) {
+                    Settings::get().settings()->setOption("set.start.crash", "2");
+                    qApp->exit();
+                    QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
+                } else {
+                    if (decodeType != 3) {
+                        Settings::get().settings()->setOption("base.decode.select", decodeMode);
+                    }
+                    Settings::get().settings()->setOption("base.decode.Effect", effectMode);
+                    Settings::get().settings()->setOption("base.decode.Decodemode", decodeMode);
+                    Settings::get().settings()->setOption("base.decode.Videoout", voMode);
+                }
+            }
+        }
+    }
     Settings::get().settings()->sync();
 }
 
 DSettingsDialog *Platform_MainWindow::initSettings()
 {
-    DSettingsDialog *pDSettingDilog = new DSettingsDialog(this);
-    pDSettingDilog->widgetFactory()->registerWidget("selectableEdit", createSelectableLineEditOptionHandle);
+    if (m_pDSettingDilog)
+        return m_pDSettingDilog;
+    m_pDSettingDilog = new DSettingsDialog(this);
+    m_pDSettingDilog->widgetFactory()->registerWidget("selectableEdit", createSelectableLineEditOptionHandle);
+    m_pDSettingDilog->widgetFactory()->registerWidget("effectCombobox", createEffectOptionHandle);
+    m_pDSettingDilog->widgetFactory()->registerWidget("videoOutCombobox", createVoOptionHandle);
+    m_pDSettingDilog->widgetFactory()->registerWidget("decoderCombobox", createDecodeOptionHandle);
 
-    pDSettingDilog->setProperty("_d_QSSThemename", "dark");
-    pDSettingDilog->setProperty("_d_QSSFilename", "DSettingsDialog");
-    pDSettingDilog->updateSettings(Settings::get().settings());
+    m_pDSettingDilog->setProperty("_d_QSSThemename", "dark");
+    m_pDSettingDilog->setProperty("_d_QSSFilename", "DSettingsDialog");
+    m_pDSettingDilog->updateSettings(Settings::get().settings());
 
     //hack:
-    QSpinBox *pSpinBox = pDSettingDilog->findChild<QSpinBox *>("OptionDSpinBox");
+    QSpinBox *pSpinBox = m_pDSettingDilog->findChild<QSpinBox *>("OptionDSpinBox");
     if (pSpinBox) {
         pSpinBox->setMinimum(8);
     }
 
     // hack: reset is set to default by QDialog, which makes lineedit's enter
     // press is responded by reset button
-    QPushButton *pPushButton = pDSettingDilog->findChild<QPushButton *>("SettingsContentReset");
+    QPushButton *pPushButton = m_pDSettingDilog->findChild<QPushButton *>("SettingsContentReset");
     pPushButton->setDefault(false);
     pPushButton->setAutoDefault(false);
-    return pDSettingDilog;
+
+    int decodeType = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
+    if (decodeType != 3) {
+        QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
+        QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
+        QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+        dynamic_cast<QWidget*>(effectFrame->parent())->hide();
+        dynamic_cast<QWidget*>(videoFrame->parent())->hide();
+        dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
+    } else {
+        int effectIndex = Settings::get().settings()->getOption(QString("base.decode.Effect")).toInt();
+        if (effectIndex == 0) {
+            QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
+            dynamic_cast<QWidget*>(videoFrame->parent())->hide();
+            QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+            dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
+        } else if (effectIndex == 1) {
+            QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
+            dynamic_cast<QWidget*>(videoFrame->parent())->show();
+            QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+            dynamic_cast<QWidget*>(decodeFrame->parent())->show();
+        } else {
+            QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
+            dynamic_cast<QWidget*>(videoFrame->parent())->show();
+            QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+            if (Settings::get().settings()->getOption("base.decode.Videoout").toInt() == 0  &&
+                Settings::get().settings()->getOption("base.decode.Effect").toInt() == 2) {
+                dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
+            } else
+                dynamic_cast<QWidget*>(decodeFrame->parent())->show();
+        }
+    }
+
+    connect(&Settings::get(), &Settings::setDecodeModel, this, [=](QString key, QVariant value){\
+            if (key == "base.decode.select" && value.toInt() == 3){
+                DDialog msgBox;
+                msgBox.setIcon(QIcon(":/resources/icons/warning.svg"));
+                msgBox.setTitle(tr("Professional mode is only for professionals to use"));
+                msgBox.setMessage(tr("During the adaptation process, there may be issues such as screen distortion, freezing, stuttering, torn images, \n"
+                                     "unsynchronized audio and video, and player crashes. Please use with caution."));
+                msgBox.addButton(tr("OK"), true, DDialog::ButtonType::ButtonRecommend);
+                msgBox.setOnButtonClickedClose(true);
+                msgBox.exec();
+            }
+            if (key == "base.decode.select") {
+                int decodeType = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
+                if (decodeType != 3) {
+                    QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
+                    QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
+                    QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+                    dynamic_cast<QWidget*>(effectFrame->parent())->hide();
+                    dynamic_cast<QWidget*>(videoFrame->parent())->hide();
+                    dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
+                } else {
+                    QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
+                    dynamic_cast<QWidget*>(effectFrame->parent())->show();
+                    int effectIndex = Settings::get().settings()->getOption(QString("base.decode.Effect")).toInt();
+                    if (effectIndex == 0) {
+                        QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
+                        dynamic_cast<QWidget*>(videoFrame->parent())->hide();
+                        QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+                        dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
+                    } else {
+                        QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
+                        dynamic_cast<QWidget*>(videoFrame->parent())->show();
+                        QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+                        if (Settings::get().settings()->getOption("base.decode.Videoout").toInt() == 0 &&
+                            Settings::get().settings()->getOption("base.decode.Effect").toInt() == 2)
+                            dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
+                        else
+                            dynamic_cast<QWidget*>(decodeFrame->parent())->show();
+                    }
+                }
+            }
+        }, Qt::DirectConnection);
+
+    connect(&Settings::get(), &Settings::baseChanged, this, [=](QString key, QVariant value) {
+            int visable = value.toInt();
+            if (key == "base.decode.Effect") {
+                if (visable == 0) {
+                    QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
+                    dynamic_cast<QWidget*>(videoFrame->parent())->hide();
+                    QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+                    dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
+                } else {
+                    if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == 3) {
+                        QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
+                        dynamic_cast<QWidget*>(videoFrame->parent())->show();
+                        if (Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt() != 0 || visable == 1) {
+                            QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+                            dynamic_cast<QWidget*>(decodeFrame->parent())->show();
+                        } else {
+                            QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+                            dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
+                        }
+                    }
+                }
+            } else if (key == "base.decode.Videoout") {
+                int eff = Settings::get().settings()->getOption("base.decode.Effect").toInt();
+                if (visable || eff == 1) {
+                    QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+                    dynamic_cast<QWidget*>(decodeFrame->parent())->show();
+                } else {
+                    QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+                    dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
+                }
+            }
+        }, Qt::DirectConnection);
+
+    return m_pDSettingDilog;
 }
 
 void Platform_MainWindow::play(const QList<QString> &listFiles)
@@ -3072,7 +3358,7 @@ void Platform_MainWindow::onSetDecodeModel(const QString &key, const QVariant &v
     Q_UNUSED(key);
     MpvProxy* pMpvProxy = nullptr;
     pMpvProxy = dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy());
-    if(pMpvProxy)
+    if(pMpvProxy && value.toInt() != 3)
         pMpvProxy->setDecodeModel(value);
 }
 
@@ -3338,6 +3624,8 @@ void Platform_MainWindow::closeEvent(QCloseEvent *pEvent)
         qInfo() << "uninhibit cookie" << m_nLastCookie;
         m_nLastCookie = 0;
     }
+
+    Settings::get().onSetCrash();
 
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
         int nCur = 0;

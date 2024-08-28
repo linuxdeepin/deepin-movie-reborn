@@ -21,7 +21,7 @@
 #include <DButtonBox>
 #include <QDBusInterface>
 #include <QDBusReply>
-
+#include <QTimer>
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
