@@ -94,8 +94,8 @@ Settings::Settings()
                     voFamily->setData("items", QStringList() << "OpenGL");
                     auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
                     if (decodeFamily) {
-                         qDebug() << "Setting decode mode items for OpenGL effect.";
-                         decodeFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy");
+                        qDebug() << "Setting decode mode items for OpenGL effect.";
+                        decodeFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy");
                     }
                 }
             } else if (index == 2) {
@@ -104,8 +104,8 @@ Settings::Settings()
                     if (voFamily->value().toInt() == 0) {
                         auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
                         if (decodeFamily) {
-                             qDebug() << "Video output is 0 and effect is 2. Clearing decode mode items.";
-                             decodeFamily->setData("items", QStringList());
+                            qDebug() << "Video output is 0 and effect is 2. Clearing decode mode items.";
+                            decodeFamily->setData("items", QStringList());
                         }
                     }
                     qDebug() << "Setting video output options for effect 2.";
@@ -139,7 +139,13 @@ Settings::Settings()
                 qDebug() << "Setting decode mode items for xv/x11 video output.";
             } else {
                 if (decodeFamily)
-                    decodeFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy" << "nvdec" << "nvdec-copy" << "rkmpp");
+                    decodeFamily->setData("items", QStringList() << "vaapi"
+                                                                 << "vaapi-copy"
+                                                                 << "vdpau"
+                                                                 << "vdpau-copy"
+                                                                 << "nvdec"
+                                                                 << "nvdec-copy"
+                                                                 << "rkmpp");
                 qDebug() << "Setting default decode mode items for other video output.";
             }
             emit baseChanged(key, value);
@@ -224,8 +230,18 @@ Settings::Settings()
     } else {
         qDebug() << "X11 environment detected. Configuring video output and decode mode options.";
         QStringList hwdecList, voList;
-        hwdecList << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy" << "nvdec" << "nvdec-copy" << "rkmpp";
-        voList << "gpu" << "vaapi" << "vdpau" << "xv" << "x11";
+        hwdecList << "vaapi"
+                  << "vaapi-copy"
+                  << "vdpau"
+                  << "vdpau-copy"
+                  << "nvdec"
+                  << "nvdec-copy"
+                  << "rkmpp";
+        voList << "gpu"
+               << "vaapi"
+               << "vdpau"
+               << "xv"
+               << "x11";
         int effectIndex = m_pSettings->getOption("base.decode.Effect").toInt();
         qDebug() << "X11: Current effectIndex:" << effectIndex;
         auto hwdecFamily = m_pSettings->option("base.decode.Decodemode");
@@ -250,31 +266,49 @@ Settings::Settings()
             auto voFamily = m_pSettings->option("base.decode.Videoout");
             if (voFamily) {
                 qDebug() << "X11: Setting video output options for standard effect mode.";
-                voFamily->setData("items", QStringList() << "" << "gpu" << "vaapi" << "vdpau" << "xv" << "x11");
+                voFamily->setData("items", QStringList() << ""
+                                                         << "gpu"
+                                                         << "vaapi"
+                                                         << "vdpau"
+                                                         << "xv"
+                                                         << "x11");
             } else {
                 qWarning() << "X11: Video output family option not found for standard effect mode!";
             }
             int voValue = m_pSettings->getOption("base.decode.Videoout").toInt();
-            if (voValue > 0) {
+            if (voValue != 0) {
                 auto videoFamily = m_pSettings->option("base.decode.Videoout");
                 QString vo = videoFamily.data()->data("items").toStringList().at(voValue);
                 qDebug() << "X11: Configuring decode options for video output:" << vo;
 
                 if (vo.contains("vaapi")) {
-                    if (hwdecFamily)
-                        hwdecFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy");
+                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                    if (decodeFamily)
+                        decodeFamily->setData("items", QStringList() << "vaapi"
+                                                                     << "vaapi-copy");
                     qDebug() << "X11: Setting decode mode items for vaapi video output.";
                 } else if (vo.contains("vdpau")) {
-                    if (hwdecFamily)
-                        hwdecFamily->setData("items", QStringList() << "vdpau" << "vdpau-copy");
+                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                    if (decodeFamily)
+                        decodeFamily->setData("items", QStringList() << "vdpau"
+                                                                     << "vdpau-copy");
                     qDebug() << "X11: Setting decode mode items for vdpau video output.";
                 } else if (vo.contains("xv") || vo.contains("x11")) {
-                    if (hwdecFamily)
-                        hwdecFamily->setData("items", QStringList() << "vdpau" << "vdpau-copy");
+                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                    if (decodeFamily)
+                        decodeFamily->setData("items", QStringList() << "vdpau"
+                                                                     << "vdpau-copy");
                     qDebug() << "X11: Setting decode mode items for xv/x11 video output.";
                 } else {
-                    if (hwdecFamily)
-                        hwdecFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy" << "nvdec" << "nvdec-copy" << "rkmpp");
+                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                    if (decodeFamily)
+                        decodeFamily->setData("items", QStringList() << "vaapi"
+                                                                     << "vaapi-copy"
+                                                                     << "vdpau"
+                                                                     << "vdpau-copy"
+                                                                     << "nvdec"
+                                                                     << "nvdec-copy"
+                                                                     << "rkmpp");
                     qDebug() << "X11: Setting default decode mode items for other video output.";
                 }
             } else {

@@ -1260,7 +1260,7 @@ MainWindow::MainWindow(QWidget *parent)
         });
     }
     //解码初始化
-   decodeInit();
+    //decodeInit();
 }
 
 void MainWindow::setupTitlebar()
@@ -3279,14 +3279,7 @@ void MainWindow::handleSettings(DSettingsDialog *dsd)
     dsd ->show();
 #endif
 
-    static QEventLoop loop;
-    QFileSystemWatcher fileWatcher;
-    fileWatcher.addPath(Settings::get().configPath());
-    connect(&fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](){
-        loop.quit();
-    });
-    if (Settings::get().settings()->getOption("base.decode.select").toInt() != decodeType &&
-            (Settings::get().settings()->getOption("base.decode.select").toInt() == 3 || decodeType == 3)) {
+    if (Settings::get().settings()->getOption("base.decode.select").toInt() != decodeType && (Settings::get().settings()->getOption("base.decode.select").toInt() == 3 || decodeType == 3)) {
         qWarning() << "Custom decoding method change detected, restart required";
         DDialog msgBox;
         msgBox.setIcon(QIcon(":/resources/icons/warning.svg"));
@@ -3296,21 +3289,14 @@ void MainWindow::handleSettings(DSettingsDialog *dsd)
         msgBox.setOnButtonClickedClose(true);
         if (msgBox.exec() == 1) {
             qDebug() << "msgBox exec =1";
-            if (Settings::get().settings()->getOption("base.decode.select").toInt() != 3) {
-                Settings::get().settings()->setOption("base.decode.Decodemode", 0);
-                Settings::get().settings()->setOption("base.decode.Videoout", 0);
-                Settings::get().settings()->setOption("base.decode.Effect", 0);
-            }
-            Settings::get().settings()->setOption(QString("set.start.crash"), 2);
-            Settings::get().settings()->sync();
-            loop.exec();
-            qDebug() << "qApp->exit(2)";
-            qApp->exit(2);
+            Settings::get().settings()->setOption("set.start.crash", "2");
+            qApp->exit();
+            QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
         } else {
             qDebug() << "msgBox exec !=1";
             if (decodeType != 3) {
                 qDebug() << "decodeType != 3";
-                Settings::get().settings()->setOption("base.decode.select", decodeMode);
+                Settings::get().settings()->setOption("base.decode.select", decodeType);
             }
             Settings::get().settings()->setOption("base.decode.Decodemode", decodeMode);
             Settings::get().settings()->setOption("base.decode.Videoout", voMode);
@@ -3329,11 +3315,10 @@ void MainWindow::handleSettings(DSettingsDialog *dsd)
                 msgBox.addButton(tr("Restart"), true, DDialog::ButtonType::ButtonWarning);
                 msgBox.setOnButtonClickedClose(true);
                 if (msgBox.exec() == 1) {
-                    Settings::get().settings()->setOption(QString("set.start.crash"), 2);
-                    Settings::get().settings()->sync();
-                    loop.exec();
+                    Settings::get().settings()->setOption("set.start.crash", "2");
                     qDebug() << "msgBox exec !=1, decodeType == 3, qApp->exit(2)";
-                    qApp->exit(2);
+                    qApp->exit();
+                    QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
                 } else {
                     qDebug() << "msgBox exec !=1, decodeType == 3";
                     if (decodeType != 3) {
@@ -3455,7 +3440,11 @@ DSettingsDialog *MainWindow::initSettings()
                 qDebug() << "decodeType == 3";
                 if (utils::check_wayland_env()) {
                     qDebug() << "utils::check_wayland_env()";
+                    QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
+                    QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
                     QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
+                    dynamic_cast<QWidget*>(effectFrame->parent())->hide();
+                    dynamic_cast<QWidget*>(videoFrame->parent())->hide();
                     dynamic_cast<QWidget*>(decodeFrame->parent())->show();
                 } else {
                     qDebug() << "!utils::check_wayland_env()";
@@ -4304,6 +4293,7 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
         m_nLastCookie = 0;
     }
 
+    Settings::get().onSetCrash();
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
         qDebug() << "Settings::get().isSet(Settings::ResumeFromLast)";
         int nCur = 0;

@@ -1687,12 +1687,12 @@ void MpvProxy::refreshDecode()
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
 #ifndef _LIBDMR_
-    if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == 3) {
-        int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
-        auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
-        QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
-        decodeMode = decodeMode.isEmpty() ? "auto" : decodeMode;
-        m_pConfig->insert("hwdec", decodeMode);
+        if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == 3) {
+            int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
+            auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
+            QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
+            decodeMode = decodeMode.isEmpty() ? "auto" : decodeMode;
+            m_pConfig->insert("hwdec", decodeMode);
 
             if (!CompositingManager::get().composited()) {
                 int voIndex = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();

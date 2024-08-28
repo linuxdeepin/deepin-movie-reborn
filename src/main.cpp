@@ -387,6 +387,14 @@ int main(int argc, char *argv[])
     Dtk::Core::DLogManager::registerFileAppender();
     qInfo() << "File logging initialized at:" << Dtk::Core::DLogManager::getlogFilePath();
 
+    if (dmr::Settings::get().settings()->getOption("set.start.crash").toInt() == 1) {
+        dmr::Settings::get().settings()->setOption("base.decode.select", 0);
+        dmr::Settings::get().settings()->setOption("base.decode.Decodemode", 0);
+        dmr::Settings::get().settings()->setOption("base.decode.Videoout", 0);
+    }
+
+    dmr::Settings::get().crashCheck();
+
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
     qDebug() << "Singleton mode:" << (singleton ? "enabled" : "disabled");
     QString movieName = "";

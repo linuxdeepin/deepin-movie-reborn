@@ -212,14 +212,14 @@ static QWidget *createDecodeOptionHandle(QObject *pObj)
     mianWidget->setMinimumWidth(240);
     pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mianWidget);
 
-    pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value){
+    pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value) {
         if (dataType == "items") {
             combobox->clear();
             combobox->addItems(value.toStringList());
         }
     });
 
-    pSettingOption->connect(combobox, &QComboBox::currentTextChanged, [=](const QString &){
+    pSettingOption->connect(combobox, &QComboBox::currentTextChanged, [=](const QString &) {
         pSettingOption->setValue(combobox->currentIndex());
     });
 
@@ -252,18 +252,18 @@ static QWidget *createVoOptionHandle(QObject *pObj)
     mianWidget->setMinimumWidth(240);
     pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mianWidget);
 
-    pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value){
+    pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value) {
         if (dataType == "items") {
             combobox->clear();
             combobox->addItems(value.toStringList());
         }
     });
 
-    pSettingOption->connect(combobox, &QComboBox::currentTextChanged, [=](const QString &){
+    pSettingOption->connect(combobox, &QComboBox::currentTextChanged, [=](const QString &) {
         pSettingOption->setValue(combobox->currentIndex());
     });
 
-    pSettingOption->connect(pSettingOption, &DSettingsOption::valueChanged, [=](QVariant value){
+    pSettingOption->connect(pSettingOption, &DSettingsOption::valueChanged, [=](QVariant value) {
         combobox->setCurrentIndex(value.toInt());
     });
 
@@ -296,17 +296,17 @@ static QWidget *createEffectOptionHandle(QObject *pObj)
     mianWidget->setMinimumWidth(240);
     pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mianWidget);
 
-    pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value){
+    pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value) {
         if (dataType == "items") {
             combobox->addItems(value.toStringList());
         }
     });
 
-    pSettingOption->connect(combobox, &QComboBox::currentTextChanged, [=](const QString &){
+    pSettingOption->connect(combobox, &QComboBox::currentTextChanged, [=](const QString &) {
         pSettingOption->setValue(combobox->currentIndex());
     });
 
-    pSettingOption->connect(pSettingOption, &DSettingsOption::valueChanged, [=](QVariant value){
+    pSettingOption->connect(pSettingOption, &DSettingsOption::valueChanged, [=](QVariant value) {
         combobox->setCurrentIndex(value.toInt());
     });
 
@@ -1300,7 +1300,7 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     qInfo() << "session Path is :" << path;
     connect(dynamic_cast<MpvProxy *>(m_pEngine->getMpvProxy()),&MpvProxy::crashCheck,&Settings::get(),&Settings::crashCheck);
     //解码初始化
-    decodeInit();
+    //decodeInit();
     qDebug() << "Platform_MainWindow constructor";
 }
 
@@ -3327,15 +3327,10 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
     dsd ->show();
 #endif
 
-    static QEventLoop loop;
-    QFileSystemWatcher fileWatcher;
-    fileWatcher.addPath(Settings::get().configPath());
-    connect(&fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](){
-        loop.quit();
-    });
     if (Settings::get().settings()->getOption("base.decode.select").toInt() != decodeType &&
             (Settings::get().settings()->getOption("base.decode.select").toInt() == 3 || decodeType == 3)) {
         qDebug() << "Settings::get().settings()->getOption(\"base.decode.select\").toInt() != decodeType";
+
         DDialog msgBox;
         msgBox.setIcon(QIcon(":/resources/icons/warning.svg"));
         msgBox.setMessage(QObject::tr("The custom decoding method needs to be restarted before it can take effect,\nand whether to restart it?"));
@@ -3344,15 +3339,9 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
         msgBox.setOnButtonClickedClose(true);
         if (msgBox.exec() == 1) {
             qDebug() << "msgBox.exec() == 1";
-            if (Settings::get().settings()->getOption("base.decode.select").toInt() != 3) {
-                Settings::get().settings()->setOption("base.decode.Decodemode", 0);
-                Settings::get().settings()->setOption("base.decode.Videoout", 0);
-                Settings::get().settings()->setOption("base.decode.Effect", 0);
-            }
-            Settings::get().settings()->setOption(QString("set.start.crash"), 2);
-            Settings::get().settings()->sync();
-            loop.exec();
-            qApp->exit(2);
+            Settings::get().settings()->setOption("set.start.crash", "2");
+            qApp->exit();
+            QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
         } else {
             qDebug() << "msgBox.exec() != 1";
             if (decodeType != 3) {
@@ -3381,9 +3370,8 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
                 if (msgBox.exec() == 1) {
                     qDebug() << "msgBox.exec() == 1";
                     Settings::get().settings()->setOption("set.start.crash", "2");
-                    Settings::get().settings()->sync();
-                    loop.exec();
-                    qApp->exit(2);
+                    qApp->exit();
+                    QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
                 } else {
                     qDebug() << "msgBox.exec() != 1";
                     if (decodeType != 3) {
