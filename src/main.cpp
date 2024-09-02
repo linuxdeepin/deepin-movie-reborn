@@ -174,10 +174,7 @@ void killOldMovie()
     qInfo() << "kill old movie process";
     QString processName = "deepin-movie";
 
-    QProcess psProcess;
-    psProcess.start("bash", QStringList() << "-c" << "ps -eo pid,lstart,cmd | grep deepin-movie");
-    psProcess.waitForFinished();
-    QString output = psProcess.readAllStandardOutput();
+    QString output = dmr::utils::runPipeProcess("ps -eo pid,lstart,cmd | grep deepin-movie");
 
     QStringList lines = output.split("\n");
     QStringList earlierProcessPids;
@@ -398,7 +395,6 @@ int main(int argc, char *argv[])
         qDebug() << "Function call option is set.";
         movieName = getFunctionMovieName();
     }
-
     if (singleton && !runSingleInstance()) {
         qDebug() << "Singleton mode enabled and another instance running.";
         if (clm.isSet("restart")) {
@@ -406,6 +402,7 @@ int main(int argc, char *argv[])
             qDebug() << "Restart option is set.";
             sleep(2);
             qDebug() << "Waited for 2 seconds.";
+            qWarning() << "killOldMovie";
             if (!runSingleInstance()) {
                 qWarning() << "Failed to acquire single instance lock - killing old instance";
                 qDebug() << "Failed to acquire single instance lock during restart, killing old movie.";
