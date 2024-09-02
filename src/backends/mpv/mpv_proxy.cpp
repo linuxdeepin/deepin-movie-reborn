@@ -580,35 +580,19 @@ mpv_handle *MpvProxy::mpv_init()
         //TODO(xxxxpengfei)：暂未处理intel集显情况
         if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
             qDebug() << "DEBUG: ZXIntgraphics detected and no Jingjiawei driver. Checking apt policy.";
-            QProcess process;
-            QStringList options;
-            options << "-c" << QString("apt policy cx4-linux-graphics-driver-dri | sed -n \'2p\'");
-            process.start("/bin/bash", options);
-            process.waitForFinished();
-            process.waitForReadyRead();
-
-            QString error = process.readAllStandardError();
-            if (error.isEmpty()) {
-                QString comStr = process.readAllStandardOutput();
-                comStr = comStr.right(3).left(2);
-                int version = comStr.toInt();
-                qDebug() << "DEBUG: apt policy output version:" << version;
-                if (version >= 10) {
-                    my_set_property(pHandle, "vo", "vaapi");
-                    my_set_property(pHandle, "hwdec", "vaapi");
-                    m_sInitVo = "vaapi";
-                    qDebug() << "DEBUG: Version >= 10. Setting vo to vaapi and hwdec to vaapi.";
-                } else {
-                    my_set_property(pHandle, "vo", "gpu");
-                    m_sInitVo = "gpu";
-                    qDebug() << "DEBUG: Version < 10. Setting vo to gpu.";
-                }
-            } else {
-                qWarning() << "WARNING: apt policy process returned error:" << error;
-                my_set_property(pHandle, "vo", "x11,xv");
+            QString comStr = dmr::utils::runPipeProcess("apt policy cx4-linux-graphics-driver-dri | sed -n \'2p\'");
+            comStr = comStr.right(3).left(2);
+            int version = comStr.toInt();
+            qDebug() << "DEBUG: apt policy output version:" << version;
+            if (version >= 10) {
+                my_set_property(pHandle, "vo", "vaapi");
                 my_set_property(pHandle, "hwdec", "vaapi");
-                m_sInitVo = "x11,xv";
-                qDebug() << "DEBUG: Error in apt policy. Setting vo to x11,xv and hwdec to vaapi.";
+                m_sInitVo = "vaapi";
+                qDebug() << "DEBUG: Version >= 10. Setting vo to vaapi and hwdec to vaapi.";
+            } else {
+                my_set_property(pHandle, "vo", "gpu");
+                m_sInitVo = "gpu";
+                qDebug() << "DEBUG: Version < 10. Setting vo to gpu.";
             }
         }
 #endif
@@ -982,10 +966,8 @@ bool isSpecialHWHardware()
         }
 
         if (NotHWDev == s_DevType) {
-            // dmidecode | grep -i "String 4"中的值来区分主板类型,PWC30表示PanguW（也就是W525）
-            process.start("bash", {"-c", "dmidecode -t 11 | grep -i \"String 4\""});
-            process.waitForFinished(100);
-            info = process.readAll();
+            // dmidecode | grep -i “String 4”中的值来区分主板类型,PWC30表示PanguW（也就是W525）
+            info = dmr::utils::runPipeProcess("dmidecode -t 11 | grep -i \"String 4\"");
             if (info.contains("PWC30") || info.contains("PGUX")) {
                 s_DevType = IsHWDev;
             }
