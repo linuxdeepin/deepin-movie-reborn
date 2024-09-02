@@ -64,7 +64,6 @@
 //add by heyi
 //#define _NET_WM_MOVERESIZE_MOVE              8   /* movement only */
 //#define _NET_WM_MOVERESIZE_CANCEL           11   /* cancel operation */
-
 #define XATOM_MOVE_RESIZE "_NET_WM_MOVERESIZE"
 #define XDEEPIN_BLUR_REGION "_NET_WM_DEEPIN_BLUR_REGION"
 #define XDEEPIN_BLUR_REGION_ROUNDED "_NET_WM_DEEPIN_BLUR_REGION_ROUNDED"
@@ -2079,13 +2078,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     //                    || result.contains("KLVV", Qt::CaseInsensitive)
     //                    || result.contains("L540", Qt::CaseInsensitive);
 
-            QProcess process;
-            process.start("bash", QStringList() << "-c" << "dmidecode | grep -i \"String 4\"");
-            process.waitForStarted();
-            process.waitForFinished();
-            result = process.readAll();
+
+            result = dmr::utils::runPipeProcess("dmidecode | grep -i \"String 4\"");
             boardVendorFlag = boardVendorFlag || result.contains("PWC30", Qt::CaseInsensitive);    //w525
-            process.close();
+            // process.close();
         }
         qInfo() << "Whether special mini mode is supported? " << boardVendorFlag;
 
@@ -4186,17 +4182,10 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
         }
     } else {
         //通过窗口id查询窗口状态是否置顶，同步右键菜单中的选项状态
-        QProcess above;
-        QStringList options;
-        options << "-c" << QString("xprop -id %1 | grep '_NET_WM_STATE(ATOM)'").arg(winId());
-        above.start("bash", options);
-        if (above.waitForStarted() && above.waitForFinished()) {
-            QString drv = QString::fromUtf8(above.readAllStandardOutput().trimmed().constData());
-            if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
-    //            requestAction(ActionFactory::WindowAbove);
-                m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
-                reflectActionToUI(ActionFactory::WindowAbove);
-            }
+        QString drv = dmr::utils::runPipeProcess(QString("xprop -id %1 | grep '_NET_WM_STATE(ATOM)'").arg(winId()));
+        if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
+            m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
+            reflectActionToUI(ActionFactory::WindowAbove);
         }
     }
 

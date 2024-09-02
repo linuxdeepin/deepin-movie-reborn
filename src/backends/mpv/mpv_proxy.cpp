@@ -435,14 +435,7 @@ mpv_handle *MpvProxy::mpv_init()
         }
         //TODO(xxxxpengfei)：暂未处理intel集显情况
         if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
-            QProcess process;
-            QStringList options;
-            options << "-c" << QString("apt policy cx4-linux-graphics-driver-dri | sed -n \'2p\'");
-            process.start("/bin/bash", options);
-            process.waitForFinished();
-            process.waitForReadyRead();
-
-            QString comStr = process.readAllStandardOutput();
+            QString comStr = dmr::utils::runPipeProcess("apt policy cx4-linux-graphics-driver-dri | sed -n \'2p\'");
             comStr = comStr.right(3).left(2);
             int version = comStr.toInt();
             if (version >= 10) {
@@ -766,9 +759,7 @@ bool isSpecialHWHardware()
 
         if (NotHWDev == s_DevType) {
             // dmidecode | grep -i “String 4”中的值来区分主板类型,PWC30表示PanguW（也就是W525）
-            process.start("bash", {"-c", "dmidecode -t 11 | grep -i \"String 4\""});
-            process.waitForFinished(100);
-            info = process.readAll();
+            info = dmr::utils::runPipeProcess("dmidecode -t 11 | grep -i \"String 4\"");
             if (info.contains("PWC30") || info.contains("PGUX")) {
                 s_DevType = IsHWDev;
             }

@@ -865,20 +865,11 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 
     bool command = false;
     if(m_pEngine->duration() < 300) {
-        QProcess process;
-        process.setProgram("ffmpeg");
-        QStringList options;
-        options << "-c" << QString("ffprobe -v quiet -show_frames %1 | grep \"pict_type=I\" | wc -l").arg(url.toLocalFile());
-        process.start("/bin/bash", options);
-        process.waitForFinished();
-        process.waitForReadyRead();
-
-        QString comStr = process.readAllStandardOutput();
+        QString comStr = dmr::utils::runPipeProcess(QString("ffprobe -v quiet -show_frames %1 | grep \"pict_type=I\" | wc -l").arg(url.toLocalFile()));
         QString str = comStr.trimmed();
         int pictI = str.toInt();
         if (pictI < 5)
             command = true;
-        process.close();
     }
 
     if (command) {
