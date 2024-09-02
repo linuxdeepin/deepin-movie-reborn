@@ -93,19 +93,10 @@ private:
  */
 static bool detect550Series()
 {
-    QProcess pcicheck;
-    pcicheck.start("bash -c \"lspci -nk | grep -i 'in use' -B 2 | grep -iE '1002:699f|1002:6987|6766:3d02' \""); //use vaapi. add adject Glenfly Tech Co., Ltd. Arise1020 [6766:3d02]
-    if (pcicheck.waitForFinished(1000)) {
-        QByteArray readData = pcicheck.readAllStandardOutput();
-        if (!readData.isEmpty()) {
-            qInfo() << qPrintable("Detect 550 series, using vaapi. ") << readData;
-            return true;
-        }
-
-        qInfo() << qPrintable("Detect NOT 550 series, using default.");
-    } else {
-        pcicheck.terminate();
-        qWarning() << qPrintable("Detect 550 series, run lspci -n failed. ") << pcicheck.errorString();
+    QString readData = dmr::utils::runPipeProcess("lspci -nk | grep -i 'in use' -B 2 | grep -iE '1002:699f|1002:6987|6766:3d02'");
+    if (!readData.isEmpty()) {
+        qInfo() << qPrintable("Detect 550 series, using vaapi. ") << readData;
+        return true;
     }
 
     return false;

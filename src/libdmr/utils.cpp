@@ -14,6 +14,23 @@ using namespace std;
 
 static bool isWayland = false;
 
+QString runPipeProcess(QString cmd) {
+    FILE *pPipe = popen(cmd.toUtf8(), "r");
+    QString strData;
+    if (pPipe)
+    {
+        while (!feof(pPipe))
+        {
+            char tempStr[1024] = {0};
+            fgets(tempStr, 1024, pPipe);
+            strData.append(QString::fromLocal8Bit(tempStr));
+        }
+        fclose(pPipe);
+        return strData;
+    }
+    return strData;
+}
+
 void ShowInFileManager(const QString &path)
 {
     if (path.isEmpty() || !QFile::exists(path)) {

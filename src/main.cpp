@@ -147,10 +147,7 @@ void killOldMovie()
 {
     QString processName = "deepin-movie";
 
-    QProcess psProcess;
-    psProcess.start("bash", QStringList() << "-c" << "ps -eo pid,lstart,cmd | grep deepin-movie");
-    psProcess.waitForFinished();
-    QString output = psProcess.readAllStandardOutput();
+    QString output = dmr::utils::runPipeProcess("ps -eo pid,lstart,cmd | grep deepin-movie");
 
     QStringList lines = output.split("\n");
     QStringList earlierProcessPids;
@@ -313,10 +310,10 @@ int main(int argc, char *argv[])
     if (clm.isSet("functioncall")) {
         movieName = getFunctionMovieName();
     }
-
     if (singleton && !runSingleInstance()) {
         if (clm.isSet("restart")) {
             sleep(2);
+            qWarning() << "killOldMovie";
             if (!runSingleInstance()) {
                 killOldMovie();
             }

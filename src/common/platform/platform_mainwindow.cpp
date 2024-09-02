@@ -61,7 +61,6 @@
 //add by heyi
 //#define _NET_WM_MOVERESIZE_MOVE              8   /* movement only */
 //#define _NET_WM_MOVERESIZE_CANCEL           11   /* cancel operation */
-
 #define XATOM_MOVE_RESIZE "_NET_WM_MOVERESIZE"
 #define XDEEPIN_BLUR_REGION "_NET_WM_DEEPIN_BLUR_REGION"
 #define XDEEPIN_BLUR_REGION_ROUNDED "_NET_WM_DEEPIN_BLUR_REGION_ROUNDED"
@@ -4169,16 +4168,10 @@ void Platform_MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
         return;
 
     //通过窗口id查询窗口状态是否置顶，同步右键菜单中的选项状态
-    QProcess above;
-    QStringList options;
-    options << "-c" << QString("xprop -id %1 | grep '_NET_WM_STATE(ATOM)'").arg(winId());
-    above.start("bash", options);
-    if (above.waitForStarted() && above.waitForFinished()) {
-        QString drv = QString::fromUtf8(above.readAllStandardOutput().trimmed().constData());
-        if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
-            m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
-            reflectActionToUI(ActionFactory::WindowAbove);
-        }
+    QString drv = dmr::utils::runPipeProcess(QString("xprop -id %1 | grep '_NET_WM_STATE(ATOM)'").arg(winId()));
+    if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
+        m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
+        reflectActionToUI(ActionFactory::WindowAbove);
     }
 
     if(m_pMircastShowWidget->isVisible() ) {//投屏中屏蔽全屏、迷你模式，置顶菜单
