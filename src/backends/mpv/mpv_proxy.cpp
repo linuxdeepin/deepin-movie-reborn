@@ -610,7 +610,7 @@ mpv_handle *MpvProxy::mpv_init()
             m_sInitVo = "vaapi";
         }
 
-        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default") && !QFile::exists("/dev/mtgpu.0")) {
             qDebug() << "DEBUG: Ctyun clink registry detected. Setting hwdec to no, vo to x11, video-sync to desync, and profile to sw-fast.";
             my_set_property(pHandle, "hwdec", "no");
             my_set_property(pHandle, "vo", "x11");
@@ -690,7 +690,7 @@ mpv_handle *MpvProxy::mpv_init()
             qDebug() << "DEBUG: Loongarch: Specific hardware detected, skipping direct rendering check.";
         }
 #endif
-        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default") && !QFile::exists("/dev/mtgpu.0")) {
             qDebug() << "DEBUG: Ctyun clink registry detected. Setting hwdec to no and vo to x11.";
             my_set_property(pHandle, "hwdec", "no");
             my_set_property(pHandle, "vo", "x11");
@@ -1599,7 +1599,7 @@ void MpvProxy::refreshDecode()
             my_set_property(m_handle, "hwdec", "vaapi");
         }
 
-        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default") && !QFile::exists("/dev/mtgpu.0")) {
             my_set_property(m_handle, "hwdec", "no");
             my_set_property(m_handle, "vo", "x11");
             my_set_property(m_handle, "video-sync", "desync");
@@ -1666,7 +1666,7 @@ void MpvProxy::refreshDecode()
             my_set_property(m_handle, "hwdec", "vaapi");
         }
 
-        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default") && !QFile::exists("/dev/mtgpu.0")) {
             my_set_property(m_handle, "hwdec", "no");
             my_set_property(m_handle, "vo", "x11");
             my_set_property(m_handle, "video-sync", "desync");
