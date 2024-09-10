@@ -174,9 +174,8 @@ void killOldMovie()
     qInfo() << "kill old movie process";
     QString processName = "deepin-movie";
 
-    QString output = dmr::utils::runPipeProcess("ps -eo pid,lstart,cmd | grep deepin-movie");
+    QStringList lines = dmr::utils::runPipeProcess("ps -eo pid,lstart,cmd", "deepin-movie");
 
-    QStringList lines = output.split("\n");
     QStringList earlierProcessPids;
     QDateTime earliestStartTime;
 
