@@ -865,9 +865,8 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 
     bool command = false;
     if(m_pEngine->duration() < 300) {
-        QString comStr = dmr::utils::runPipeProcess(QString("ffprobe -v quiet -show_frames %1 | grep \"pict_type=I\" | wc -l").arg(url.toLocalFile()));
-        QString str = comStr.trimmed();
-        int pictI = str.toInt();
+        QStringList sList = dmr::utils::runPipeProcess(QString("ffprobe -v quiet -show_frames %1").arg(url.toLocalFile()), "pict_type=I");
+        int pictI = sList.count();
         if (pictI < 5)
             command = true;
     }

@@ -14,21 +14,27 @@ using namespace std;
 
 static bool isWayland = false;
 
-QString runPipeProcess(QString cmd) {
-    FILE *pPipe = popen(cmd.toUtf8(), "r");
-    QString strData;
-    if (pPipe)
-    {
-        while (!feof(pPipe))
-        {
-            char tempStr[1024] = {0};
-            fgets(tempStr, 1024, pPipe);
-            strData.append(QString::fromLocal8Bit(tempStr));
-        }
-        fclose(pPipe);
-        return strData;
+QStringList runPipeProcess(const QString &command, const QString &filter)
+{
+    QProcess process;
+    process.start(command);
+    process.waitForFinished();
+
+    QString comStr = process.readAllStandardOutput();
+    QStringList lines = comStr.split('\n');
+    QStringList filteredLines;
+    if(filter.isEmpty()) {
+        return lines; //返回所有
     }
-    return strData;
+    // 过滤包含指定关键字的行
+    for (const QString &line : lines) {
+        if (line.contains(filter, Qt::CaseInsensitive)) {
+            filteredLines.append(line);
+        }
+    }
+
+    // 合并过滤后的行并返回
+    return filteredLines;   // 返回以换行符分隔的字符串
 }
 
 void ShowInFileManager(const QString &path)

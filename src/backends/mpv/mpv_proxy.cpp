@@ -435,16 +435,18 @@ mpv_handle *MpvProxy::mpv_init()
         }
         //TODO(xxxxpengfei)：暂未处理intel集显情况
         if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
-            QString comStr = dmr::utils::runPipeProcess("apt policy cx4-linux-graphics-driver-dri | sed -n \'2p\'");
-            comStr = comStr.right(3).left(2);
-            int version = comStr.toInt();
-            if (version >= 10) {
-                my_set_property(pHandle, "vo", "vaapi");
-                my_set_property(pHandle, "hwdec", "vaapi");
-                m_sInitVo = "vaapi";
-            } else {
-                my_set_property(pHandle, "vo", "gpu");
-                m_sInitVo = "gpu";
+            QStringList sList = dmr::utils::runPipeProcess("apt policy cx4-linux-graphics-driver-dri", "");
+            if(sList.count() > 3) {
+                QString comStr = sList.at(2).right(3).left(2);
+                int version = comStr.toInt();
+                if (version >= 10) {
+                    my_set_property(pHandle, "vo", "vaapi");
+                    my_set_property(pHandle, "hwdec", "vaapi");
+                    m_sInitVo = "vaapi";
+                } else {
+                    my_set_property(pHandle, "vo", "gpu");
+                    m_sInitVo = "gpu";
+                }
             }
         }
 #endif
@@ -759,9 +761,12 @@ bool isSpecialHWHardware()
 
         if (NotHWDev == s_DevType) {
             // dmidecode | grep -i “String 4”中的值来区分主板类型,PWC30表示PanguW（也就是W525）
-            info = dmr::utils::runPipeProcess("dmidecode -t 11 | grep -i \"String 4\"");
-            if (info.contains("PWC30") || info.contains("PGUX")) {
-                s_DevType = IsHWDev;
+            QStringList sList = dmr::utils::runPipeProcess("dmidecode -t 11", "String 4");
+            foreach(info, sList) {
+                if (info.contains("PWC30") || info.contains("PGUX")) {
+                    s_DevType = IsHWDev;
+                    break;
+                }
             }
         }
 

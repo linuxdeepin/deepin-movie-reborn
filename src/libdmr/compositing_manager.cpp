@@ -93,10 +93,14 @@ private:
  */
 static bool detect550Series()
 {
-    QString readData = dmr::utils::runPipeProcess("lspci -nk | grep -i 'in use' -B 2 | grep -iE '1002:699f|1002:6987|6766:3d02'");
-    if (!readData.isEmpty()) {
-        qInfo() << qPrintable("Detect 550 series, using vaapi. ") << readData;
-        return true;
+    QStringList sList = dmr::utils::runPipeProcess("lspci -nk", "");
+    foreach(QString readData, sList) {
+        if(readData.contains("1002:699f") || readData.contains("1002:6987" || readData.contains("6766:3d02"))) {
+            if (!readData.isEmpty()) {
+                qInfo() << qPrintable("Detect 550 series, using vaapi. ") << readData;
+                return true;
+            }
+        }
     }
 
     return false;
