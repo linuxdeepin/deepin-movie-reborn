@@ -55,9 +55,9 @@ QString ElideText(const QString &text, const QSize &size,
 void getPlayProperty(const char *path, QMap<QString, QString> *&proMap);
 /**
  * @brief run cmd
- * @param cmd
+ * @param command filter
  */
-QString runPipeProcess(QString cmd);
+QStringList runPipeProcess(const QString &command, const QString &filter);
 }
 }
 
