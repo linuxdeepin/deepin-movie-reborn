@@ -2079,8 +2079,15 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     //                    || result.contains("L540", Qt::CaseInsensitive);
 
 
-            result = dmr::utils::runPipeProcess("dmidecode | grep -i \"String 4\"");
-            boardVendorFlag = boardVendorFlag || result.contains("PWC30", Qt::CaseInsensitive);    //w525
+            QStringList sList = dmr::utils::runPipeProcess("dmidecode", "String 4");
+            bool bFind = false;
+            foreach(QString str, sList){
+                if(result.contains("PWC30", Qt::CaseInsensitive)) {
+                    bFind = true;
+                    break;
+                }
+            }
+            boardVendorFlag = boardVendorFlag || bFind;    //w525
             // process.close();
         }
         qInfo() << "Whether special mini mode is supported? " << boardVendorFlag;
@@ -4182,10 +4189,13 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
         }
     } else {
         //通过窗口id查询窗口状态是否置顶，同步右键菜单中的选项状态
-        QString drv = dmr::utils::runPipeProcess(QString("xprop -id %1 | grep '_NET_WM_STATE(ATOM)'").arg(winId()));
-        if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
-            m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
-            reflectActionToUI(ActionFactory::WindowAbove);
+        QStringList sResult = dmr::utils::runPipeProcess(QString("xprop -id %1").arg(winId()), "_NET_WM_STATE(ATOM)");
+        foreach (QString drv, sResult) {
+            if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
+                m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
+                reflectActionToUI(ActionFactory::WindowAbove);
+                break;
+            }
         }
     }
 

@@ -4168,10 +4168,13 @@ void Platform_MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
         return;
 
     //通过窗口id查询窗口状态是否置顶，同步右键菜单中的选项状态
-    QString drv = dmr::utils::runPipeProcess(QString("xprop -id %1 | grep '_NET_WM_STATE(ATOM)'").arg(winId()));
-    if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
-        m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
-        reflectActionToUI(ActionFactory::WindowAbove);
+    QStringList sList = dmr::utils::runPipeProcess(QString("xprop -id %1").arg(winId()), "_NET_WM_STATE(ATOM)");
+    foreach(QString drv, sList) {
+        if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
+            m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
+            reflectActionToUI(ActionFactory::WindowAbove);
+            break;
+        }
     }
 
     if(m_pMircastShowWidget->isVisible() ) {//投屏中屏蔽全屏、迷你模式，置顶菜单
