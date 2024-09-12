@@ -105,6 +105,7 @@ signals:
     void compositingChanged(bool);
 public:
     static bool m_bCanHwdec;//是否支持硬解，true支持，false不支持
+    static bool m_hasMpv;//是否存在mpv库
 private:
     CompositingManager();
     bool isDriverLoadedCorrectly();

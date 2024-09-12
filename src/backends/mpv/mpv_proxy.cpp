@@ -10,6 +10,7 @@
 #include "compositing_manager.h"
 #include "player_engine.h"
 #include "hwdec_probe.h"
+#include "sysutils.h"
 
 #ifndef _LIBDMR_
 #include "dmr_settings.h"
@@ -139,7 +140,7 @@ void MpvProxy::setDecodeModel(const QVariant &value)
 
 void MpvProxy::initMpvFuns()
 {
-    QLibrary mpvLibrary(libPath("libmpv.so"));
+    QLibrary mpvLibrary(SysUtils::libPath("libmpv.so"));
 
     m_waitEvent = reinterpret_cast<mpv_waitEvent>(mpvLibrary.resolve("mpv_wait_event"));
     m_setOptionString = reinterpret_cast<mpv_set_optionString>(mpvLibrary.resolve("mpv_set_option_string"));
@@ -159,12 +160,11 @@ void MpvProxy::initMpvFuns()
 
 void MpvProxy::initGpuInfoFuns()
 {
-    QString path = QLibraryInfo::location(QLibraryInfo::LibrariesPath)+ QDir::separator() + "libgpuinfo.so";
-    if(!QFileInfo(path).exists()) {
+    if(!SysUtils::libExist("libgpuinfo.so")) {
         m_gpuInfo = NULL;
         return;
     }
-    QLibrary mpvLibrary(libPath("libgpuinfo.so"));
+    QLibrary mpvLibrary(SysUtils::libPath("libgpuinfo.so"));
     m_gpuInfo = reinterpret_cast<void *>(mpvLibrary.resolve("vdp_Iter_decoderInfo"));
 }
 

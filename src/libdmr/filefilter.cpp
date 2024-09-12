@@ -5,6 +5,7 @@
 
 #include "filefilter.h"
 #include "compositing_manager.h"
+#include "sysutils.h"
 
 #include <iostream>
 #include <functional>
@@ -28,14 +29,14 @@ FileFilter::FileFilter()
     m_pLoop = nullptr;
     m_miType = MediaType::Other;
 
-    QLibrary avformatLibrary(libPath("libavformat.so"));
+    QLibrary avformatLibrary(SysUtils::libPath("libavformat.so"));
 
     g_mvideo_avformat_open_input = (mvideo_avformat_open_input) avformatLibrary.resolve("avformat_open_input");
     g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) avformatLibrary.resolve("avformat_find_stream_info");
     g_mvideo_avformat_close_input = (mvideo_avformat_close_input) avformatLibrary.resolve("avformat_close_input");
 
-    QLibrary gstreamerLibrary(libPath("libgstreamer-1.0.so"));
-    QLibrary gstpbutilsLibrary(libPath("libgstpbutils-1.0.so"));
+    QLibrary gstreamerLibrary(SysUtils::libPath("libgstreamer-1.0.so"));
+    QLibrary gstpbutilsLibrary(SysUtils::libPath("libgstpbutils-1.0.so"));
 
     g_mvideo_gst_init = (mvideo_gst_init) gstreamerLibrary.resolve("gst_init");
     g_mvideo_gst_discoverer_new = (mvideo_gst_discoverer_new) gstpbutilsLibrary.resolve("gst_discoverer_new");
@@ -66,24 +67,6 @@ FileFilter::FileFilter()
     g_signal_connect_data(m_pDiscoverer, "finished",  (GCallback)(finished), m_pLoop, nullptr, GConnectFlags(0));
 
     g_mvideo_gst_discoverer_start(m_pDiscoverer);
-}
-
-QString FileFilter::libPath(const QString &strlib)
-{
-    QDir  dir;
-    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
-    dir.setPath(path);
-    QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
-    if (list.contains(strlib)) {
-        return strlib;
-    } else {
-        list.sort();
-    }
-
-    if(list.size() > 0)
-        return list.last();
-    else
-        return QString();
 }
 
 FileFilter::~FileFilter()
