@@ -7,7 +7,7 @@ project(libdmr_test)
 set(CMAKE_AUTOMOC ON)
 set(CMD_NAME dmr_test)
 
-set(CMAKE_CXX_FLAGS "-std=c++1y -fpermissive -Wno-error")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -fpermissive -Wno-error")
 
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 
@@ -20,7 +20,8 @@ find_package(Qt5DBus)
 find_package(Qt5Svg)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
-pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gstreamer-1.0 glib-2.0)
+pkg_check_modules(Gst REQUIRED IMPORTED_TARGET libffmpegthumbnailer gstreamer-1.0 glib-2.0)
+include_directories(${Gst_INCLUDE_DIRS})
 
 # 定义 source 文件
 FILE (GLOB SRCS
@@ -34,7 +35,7 @@ target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
 target_include_directories(${CMD_NAME} PUBLIC 
     ${PROJECT_SOURCE_DIR}/../../src/libdmr
     ${PROJECT_SOURCE_DIR}
-    /usr/include/glib-2.0 /usr/include/gstreamer-1.0)
+    )
 
 target_link_libraries(${CMD_NAME} Qt5::Widgets dmr)
 

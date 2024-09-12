@@ -5,6 +5,7 @@
 
 
 #include "hwdec_probe.h"
+#include "sysutils.h"
 
 namespace dmr {
 
@@ -82,27 +83,12 @@ bool HwdecProbe::isFileCanHwdec(const QUrl& url, QList<QString>& hwList)
     return hwList.size() > 0;
 }
 
-static QString libPath(const QString &sLib)
-{
-    QDir dir;
-    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
-    dir.setPath(path);
-    QStringList list = dir.entryList(QStringList() << (sLib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
-    if (list.contains(sLib)) {
-        return sLib;
-    } else {
-        list.sort();
-    }
-
-    Q_ASSERT(list.size() > 0);
-    return list.last();
-}
 
 void HwdecProbe::initffmpegInterface()
 {
-    QLibrary avcodecLibrary(libPath("libavcodec.so"));
-    QLibrary avformatLibrary(libPath("libavformat.so"));
-    QLibrary avutilLibrary(libPath("libavutil.so"));
+    QLibrary avcodecLibrary(SysUtils::libPath("libavcodec.so"));
+    QLibrary avformatLibrary(SysUtils::libPath("libavformat.so"));
+    QLibrary avutilLibrary(SysUtils::libPath("libavutil.so"));
 
     m_avHwdeviceCtxCreate  = reinterpret_cast<ffmAvHwdeviceCtxCreate>(avutilLibrary.resolve("av_hwdevice_ctx_create"));
     m_avHwdeviceIterateTypes = reinterpret_cast<ffmAvHwdeviceIterateTypes>(avutilLibrary.resolve("av_hwdevice_iterate_types"));

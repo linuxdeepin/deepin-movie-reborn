@@ -34,7 +34,11 @@ pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
 pkg_check_modules(DBusextended REQUIRED IMPORTED_TARGET dbusextended-qt5)
 pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gobject-2.0)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
-pkg_check_modules(Other REQUIRED  gsettings-qt)
+pkg_check_modules(Other REQUIRED gsettings-qt)
+
+# make linglong build success
+pkg_check_modules(3rd REQUIRED libavformat mpv libavcodec libffmpegthumbnailer gstreamer-1.0 glib-2.0)
+include_directories(${3rd_INCLUDE_DIRS})
 
 qt5_add_resources(RCS ../assets/resources.qrc)
 qt5_add_resources(RCS ../assets/icons/theme-icons.qrc)
@@ -52,7 +56,6 @@ file(GLOB_RECURSE MEDIAPLAYER_SRCS LIST_DIRECTORIES false backends/mediaplayer/*
 list(APPEND SRCS ${MPV_SRCS} ${MEDIAPLAYER_SRCS})
 list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/mpv)
 list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/mediaplayer)
-list(APPEND PROJECT_INCLUDE /usr/include/glib-2.0 /usr/include/gstreamer-1.0)
 #~
 
 set (DTK_SETTINGS_TOOLS_EXECUTABLE ${DTKCORE_TOOL_DIR}/dtk-settings)
@@ -99,7 +102,7 @@ install(FILES ${PROJECT_SOURCE_DIR}/assets/resources/icons/logo-big.svg
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps
     RENAME deepin-movie.svg)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/deepin-movie DESTINATION ${CMAKE_INSTALL_DATADIR}/deepin-manual/manual-assets/application/)
-install(FILES ${PROJECT_SOURCE_DIR}/assets/deepin-movie.json DESTINATION /usr/lib/uos-ai-assistant/functions)
+install(FILES ${PROJECT_SOURCE_DIR}/assets/deepin-movie.json DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/uos-ai-assistant/functions)
 
 #hw机型增加DConfig配置
 set(APPID org.deepin.movie)

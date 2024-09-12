@@ -12,3 +12,7 @@ debian/deepin-movie-reborn/
 debian/files
 
 CMakeLists.txt.user
+
+#linglong building dir
+linglong
+build

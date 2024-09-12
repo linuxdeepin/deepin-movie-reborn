@@ -119,7 +119,6 @@ public:
 private:
     FileFilter();
 
-    QString libPath(const QString &strlib);
 
 private:
     static FileFilter* m_pFileFilter;
