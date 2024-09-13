@@ -160,9 +160,8 @@
                             "name": "Rendering engine",
                             "type": "effectCombobox",
                             "items": [
-                                "",
-                                "OpenGL",
-                                "MPV"
+                                "MPV",
+                                "OpenGL"
                             ],
                             "default": 0
                         },

@@ -72,10 +72,9 @@ Settings::Settings()
                 if (voFamily) {
                     voFamily->setData("items", QStringList() << "OpenGL");
                 }
-            } else if (index == 2) {
+            } else if (index == 0) {
                 if (voFamily)
-                    voFamily->setData("items", QStringList() << ""
-                                                             << "gpu"
+                    voFamily->setData("items", QStringList() << "gpu"
                                                              << "vaapi"
                                                              << "vdpau"
                                                              << "xv"
@@ -102,7 +101,7 @@ Settings::Settings()
                 if (decodeFamily)
                     decodeFamily->setData("items", QStringList() << "vdpau"
                                                                  << "vdpau-copy");
-            } else {
+            } else if (vo.contains("gpu")){
                 auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
                 if (decodeFamily)
                     decodeFamily->setData("items", QStringList() << "vaapi"
@@ -112,6 +111,14 @@ Settings::Settings()
                                                                  << "nvdec"
                                                                  << "nvdec-copy"
                                                                  << "rkmpp");
+            }else if(vo.contains("opengl", Qt::CaseInsensitive)){
+                auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                if (decodeFamily)
+                    decodeFamily->setData("items", QStringList() << "vaapi"
+                                                                 << "vaapi-copy"
+                                                                 << "vdpau"
+                                                                 << "vdpau-copy"
+                                                                 << "omx");
             }
             emit baseChanged(key, value);
         } else if (key.startsWith("base.play.hwaccel"))
@@ -161,16 +168,18 @@ Settings::Settings()
             voFamily->setData("items", QStringList() << "OpenGL");
         auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
         if (decodeFamily)
-            decodeFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy" << "nvdec" << "nvdec-copy" << "rkmpp");
+            decodeFamily->setData("items", QStringList() << "vaapi"
+                                                         << "vaapi-copy"
+                                                         << "vdpau"
+                                                         << "vdpau-copy"
+                                                         << "omx");
     } else {
         QStringList hwdecList, voList;
         hwdecList << "vaapi"
                   << "vaapi-copy"
                   << "vdpau"
                   << "vdpau-copy"
-                  << "nvdec"
-                  << "nvdec-copy"
-                  << "rkmpp";
+                  << "omx";
         voList << "gpu"
                << "vaapi"
                << "vdpau"
@@ -185,44 +194,45 @@ Settings::Settings()
             if (hwdecFamily)
                 hwdecFamily->setData("items", hwdecList);
         } else {
-            auto voFamily = m_pSettings->option("base.decode.Videoout");
-            if (voFamily)
-                voFamily->setData("items", QStringList() << ""
-                                                         << "gpu"
-                                                         << "vaapi"
-                                                         << "vdpau"
-                                                         << "xv"
-                                                         << "x11");
+            if(effectIndex == 0){
+                auto voFamily = m_pSettings->option("base.decode.Videoout");
+                if (voFamily)
+                    voFamily->setData("items", QStringList() << "gpu"
+                                                             << "vaapi"
+                                                             << "vdpau"
+                                                             << "xv"
+                                                             << "x11");
+            }
+
             int voValue = m_pSettings->getOption("base.decode.Videoout").toInt();
-            if (voValue != 0) {
-                auto videoFamily = m_pSettings->option("base.decode.Videoout");
-                QString vo = videoFamily.data()->data("items").toStringList().at(voValue);
-                if (vo.contains("vaapi")) {
-                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
-                    if (decodeFamily)
-                        decodeFamily->setData("items", QStringList() << "vaapi"
-                                                                     << "vaapi-copy");
-                } else if (vo.contains("vdpau")) {
-                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
-                    if (decodeFamily)
-                        decodeFamily->setData("items", QStringList() << "vdpau"
-                                                                     << "vdpau-copy");
-                } else if (vo.contains("xv") || vo.contains("x11")) {
-                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
-                    if (decodeFamily)
-                        decodeFamily->setData("items", QStringList() << "vdpau"
-                                                                     << "vdpau-copy");
-                } else {
-                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
-                    if (decodeFamily)
-                        decodeFamily->setData("items", QStringList() << "vaapi"
-                                                                     << "vaapi-copy"
-                                                                     << "vdpau"
-                                                                     << "vdpau-copy"
-                                                                     << "nvdec"
-                                                                     << "nvdec-copy"
-                                                                     << "rkmpp");
-                }
+
+            auto videoFamily = m_pSettings->option("base.decode.Videoout");
+            QString vo = videoFamily.data()->data("items").toStringList().at(voValue);
+            if (vo.contains("vaapi")) {
+                auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                if (decodeFamily)
+                    decodeFamily->setData("items", QStringList() << "vaapi"
+                                                                 << "vaapi-copy");
+            } else if (vo.contains("vdpau")) {
+                auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                if (decodeFamily)
+                    decodeFamily->setData("items", QStringList() << "vdpau"
+                                                                 << "vdpau-copy");
+            } else if (vo.contains("xv") || vo.contains("x11")) {
+                auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                if (decodeFamily)
+                    decodeFamily->setData("items", QStringList() << "vdpau"
+                                                                 << "vdpau-copy");
+            } else {
+                auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                if (decodeFamily)
+                    decodeFamily->setData("items", QStringList() << "vaapi"
+                                                                 << "vaapi-copy"
+                                                                 << "vdpau"
+                                                                 << "vdpau-copy"
+                                                                 << "nvdec"
+                                                                 << "nvdec-copy"
+                                                                 << "rkmpp");
             }
         }
     }
