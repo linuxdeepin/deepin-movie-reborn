@@ -198,6 +198,7 @@ static QWidget *createDecodeOptionHandle(QObject *pObj)
     mainWidget->setLayout(pLayout);
     pLayout->addStretch();
     pLayout->addWidget(combobox);
+    pLayout->setContentsMargins(0, 0, 0, 0);
     combobox->setFixedWidth(245);
     combobox->setCurrentIndex(pSettingOption->value().toInt());
 
@@ -222,7 +223,6 @@ static QWidget *createDecodeOptionHandle(QObject *pObj)
         pSettingOption->setValue(combobox->currentIndex());
     });
 
-
     return pOptionWidget;
 }
 
@@ -238,6 +238,7 @@ static QWidget *createVoOptionHandle(QObject *pObj)
     mainWidget->setLayout(pLayout);
     pLayout->addStretch();
     pLayout->addWidget(combobox);
+    pLayout->setContentsMargins(0, 0, 0, 0);
     combobox->setFixedWidth(245);
     combobox->setCurrentIndex(pSettingOption->value().toInt());
 
@@ -281,6 +282,7 @@ static QWidget *createEffectOptionHandle(QObject *pObj)
     mainWidget->setLayout(pLayout);
     pLayout->addStretch();
     pLayout->addWidget(combobox);
+    pLayout->setContentsMargins(0, 0, 0, 0);
     combobox->setFixedWidth(245);
     combobox->setCurrentIndex(pSettingOption->value().toInt());
 
@@ -3385,32 +3387,7 @@ DSettingsDialog *MainWindow::initSettings()
             dynamic_cast<QWidget*>(effectFrame->parent())->hide();
             dynamic_cast<QWidget*>(videoFrame->parent())->hide();
             dynamic_cast<QWidget*>(decodeFrame->parent())->show();
-        } else {
-            int effectIndex = Settings::get().settings()->getOption(QString("base.decode.Effect")).toInt();
-            qDebug() << "effectIndex" << effectIndex;
-            if (effectIndex == 0) {
-                qDebug() << "effectIndex == 0";
-                QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
-                dynamic_cast<QWidget*>(videoFrame->parent())->hide();
-                QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
-            } else if (effectIndex == 1) {
-                qDebug() << "effectIndex == 1";
-                QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
-                dynamic_cast<QWidget*>(videoFrame->parent())->show();
-                QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                dynamic_cast<QWidget*>(decodeFrame->parent())->show();
-            } else {
-                qDebug() << "effectIndex == 2";
-                QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
-                dynamic_cast<QWidget*>(videoFrame->parent())->show();
-                QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                if (Settings::get().settings()->getOption("base.decode.Videoout").toInt() == 0  &&
-                        Settings::get().settings()->getOption("base.decode.Effect").toInt() == 2) {
-                    dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
-                } else
-                    dynamic_cast<QWidget*>(decodeFrame->parent())->show();
-            }
+            dynamic_cast<QWidget*>(decodeFrame)->setEnabled(true);
         }
     }
 
@@ -3447,67 +3424,12 @@ DSettingsDialog *MainWindow::initSettings()
                     dynamic_cast<QWidget*>(videoFrame->parent())->hide();
                     dynamic_cast<QWidget*>(decodeFrame->parent())->show();
                 } else {
-                    qDebug() << "!utils::check_wayland_env()";
                     QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
+                    QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
+                    QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
                     dynamic_cast<QWidget*>(effectFrame->parent())->show();
-                    int effectIndex = Settings::get().settings()->getOption(QString("base.decode.Effect")).toInt();
-                    qDebug() << "effectIndex" << effectIndex;
-                    if (effectIndex == 0) {
-                        QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
-                        dynamic_cast<QWidget*>(videoFrame->parent())->hide();
-                        QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                        dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
-                    } else {
-                        qDebug() << "effectIndex == 1";
-                        QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
-                        dynamic_cast<QWidget*>(videoFrame->parent())->show();
-                        QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                        if (Settings::get().settings()->getOption("base.decode.Videoout").toInt() == 0 &&
-                                Settings::get().settings()->getOption("base.decode.Effect").toInt() == 2)
-                            dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
-                        else
-                            dynamic_cast<QWidget*>(decodeFrame->parent())->show();
-                    }
-                }
-            }
-        }
-    }, Qt::DirectConnection);
-
-    connect(&Settings::get(), &Settings::baseChanged, this, [=](QString key, QVariant value) {
-        if (!utils::check_wayland_env()) {
-            qDebug() << "!utils::check_wayland_env()";
-            int visable = value.toInt();
-            if (key == "base.decode.Effect") {
-                qDebug() << "key == base.decode.Effect";
-                if (visable == 0) {
-                    qDebug() << "visable == 0";
-                    QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
-                    dynamic_cast<QWidget*>(videoFrame->parent())->hide();
-                    QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                    dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
-                } else {
-                    qDebug() << "visable == 1";
-                    QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
                     dynamic_cast<QWidget*>(videoFrame->parent())->show();
-                    if (Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt() != 0 || visable == 1) {
-                        QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                        dynamic_cast<QWidget*>(decodeFrame->parent())->show();
-                    } else {
-                        QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                        dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
-                    }
-                }
-            } else if (key == "base.decode.Videoout") {
-                qDebug() << "key == base.decode.Videoout";
-                int eff = Settings::get().settings()->getOption("base.decode.Effect").toInt();
-                if (visable || eff == 1) {
-                    qDebug() << "visable || eff == 1";
-                    QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
                     dynamic_cast<QWidget*>(decodeFrame->parent())->show();
-                } else {
-                    qDebug() << "visable || eff != 1";
-                    QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                    dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
                 }
             }
         }
