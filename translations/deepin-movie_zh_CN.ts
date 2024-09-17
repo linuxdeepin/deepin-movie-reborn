@@ -324,7 +324,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="64"/>
         <source>Customize</source>
-        <translation type="unfinished">自定义</translation>
+        <translation>专业模式</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="65"/>
