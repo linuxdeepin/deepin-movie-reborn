@@ -58,6 +58,7 @@ void getPlayProperty(const char *path, QMap<QString, QString> *&proMap);
  * @param command filter
  */
 QStringList runPipeProcess(const QString &command, const QString &filter);
+void switchToDefaultSink();
 }
 }
 
