@@ -575,5 +575,85 @@ void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
         qWarning() << __func__ << "file path error!!!!!";
     }
 }
+
+QVariant redDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
+{
+    // 创建QDBusInterface接口
+    QDBusInterface ainterface(sService, sPath,
+                              sInterface,
+                              QDBusConnection::sessionBus());
+    if (!ainterface.isValid()) {
+        QVariant v(0) ;
+        return  v;
+    }
+    //调用远程的value方法
+    QVariant v = ainterface.property(pPropert);
+    return  v;
+}
+
+void switchToDefaultSink()
+{
+
+    QVariant v = redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
+                                             "com.deepin.daemon.Audio", "SinkInputs");
+
+    if (!v.isValid())
+        return;
+
+    QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath>>();
+
+    int inputIndex = -1; //当前音乐的索引值
+    int curSinkIndex = -1;
+    for (auto curPath : allSinkInputsList) {
+        QVariant nameV = redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
+                                                     "com.deepin.daemon.Audio.SinkInput", "Name");
+
+        if (!nameV.isValid() || nameV.toString() != QObject::tr("Movie"))
+            continue;
+        QString path =  curPath.path();
+        int indx = path.lastIndexOf("/");
+        path = path.mid(indx + 1, path.size() - indx); //最后一个'/'，然后移出Sink关键字
+        if (path.size() > 9) {
+            inputIndex = path.remove(0, 9).toInt();
+            //break;
+        } else
+            return;
+
+        QVariant sinkV = redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
+                                                     "com.deepin.daemon.Audio.SinkInput", "SinkIndex");
+        if (!sinkV.isValid())
+            continue;
+        curSinkIndex = sinkV.toInt();
+    }
+
+    if (inputIndex == -1)
+        return;
+
+    //获取默认输出设备
+    QVariant varsink = redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
+                                                   "com.deepin.daemon.Audio", "DefaultSink");
+    if (!varsink.isValid())
+        return;
+    QString sinkpath = varsink.value<QDBusObjectPath >().path();
+    int sinkindex = sinkpath.lastIndexOf("/");
+    sinkpath = sinkpath.mid(sinkindex + 1, sinkpath.size() - sinkindex);//最后一个'/'
+    if (sinkpath.size() > 4) {
+        sinkindex = sinkpath.remove(0, 4).toInt();
+    } else
+        return;
+
+    qInfo() <<"default sink: " << sinkindex << "\tcurrent sink: " << curSinkIndex << "\tsink input index: " << inputIndex;
+
+    if (curSinkIndex == sinkindex) {
+        return;
+    }
+    QProcess proc;
+    QStringList sList;
+    sList.append("move-sink-input");
+    sList.append(QString::number(inputIndex));
+    sList.append(QString::number(sinkindex));
+    proc.start("pacmd", sList);
+    proc.waitForFinished();
+}
 }
 }
