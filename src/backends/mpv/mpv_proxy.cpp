@@ -886,6 +886,9 @@ void MpvProxy::handle_mpv_events()
                     .arg(my_get_property(m_handle, "video-dec-params/rotate").toInt())
                     .arg(my_get_property(m_handle, "video-params/rotate").toInt());
             m_bLoadMedia = false;
+            if(utils::check_wayland_env()) {
+                dmr::utils::switchToDefaultSink();
+            }
             break;
         }
         case MPV_EVENT_VIDEO_RECONFIG: {
