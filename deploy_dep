@@ -58,12 +58,13 @@ for LDFILE in "$@"; do
             LIB_DIR=$(dirname "$LIB_PATH")
             BASE_LIB_NAME=$(basename "$LIB_PATH")
 
-            # 使用通配符查找相关库文件并添加到 install 文件
+            # 使用通配符查找相关库文件并将结果倒序存储到 install 文件
             for FILE in "$LIB_DIR"/${BASE_LIB_NAME%.*}*; do
                 if [[ -f "$FILE" ]]; then
-                    echo "$FILE" >> "${ID_VALUE}.install"
+                    echo "$FILE"
                 fi
-            done
+            done | sort -r >> "${ID_VALUE}.install"
+
         done
     fi
 done
