@@ -11,6 +11,8 @@ namespace dmr {
 VolumeButton::VolumeButton(QWidget *parent)
     : QPushButton(parent), m_nVolume(100), m_bMute(false)
 {
+    setFlat(true);
+    setIconSize(QSize(36, 36));
     setIcon(QIcon::fromTheme("dcc_volume"));
     installEventFilter(this);
 }
@@ -46,6 +48,9 @@ void VolumeButton::setIcon(const QIcon &icon)
 {
     if (!icon.isNull()) {
         m_icon = icon;
+
+        // 使用 PushButon 绘制图标
+        QPushButton::setIcon(m_icon);
     }
 }
 
@@ -75,12 +80,6 @@ void VolumeButton::leaveEvent(QEvent *ev)
     emit leaved();
 
     QPushButton::leaveEvent(ev);
-}
-
-void VolumeButton::paintEvent(QPaintEvent *)
-{
-    QPainter painter(this);
-    painter.drawPixmap(rect(), m_icon.pixmap(rect().size()));
 }
 
 void VolumeButton::wheelEvent(QWheelEvent *we)

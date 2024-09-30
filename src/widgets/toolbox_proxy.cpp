@@ -1495,8 +1495,12 @@ void ToolboxProxy::slotThemeTypeChanged()
         // 取消阴影
         pa.setColor(DPalette::Shadow, btnframecolor);
         DApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
-        DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
         DApplicationHelper::instance()->setPalette(m_pListBtn, pa);
+
+        // 音量按钮取消边框背景
+        pa.setColor(DPalette::Light, QColor(Qt::transparent));
+        pa.setColor(DPalette::Dark, QColor(Qt::transparent));
+        DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
     } else {
         textPalette.setColor(QPalette::WindowText, QColor(255, 255, 255, 40));   // 深色背景下时长显示置灰
         textPalette.setColor(QPalette::Text, QColor(255, 255, 255, 40));
@@ -1516,8 +1520,11 @@ void ToolboxProxy::slotThemeTypeChanged()
         // 取消阴影
         pa.setColor(DPalette::Shadow, framecolor);
         DApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
-        DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
         DApplicationHelper::instance()->setPalette(m_pListBtn, pa);
+
+        pa.setColor(DPalette::Light, QColor(Qt::transparent));
+        pa.setColor(DPalette::Dark, QColor(Qt::transparent));
+        DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
     }
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
@@ -2060,11 +2067,6 @@ void ToolboxProxy::updatePlayState()
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             DPalette pa;
 
-            pa = m_pVolBtn->palette();
-            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
-            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
-            m_pVolBtn->setPalette(pa);
-
             pa = m_pFullScreenBtn->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
@@ -2082,11 +2084,6 @@ void ToolboxProxy::updatePlayState()
 
         } else {
             DPalette pa;
-
-            pa = m_pVolBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
-            m_pVolBtn->setPalette(pa);
 
             pa = m_pFullScreenBtn->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
@@ -2114,12 +2111,6 @@ void ToolboxProxy::updatePlayState()
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             DPalette pa;
 
-
-            pa = m_pVolBtn->palette();
-            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
-            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
-            m_pVolBtn->setPalette(pa);
-
             pa = m_pFullScreenBtn->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
@@ -2137,11 +2128,6 @@ void ToolboxProxy::updatePlayState()
 
         } else {
             DPalette pa;
-
-            pa = m_pVolBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
-            m_pVolBtn->setPalette(pa);
 
             pa = m_pFullScreenBtn->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));

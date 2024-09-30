@@ -383,7 +383,6 @@ signals:
 protected:
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
-    void paintEvent(QPaintEvent *) override;
     void wheelEvent(QWheelEvent *wev) override;
     void focusOutEvent(QFocusEvent *ev) override;
     bool eventFilter(QObject *obj, QEvent *e) override;
