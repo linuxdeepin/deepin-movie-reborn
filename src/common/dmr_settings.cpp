@@ -146,7 +146,8 @@ Settings::Settings()
                                                                  << "vaapi-copy"
                                                                  << "vdpau"
                                                                  << "vdpau-copy"
-                                                                 << "omx");
+                                                                 << "omx"
+                                                                 << "omx-copy");
             }
             emit baseChanged(key, value);
             qDebug() << "Emitted baseChanged for Videoout mode.";
@@ -227,7 +228,8 @@ Settings::Settings()
                                                          << "vaapi-copy"
                                                          << "vdpau"
                                                          << "vdpau-copy"
-                                                         << "omx");
+                                                         << "omx"
+                                                         << "omx-copy");
         } else {
             qWarning() << "Decode mode family option not found for Wayland configuration!";
         }
@@ -238,7 +240,8 @@ Settings::Settings()
                   << "vaapi-copy"
                   << "vdpau"
                   << "vdpau-copy"
-                  << "omx";
+                  << "omx"
+                  << "omx-copy";
         voList << "gpu"
                << "vaapi"
                << "vdpau"
