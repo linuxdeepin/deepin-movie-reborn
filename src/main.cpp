@@ -183,6 +183,34 @@ void killOldMovie()
     }
 }
 
+void getEncodeRanderConfigInfo(){
+    int selectIndex = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
+    auto selectConfig = Settings::get().settings()->option("base.decode.select")->data("items").toStringList();
+    if(selectIndex >= 0 && selectIndex < selectConfig.size()){
+        auto selectModeOpt = selectConfig.at(selectIndex);
+
+        if (selectIndex == 3) {
+            auto selectModeOpt = Settings::get().settings()->option("base.decode.select")->data("items").toStringList()[Settings::get().settings()->getOption(QString("base.decode.select")).toInt()];
+
+            auto effectOpt = Settings::get().settings()->option("base.decode.Effect")->data("items").toStringList()[Settings::get().settings()->getOption(QString("base.decode.Effect")).toInt()];
+            int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
+            auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
+            QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
+
+            int voIndex = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();
+            auto voOpt = Settings::get().settings()->option("base.decode.Videoout");
+            QString voMode = voOpt.data()->data("items").toStringList()[voIndex];
+            if (utils::check_wayland_env()) {
+                qDebug() << "Select-Mode: " << selectModeOpt << " Hardware-Decode: " << decodeMode;
+            }else{
+                qDebug() << "Select-Mode: " << selectModeOpt << " Effect: " << effectOpt << " Hardware-Decode: " << decodeMode << "Rander: " << voMode;
+            }
+        } else {
+            qDebug() << "Select-Mode: " << selectModeOpt;
+        }
+    }
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -384,7 +412,7 @@ int main(int argc, char *argv[])
         ApplicationAdaptor adaptor(&mw);
         QDBusConnection::sessionBus().registerService("com.deepin.movie");
         QDBusConnection::sessionBus().registerObject("/", &mw);
-
+        getEncodeRanderConfigInfo();
         return app->exec();
     } else {
         dmr::Platform_MainWindow platform_mw;
@@ -408,7 +436,7 @@ int main(int argc, char *argv[])
         Platform_ApplicationAdaptor adaptor(&platform_mw);
         QDBusConnection::sessionBus().registerService("com.deepin.movie");
         QDBusConnection::sessionBus().registerObject("/", &platform_mw);
-
+        getEncodeRanderConfigInfo();
         return app->exec();
     }
 }
