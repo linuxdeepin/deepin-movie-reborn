@@ -215,6 +215,46 @@ void killOldMovie()
     qInfo() << "Kill old movie process end";
 }
 
+void getDecodeConfigInfo() {
+    auto settings = Settings::get().settings();
+    int selectIndex = settings->getOption(QString("base.decode.select")).toInt();
+    auto selectConfig = settings->option("base.decode.select")->data("items").toStringList();
+    if (selectIndex >= 0 && selectIndex < selectConfig.size()) {
+        QString selectModeOpt = selectConfig.at(selectIndex);
+        // 专业模式
+        if (selectIndex == 3) {
+            int effectIdx = settings->getOption(QString("base.decode.Effect")).toInt();
+            QStringList effectList = settings->option("base.decode.Effect")->data("items").toStringList();
+            QString effectOpt;
+            if (effectIdx >= 0 && effectIdx < effectList.size()) {
+                effectOpt = effectList.at(effectIdx);
+            }
+
+            int decodeIdx = settings->getOption(QString("base.decode.Decodemode")).toInt();
+            QStringList decodeList = settings->option("base.decode.Decodemode")->data("items").toStringList();
+            QString decodeMode;
+            if (decodeIdx >= 0 && decodeIdx < decodeList.size()) {
+                decodeMode = decodeList.at(decodeIdx);
+            }
+
+            int voIdx = settings->getOption(QString("base.decode.Videoout")).toInt();
+            QStringList voList = settings->option("base.decode.Videoout")->data("items").toStringList();
+            QString voMode;
+            if (voIdx >= 0 && voIdx < voList.size()) {
+                voMode = voList.at(voIdx);
+            }
+
+            if (utils::check_wayland_env()) {
+                qDebug() << "Select-Mode:" << selectModeOpt << "Hardware-Decode:" << decodeMode;
+            } else {
+                qDebug() << "Select-Mode:" << selectModeOpt << "Effect:" << effectOpt << "Hardware-Decode:" << decodeMode << "Render:" << voMode;
+            }
+        } else {
+            qDebug() << "Select-Mode:" << selectModeOpt;
+        }
+    }
+}
+
 int main(int argc, char *argv[])
 {
     qInfo() << "Starting deepin-movie application";
@@ -528,6 +568,7 @@ int main(int argc, char *argv[])
         ApplicationAdaptor adaptor(&mw);
         QDBusConnection::sessionBus().registerService("com.deepin.movie");
         QDBusConnection::sessionBus().registerObject("/", &mw);
+        getDecodeConfigInfo();
 
         int ret = app->exec();
         if (ret == 2)
@@ -562,6 +603,7 @@ int main(int argc, char *argv[])
         Platform_ApplicationAdaptor adaptor(&platform_mw);
         QDBusConnection::sessionBus().registerService("com.deepin.movie");
         QDBusConnection::sessionBus().registerObject("/", &platform_mw);
+        getDecodeConfigInfo();
         int ret = app->exec();
         if (ret == 2)
             execv( app->applicationFilePath().toUtf8().data(), nullptr);
