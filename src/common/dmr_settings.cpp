@@ -118,7 +118,8 @@ Settings::Settings()
                                                                  << "vaapi-copy"
                                                                  << "vdpau"
                                                                  << "vdpau-copy"
-                                                                 << "omx");
+                                                                 << "omx"
+                                                                 << "omx-copy");
             }
             emit baseChanged(key, value);
         } else if (key.startsWith("base.play.hwaccel"))
@@ -172,14 +173,16 @@ Settings::Settings()
                                                          << "vaapi-copy"
                                                          << "vdpau"
                                                          << "vdpau-copy"
-                                                         << "omx");
+                                                         << "omx"
+                                                         << "omx-copy");
     } else {
         QStringList hwdecList, voList;
         hwdecList << "vaapi"
                   << "vaapi-copy"
                   << "vdpau"
                   << "vdpau-copy"
-                  << "omx";
+                  << "omx"
+                  << "omx-copy";
         voList << "gpu"
                << "vaapi"
                << "vdpau"
