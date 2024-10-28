@@ -217,6 +217,10 @@ Click ![menu](../common/icon_menu.svg) > **Settings** on the Movie interface and
 - **Auto select**: Select the proper decoding manner automatically according to the device configuration.
 - **Hard decoding**: Decode the video by hardware.
 - **Soft decoding**: Decode the video by software. 
+- **Customize**: Decode the video by user. 
+	- **Rendering engine**: Built-in playing engine selection.
+	- **Video out**: Rander video out selection.
+	- **Decode mode**: Decode mode of video selection.
 
 **Screenshot Settings** 
 
