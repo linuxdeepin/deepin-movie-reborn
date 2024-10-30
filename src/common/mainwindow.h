@@ -600,6 +600,8 @@ private:
     bool m_bHaveFile;                                 ///导入是否包含文件（用于导入文件或文件夹）
     DSettingsDialog *m_pDSettingDilog{nullptr};
     QOpenGLWidget *m_backgroundWidget {nullptr};
+    bool m_bMaxByScreenRemoved {false};
+    QRect m_mwdRect;
 };
 };
 
