@@ -1118,8 +1118,40 @@ MainWindow::MainWindow(QWidget *parent)
             QRect deskRect = QApplication::desktop()->availableGeometry(geoRect.topLeft());
 
             if(!deskRect.intersects(geoRect)) {
-                move(deskRect.x(), deskRect.y());
+                m_pEngine->makeCurrent();
+                bool bMinState = isMinimized();
+                if(isMaximized()) {
+                    m_mwdRect = geoRect;
+                    m_bMaxByScreenRemoved = true;
+                } else {
+                    move(deskRect.x(), deskRect.y());
+                }
+                hide();
+                show();
+                if(bMinState) {
+                    showMinimized();
+                }
             }
+        });
+        connect(qApp, &QGuiApplication::screenAdded, this, [=](){
+            QTimer::singleShot(1000, this, [&]() {
+                m_pEngine->makeCurrent();
+                bool bMinState = isMinimized();
+                if(m_bMaxByScreenRemoved) {
+                    if(isMaximized()) {
+                        if(m_mwdRect.isValid()) {
+                            setGeometry(m_mwdRect);
+                        }
+                    }
+                }
+                hide();
+                show();
+                if(bMinState) {
+                    showMinimized();
+                }
+                m_bMaxByScreenRemoved = false;
+            });
+
         });
     }
     //解码初始化
