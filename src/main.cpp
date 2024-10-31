@@ -248,8 +248,9 @@ int main(int argc, char *argv[])
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
 #endif
+    QDir innodir("/sys/bus/platform/drivers/inno-codec");
     QFileInfo jmfi("/dev/jmgpu");
-    if (jmfi.exists()) {
+    if (jmfi.exists() || innodir.exists()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
     }
     /**
