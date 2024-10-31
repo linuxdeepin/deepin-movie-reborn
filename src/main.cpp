@@ -321,8 +321,9 @@ int main(int argc, char *argv[])
 #else
     qDebug() << "STATIC_LIB not defined.";
 #endif
+    QDir innodir("/sys/bus/platform/drivers/inno-codec");
     QFileInfo jmfi("/dev/jmgpu");
-    if (jmfi.exists()) {
+    if (jmfi.exists() || innodir.exists()) {
         qDebug() << "JM GPU device detected.";
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
         qDebug() << "Set QT_XCB_GL_INTEGRATION to xcb_egl for JM GPU";
