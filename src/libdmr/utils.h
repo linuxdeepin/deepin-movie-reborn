@@ -53,6 +53,11 @@ QString ElideText(const QString &text, const QSize &size,
  * @param 配置保存的map
  */
 void getPlayProperty(const char *path, QMap<QString, QString> *&proMap);
+/**
+ * @brief run cmd
+ * @param command filter
+ */
+QStringList runPipeProcess(const QString &command, const QString &filter);
 void switchToDefaultSink();
 }
 }
