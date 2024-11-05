@@ -1288,6 +1288,14 @@ void MpvProxy::refreshDecode()
                 if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
                     isSoftCodec = true;
                 }
+                auto codec = currentInfo.mi.videoCodec();
+                if (    codec.toLower().contains("mpeg") ||
+                        codec.toLower().contains("h264")  ||
+                        codec.toLower().contains("hevc")  ||
+                        codec.toLower().contains("vp")) {
+                    my_set_property(m_handle, "hwdec-codecs", codec.toLower());
+                    isSoftCodec = false;
+                }
             }
         }
         if (isSoftCodec) {
@@ -1408,14 +1416,16 @@ void MpvProxy::refreshDecode()
             m_sInitVo = "x11";
         }
 
+        PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
+        PlayItemInfo currentInfo = playMode->currentInfo();
         if(utils::check_wayland_env()){
-            PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
-            PlayItemInfo currentInfo = playMode->currentInfo();
             QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
             if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
                 my_set_property(m_handle, "hwdec","no");
             }
         }
+        auto codec = currentInfo.mi.videoCodec();
+        my_set_property(m_handle, "hwdec-codecs", codec.toLower());
 
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
