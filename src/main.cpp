@@ -205,8 +205,6 @@ int main(int argc, char *argv[])
 #endif
 //#ifdef __aarch64__ //wayland平台支持影院播放
     if (dmr::utils::first_check_wayland_env()) {
-        if (qEnvironmentVariable("DDE_CURRENT_COMPOSITOR") != "TreeLand")
-            qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
         //qputenv("_d_disableDBusFileDialog", "true");
         setenv("PULSE_PROP_media.role", "video", 1);
 #ifndef __x86_64__
