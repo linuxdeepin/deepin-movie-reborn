@@ -1,3 +1,9 @@
+deepin-movie-reborn (5.15.4) unstable; urgency=medium
+
+  * remove kwayland-shell env 
+
+ -- Liu zheng <liuzheng@uniontech.com>  Mon, 11 Nov 2024 10:53:33 +0800
+
 deepin-movie-reborn (5.15.3) unstable; urgency=medium
 
   * New version 5.15.3

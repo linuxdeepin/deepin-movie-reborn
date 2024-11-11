@@ -39,7 +39,6 @@ Platform_MainWindow * Application::getMainWindow()
 Platform_MainWindow * Application::getMainWindowWayland()
 {
     if(nullptr == m_mainwindow_wayland)
-        qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
         //qputenv("_d_disableDBusFileDialog", "true");
         setenv("PULSE_PROP_media.role", "video", 1);
         QSurfaceFormat format;
