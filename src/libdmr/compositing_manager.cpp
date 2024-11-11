@@ -353,6 +353,9 @@ CompositingManager::CompositingManager()
         qDebug() << "ljmcore driver detected, _composited set to false.";
     }
 
+    if (m_setSpecialControls)
+        _composited = false;
+
     //读取配置
     m_pMpvConfig = new QMap<QString, QString>;
     qDebug() << "New QMap for MPV config created (final section).";
