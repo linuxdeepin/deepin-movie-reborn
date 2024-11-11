@@ -1352,6 +1352,12 @@ void MpvProxy::refreshDecode()
             my_set_property(m_handle, "profile", "sw-fast");
             m_sInitVo = "x11";
         }
+        if (!CompositingManager::get().composited()) {
+            if (CompositingManager::get().isSpecialControls()) {
+                my_set_property(m_handle, "hwdec","vaapi");
+                my_set_property(m_handle, "vo","vaapi");
+            }
+        }
     } else { //3.设置硬解
 #ifndef _LIBDMR_
 
