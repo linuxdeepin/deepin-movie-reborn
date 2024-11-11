@@ -239,6 +239,9 @@ CompositingManager::CompositingManager()
     if (QFile::exists("/sys/bus/pci/drivers/ljmcore"))
         _composited = false;
 
+    if (m_setSpecialControls)
+        _composited = false;
+
     //读取配置
     m_pMpvConfig = new QMap<QString, QString>;
     utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);
