@@ -435,18 +435,28 @@ mpv_handle *MpvProxy::mpv_init()
         }
         //TODO(xxxxpengfei)：暂未处理intel集显情况
         if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
-            QStringList sList = dmr::utils::runPipeProcess("apt policy cx4-linux-graphics-driver-dri", "");
-            if(sList.count() > 3) {
-                QString comStr = sList.at(2).right(3).left(2);
-                int version = comStr.toInt();
-                if (version >= 10) {
-                    my_set_property(pHandle, "vo", "vaapi");
-                    my_set_property(pHandle, "hwdec", "vaapi");
-                    m_sInitVo = "vaapi";
-                } else {
+            QProcess process;
+            QStringList options;
+            options << "-c" << QString("apt policy cx4-linux-graphics-driver-dri | sed -n \'2p\'");
+            process.start("/bin/bash", options);
+            process.waitForFinished();
+            process.waitForReadyRead();
+
+            QString comStr = process.readAllStandardOutput();
+            comStr = comStr.right(3).left(2);
+            int version = comStr.toInt();
+            if (version >= 10) {
+                my_set_property(pHandle, "vo", "vaapi");
+                my_set_property(pHandle, "hwdec", "vaapi");
+                m_sInitVo = "vaapi";
+
+                if (version >= 21) {    // bug: 285669
                     my_set_property(pHandle, "vo", "gpu");
                     m_sInitVo = "gpu";
                 }
+            } else {
+                my_set_property(pHandle, "vo", "gpu");
+                m_sInitVo = "gpu";
             }
         }
 #endif
