@@ -580,21 +580,29 @@ mpv_handle *MpvProxy::mpv_init()
         //TODO(xxxxpengfei)：暂未处理intel集显情况
         if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
             qDebug() << "DEBUG: ZXIntgraphics detected and no Jingjiawei driver. Checking apt policy.";
-            QStringList sList = dmr::utils::runPipeProcess("apt policy cx4-linux-graphics-driver-dri", "");
-            if(sList.count() > 3) {
-                QString comStr = sList.at(2).right(3).left(2);
-                int version = comStr.toInt();
-                qDebug() << "DEBUG: apt policy output version:" << version;
-                if (version >= 10) {
-                    my_set_property(pHandle, "vo", "vaapi");
-                    my_set_property(pHandle, "hwdec", "vaapi");
-                    m_sInitVo = "vaapi";
-                    qDebug() << "DEBUG: Version >= 10. Setting vo to vaapi and hwdec to vaapi.";
-                } else {
-                    my_set_property(pHandle, "vo", "gpu");
-                    m_sInitVo = "gpu";
-                    qDebug() << "DEBUG: Version < 10. Setting vo to gpu.";
-                }
+            QProcess process;
+            QStringList options;
+            options << "-c" << QString("apt policy cx4-linux-graphics-driver-dri | sed -n \'2p\'");
+            process.start("/bin/bash", options);
+            process.waitForFinished();
+            process.waitForReadyRead();
+
+            QString comStr = process.readAllStandardOutput();
+            comStr = comStr.right(3).left(2);
+            int version = comStr.toInt();
+            qDebug() << "DEBUG: apt policy output version:" << version;
+            if (version >= 21) { // bug: 285669
+                my_set_property(pHandle, "hwdec", "vaapi");
+                my_set_property(pHandle, "vo", "gpu");
+                m_sInitVo = "gpu";
+            } else if (version >= 10) {
+                my_set_property(pHandle, "hwdec", "vaapi");
+                my_set_property(pHandle, "vo", "vaapi");
+                m_sInitVo = "vaapi";
+            } else {
+                qDebug() << "DEBUG: Version < 10. Setting vo to gpu.";
+                my_set_property(pHandle, "vo", "gpu");
+                m_sInitVo = "gpu";
             }
         }
 #endif
