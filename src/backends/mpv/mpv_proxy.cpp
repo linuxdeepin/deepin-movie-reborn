@@ -449,6 +449,11 @@ mpv_handle *MpvProxy::mpv_init()
                 my_set_property(pHandle, "vo", "vaapi");
                 my_set_property(pHandle, "hwdec", "vaapi");
                 m_sInitVo = "vaapi";
+
+                if (version >= 21) {    // bug: 285669
+                    my_set_property(pHandle, "vo", "gpu");
+                    m_sInitVo = "gpu";
+                }
             } else {
                 my_set_property(pHandle, "vo", "gpu");
                 m_sInitVo = "gpu";
