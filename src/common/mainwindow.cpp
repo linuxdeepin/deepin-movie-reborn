@@ -4407,7 +4407,7 @@ void MainWindow::showEvent(QShowEvent *pEvent)
 #endif
 
     if(!deskRect.intersects(geoRect)) {
-        setGeometry(QRect(deskRect.x(), deskRect.y(), geoRect.width(), geoRect.width()));
+        setGeometry(QRect(deskRect.x(), deskRect.y(), geoRect.width(), geoRect.height()));
     }
     resumeToolsWindow();
 
