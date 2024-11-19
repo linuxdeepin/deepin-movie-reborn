@@ -3747,7 +3747,7 @@ void MainWindow::showEvent(QShowEvent *pEvent)
     QRect deskRect = QApplication::desktop()->availableGeometry(geoRect.topLeft());
 
     if(!deskRect.intersects(geoRect)) {
-        setGeometry(QRect(deskRect.x(), deskRect.y(), geoRect.width(), geoRect.width()));
+        setGeometry(QRect(deskRect.x(), deskRect.y(), geoRect.width(), geoRect.height()));
     }
     resumeToolsWindow();
 
