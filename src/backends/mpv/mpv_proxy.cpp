@@ -2033,7 +2033,9 @@ void MpvProxy::changehwaccelMode(hwaccelMode hwaccelMode)
 
 void MpvProxy::makeCurrent()
 {
-    m_pMpvGLwidget->makeCurrent();
+    if(m_pMpvGLwidget) {
+	    m_pMpvGLwidget->makeCurrent();
+    }
 }
 
 QVariant MpvProxy::getProperty(const QString &sName)
