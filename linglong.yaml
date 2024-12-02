@@ -7,13 +7,13 @@ version: "1"
 package:
   id: org.deepin.movie
   name: "deepin-movie"
-  version: 5.15.5.1
+  version: 5.15.6.1
   kind: app
   description: |
     movie for deepin os.
 
 base: org.deepin.base/23.1.0
-runtime: org.deepin.runtime.dtk/23.1.0
+runtime: org.deepin.runtime.dtk/23.2.0
 
 command:
   - deepin-movie
