@@ -602,6 +602,7 @@ private:
     QOpenGLWidget *m_backgroundWidget {nullptr};
     bool m_bMaxByScreenRemoved {false};
     QRect m_mwdRect;
+    bool m_bShowTime {false};                         ///全屏显示影片时间信息
 };
 };
 
