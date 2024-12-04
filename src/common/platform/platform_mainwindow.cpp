@@ -771,8 +771,10 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
                     int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
                     pixelsWidth = qMax(117, pixelsWidth);
                     m_pFullScreenTimeLable->setGeometry(screenGeo.width() + screenGeo.x() - pixelsWidth - 60, 40 + screenGeo.y(), pixelsWidth + 60, 36);
-                    m_pFullScreenTimeLable->show();
-                    m_pProgIndicator->setVisible(true);
+                    if(m_bShowTime) {
+                        m_pFullScreenTimeLable->show();
+                        m_pProgIndicator->setVisible(true);
+                    }
                     QTimer::singleShot(200, [ = ]() {
                         activateWindow();    // show other window make mainwindow deactivate
                         setFocus();
@@ -987,10 +989,22 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     m_pPopupWid = new Platform_MessageWindow(this);
     m_pPopupWid->hide();
     defaultplaymodeinit();
-
+    m_bShowTime = Settings::get().internalOption("showTimeFullScreen").toBool();
     connect(&Settings::get(), &Settings::defaultplaymodechanged, this, &Platform_MainWindow::slotdefaultplaymodechanged);
     connect(&Settings::get(), &Settings::setDecodeModel, this, &Platform_MainWindow::onSetDecodeModel,Qt::DirectConnection);
     connect(&Settings::get(), &Settings::refreshDecode, this, &Platform_MainWindow::onRefreshDecode,Qt::DirectConnection);
+    connect(&Settings::get(), &Settings::showTimeFullScreenChanged, this, [&](const QString &key, const QVariant &value) {
+        if(value.isValid()) {
+            m_bShowTime = value.toBool();
+            //The X86 platform draws on GiWidget, and the MIPS platform does not need to draw
+            if (CompositingManager::get().platform() != Platform::Mips) {
+                if(m_pEngine && (m_pEngine->state() != PlayerEngine::Idle) && isFullScreen()) {
+                    m_pProgIndicator->setVisible(value.toBool());
+                    m_pFullScreenTimeLable->setVisible(value.toBool());
+                }
+            }
+        }
+    },Qt::DirectConnection);
     connect(m_pEngine, &PlayerEngine::onlineStateChanged, this, &Platform_MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &Platform_MainWindow::checkOnlineSubtitle);
     connect(m_pEngine, &PlayerEngine::mpvErrorLogsChanged, this, &Platform_MainWindow::checkErrorMpvLogsChanged);
@@ -1161,7 +1175,9 @@ void Platform_MainWindow::onWindowStateChanged()
         m_pTitlebar->setVisible(false);
     }
     if (CompositingManager::get().platform() != Platform::Mips)
-        m_pProgIndicator->setVisible(isFullScreen() && m_pEngine && m_pEngine->state() != PlayerEngine::Idle);
+        if(m_bShowTime) {
+            m_pProgIndicator->setVisible(isFullScreen() && m_pEngine && m_pEngine->state() != PlayerEngine::Idle);
+        }
 
 #ifndef USE_DXCB
     m_pTitlebar->move(0, 0);
@@ -2096,7 +2112,9 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
                         int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
                         pixelsWidth = qMax(117, pixelsWidth);
                         m_pFullScreenTimeLable->setGeometry(screenGeo.width() + screenGeo.x() - pixelsWidth - 60, 40 + screenGeo.y(), pixelsWidth + 60, 36);
-                        m_pFullScreenTimeLable->show();
+                        if(m_bShowTime) {
+                            m_pFullScreenTimeLable->show();
+                        }
                     }
                 }
             }

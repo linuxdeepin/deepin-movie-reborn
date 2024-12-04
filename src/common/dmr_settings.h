@@ -68,7 +68,13 @@ signals:
      * @param 配置的值
      */
     void hwaccelModeChanged(const QString &, const QVariant &);
-    
+    /**
+     * @brief base.play.hwaccel配置值变化后发送的信号
+     * @param base.play.hwaccel下的某一配置
+     * @param 配置的值
+     */
+    void showTimeFullScreenChanged(const QString &, const QVariant &);
+
 public:
     enum Flag {
         ClearWhenQuit,
@@ -78,6 +84,7 @@ public:
         PreviewOnMouseover,
         MultipleInstance,
         PauseOnMinimize,
+        ShowTimeFullScreen,
     };
     /**
      * @brief 获取类单列对象
