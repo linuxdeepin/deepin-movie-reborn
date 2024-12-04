@@ -1198,10 +1198,24 @@ MainWindow::MainWindow(QWidget *parent)
     m_pPopupWid = new MessageWindow(this);
     m_pPopupWid->hide();
     defaultplaymodeinit();
-
+    m_bShowTime = Settings::get().internalOption("showTimeFullScreen").toBool();
+    setProperty("showTimeFullScreen", Settings::get().internalOption("showTimeFullScreen"));
     connect(&Settings::get(), &Settings::defaultplaymodechanged, this, &MainWindow::slotdefaultplaymodechanged);
     connect(&Settings::get(), &Settings::setDecodeModel, this, &MainWindow::onSetDecodeModel,Qt::DirectConnection);
     connect(&Settings::get(), &Settings::refreshDecode, this, &MainWindow::onRefreshDecode,Qt::DirectConnection);
+    connect(&Settings::get(), &Settings::showTimeFullScreenChanged, this, [&](const QString &key, const QVariant &value) {
+        if(value.isValid()) {
+            m_bShowTime = value.toBool();
+            setProperty("showTimeFullScreen", value);
+            //The X86 platform draws on GiWidget, and the MIPS platform does not need to draw
+            if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
+                if(m_pEngine && (m_pEngine->state() != PlayerEngine::Idle) && isFullScreen()) {
+                    m_pProgIndicator->setVisible(value.toBool());
+                    m_pFullScreenTimeLable->setVisible(value.toBool());
+                }
+            }
+        }
+    },Qt::DirectConnection);
     connect(m_pEngine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(m_pEngine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
@@ -1427,9 +1441,11 @@ void MainWindow::onWindowStateChanged()
 
     //The X86 platform draws on GiWidget, and the MIPS platform does not need to draw
     if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
-        bool showIndicator = isFullScreen() && m_pEngine && m_pEngine->state() != PlayerEngine::Idle;
-        qDebug() << "Setting progress indicator visibility:" << showIndicator;
-        m_pProgIndicator->setVisible(showIndicator);
+        if (m_bShowTime) {
+            bool showIndicator = isFullScreen() && m_pEngine && m_pEngine->state() != PlayerEngine::Idle;
+            qDebug() << "Setting progress indicator visibility:" << showIndicator;
+            m_pProgIndicator->setVisible(showIndicator);
+        }
     }
 
 #ifndef USE_DXCB
@@ -2556,7 +2572,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                         pixelsWidth = qMax(117, pixelsWidth);
                         m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
                         qDebug() << "m_pFullScreenTimeLable->setGeometry";
-                        m_pFullScreenTimeLable->show();
+                        if (m_bShowTime) {
+                            m_pFullScreenTimeLable->show();
+                        }
                     }
                 }
             }
@@ -5394,7 +5412,9 @@ void MainWindow::toggleUIMode()
 #endif
                     pixelsWidth = qMax(117, pixelsWidth);
                     m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
-                    m_pFullScreenTimeLable->show();
+                    if(m_bShowTime) {
+                        m_pFullScreenTimeLable->show();
+                    }
                 }
             }
             setFocus();

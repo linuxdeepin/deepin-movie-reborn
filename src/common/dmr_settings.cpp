@@ -157,6 +157,9 @@ Settings::Settings()
         } else if (key.startsWith("base.play.mute")) {
             qDebug() << "Mute setting changed. Emitting baseMuteChanged signal.";
             emit baseMuteChanged(key, value);
+        } else if (key.startsWith("base.play.showTimeFullScreen")) {
+            qDebug() << "Show time fullscreen setting changed. Emitting showTimeFullScreenChanged signal.";
+            emit showTimeFullScreenChanged(key, value);
         } else if (key.startsWith("base.")) {
             qDebug() << "Base setting changed. Emitting baseChanged signal.";
             emit baseChanged(key, value);
@@ -316,6 +319,8 @@ QString Settings::flag2key(Settings::Flag f)
 {
     qDebug() << "Entering Settings::flag2key. Flag:" << static_cast<int>(f);
     switch (f) {
+    case Settings::Flag::ShowTimeFullScreen:
+        return "showTimeFullScreen";
     case Settings::Flag::ClearWhenQuit:
         qDebug() << "Flag ClearWhenQuit matched, returning \"emptylist\".";
         return "emptylist";

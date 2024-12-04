@@ -75,6 +75,11 @@ Please do not exit the Movie app during the process.</source>
         <translation>顯示快捷鍵</translation>
     </message>
     <message>
+        <location filename="../src/common/settings_translation.cpp" line="11"/>
+        <source>Display countdown in full screen mode</source>
+        <translation>全屏時顯示倒數計時</translation>
+    </message>
+    <message>
         <location filename="../src/common/settings_translation.cpp" line="12"/>
         <source>Auto add similar files to play</source>
         <translation>自動查找相似文件連續播放</translation>
