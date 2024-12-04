@@ -590,6 +590,7 @@ private:
     bool m_bHaveFile;                                 ///导入是否包含文件（用于导入文件或文件夹）
     bool m_bMaxByScreenRemoved {false};
     QRect m_mwdRect;
+    bool m_bShowTime {false};                         ///全屏显示影片时间信息
 };
 };
 

@@ -84,6 +84,13 @@
                             "default": false
                         },
                         {
+                            "key": "showTimeFullScreen",
+                            "name": "",
+                            "type": "checkbox",
+                            "text": "Display countdown in full screen mode",
+                            "default": "false"
+                        },
+                        {
                             "key": "emptylist",
                             "name": "",
                             "type": "checkbox",
