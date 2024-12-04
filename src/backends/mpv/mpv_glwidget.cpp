@@ -911,6 +911,8 @@ namespace dmr {
 #ifdef __x86_64__
             QWidget *topWidget = topLevelWidget();
             if(topWidget && (topWidget->isFullScreen())) {//全屏状态播放时更新显示进度
+                QVariant varShow = topWidget->property("showTimeFullScreen");
+                if(!varShow.isValid() || !varShow.toBool()) return;
                 QString time_text = QTime::currentTime().toString("hh:mm");
                 QRect rectTime = QRect(rect().width() - 90, 0, 90, 40);
                 QPainter painter;

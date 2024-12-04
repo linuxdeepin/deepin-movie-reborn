@@ -7,6 +7,7 @@
 
 void GenerateSettingTranslate()
 {
+    auto base_play_showTimeFullScreenText = QObject::tr("Display countdown in full screen mode");
     auto base_play_addsimilarText = QObject::tr("Auto add similar files to play");
     auto base_play_emptylistText = QObject::tr("Clear playlist when exit");
     auto base_play_showthumbnailmode = QObject::tr("Show thumbnails in progress bar");

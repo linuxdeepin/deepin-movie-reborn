@@ -126,6 +126,8 @@ Settings::Settings()
             emit hwaccelModeChanged(key, value);
         else if (key.startsWith("base.play.mute"))
             emit baseMuteChanged(key, value);
+        else if (key.startsWith("base.play.showTimeFullScreen"))
+            emit showTimeFullScreenChanged(key, value);
         else if (key.startsWith("base."))
             emit baseChanged(key, value);
         else if (key.startsWith("subtitle."))
@@ -244,6 +246,8 @@ Settings::Settings()
 QString Settings::flag2key(Settings::Flag f)
 {
     switch (f) {
+    case Settings::Flag::ShowTimeFullScreen:
+        return "showTimeFullScreen";
     case Settings::Flag::ClearWhenQuit:
         return "emptylist";
 #ifndef __aarch64__
