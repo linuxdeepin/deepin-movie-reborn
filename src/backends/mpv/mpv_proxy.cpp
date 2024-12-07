@@ -449,6 +449,11 @@ mpv_handle *MpvProxy::mpv_init()
                 my_set_property(pHandle, "vo", "vaapi");
                 my_set_property(pHandle, "hwdec", "vaapi");
                 m_sInitVo = "vaapi";
+
+                if (version >= 21) {    // bug: 285669
+                    my_set_property(pHandle, "vo", "gpu");
+                    m_sInitVo = "gpu";
+                }
             } else {
                 my_set_property(pHandle, "vo", "gpu");
                 m_sInitVo = "gpu";
@@ -462,7 +467,7 @@ mpv_handle *MpvProxy::mpv_init()
             m_sInitVo = "vaapi";
         }
 
-        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default") && !QFile::exists("/dev/mtgpu.0")) {
             my_set_property(pHandle, "hwdec", "no");
             my_set_property(pHandle, "vo", "x11");
             my_set_property(pHandle, "video-sync", "desync");
@@ -528,7 +533,7 @@ mpv_handle *MpvProxy::mpv_init()
             }
         }
 #endif
-        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default") && !QFile::exists("/dev/mtgpu.0")) {
             my_set_property(pHandle, "hwdec", "no");
             my_set_property(pHandle, "vo", "x11");
             my_set_property(pHandle, "video-sync", "desync");
@@ -886,6 +891,9 @@ void MpvProxy::handle_mpv_events()
                     .arg(my_get_property(m_handle, "video-dec-params/rotate").toInt())
                     .arg(my_get_property(m_handle, "video-params/rotate").toInt());
             m_bLoadMedia = false;
+            if(utils::check_wayland_env()) {
+                dmr::utils::switchToDefaultSink();
+            }
             break;
         }
         case MPV_EVENT_VIDEO_RECONFIG: {
@@ -1285,6 +1293,14 @@ void MpvProxy::refreshDecode()
                 if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
                     isSoftCodec = true;
                 }
+                auto codec = currentInfo.mi.videoCodec();
+                if (    codec.toLower().contains("mpeg") ||
+                        codec.toLower().contains("h264")  ||
+                        codec.toLower().contains("hevc")  ||
+                        codec.toLower().contains("vp")) {
+                    my_set_property(m_handle, "hwdec-codecs", codec.toLower());
+                    isSoftCodec = false;
+                }
             }
         }
         if (isSoftCodec) {
@@ -1334,12 +1350,18 @@ void MpvProxy::refreshDecode()
             my_set_property(m_handle, "hwdec", "vaapi");
         }
 
-        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default") && !QFile::exists("/dev/mtgpu.0")) {
             my_set_property(m_handle, "hwdec", "no");
             my_set_property(m_handle, "vo", "x11");
             my_set_property(m_handle, "video-sync", "desync");
             my_set_property(m_handle, "profile", "sw-fast");
             m_sInitVo = "x11";
+        }
+        if (!CompositingManager::get().composited()) {
+            if (CompositingManager::get().isSpecialControls()) {
+                my_set_property(m_handle, "hwdec","vaapi");
+                my_set_property(m_handle, "vo","vaapi");
+            }
         }
     } else { //3.设置硬解
 #ifndef _LIBDMR_
@@ -1397,7 +1419,7 @@ void MpvProxy::refreshDecode()
             my_set_property(m_handle, "hwdec", "vaapi");
         }
 
-        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+        if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default") && !QFile::exists("/dev/mtgpu.0")) {
             my_set_property(m_handle, "hwdec", "no");
             my_set_property(m_handle, "vo", "x11");
             my_set_property(m_handle, "video-sync", "desync");
@@ -1405,14 +1427,16 @@ void MpvProxy::refreshDecode()
             m_sInitVo = "x11";
         }
 
+        PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
+        PlayItemInfo currentInfo = playMode->currentInfo();
         if(utils::check_wayland_env()){
-            PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
-            PlayItemInfo currentInfo = playMode->currentInfo();
             QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
             if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
                 my_set_property(m_handle, "hwdec","no");
             }
         }
+        auto codec = currentInfo.mi.videoCodec();
+        my_set_property(m_handle, "hwdec-codecs", codec.toLower());
 
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
@@ -2009,7 +2033,9 @@ void MpvProxy::changehwaccelMode(hwaccelMode hwaccelMode)
 
 void MpvProxy::makeCurrent()
 {
-    m_pMpvGLwidget->makeCurrent();
+    if(m_pMpvGLwidget) {
+	    m_pMpvGLwidget->makeCurrent();
+    }
 }
 
 QVariant MpvProxy::getProperty(const QString &sName)

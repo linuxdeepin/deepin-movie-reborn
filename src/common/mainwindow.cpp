@@ -941,10 +941,24 @@ MainWindow::MainWindow(QWidget *parent)
     m_pPopupWid = new MessageWindow(this);
     m_pPopupWid->hide();
     defaultplaymodeinit();
-
+    m_bShowTime = Settings::get().internalOption("showTimeFullScreen").toBool();
+    setProperty("showTimeFullScreen", Settings::get().internalOption("showTimeFullScreen"));
     connect(&Settings::get(), &Settings::defaultplaymodechanged, this, &MainWindow::slotdefaultplaymodechanged);
     connect(&Settings::get(), &Settings::setDecodeModel, this, &MainWindow::onSetDecodeModel,Qt::DirectConnection);
     connect(&Settings::get(), &Settings::refreshDecode, this, &MainWindow::onRefreshDecode,Qt::DirectConnection);
+    connect(&Settings::get(), &Settings::showTimeFullScreenChanged, this, [&](const QString &key, const QVariant &value) {
+        if(value.isValid()) {
+            m_bShowTime = value.toBool();
+            setProperty("showTimeFullScreen", value);
+            //The X86 platform draws on GiWidget, and the MIPS platform does not need to draw
+            if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
+                if(m_pEngine && (m_pEngine->state() != PlayerEngine::Idle) && isFullScreen()) {
+                    m_pProgIndicator->setVisible(value.toBool());
+                    m_pFullScreenTimeLable->setVisible(value.toBool());
+                }
+            }
+        }
+    },Qt::DirectConnection);
     connect(m_pEngine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(m_pEngine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
@@ -994,8 +1008,40 @@ MainWindow::MainWindow(QWidget *parent)
             QRect deskRect = QApplication::desktop()->availableGeometry(geoRect.topLeft());
 
             if(!deskRect.intersects(geoRect)) {
-                move(deskRect.x(), deskRect.y());
+                m_pEngine->makeCurrent();
+                bool bMinState = isMinimized();
+                if(isMaximized()) {
+                    m_mwdRect = geoRect;
+                    m_bMaxByScreenRemoved = true;
+                } else {
+                    move(deskRect.x(), deskRect.y());
+                }
+                hide();
+                show();
+                if(bMinState) {
+                    showMinimized();
+                }
             }
+        });
+        connect(qApp, &QGuiApplication::screenAdded, this, [=](){
+            QTimer::singleShot(1000, this, [&]() {
+                m_pEngine->makeCurrent();
+                bool bMinState = isMinimized();
+                if(m_bMaxByScreenRemoved) {
+                    if(isMaximized()) {
+                        if(m_mwdRect.isValid()) {
+                            setGeometry(m_mwdRect);
+                        }
+                    }
+                }
+                hide();
+                show();
+                if(bMinState) {
+                    showMinimized();
+                }
+                m_bMaxByScreenRemoved = false;
+            });
+
         });
     }
     //解码初始化
@@ -1120,7 +1166,9 @@ void MainWindow::onWindowStateChanged()
 
     //The X86 platform draws on GiWidget, and the MIPS platform does not need to draw
     if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
-        m_pProgIndicator->setVisible(isFullScreen() && m_pEngine && m_pEngine->state() != PlayerEngine::Idle);
+        if(m_bShowTime) {
+            m_pProgIndicator->setVisible(isFullScreen() && m_pEngine && m_pEngine->state() != PlayerEngine::Idle);
+        }
     }
 
 #ifndef USE_DXCB
@@ -2094,7 +2142,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                         QRect deskRect = QApplication::desktop()->availableGeometry();
                         pixelsWidth = qMax(117, pixelsWidth);
                         m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
-                        m_pFullScreenTimeLable->show();
+                        if(m_bShowTime) {
+                            m_pFullScreenTimeLable->show();
+                        }
                     }
                 }
             }
@@ -3471,7 +3521,7 @@ void MainWindow::showEvent(QShowEvent *pEvent)
     QRect deskRect = QApplication::desktop()->availableGeometry(geoRect.topLeft());
 
     if(!deskRect.intersects(geoRect)) {
-        setGeometry(QRect(deskRect.x(), deskRect.y(), geoRect.width(), geoRect.width()));
+        setGeometry(QRect(deskRect.x(), deskRect.y(), geoRect.width(), geoRect.height()));
     }
     resumeToolsWindow();
 
@@ -4315,7 +4365,9 @@ void MainWindow::toggleUIMode()
                     QRect deskRect = QApplication::desktop()->availableGeometry();
                     pixelsWidth = qMax(117, pixelsWidth);
                     m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
-                    m_pFullScreenTimeLable->show();
+                    if(m_bShowTime) {
+                        m_pFullScreenTimeLable->show();
+                    }
                 }
             }
             setFocus();
