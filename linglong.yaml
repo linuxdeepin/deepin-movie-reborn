@@ -20,7 +20,7 @@ command:
 
 build: |
   cat /var/lib/dpkg/status|grep "^Package: " > ${PREFIX}/packages.list
-  bash ./install_dep linglong/sources "${PREFIX}"
+  bash ./install_dep linglong/sources "${PREFIX}" "libxcb1-dev"
   mv ${PREFIX}/lib/${TRIPLET}/blas/libblas.* ${PREFIX}/lib/${TRIPLET}
   mv ${PREFIX}/lib/${TRIPLET}/lapack/liblapack.* ${PREFIX}/lib/${TRIPLET}
 
