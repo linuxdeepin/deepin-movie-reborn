@@ -419,8 +419,8 @@ mpv_handle *MpvProxy::mpv_init()
         m_sInitVo = "gpu,x11";
 #elif defined (__aarch64__)
         if (!fi.exists() && !jmfi.exists()) { //2.1.1景嘉微
-            my_set_property(pHandle, "vo", "gpu,xv,x11");
-            m_sInitVo = "gpu,xv,x11";
+            my_set_property(pHandle, "vo", "x11,gpu,xv");
+            m_sInitVo = "x11,gpu,xv";
         }
         if (CompositingManager::get().isSpecialControls()) {
             my_set_property(pHandle, "hwdec", "vaapi");
