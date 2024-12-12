@@ -392,7 +392,7 @@ public slots:
      * @brief 音量改变槽函数
      */
     void slotVolumeChanged(int nVolume);
-    void slotWMChanged(QString msg);
+    void slotWMChanged();
     void slotMediaError();
     /**
      * @brief slotUpdateMircastState 更新投屏状态槽函数
@@ -582,7 +582,6 @@ private:
     MovieWidget *m_pMovieWidget;
     MircastShowWidget *m_pMircastShowWidget;          ///投屏展示界面
     qint64 m_nFullscreenTime;                         ///全屏操作间隔时间
-    QDBusInterface *m_pWMDBus {nullptr};              ///窗口特效dbus接口
     bool m_bIsWM {true};                              ///是否开启窗口特效
     bool m_isSettingMiniMode{false};                  ///mini mode setting status
     Qt::WindowStates m_preMiniWindowState {Qt::WindowNoState};  ///window state before mini mode

@@ -19,6 +19,7 @@
 #include <QThread>
 #include <DArrowRectangle>
 #include <DButtonBox>
+#include <DWindowManagerHelper>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QTimer>
@@ -179,10 +180,8 @@ public:
         bodyShadow->setOffset(0, 2.0);
 //        this->setGraphicsEffect(bodyShadow);
 
-        m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher","/com/deepin/WMSwitcher","com.deepin.WMSwitcher",QDBusConnection::sessionBus());
-        QDBusReply<QString> reply = m_pWMDBus->call("CurrentWM");
-        m_bIsWM = reply.value().contains("deepin wm");
-        connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
+        m_bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
+        connect(DWindowManagerHelper::instance(), &DWindowManagerHelper::hasBlurWindowChanged, this, &ToolTip::slotWMChanged);
     }
     virtual ~ToolTip() {}
 
@@ -199,13 +198,9 @@ public:
     }
 
 public slots:
-    void slotWMChanged(QString msg)
+    void slotWMChanged()
     {
-        if (msg.contains("deepin metacity")) {
-            m_bIsWM = false;
-        } else {
-            m_bIsWM = true;
-        }
+        m_bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
     }
 
 
@@ -276,7 +271,6 @@ private:
     bool m_bTheme;
     ThemeTYpe m_themeType;
     QString m_strText = nullptr;
-    QDBusInterface* m_pWMDBus {nullptr};
     bool m_bIsWM {false};
 };
 

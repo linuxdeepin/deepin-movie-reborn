@@ -392,16 +392,16 @@ TEST(MainWindow, DBus)
     MainWindow *w = dApp->getMainWindow();
     ApplicationAdaptor *appAdaptor = new ApplicationAdaptor(w);
     DBusUtils utils;
-    QVariant v = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                                     "com.deepin.daemon.Audio", "SinkInputs");
+    QVariant v = ApplicationAdaptor::redDBusProperty("org.deepin.dde.Audio1", "/org/deepin/dde/Audio1",
+                                                     "org.deepin.dde.Audio1", "SinkInputs");
     QVariant v_invalid = ApplicationAdaptor::redDBusProperty("com.test", "/test", "com.test", "SinkInputs");
     v_invalid = DBusUtils::redDBusProperty("com.test", "/test", "com.test", "SinkInputs");
 
     if (v.isValid()) {
         QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
         for (auto curPath : allSinkInputsList) {
-            QVariant name = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
-                                                                "com.deepin.daemon.Audio.SinkInput", "Name");
+            QVariant name = ApplicationAdaptor::redDBusProperty("org.deepin.dde.Audio1", curPath.path(),
+                                                                "org.deepin.dde.Audio1.SinkInput", "Name");
 
             QString strMovie = QObject::tr("Movie");
             if (!name.isValid() || (!name.toString().contains(strMovie, Qt::CaseInsensitive) && !name.toString().contains("deepin-movie", Qt::CaseInsensitive)))
@@ -412,11 +412,11 @@ TEST(MainWindow, DBus)
         }
     }
 
-    QVariant method = ApplicationAdaptor::redDBusMethod("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                                        "com.deepin.daemon.Audio", "SinkInputs");
+    QVariant method = ApplicationAdaptor::redDBusMethod("org.deepin.dde.Audio1", "/org/deepin/dde/Audio1",
+                                                        "org.deepin.dde.Audio1", "SinkInputs");
     QVariant method_invalid = ApplicationAdaptor::redDBusMethod("com.test", "/com/test", "com.test", "SinkInputs");
-    method = DBusUtils::redDBusMethod("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                      "com.deepin.daemon.Audio", "SinkInputs");
+    method = DBusUtils::redDBusMethod("org.deepin.dde.Audio1", "/org/deepin/dde/Audio1",
+                                      "org.deepin.dde.Audio1", "SinkInputs");
     method_invalid = DBusUtils::redDBusMethod("com.test", "/com/test", "com.test", "SinkInputs");
     appAdaptor->Raise();
     appAdaptor->openFile("/data/source/deepin-movie-reborn/movie/demo.mp4");

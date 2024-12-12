@@ -398,7 +398,7 @@ public slots:
      * @brief 音量改变槽函数
      */
     void slotVolumeChanged(int nVolume);
-    void slotWMChanged(QString msg);
+    void slotWMChanged();
     /**
      * @brief slotUpdateMircastState 更新投屏状态槽函数
      * @param state 投屏状态
