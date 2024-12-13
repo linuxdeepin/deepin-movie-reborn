@@ -13,8 +13,8 @@ Files: .gitignore
 Copyright: None
 License: CC0-1.0
 
-# xml toml json conf yaml sh
-Files:  *.toml *.json *.conf *.yaml *.sh
+# xml toml json conf yaml sh service
+Files:  *.toml *.json *.conf *.yaml *.sh *.service
 Copyright: None
 License: CC0-1.0
 
