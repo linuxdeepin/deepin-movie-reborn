@@ -39,7 +39,7 @@ public slots:
     void setBackground(QBrush background);
     void setRadius(int radius);
     void setBorderColor(QColor borderColor);
-    void slotWMChanged(QString msg);
+    void slotWMChanged();
 
 protected:
     virtual void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
@@ -53,7 +53,6 @@ private:
     QScopedPointer<TipPrivate> d_ptr;
     Q_DECLARE_PRIVATE_D(qGetPtrHelper(d_ptr), Tip)
     QString m_strText;
-    QDBusInterface* m_pWMDBus {nullptr};
     bool bIsWM {true};
 };
 }

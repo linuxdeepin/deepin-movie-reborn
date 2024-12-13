@@ -32,6 +32,7 @@
 #include <QDBusInterface>
 #include <DToolButton>
 #include <dthememanager.h>
+#include <DWindowManagerHelper>
 #include <iostream>
 #include "../accessibility/ac-deepin-movie-define.h"
 static const int LEFT_MARGIN = 10;
@@ -666,10 +667,8 @@ public:
         setObjectName("ThumbnailPreview");
         resize(0, 0);
 
-        m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher", "/com/deepin/WMSwitcher", "com.deepin.WMSwitcher", QDBusConnection::sessionBus());
-        QDBusReply<QString> reply = m_pWMDBus->call("CurrentWM");
-        m_bIsWM = reply.value().contains("deepin wm");
-        connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
+        m_bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
+        connect(DWindowManagerHelper::instance(), &DWindowManagerHelper::hasBlurWindowChanged, this, &ThumbnailPreview::slotWMChanged);
         if (m_bIsWM) {
             DStyle::setFrameRadius(this, 8);
         } else {
@@ -720,14 +719,13 @@ public:
         }
     }
 public slots:
-    void slotWMChanged(QString msg)
+    void slotWMChanged()
     {
-        if (msg.contains("deepin metacity")) {
-            m_bIsWM = false;
-            DStyle::setFrameRadius(this, 0);
-        } else {
-            m_bIsWM = true;
+        m_bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
+        if (m_bIsWM) {
             DStyle::setFrameRadius(this, 8);
+        } else {
+            DStyle::setFrameRadius(this, 0);
         }
     }
 
@@ -785,7 +783,6 @@ private:
     QImage m_thumbImg;
     int m_thumbnailFixed = 106;
     QGraphicsDropShadowEffect *m_shadow_effect{nullptr};
-    QDBusInterface *m_pWMDBus{nullptr};
     bool m_bIsWM{false};
 };
 

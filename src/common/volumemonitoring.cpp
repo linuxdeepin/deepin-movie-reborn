@@ -52,8 +52,8 @@ void VolumeMonitoring::stop()
 
 void VolumeMonitoring::timeoutSlot()
 {
-    QVariant v = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                            "com.deepin.daemon.Audio", "SinkInputs");
+    QVariant v = DBusUtils::redDBusProperty("org.deepin.dde.Audio1", "/org/deepin/dde/Audio1",
+                                            "org.deepin.dde.Audio1", "SinkInputs");
 
     if (!v.isValid())
         return;
@@ -62,8 +62,8 @@ void VolumeMonitoring::timeoutSlot()
 
     QString sinkInputPath;
     for (auto curPath : allSinkInputsList) {
-        QVariant nameV = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
-                                                    "com.deepin.daemon.Audio.SinkInput", "Name");
+        QVariant nameV = DBusUtils::redDBusProperty("org.deepin.dde.Audio1", curPath.path(),
+                                                    "org.deepin.dde.Audio1.SinkInput", "Name");
 
         QString movieStr = QObject::tr("Movie");
         if (!nameV.isValid() || (!nameV.toString().contains( movieStr, Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
@@ -75,20 +75,20 @@ void VolumeMonitoring::timeoutSlot()
     if (sinkInputPath.isEmpty())
         return;
 
-    QDBusInterface ainterface("com.deepin.daemon.Audio", sinkInputPath,
-                              "com.deepin.daemon.Audio.SinkInput",
+    QDBusInterface ainterface("org.deepin.dde.Audio1", sinkInputPath,
+                              "org.deepin.dde.Audio1.SinkInput",
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
         return ;
     }
 
     //获取音量
-    QVariant volumeV = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
-                                                  "com.deepin.daemon.Audio.SinkInput", "Volume");
+    QVariant volumeV = DBusUtils::redDBusProperty("org.deepin.dde.Audio1", sinkInputPath,
+                                                  "org.deepin.dde.Audio1.SinkInput", "Volume");
 
     //获取音量
-    QVariant muteV = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
-                                                "com.deepin.daemon.Audio.SinkInput", "Mute");
+    QVariant muteV = DBusUtils::redDBusProperty("org.deepin.dde.Audio1", sinkInputPath,
+                                                "org.deepin.dde.Audio1.SinkInput", "Mute");
 
     // int temp = volumeV.toDouble();
     int volume = static_cast<int>(volumeV.toDouble() * 100);

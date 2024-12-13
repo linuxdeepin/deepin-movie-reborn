@@ -45,6 +45,7 @@
 #include <DSettingsWidgetFactory>
 #include <DLineEdit>
 #include <DFileDialog>
+#include <DWindowManagerHelper>
 #include <X11/cursorfont.h>
 #include <X11/Xlib.h>
 #include "moviewidget.h"
@@ -1091,11 +1092,9 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
 
 #endif
 
-    m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher", "/com/deepin/WMSwitcher", "com.deepin.WMSwitcher", QDBusConnection::sessionBus());
-    QDBusReply<QString> reply_string = m_pWMDBus->call("CurrentWM");
-    m_bIsWM = reply_string.value().contains("deepin wm");
+    m_bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
     m_pCommHintWid->setWM(m_bIsWM);
-    connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
+    connect(DWindowManagerHelper::instance(), &DWindowManagerHelper::hasBlurWindowChanged, this, &Platform_MainWindow::slotWMChanged);
 
     m_pAnimationlable = new Platform_AnimationLabel(this, this);
     m_pAnimationlable->setWM(m_bIsWM);
@@ -1133,8 +1132,8 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     m_pDBus = new QDBusInterface("org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", QDBusConnection::systemBus());
     connect(m_pDBus, SIGNAL(PrepareForSleep(bool)), this, SLOT(sleepStateChanged(bool)));
 
-    QDBusConnection::sessionBus().connect("com.deepin.dde.shutdownFront", "/com/deepin/dde/lockFront",
-                                          "com.deepin.dde.lockFront", "Visible", this,
+    QDBusConnection::sessionBus().connect("org.deepin.dde.ShutdownFront1", "/org/deepin/dde/lockFront1",
+                                          "org.deepin.dde.lockFront1", "Visible", this,
                                           SLOT(lockStateChanged(bool)));
 
     m_pMovieWidget = new MovieWidget(this);
@@ -3526,13 +3525,9 @@ void Platform_MainWindow::slotVolumeChanged(int nVolume)
     }
 }
 
-void Platform_MainWindow::slotWMChanged(QString msg)
+void Platform_MainWindow::slotWMChanged()
 {
-    if (msg.contains("deepin metacity")) {
-        m_bIsWM = false;
-    } else {
-        m_bIsWM = true;
-    }
+    m_bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
 
     m_pAnimationlable->setWM(m_bIsWM);
     m_pCommHintWid->setWM(m_bIsWM);

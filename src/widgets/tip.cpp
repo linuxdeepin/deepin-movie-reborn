@@ -18,6 +18,7 @@
 #include <DUtil>
 #include <dthememanager.h>
 #include <DLabel>
+#include <DWindowManagerHelper>
 
 DWIDGET_USE_NAMESPACE
 namespace dmr {
@@ -92,10 +93,8 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     bodyShadow->setOffset(0, 2.0);
     hide();
 
-    m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher","/com/deepin/WMSwitcher","com.deepin.WMSwitcher",QDBusConnection::sessionBus());
-    QDBusReply<QString> reply = m_pWMDBus->call("CurrentWM");
-    bIsWM = reply.value().contains("deepin wm");
-    connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
+    bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
+    connect(DWindowManagerHelper::instance(), &DWindowManagerHelper::hasBlurWindowChanged, this, &Tip::slotWMChanged);
 }
 
 Tip::~Tip()
@@ -154,13 +153,9 @@ void Tip::setBorderColor(QColor borderColor)
     d->borderColor = borderColor;
 }
 
-void Tip::slotWMChanged(QString msg)
+void Tip::slotWMChanged()
 {
-    if (msg.contains("deepin metacity")) {
-        bIsWM = false;
-    } else {
-        bIsWM = true;
-    }
+    bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
 }
 
 void Tip::pop(QPoint center)
