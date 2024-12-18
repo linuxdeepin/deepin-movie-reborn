@@ -63,7 +63,6 @@ private:
 
 private:
     MainWindow *m_pMainWindow;    ///主窗口指针
-    QTime m_oldTime;              ///记录上次播放时的时间
 };
 
 

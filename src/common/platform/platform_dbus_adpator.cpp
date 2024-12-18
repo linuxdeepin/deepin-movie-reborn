@@ -15,19 +15,12 @@ Platform_ApplicationAdaptor::Platform_ApplicationAdaptor(Platform_MainWindow *pM
     initMember();
 
     m_pMainWindow = pMainWid;
-
-    m_oldTime = QTime::currentTime();
 }
 
 //cppcheck 单元测试 wayland下再用
 void Platform_ApplicationAdaptor::openFiles(const QStringList &listFiles)
 {
-    // 快速点击，播放不正常问题
-    QTime current = QTime::currentTime();
-    if (abs(m_oldTime.msecsTo(current)) > 800) {
-        m_oldTime = current;
-        m_pMainWindow->play(listFiles);
-    }
+    m_pMainWindow->play(listFiles);
 }
 
 //cppcheck 单元测试在用
@@ -47,12 +40,7 @@ void Platform_ApplicationAdaptor::openFile(const QString &sFile)
     } else {
         url = QUrl::fromLocalFile(sFile);
     }
-
-    QTime current = QTime::currentTime();
-    if (abs(m_oldTime.msecsTo(current)) > 800) {
-        m_oldTime = current;
-        m_pMainWindow->play({url.toString()});
-    }
+    m_pMainWindow->play({url.toString()});
 }
 
 void Platform_ApplicationAdaptor::funOpenFile(const QString &sFile)
