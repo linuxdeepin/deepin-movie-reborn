@@ -1281,7 +1281,9 @@ bool Platform_MainWindow::event(QEvent *pEvent)
     if (pEvent->type() == QEvent::WindowDeactivate) {
         m_pCommHintWid->hide();
     }
-
+    if (pEvent->type() == QEvent::Enter) {
+        m_bMouseMoved = false;
+    }
     return DMainWindow::event(pEvent);
 }
 
@@ -3867,6 +3869,10 @@ void Platform_MainWindow::moveEvent(QMoveEvent *pEvent)
     QPoint relativePoint = mapToGlobal(QPoint(0, 0));
     m_pToolbox->updateSliderPoint(relativePoint);
     updateGeometryNotification(geometry().size());
+    xcb_generic_event_t *event = xcb_wait_for_event(QX11Info::connection());
+    if((event->response_type & ~0x80) != XCB_CONFIGURE_NOTIFY) {
+        m_bMouseMoved = false;
+    }
 }
 
 void Platform_MainWindow::keyPressEvent(QKeyEvent *pEvent)
