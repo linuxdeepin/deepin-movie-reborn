@@ -1443,7 +1443,9 @@ bool Platform_MainWindow::event(QEvent *pEvent)
         qDebug() << "Platform_MainWindow event WindowDeactivate";
         m_pCommHintWid->hide();
     }
-
+    if (pEvent->type() == QEvent::Enter) {
+        m_bMouseMoved = false;
+    }
     return DMainWindow::event(pEvent);
 }
 
