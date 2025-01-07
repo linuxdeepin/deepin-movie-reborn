@@ -47,7 +47,9 @@ public:
 Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     : QFrame(parent), d_ptr(new TipPrivate(this))
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     DThemeManager::instance()->registerWidget(this);
+#endif
     Q_D(Tip);
 
     setAttribute(Qt::WA_DeleteOnClose);
@@ -102,12 +104,21 @@ Tip::~Tip()
 
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)  
 void Tip::enterEvent(QEvent *e)
 {
     hide();
 
     QFrame::enterEvent(e);
 }
+#else
+void Tip::enterEvent(QEnterEvent *e)
+{
+    hide();
+
+    QFrame::enterEvent(e);
+}
+#endif
 
 QBrush Tip::background() const
 {
@@ -172,12 +183,16 @@ void Tip::paintEvent(QPaintEvent *)
     Q_D(Tip);
 
     QPainter painter(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+#else
+    painter.setRenderHint(QPainter::Antialiasing);
+#endif
     auto radius = d->radius;
     auto penWidthf = 1.0;
     const QPalette pal = QGuiApplication::palette();//this->palette();
     QColor background = pal.color(QPalette::ToolTipBase);
-    DPalette pa_name = DApplicationHelper::instance()->palette(d->textLable);
+    DPalette pa_name = DGuiApplicationHelper::instance()->palette(d->textLable);
     pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
     pa_name.setBrush(DPalette::ToolTipText, pa_name.color(DPalette::ToolTipText));
     d->textLable->setForegroundRole(DPalette::Text);

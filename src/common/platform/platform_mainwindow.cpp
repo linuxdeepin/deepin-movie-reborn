@@ -29,18 +29,42 @@
 #include "filefilter.h"
 #include "eventlogutils.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QDesktopWidget>
+#else
+#include <QGuiApplication>
+#include <QScreen>
+#endif
+
 //#include <QtWidgets>
 #include <QtDBus>
-#include <QtX11Extras>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QX11Info>
+#include <QtX11Extras>
+#else
+#include <QtGui/private/qtx11extras_p.h>
+#include <QtGui/private/qtguiglobal_p.h>
+#endif
+
 #include <DLabel>
 #include <DApplication>
 #include <DTitlebar>
 #include <DSettingsDialog>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DThemeManager>
+#endif
+
 #include <DAboutDialog>
 #include <DInputDialog>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DImageButton>
+#else
+#include <QPushButton>  // 使用 QPushButton 作为替代
+#endif
+
 #include <DWidgetUtil>
 #include <DSettingsWidgetFactory>
 #include <DLineEdit>
@@ -84,7 +108,9 @@ const char kAtomNameWmSkipPager[] = "_NET_WM_STATE_SKIP_PAGER";
 
 #define AUTOHIDE_TIMEOUT 2000
 #define AUTOHIDE_TIME_PAD 5000   //time of the toolbox auto hide
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DToast>
+#endif
 DWIDGET_USE_NAMESPACE
 
 using namespace dmr;
@@ -838,7 +864,13 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
 
     // mini ui
     QSignalMapper *pSignalMapper = new QSignalMapper(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    // Qt5版本使用mapped信号
     connect(pSignalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped), this, &Platform_MainWindow::miniButtonClicked);
+#else
+    // Qt6版本使用mappedString信号
+    connect(pSignalMapper, &QSignalMapper::mappedString, this, &Platform_MainWindow::miniButtonClicked); 
+#endif
 
     m_pMiniPlayBtn = new DIconButton(this);
     m_pMiniQuitMiniBtn = new DIconButton(this);
@@ -1309,8 +1341,17 @@ void Platform_MainWindow::onWindowStateChanged()
         m_pAnimationlable->hide();
     }
     if (isMaximized()) {
-        m_pAnimationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - 100
-                                       , QApplication::desktop()->availableGeometry().height() / 2 - 100));
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        m_pAnimationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - 100,
+                                     QApplication::desktop()->availableGeometry().height() / 2 - 100));
+#else
+        QScreen *screen = window()->screen();
+        if (screen) {
+            QRect availableGeometry = screen->availableGeometry();
+            m_pAnimationlable->move(QPoint(availableGeometry.width() / 2 - 100,
+                                         availableGeometry.height() / 2 - 100));
+        }
+#endif
     }
     if (!isFullScreen() && !isMaximized() && !m_bMiniMode) {
         m_pAnimationlable->move(QPoint((m_lastRectInNormalMode.width() - m_pAnimationlable->width()) / 2,
@@ -2225,8 +2266,17 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
             reflectActionToUI(actionKind);
         }
         if (isFullScreen()) {
-            m_pAnimationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - m_pAnimationlable->width() / 2
-                                           , QApplication::desktop()->availableGeometry().height() / 2 - m_pAnimationlable->height() / 2));
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+             m_pAnimationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - m_pAnimationlable->width() / 2,
+                                  QApplication::desktop()->availableGeometry().height() / 2 - m_pAnimationlable->height() / 2));
+#else
+            QScreen *screen = window()->screen();
+            if (screen) {
+                QRect availableGeometry = screen->availableGeometry();
+                m_pAnimationlable->move(QPoint(availableGeometry.width() / 2 - m_pAnimationlable->width() / 2,
+                                            availableGeometry.height() / 2 - m_pAnimationlable->height() / 2));
+            }
+#endif
         } else {
             m_pAnimationlable->move(QPoint((width() - m_pAnimationlable->width()) / 2,
                                            (height() - m_pAnimationlable->height()) / 2));
@@ -3235,7 +3285,11 @@ void Platform_MainWindow::resumeToolsWindow()
         }
     } else {
 	    //迷你模式根据半屏模式显示控件
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         int nScreenHeight = QApplication::desktop()->availableGeometry().height();
+#else
+        int nScreenHeight = QGuiApplication::primaryScreen()->availableGeometry().height();
+#endif
         QRect rt = rect();
         if(rt.height() >= nScreenHeight-100){
             m_pMiniPlayBtn->setVisible(false);
@@ -3480,11 +3534,20 @@ void Platform_MainWindow::slotFontChanged(const QFont &/*font*/)
 {
     if (CompositingManager::get().platform() != Platform::Mips) {
         QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         m_pToolbox->getfullscreentimeLabel()->setMinimumWidth(fm.width(m_pToolbox->getfullscreentimeLabel()->text()));
         m_pToolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.width(m_pToolbox->getfullscreentimeLabelend()->text()));
+#else
+        m_pToolbox->getfullscreentimeLabel()->setMinimumWidth(fm.horizontalAdvance(m_pToolbox->getfullscreentimeLabel()->text()));
+        m_pToolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.horizontalAdvance(m_pToolbox->getfullscreentimeLabelend()->text()));
+#endif
 
         int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QRect deskRect = QApplication::desktop()->availableGeometry();
+#else
+        QRect deskRect = QGuiApplication::primaryScreen()->availableGeometry();
+#endif
         m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
     }
 }
@@ -3657,11 +3720,17 @@ void Platform_MainWindow::closeEvent(QCloseEvent *pEvent)
 
 void Platform_MainWindow::wheelEvent(QWheelEvent *pEvent)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if (insideToolsArea(pEvent->pos()) || insideResizeArea(pEvent->globalPos()))
         return;
-
     if (m_pToolbox->isInMircastWidget(pEvent->pos()))
         return;
+#else
+    if (insideToolsArea(pEvent->position().toPoint()) || insideResizeArea(pEvent->globalPosition().toPoint()))
+        return;
+    if (m_pToolbox->isInMircastWidget(pEvent->position().toPoint()))
+        return;
+#endif
 
     if (m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::Opened) {
         pEvent->ignore();
@@ -3735,7 +3804,8 @@ void Platform_MainWindow::resizeByConstraints(bool bForceCentered)
         qInfo() << mi.width << mi.height;
     }
 
-    auto geom = qApp->desktop()->availableGeometry(this);
+    auto geom = QGuiApplication::primaryScreen()->availableGeometry();
+    
     if (vidoeSize.width() > geom.width() || vidoeSize.height() > geom.height()) {
         vidoeSize.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
     }
@@ -3747,7 +3817,11 @@ void Platform_MainWindow::resizeByConstraints(bool bForceCentered)
     if (bForceCentered) {
         QRect r;
         r.setSize(vidoeSize);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         r.moveTopLeft({(geom.width() - r.width()) / 2, (geom.height() - r.height()) / 2});
+#else
+        r.moveTopLeft(QPoint((geom.width() - r.width()) / 2, (geom.height() - r.height()) / 2));
+#endif
     }
 }
 
@@ -3837,7 +3911,11 @@ void Platform_MainWindow::resizeEvent(QResizeEvent *pEvent)
     QPoint relativePoint = mapToGlobal(QPoint(0, 0));
     m_pToolbox->updateSliderPoint(relativePoint);
     if(m_bMiniMode) { //迷你模式显示与半屏模式处理
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         int nScreenHeight = QApplication::desktop()->availableGeometry().height();
+#else
+        int nScreenHeight = QGuiApplication::primaryScreen()->availableGeometry().height();
+#endif
         QRect rt = rect();
         if(rt.height() >= nScreenHeight-100){
             m_pMiniPlayBtn->setVisible(false);
@@ -4247,7 +4325,7 @@ void Platform_MainWindow::subtitleMatchVideo(const QString &sFileName)
     QFileInfoList list = dir.entryInfoList();
     for (int i = 0; i < list.size(); ++i) {
         QFileInfo info = list.at(i);
-        qInfo() << info.absoluteFilePath() << endl;
+        qInfo() << info.absoluteFilePath();
 //        if (info.completeBaseName() == subfileInfo.completeBaseName()) {
         if (subfileInfo.fileName().contains(info.completeBaseName())) {
             sVideoName = info.absoluteFilePath();
@@ -4388,7 +4466,11 @@ void Platform_MainWindow::paintEvent(QPaintEvent *pEvent)
 void Platform_MainWindow::toggleUIMode()
 {
     //判断窗口是否靠边停靠（靠边停靠不支持MINI模式）thx
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QRect deskrect = QApplication::desktop()->availableGeometry();
+#else
+    QRect deskrect = QGuiApplication::primaryScreen()->availableGeometry();
+#endif
     QPoint windowPos = pos();
     if (this->geometry() != deskrect) {
         if (windowPos.x() == 0 && (windowPos.y() == 0 ||
@@ -4417,7 +4499,11 @@ void Platform_MainWindow::toggleUIMode()
     if (m_bMiniMode) {
         m_pTitlebar->titlebar()->setDisableFlags(Qt::WindowMaximizeButtonHint);
     } else {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         m_pTitlebar->titlebar()->setDisableFlags(nullptr);
+#else
+        m_pTitlebar->titlebar()->setDisableFlags(Qt::WindowFlags());
+#endif
     }
 
     m_pTitlebar->setVisible(!m_bMiniMode);
@@ -4489,7 +4575,12 @@ void Platform_MainWindow::toggleUIMode()
             geom.moveTo(geom.x(), 0);
         }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        QRect deskGeom = QGuiApplication::primaryScreen()->availableGeometry();
+#else
         QRect deskGeom = qApp->desktop()->availableGeometry(this);
+#endif
+
         move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
         resize(geom.width(), geom.height());
 
@@ -4690,7 +4781,7 @@ void Platform_MainWindow::lockStateChanged(bool bLock)
     } else if (!bLock && m_pEngine->state() == PlayerEngine::CoreState::Paused && m_bStateInLock) {
         m_bStateInLock = false;
         QTimer::singleShot(500, [=](){
-            //龙芯5000使用命令sudo rtcwake -l -m mem -s 20, 待机唤醒后无dBus信号“PrepareForSleep”发出,加入seek保证解锁后播放不会卡帧
+            //龙芯5000使用命令sudo rtcwake -l -m mem -s 20, 待机唤醒后无dBus信号"PrepareForSleep"发出,加入seek保证解锁后播放不会卡帧
             m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));
             requestAction(ActionFactory::ActionKind::TogglePause);
         });

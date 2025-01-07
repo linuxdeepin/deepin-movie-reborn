@@ -366,7 +366,11 @@ void VolumeSlider::leaveEvent(QEvent *e)
 void VolumeSlider::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QColor bgColor = this->palette().background().color();
+#else
+    QColor bgColor = this->palette().window().color();
+#endif
     if(CompositingManager::get().platform() != Platform::X86) {
         QRect rect = this->rect();
                 rect.setTopLeft(QPoint(1, 1));
@@ -379,7 +383,11 @@ void VolumeSlider::paintEvent(QPaintEvent *)
         const qreal height = this->height() - triHeight;
         const qreal width = this->width();
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+#else
+        painter.setRenderHints(QPainter::Antialiasing);
+#endif
 
         // 背景上矩形
         //这里要一次绘制不然中间会出现虚线

@@ -10,7 +10,6 @@
 
 #include <QtWidgets>
 #include <DSlider>
-#include <DImageButton>
 DWIDGET_USE_NAMESPACE
 namespace dmr {
 /**
@@ -94,7 +93,11 @@ protected:
      * @brief enterEvent 鼠标进入事件函数
      * @param pEvent 事件
      */
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent(QEvent *pEvent) override;
+#else
+    void enterEvent(QEnterEvent *pEvent) override;
+#endif
     /**
      * @brief wheelEvent 鼠标滚轮事件函数
      * @param pWheelEvent 鼠标滚轮事件

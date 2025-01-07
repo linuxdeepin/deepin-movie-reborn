@@ -8,7 +8,7 @@
 #pragma once
 
 #include <QScopedPointer>
-#include <QMap>
+    #include <QMap>
 #include <QVariant>
 
 #include <DPushButton>
@@ -23,6 +23,17 @@ class VideoBoxButton : public DButtonBoxButton
         QString hoverPicPath;
         QString pressPicPath;
         QString checkedPicPath;
+    };
+
+    struct QVariantCompare {
+        bool operator()(const QVariant& v1, const QVariant& v2) const {
+            return v1.toString() < v2.toString();
+        }
+    };
+
+    struct PropertyPicPaths {
+        QString first;
+        std::map<QVariant, VideoPicPathInfo, QVariantCompare> second;  // 使用自定义比较器
     };
 
     Q_OBJECT
@@ -43,17 +54,21 @@ public:
 
 protected:
     //void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
-    void enterEvent(QEvent *event) Q_DECL_OVERRIDE;
-    void leaveEvent(QEvent *event) Q_DECL_OVERRIDE;
-    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-    void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    void enterEvent(QEvent *event) override;
+#else
+    void enterEvent(QEnterEvent *event) override;
+#endif
+    void leaveEvent(QEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     char                                               status                  = 0;
     bool                                               autoChecked             = false;
     VideoPicPathInfo                                   defaultPicPath;
     bool                                               transparent             = true;
-    QPair<QString, QMap<QVariant, VideoPicPathInfo> >  propertyPicPaths;
+    PropertyPicPaths                                   propertyPicPaths;
 };
 
 

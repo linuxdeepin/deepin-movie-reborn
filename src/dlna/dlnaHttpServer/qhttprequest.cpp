@@ -43,7 +43,11 @@ const QString QHttpRequest::path() const
 
 const QString QHttpRequest::methodString() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     return MethodToString(method());
+#else
+    return MethodToString(m_method);
+#endif
 }
 
 QHttpRequest::HttpMethod QHttpRequest::method() const
@@ -69,8 +73,10 @@ void QHttpRequest::storeBody()
 
 QString QHttpRequest::MethodToString(HttpMethod method)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     int index = staticMetaObject.indexOfEnumerator("HttpMethod");
     return staticMetaObject.enumerator(index).valueToKey(method);
+#endif
 }
 
 void QHttpRequest::appendBody(const QByteArray &body)

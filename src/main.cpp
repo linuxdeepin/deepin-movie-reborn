@@ -12,7 +12,11 @@
 #include <DMainWindow>
 #include <DApplication>
 #include <DWidgetUtil>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DApplicationSettings>
+#endif
+
 #include <qsettingbackend.h>
 
 #include "config.h"
@@ -38,6 +42,14 @@
 #include <va/va_x11.h>
 
 #include "accessibility/acobjectlist.h"
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QX11Info>
+#else
+#include <QtGui/private/qtx11extras_p.h>
+#include <QtGui/private/qtguiglobal_p.h>
+#endif
+
 DWIDGET_USE_NAMESPACE
 
 bool runSingleInstance()
@@ -158,7 +170,11 @@ void killOldMovie()
     QDateTime earliestStartTime;
 
     for (const QString &line : lines) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QStringList parts = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+#else
+        QStringList parts = line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+#endif
         if (parts.size() < 3) continue;
         if (!parts[6].startsWith("deepin-movie")) continue;
 
@@ -268,7 +284,10 @@ int main(int argc, char *argv[])
     app->setApplicationVersion(DApplication::buildVersion(VERSION));
 
     //save theme
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    // qt6中自动设置了，如果不想要记住主题的话， DGuiApplicationHelper：：setAttribute（DontSaveApplicationTheme）
     DApplicationSettings saveTheme;
+#endif
 
     qInfo() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
     auto &clm = dmr::CommandLineManager::get();
@@ -297,7 +316,7 @@ int main(int argc, char *argv[])
     if (clm.debug()) {
         Dtk::Core::DLogManager::registerConsoleAppender();
     }
-    Dtk::Core::DLogManager::registerFileAppender();
+    // Dtk::Core::DLogManager::registerFileAppender();
 
     dmr::Settings::get().crashCheck();
 
@@ -356,7 +375,11 @@ int main(int argc, char *argv[])
 //    app.setApplicationVersion(DApplication::buildVersion("20190830"));
     MovieConfiguration::get().init();
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QRegExp url_re("\\w+://");
+#else
+    QRegularExpression url_re("\\w+://");
+#endif
 
     if (CompositingManager::get().composited()) {
         dmr::MainWindow mw;

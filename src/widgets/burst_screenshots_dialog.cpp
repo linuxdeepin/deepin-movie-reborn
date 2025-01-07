@@ -8,7 +8,9 @@
 #include "dmr_settings.h"
 #include "utils.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DThemeManager>
+#endif
 
 DWIDGET_USE_NAMESPACE
 
@@ -155,13 +157,21 @@ void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>>
         if (sizeMode == DGuiApplicationHelper::NormalMode) {
             pThumbnailFrame->setFixedSize(178, 100);
             auto pixmap = pThumbnailFrame->pixmap();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             auto new_pix = pixmap->scaled(178, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+#else
+            auto new_pix = pixmap.scaled(178, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+#endif
 //            new_pix = utils::MakeRoundedPixmap(QSize(180, 102), new_pix, 2, 2, frame.second);
             pThumbnailFrame->setPixmap(new_pix);
         } else {
             pThumbnailFrame->setFixedSize(118, 67);
             auto pixmap = pThumbnailFrame->pixmap();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             auto new_pix = pixmap->scaled(118, 67, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+#else
+            auto new_pix = pixmap.scaled(118, 67, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+#endif
 //            new_pix = utils::MakeRoundedPixmap(QSize(120, 69), new_pix, 2, 2, frame.second);
             pThumbnailFrame->setPixmap(new_pix);
         }

@@ -373,7 +373,11 @@ void Platform_VolumeSlider::leaveEvent(QEvent *e)
 void Platform_VolumeSlider::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QColor bgColor = this->palette().background().color();
+#else
+    QColor bgColor = this->palette().window().color();
+#endif
     painter.fillRect(rect(), bgColor);
 }
 

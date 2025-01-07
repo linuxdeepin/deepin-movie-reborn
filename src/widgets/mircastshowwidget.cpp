@@ -17,7 +17,14 @@
 #include <QTextCursor>
 #include <QMouseEvent>
 #include <QApplication>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QDesktopWidget>
+#else
+#include <QGuiApplication>
+#include <QScreen>
+#endif
+
 
 #define DEFAULT_BGWIDTH 410
 #define DEFAULT_BGHEIGHT 287
@@ -117,7 +124,11 @@ void MircastShowWidget::updateView()
 
     nWidth = rect().width();
     nHeight = rect().height();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     rectDesktop = qApp->desktop()->availableGeometry(this);
+#else
+    rectDesktop = QGuiApplication::primaryScreen()->availableGeometry();
+#endif
 
     //根据比例缩放背景
     if (1.0f * nHeight / nWidth < DEFAULT_RATION) {
@@ -168,12 +179,21 @@ ExitButton::ExitButton(QWidget *parent)
     m_svgWidget->show();
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void ExitButton::enterEvent(QEvent *pEvent)
 {
     Q_UNUSED(pEvent);
     m_state = Hover;
     update();
 }
+#else
+void ExitButton::enterEvent(QEnterEvent *pEvent)
+{
+    Q_UNUSED(pEvent);
+    m_state = Hover;
+    update();
+}
+#endif
 
 void ExitButton::leaveEvent(QEvent *pEvent)
 {

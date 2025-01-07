@@ -8,6 +8,12 @@
 #include <QtWidgets>
 #include <QPainterPath>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QDesktopWidget>
+#else
+#include <QScreen>	
+#endif
+
 namespace dmr {
 namespace utils {
 using namespace std;
@@ -113,8 +119,10 @@ QFileInfoList FindSimilarFiles(const QFileInfo &fi)
 
 bool CompareNames(const QString &fileName1, const QString &fileName2)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     static QRegExp rd("\\d+");
     int pos = 0;
+    
     while ((pos = rd.indexIn(fileName1, pos)) != -1) {
         auto inc = rd.matchedLength();
         auto id1 = fileName1.midRef(pos, inc);
@@ -122,7 +130,6 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
         auto pos2 = rd.indexIn(fileName2, pos);
         if (pos == pos2) {
             auto id2 = fileName2.midRef(pos, rd.matchedLength());
-            //qInfo() << "id compare " << id1 << id2;
             if (id1 != id2) {
                 bool ok1, ok2;
                 bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
@@ -130,10 +137,36 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
                 return id1.localeAwareCompare(id2) < 0;
             }
         }
-
         pos += inc;
     }
     return fileName1.localeAwareCompare(fileName2) < 0;
+
+#else
+    static QRegularExpression rd("\\d+");
+    QRegularExpressionMatchIterator i = rd.globalMatch(fileName1);
+    int pos = 0;
+    
+    while (i.hasNext()) {
+        QRegularExpressionMatch match = i.next();
+        pos = match.capturedStart();
+        auto inc = match.capturedLength();
+        auto id1 = fileName1.mid(pos, inc);
+
+        auto match2 = rd.match(fileName2, pos);
+        auto pos2 = match2.capturedStart();
+        if (pos == pos2) {
+            auto id2 = fileName2.mid(pos2, match2.capturedLength());
+            if (id1 != id2) {
+                bool ok1, ok2;
+                bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
+                if (ok1 && ok2) return v;
+                return id1.localeAwareCompare(id2) < 0;
+            }
+        }
+        pos += inc;
+    }
+    return fileName1.localeAwareCompare(fileName2) < 0;
+#endif
 }
 
 bool first_check_wayland_env()
@@ -207,9 +240,16 @@ QString FullFileHash(const QFileInfo &fi)
 
 QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QMatrix matrix;
     matrix.rotate(rotation);
     pm = pm.transformed(matrix, Qt::SmoothTransformation);
+#else
+    // QMatrix类被移除了，需要使用QTransform来代替
+    QTransform transform;
+    transform.rotate(rotation);
+    pm = pm.transformed(transform, Qt::SmoothTransformation);
+#endif
 
     auto dpr = pm.devicePixelRatio();
     QPixmap dest(pm.size());
@@ -340,8 +380,16 @@ void UnInhibitPower(uint32_t cookie)
 
 void MoveToCenter(QWidget *w)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QDesktopWidget *dw = QApplication::desktop();
     QRect r = dw->availableGeometry(w);
+#else
+    QScreen *screen = QGuiApplication::primaryScreen();
+    if (w && w->screen()) {
+        screen = w->screen();
+    }
+    QRect r = screen->availableGeometry();
+#endif
 
     w->move(r.center() - w->rect().center());
 }

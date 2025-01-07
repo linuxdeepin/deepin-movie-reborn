@@ -8,7 +8,10 @@
  */
 #include "slider.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DThemeManager>
+#endif
+
 #include <DApplication>
 #include <QProcess>
 
@@ -163,6 +166,7 @@ void DMRSlider::forceLeave()
  * @brief enterEvent 鼠标进入事件函数
  * @param pEvent 事件
  */
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void DMRSlider::enterEvent(QEvent *pEvent)
 {
     if (m_bIndicatorEnabled) {
@@ -175,6 +179,14 @@ void DMRSlider::enterEvent(QEvent *pEvent)
     emit enter();
     pEvent->accept();
 }
+#else
+void DMRSlider::enterEvent(QEnterEvent *pEvent)
+{
+    emit enter();
+    pEvent->accept();
+}
+#endif
+
 /**
  * @brief wheelEvent 鼠标滚轮事件函数
  * @param pWheelEvent 鼠标滚轮事件

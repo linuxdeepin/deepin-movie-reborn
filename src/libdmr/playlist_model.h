@@ -7,7 +7,7 @@
 
 #include <QtWidgets>
 //#include <QtConcurrent>
-#include <DApplicationHelper>
+#include <DGuiApplicationHelper>
 #include <DGuiApplicationHelper>
 #include <libffmpegthumbnailer/videothumbnailerc.h>
 

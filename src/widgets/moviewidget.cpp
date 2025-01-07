@@ -8,7 +8,6 @@
  */
 #include <QTimer>
 #include <QApplication>
-#include <QDesktopWidget>
 #include "compositing_manager.h"
 
 #include "moviewidget.h"
@@ -100,7 +99,11 @@ void MovieWidget::updateView()
 
     nWidth = rect().width();
     nHeight = rect().height();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     rectDesktop = qApp->desktop()->availableGeometry(this);
+#else
+    rectDesktop = QGuiApplication::primaryScreen()->availableGeometry();
+#endif
 
     //根据比例缩放背景
     if (1.0f * nHeight / nWidth < DEFAULT_RATION) {

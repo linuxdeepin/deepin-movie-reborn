@@ -32,10 +32,16 @@ void Platform_ApplicationAdaptor::openFile(const QString &sFile)
         funOpenFile(uosAiStr);
         return;
     }
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QRegExp url_re("\\w+://");
+    bool isMatch = (url_re.indexIn(sFile) == 0);
+#else
+    QRegularExpression url_re("\\w+://");
+    bool isMatch = url_re.match(sFile).capturedStart() == 0;
+#endif
 
     QUrl url;
-    if (url_re.indexIn(sFile) == 0) {
+    if (isMatch) {
         url = QUrl(sFile);
     } else {
         url = QUrl::fromLocalFile(sFile);

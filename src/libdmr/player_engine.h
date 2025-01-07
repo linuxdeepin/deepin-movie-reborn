@@ -10,7 +10,12 @@
 #include <playlist_model.h>
 #include <player_backend.h>
 #include <online_sub.h>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QNetworkConfigurationManager>
+#else
+#include <QNetworkInformation>
+#endif
 
 namespace dmr {
 class PlaylistModel;
@@ -242,7 +247,9 @@ protected:
     void paintEvent(QPaintEvent *e) override;
 
 private:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QNetworkConfigurationManager _networkConfigMng;
+#endif
     bool m_bAudio;
     bool m_stopRunningThread;
 };

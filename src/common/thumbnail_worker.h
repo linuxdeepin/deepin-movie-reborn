@@ -39,7 +39,11 @@ public:
     QPixmap getThumb(const QUrl &url, int secs);
     void stop()
     {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         _quit.store(1);
+#else
+        _quit.storeRelaxed(1);
+#endif
         quit();
     }
     void setPlayerEngine(PlayerEngine *pPlayerEngline);

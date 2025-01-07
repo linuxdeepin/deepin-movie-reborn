@@ -22,8 +22,10 @@
 //#include <QtWidgets>
 #include <QDir>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DImageButton>
 #include <DThemeManager>
+#endif
 #include <DArrowRectangle>
 #include <DApplication>
 #include <QThread>
@@ -75,20 +77,20 @@ DWIDGET_USE_NAMESPACE
             else\
             {\
                 QPalette palette(qApp->palette());\
-                palette.setColor(QPalette::Background,Qt::black);\
+                palette.setColor(QPalette::Window,Qt::black);\
                 this->setAutoFillBackground(true);\
                 this->setPalette(palette);\
                 if(m_pPlaylist)\
                 {\
                     QPalette pal(qApp->palette());\
-                    pal.setColor(QPalette::Background,Qt::black);\
+                    pal.setColor(QPalette::Window,Qt::black);\
                     m_pPlaylist->setAutoFillBackground(true);\
                     m_pPlaylist->setPalette(pal);\
                 }\
                 if(m_pEngine)\
                 {\
                     QPalette pal(qApp->palette());\
-                    pal.setColor(QPalette::Background,Qt::black);\
+                    pal.setColor(QPalette::Window,Qt::black);\
                     m_pEngine->setAutoFillBackground(true);\
                     m_pEngine->setPalette(pal);\
                 }\
@@ -216,7 +218,11 @@ public:
         m_pTime->setAlignment(Qt::AlignCenter);
 //        _time->setFixedSize(_size);
         m_pTime->setForegroundRole(DPalette::Text);
-        DPalette pa = DApplicationHelper::instance()->palette(m_pTime);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        DPalette pa = DGuiApplicationHelper::instance()->palette(m_pTime);
+#else
+        DPalette pa = DGuiApplicationHelper::instance()->applicationPalette();
+#endif
         QColor color = pa.textLively().color();
         qInfo() << color.name();
         pa.setColor(DPalette::Text, color);
@@ -238,11 +244,19 @@ public:
 
         if (!m_bFontChanged) {
             QFontMetrics fontMetrics(DFontSizeManager::instance()->get(DFontSizeManager::T8));
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             m_pTime->setFixedSize(fontMetrics.width(m_pTime->text()) + 5, fontMetrics.height());
+#else
+            m_pTime->setFixedSize(fontMetrics.horizontalAdvance(m_pTime->text()) + 5, fontMetrics.height());
+#endif
         } else {
             QFontMetrics fontMetrics(m_font);
             m_pTime->setFont(m_font);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             m_pTime->setFixedSize(fontMetrics.width(m_pTime->text()) + 10, fontMetrics.height());
+#else
+            m_pTime->setFixedSize(fontMetrics.horizontalAdvance(m_pTime->text()) + 10, fontMetrics.height());
+#endif
         }
         this->setWidth(m_pTime->width());
         this->setHeight(m_pTime->height() + 5);
@@ -315,6 +329,7 @@ public:
         m_pSliderTime = new SliderTime;
         m_pSliderTime->hide();
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QMatrix matrix;
         matrix.rotate(180);
         QPixmap pixmap = utils::LoadHiDPIPixmap(SLIDER_ARROW);
@@ -333,6 +348,26 @@ public:
         m_pSliderArrowDown->setFixedSize(20, 18);
         m_pSliderArrowDown->setPixmap(pixmap.transformed(matrix, Qt::SmoothTransformation));
         m_pSliderArrowDown->hide();
+#else
+        QTransform transform;
+        transform.rotate(180);
+        QPixmap pixmap = utils::LoadHiDPIPixmap(SLIDER_ARROW);
+        m_pSliderArrowUp = new DArrowRectangle(DArrowRectangle::ArrowTop);
+        //m_pSliderArrowUp->setFocusPolicy(Qt::NoFocus);
+        m_pSliderArrowUp->setAttribute(Qt::WA_DeleteOnClose);
+        m_pSliderArrowUp->setWindowFlag(Qt::WindowStaysOnTopHint);
+        m_pSliderArrowUp->setArrowWidth(10);
+        m_pSliderArrowUp->setArrowHeight(7);
+        const QPalette pa = QGuiApplication::palette();
+        QColor bgColor = pa.color(QPalette::Highlight);
+        m_pSliderArrowUp->setBackgroundColor(bgColor);
+        m_pSliderArrowUp->setFixedSize(10, 7);
+        m_pSliderArrowUp->hide();
+        m_pSliderArrowDown = new DLabel(this);
+        m_pSliderArrowDown->setFixedSize(20, 18);
+        m_pSliderArrowDown->setPixmap(pixmap.transformed(transform, Qt::SmoothTransformation));
+        m_pSliderArrowDown->hide();
+#endif
 
         m_pBack->setMouseTracking(true);
         m_pFront->setMouseTracking(true);
@@ -746,7 +781,11 @@ protected:
             path.addRect(rect());
             painter.fillPath(path, QColor(230, 230, 230));
         } else {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             path.addRoundRect(rt, 20, 20);
+#else
+            path.addRoundedRect(rt, 20, 20);
+#endif
             painter.setRenderHints(QPainter::Antialiasing, true);
         }
         painter.setClipPath(path);
@@ -961,7 +1000,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     setup();
     slotThemeTypeChanged();
 
-    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updatePlayState);
     connect(m_mircastWidget, &MircastWidget::updatePlayStatus, this, &ToolboxProxy::updatePlayState);
     connect(m_mircastWidget, &MircastWidget::updateTime, this, &ToolboxProxy::updateMircastTime, Qt::QueuedConnection);
@@ -1031,7 +1070,7 @@ void ToolboxProxy::setup()
     bot_widget->setMode(DBlurEffectWidget::GaussianBlur);
     auto type = DGuiApplicationHelper::instance()->themeType();
     THEME_TYPE(type);
-    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, &ToolboxProxy::slotThemeTypeChanged);
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &ToolboxProxy::slotThemeTypeChanged);
 
     bot_widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     QVBoxLayout *botv = new QVBoxLayout(bot_widget);
@@ -1114,8 +1153,13 @@ void ToolboxProxy::setup()
     connect(m_pViewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
 
     QSignalMapper *signalMapper = new QSignalMapper(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
             this, &ToolboxProxy::buttonClicked);
+#else
+    connect(signalMapper, &QSignalMapper::mappedString,
+            this, &ToolboxProxy::buttonClicked);
+#endif
 
     _mid = new QHBoxLayout(m_pBotToolWgt);
     _mid->setContentsMargins(0, 0, 0, 0);
@@ -1635,9 +1679,15 @@ void ToolboxProxy::slotThemeTypeChanged()
         pa.setColor(DPalette::FrameBorder, btnframecolor);
         // 取消阴影
         pa.setColor(DPalette::Shadow, btnframecolor);
-        DApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
-        DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
-        DApplicationHelper::instance()->setPalette(m_pListBtn, pa);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        DGuiApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
+        DGuiApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
+        DGuiApplicationHelper::instance()->setPalette(m_pListBtn, pa);
+#else
+        m_pFullScreenBtn->setPalette(pa);
+        m_pVolBtn->setPalette(pa);
+        m_pListBtn->setPalette(pa);
+#endif
 
         DPalette pl = m_pPalyBox ->palette();
         pl.setColor(DPalette::Button, QColor("#FFFFFF"));
@@ -1645,7 +1695,11 @@ void ToolboxProxy::slotThemeTypeChanged()
 //        pl.setColor(DPalette::ButtonText, QColor(Qt::black));
         pl.setColor(DPalette::FrameBorder, framecolor);
         pl.setColor(DPalette::Shadow, framecolor);
-        DApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        DGuiApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
+#else
+        m_pPalyBox->setPalette(pl);
+#endif
     } else {
         textPalette.setColor(QPalette::WindowText, QColor(255, 255, 255, 40));   // 深色背景下时长显示置灰
         textPalette.setColor(QPalette::Text, QColor(255, 255, 255, 40));
@@ -1664,10 +1718,15 @@ void ToolboxProxy::slotThemeTypeChanged()
         pa.setColor(DPalette::FrameBorder, framecolor);
         // 取消阴影
         pa.setColor(DPalette::Shadow, framecolor);
-        DApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
-        DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
-        DApplicationHelper::instance()->setPalette(m_pListBtn, pa);
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        DGuiApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
+        DGuiApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
+        DGuiApplicationHelper::instance()->setPalette(m_pListBtn, pa);
+#else
+        m_pFullScreenBtn->setPalette(pa);
+        m_pVolBtn->setPalette(pa);
+        m_pListBtn->setPalette(pa);
+#endif
         DPalette pl = m_pPalyBox ->palette();
         QColor btnColor("#000000");
         btnColor.setAlphaF(0.60);
@@ -1675,7 +1734,11 @@ void ToolboxProxy::slotThemeTypeChanged()
 //        pl.setColor(DPalette::ButtonText, QColor("#c5cfe0"));
         pl.setColor(DPalette::FrameBorder, framecolor);
         pl.setColor(DPalette::Shadow, framecolor);
-        DApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        DGuiApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
+#else
+        m_pPalyBox->setPalette(pl);
+#endif
     }
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
@@ -1854,8 +1917,13 @@ void ToolboxProxy::slotElapsedChanged()
     updateTimeInfo(static_cast<qint64>(url), m_pEngine->elapsed(), m_pTimeLabel, m_pTimeLabelend, true);
     updateTimeInfo(static_cast<qint64>(url), m_pEngine->elapsed(), m_pFullscreentimelable, m_pFullscreentimelableend, false);
     QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_pFullscreentimelable->setMinimumWidth(fm.width(m_pFullscreentimelable->text()));
     m_pFullscreentimelableend->setMinimumWidth(fm.width(m_pFullscreentimelableend->text()));
+#else
+    m_pFullscreentimelable->setMinimumWidth(fm.horizontalAdvance(m_pFullscreentimelable->text()));
+    m_pFullscreentimelableend->setMinimumWidth(fm.horizontalAdvance(m_pFullscreentimelableend->text()));
+#endif
     updateMovieProgress();
 }
 
@@ -2590,7 +2658,11 @@ void ToolboxProxy::paintEvent(QPaintEvent *event)
             if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
                 painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
             } else {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                 painter.fillRect(rect(), this->palette().background());
+#else
+                painter.fillRect(rect(), this->palette().window());
+#endif
             }
     } else {
         DFloatingWidget::paintEvent(event);

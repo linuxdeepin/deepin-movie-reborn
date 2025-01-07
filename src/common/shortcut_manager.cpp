@@ -137,7 +137,14 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 void ShortcutManager::buildBindingsFromSettings()
 {
     _map.clear();
+    
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    // Qt5 方式
     _map.insert(QKeySequence(Qt::Key_Slash + Qt::CTRL + Qt::SHIFT), ActionFactory::ViewShortcut);
+#else
+    // Qt6 方式
+    _map.insert(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_Slash), ActionFactory::ViewShortcut);
+#endif
 
     QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
 

@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     thread->start();
     bool is = false;
     //获取视频信息 demo
-    dmr::MovieInfo mi = playModel->getMovieInfo(QUrl("file:///usr/share/dde-introduction/demo.mp4"),&is);
+    dmr::MovieInfo mi = playModel->getMovieInfo(QUrl("file:///home/tsl/Videos/123.mp4"),&is);
     if (is) {
         qInfo() << "# 文件类型:"<< mi.fileType
                 << "# 文件大小:"<< mi.sizeStr()
@@ -44,10 +44,10 @@ int main(int argc, char *argv[])
                 << "# 声道数:"<< mi.channels << "声道"
                 << "# 采样数:"<< mi.sampling << "hz";
         //获取预览图 demo
-        QImage img = playModel->getMovieCover(QUrl("file:///usr/share/dde-introduction/demo.mp4"));
+        QImage img = playModel->getMovieCover(QUrl("file:///home/tsl/Videos/123.mp4"));
         img.save(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Desktop/test.png");
 
-        QImage img1 = playModel->getMovieCover(QUrl("file:///usr/share/dde-introduction/demo.mp4"));
+        QImage img1 = playModel->getMovieCover(QUrl("file:///home/tsl/Videos/123.mp4"));
         img1.save(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Desktop/test1.png");
     }
     playModel->deleteLater();
