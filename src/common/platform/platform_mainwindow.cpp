@@ -3869,10 +3869,6 @@ void Platform_MainWindow::moveEvent(QMoveEvent *pEvent)
     QPoint relativePoint = mapToGlobal(QPoint(0, 0));
     m_pToolbox->updateSliderPoint(relativePoint);
     updateGeometryNotification(geometry().size());
-    xcb_generic_event_t *event = xcb_wait_for_event(QX11Info::connection());
-    if((event->response_type & ~0x80) != XCB_CONFIGURE_NOTIFY) {
-        m_bMouseMoved = false;
-    }
 }
 
 void Platform_MainWindow::keyPressEvent(QKeyEvent *pEvent)
@@ -4490,6 +4486,7 @@ void Platform_MainWindow::toggleUIMode()
         QRect deskGeom = qApp->desktop()->availableGeometry(this);
         move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
         resize(geom.width(), geom.height());
+        setFixedSize(geom.size());
 
         m_pMiniPlayBtn->move(sz.width() - 12 - m_pMiniPlayBtn->width(),
                              sz.height() - 10 - m_pMiniPlayBtn->height());
@@ -4497,6 +4494,7 @@ void Platform_MainWindow::toggleUIMode()
         m_pMiniQuitMiniBtn->move(14, sz.height() - 10 - m_pMiniQuitMiniBtn->height());
     } else {
         m_pCommHintWid->setAnchorPoint(QPoint(30, 58));
+        setMaximumSize(INT_MAX, INT_MAX);
         setEnableSystemResize(true);
         if (m_nStateBeforeMiniMode & SBEM_Maximized) {
             //迷你模式切换最大化时，先恢复原来窗口大小
