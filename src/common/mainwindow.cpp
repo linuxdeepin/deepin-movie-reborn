@@ -31,16 +31,27 @@
 
 //#include <QtWidgets>
 #include <QtDBus>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QtX11Extras>
 #include <QX11Info>
+#else
+#include <QtGui/private/qtx11extras_p.h>    
+#include <QtGui/private/qtguiglobal_p.h>
+#endif
+
 #include <DLabel>
 #include <DApplication>
 #include <DTitlebar>
 #include <DSettingsDialog>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DThemeManager>
+#endif
+
 #include <DAboutDialog>
 #include <DInputDialog>
-#include <DImageButton>
+
 #include <DWidgetUtil>
 #include <DWindowManagerHelper>
 #ifdef DTKCORE_CLASS_DConfigFile
@@ -87,7 +98,11 @@ const char kAtomNameWmSkipPager[] = "_NET_WM_STATE_SKIP_PAGER";
 
 #define AUTOHIDE_TIMEOUT 2000
 #define AUTOHIDE_TIME_PAD 5000   //time of the toolbox auto hide
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DToast>
+#endif
+
 DWIDGET_USE_NAMESPACE
 
 using namespace dmr;
@@ -843,7 +858,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     // mini ui
     QSignalMapper *pSignalMapper = new QSignalMapper(this);
-    connect(pSignalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped), this, &MainWindow::miniButtonClicked);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        // Qt5版本使用mapped信号
+        connect(pSignalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped), 
+                this, &MainWindow::miniButtonClicked);
+#else
+        // Qt6版本使用mappedString信号
+        connect(pSignalMapper, &QSignalMapper::mappedString,
+                this, &MainWindow::miniButtonClicked); 
+#endif
 
     m_pMiniPlayBtn = new DIconButton(this);
     m_pMiniQuitMiniBtn = new DIconButton(this);
@@ -2198,7 +2221,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                 if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
                     if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
                         int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                         QRect deskRect = QApplication::desktop()->availableGeometry();
+#else
+                        QRect deskRect = qApp->primaryScreen()->availableGeometry();
+#endif
                         pixelsWidth = qMax(117, pixelsWidth);
                         m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
                         m_pFullScreenTimeLable->show();
@@ -3072,7 +3099,13 @@ void MainWindow::play(const QList<QString> &listFiles)
 
     if (!lstDir.isEmpty()) {
         m_pEngine->blockSignals(true);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QtConcurrent::run(m_pEngine, &PlayerEngine::addPlayFs, lstDir);
+#else
+        QtConcurrent::run([this, lstDir]() {
+            m_pEngine->addPlayFs(lstDir);
+        });
+#endif
     } else {
         m_bHaveFile = false;
     }
@@ -3239,7 +3272,11 @@ void MainWindow::resumeToolsWindow()
         }
     } else {
 	    //迷你模式根据半屏模式显示控件
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         int nScreenHeight = QApplication::desktop()->availableGeometry().height();
+#else
+        int nScreenHeight = qApp->primaryScreen()->availableGeometry().height();
+#endif
         QRect rt = rect();
         if(rt.height() >= nScreenHeight-100){
             m_pMiniPlayBtn->setVisible(false);
@@ -3481,11 +3518,20 @@ void MainWindow::slotFontChanged(const QFont &/*font*/)
 {
 #ifndef __mips__
     QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_pToolbox->getfullscreentimeLabel()->setMinimumWidth(fm.width(m_pToolbox->getfullscreentimeLabel()->text()));
     m_pToolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.width(m_pToolbox->getfullscreentimeLabelend()->text()));
-
+#else
+    m_pToolbox->getfullscreentimeLabel()->setMinimumWidth(fm.horizontalAdvance(m_pToolbox->getfullscreentimeLabel()->text()));
+    m_pToolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.horizontalAdvance(m_pToolbox->getfullscreentimeLabelend()->text()));
+#endif
     int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
+    
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QRect deskRect = QApplication::desktop()->availableGeometry();
+#else
+    QRect deskRect = qApp->primaryScreen()->availableGeometry();
+#endif
     m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
 #endif
 }
@@ -3688,11 +3734,19 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
 
 void MainWindow::wheelEvent(QWheelEvent *pEvent)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if (insideToolsArea(pEvent->pos()) || insideResizeArea(pEvent->globalPos()))
         return;
 
     if (m_pToolbox->isInMircastWidget(pEvent->pos()))
         return;
+#else
+    if (insideToolsArea(pEvent->position().toPoint()) || insideResizeArea(pEvent->globalPosition().toPoint()))
+        return;
+
+    if (m_pToolbox->isInMircastWidget(pEvent->position().toPoint()))
+        return;
+#endif
 
     if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Opened) {
         pEvent->ignore();
@@ -3730,7 +3784,11 @@ void MainWindow::showEvent(QShowEvent *pEvent)
     }
     //判断屏幕可用坐标与应用的geometry是否有交集，没有就设置到可用屏幕坐标中
     QRect geoRect = geometry();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QRect deskRect = QApplication::desktop()->availableGeometry(geoRect.topLeft());
+#else
+    QRect deskRect = qApp->screenAt(geoRect.topLeft())->availableGeometry();
+#endif
 
     if(!deskRect.intersects(geoRect)) {
         setGeometry(QRect(deskRect.x(), deskRect.y(), geoRect.width(), geoRect.width()));
@@ -3773,7 +3831,11 @@ void MainWindow::resizeByConstraints(bool bForceCentered)
         qInfo() << mi.width << mi.height;
     }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     auto geom = qApp->desktop()->availableGeometry(this);
+#else
+    auto geom = QGuiApplication::primaryScreen()->availableGeometry();
+#endif
     if (vidoeSize.width() > geom.width() || vidoeSize.height() > geom.height()) {
         vidoeSize.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
     }
@@ -3880,7 +3942,11 @@ void MainWindow::resizeEvent(QResizeEvent *pEvent)
     m_pAnimationlable->move(QPoint((width() - m_pAnimationlable->width()) / 2,
                                    (height() - m_pAnimationlable->height()) / 2));
     if(m_bMiniMode) {//迷你模式显示与半屏模式处理
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         int nScreenHeight = QApplication::desktop()->availableGeometry().height();
+#else
+        int nScreenHeight = qApp->primaryScreen()->availableGeometry().height();
+#endif
         QRect rt = rect();
         if(rt.height() >= nScreenHeight-100){
             m_pMiniPlayBtn->setVisible(false);
@@ -4240,7 +4306,7 @@ void MainWindow::subtitleMatchVideo(const QString &sFileName)
     QFileInfoList list = dir.entryInfoList();
     for (int i = 0; i < list.size(); ++i) {
         QFileInfo info = list.at(i);
-        qInfo() << info.absoluteFilePath() << endl;
+        qInfo() << info.absoluteFilePath();
 //        if (info.completeBaseName() == subfileInfo.completeBaseName()) {
         if (subfileInfo.fileName().contains(info.completeBaseName())) {
             sVideoName = info.absoluteFilePath();
@@ -4384,7 +4450,11 @@ void MainWindow::toggleUIMode()
     m_pAnimationlable->hide();
     m_pToolbox->closeAnyPopup();
     //判断窗口是否靠边停靠（靠边停靠不支持MINI模式）thx
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QRect deskrect = QApplication::desktop()->availableGeometry();
+#else
+    QRect deskrect = qApp->primaryScreen()->availableGeometry();
+#endif
     QPoint windowPos = pos();
     if (this->geometry() != deskrect) {
         if (windowPos.x() == 0 && (windowPos.y() == 0 ||
@@ -4460,7 +4530,11 @@ void MainWindow::toggleUIMode()
     if (m_bMiniMode) {
         m_pTitlebar->titlebar()->setDisableFlags(Qt::WindowMaximizeButtonHint);
     } else {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         m_pTitlebar->titlebar()->setDisableFlags(nullptr);
+#else
+        m_pTitlebar->titlebar()->setDisableFlags(Qt::WindowFlags());
+#endif
     }
 
     m_pTitlebar->setVisible(!m_bMiniMode);
@@ -4539,7 +4613,11 @@ void MainWindow::toggleUIMode()
             geom.moveTo(geom.x(), 0);
         }
 
-        QRect deskGeom = qApp->desktop()->availableGeometry(this);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        QRect deskGeom = QGuiApplication::primaryScreen()->availableGeometry();
+#else
+        QRect deskGeom = QApplication::desktop()->availableGeometry(this);
+#endif
         move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
         setFixedSize(geom.width(), geom.height());
 
@@ -4567,7 +4645,11 @@ void MainWindow::toggleUIMode()
             if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
                 if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
                     int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                     QRect deskRect = QApplication::desktop()->availableGeometry();
+#else
+                    QRect deskRect = qApp->primaryScreen()->availableGeometry();
+#endif
                     pixelsWidth = qMax(117, pixelsWidth);
                     m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
                     m_pFullScreenTimeLable->show();
@@ -4585,7 +4667,11 @@ void MainWindow::toggleUIMode()
             // Wayland流程区分处理
             if (!utils::check_wayland_env()) {
                 if (m_lastRectInNormalMode.isValid()) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                     QRect deskRect = QApplication::desktop()->availableGeometry(m_lastRectInNormalMode.topLeft());
+#else
+                    QRect deskRect = qApp->primaryScreen()->availableGeometry();
+#endif
                     if(m_lastRectInNormalMode.intersects(deskRect)) {
                         setGeometry(m_lastRectInNormalMode);
                     } else {
@@ -4759,7 +4845,7 @@ void MainWindow::lockStateChanged(bool bLock)
     } else if (!bLock && m_pEngine->state() == PlayerEngine::CoreState::Paused && m_bStateInLock) {
         m_bStateInLock = false;
         QTimer::singleShot(500, [=](){
-            //龙芯5000使用命令sudo rtcwake -l -m mem -s 20, 待机唤醒后无dBus信号“PrepareForSleep”发出,加入seek保证解锁后播放不会卡帧
+            //龙芯5000使用命令sudo rtcwake -l -m mem -s 20, 待机唤醒后无dBus信号"PrepareForSleep"发出,加入seek保证解锁后播放不会卡帧
             m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));
             requestAction(ActionFactory::ActionKind::TogglePause);
         });

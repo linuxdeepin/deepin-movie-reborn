@@ -7,10 +7,9 @@
 #include <QFrame>
 #include <QGuiApplication>
 #include <DPalette>
-#include <DApplicationHelper>
+#include <DGuiApplicationHelper>
 #include <DFontSizeManager>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QDBusInterface>
 
 namespace dmr {
@@ -43,7 +42,11 @@ public slots:
 
 protected:
     virtual void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent(QEvent *e) override;
+#else
+    void enterEvent(QEnterEvent *e) override;
+#endif
     virtual void resizeEvent(QResizeEvent *ev) Q_DECL_OVERRIDE;
 
 public:

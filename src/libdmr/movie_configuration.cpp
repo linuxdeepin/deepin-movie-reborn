@@ -243,7 +243,12 @@ void MovieConfiguration::updateUrl(const QUrl &url, KnownKey key, const QVariant
 
 void MovieConfiguration::append2ListUrl(const QUrl &url, KnownKey key, const QString &val)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     auto list = getByUrl(url, knownKey2String(key)).toString().split(';', QString::SkipEmptyParts);
+#else
+    // Qt6 中使用 Qt::SkipEmptyParts 而不是 QString::SkipEmptyParts
+    auto list = getByUrl(url, knownKey2String(key)).toString().split(';', Qt::SkipEmptyParts);
+#endif
     auto bytes = val.toUtf8().toBase64();
     list.append(bytes);
     updateUrl(url, key, list.join(';'));
@@ -281,7 +286,12 @@ QStringList MovieConfiguration::getListByUrl(const QUrl &url, KnownKey key)
 
 QStringList MovieConfiguration::decodeList(const QVariant &val)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     auto list = val.toString().split(';', QString::SkipEmptyParts);
+#else
+    // Qt6 中使用 Qt::SkipEmptyParts 而不是 QString::SkipEmptyParts
+    auto list = val.toString().split(';', Qt::SkipEmptyParts);
+#endif
     std::transform(list.begin(), list.end(), list.begin(), [](const QString & s) {
         return QByteArray::fromBase64(s.toUtf8());
     });

@@ -911,12 +911,20 @@ void ItemWidget::paintEvent(QPaintEvent *pEvent)
     }
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void ItemWidget::enterEvent(QEvent *event)
 {
     Q_UNUSED(event);
 
     m_hover = true;
 }
+#else
+void ItemWidget::enterEvent(QEnterEvent *event)
+{
+    Q_UNUSED(event);
+    m_hover = true;
+}
+#endif
 
 void ItemWidget::leaveEvent(QEvent *event)
 {
@@ -937,12 +945,22 @@ void ItemWidget::mouseDoubleClickEvent(QMouseEvent *event)
 QString ItemWidget::convertDisplay()
 {
     QFontMetrics fm = fontMetrics();
-    double textWidth = fm.width(m_device.name);
+    double textWidth;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    textWidth = fm.width(m_device.name);
+#else
+    textWidth = fm.horizontalAdvance(m_device.name);
+#endif
+
     if (textWidth > TEXT_WIDTH) {
         QString displayName;
         for (int i = 0; i < m_device.name.size(); i++) {
             displayName += m_device.name.at(i);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             if (fm.width(displayName) > TEXT_WIDTH) {
+#else
+            if (fm.horizontalAdvance(displayName) > TEXT_WIDTH) {
+#endif
                 displayName.chop(1);
                 displayName += "...";
                 break;

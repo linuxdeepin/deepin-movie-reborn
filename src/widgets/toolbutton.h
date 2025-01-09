@@ -13,7 +13,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <DFontSizeManager>
 #include <DPalette>
-#include <DApplicationHelper>
+#include <DGuiApplicationHelper>
 #include <QGuiApplication>
 #include <QPainterPath>
 #include <QThread>
@@ -46,14 +46,25 @@ signals:
     void entered();
     void leaved();
 protected:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent(QEvent *ev) override
     {
         emit entered();
-    };
+        DButtonBoxButton::enterEvent(ev);
+    }
+#else
+    void enterEvent(QEnterEvent *ev) override
+    {
+        emit entered();
+        DButtonBoxButton::enterEvent(ev);
+    }
+#endif
+
     void leaveEvent(QEvent *ev) override
     {
         emit leaved();
-    };
+        DButtonBoxButton::leaveEvent(ev);
+    }
 };
 
 class ButtonToolTip : public DArrowRectangle
@@ -130,7 +141,11 @@ protected:
         painterPath.addRoundedRect(rect, 8, 8);
         pt.drawPath(painterPath);
 
-        DPalette pal_text = DApplicationHelper::instance()->palette(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        DPalette pal_text = DGuiApplicationHelper::instance()->palette(this);
+#else
+        DPalette pal_text = DGuiApplicationHelper::instance()->applicationPalette();
+#endif
         pal_text.setBrush(DPalette::Text, pal_text.color(DPalette::ToolTipText));
         this->setPalette(pal_text);
         pt.setPen(pal_text.color(DPalette::ToolTipText));
@@ -236,7 +251,11 @@ protected:
         }
         pt.drawPath(painterPath);
 
-        DPalette pal_text = DApplicationHelper::instance()->palette(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        DPalette pal_text = DGuiApplicationHelper::instance()->palette(this);
+#else
+        DPalette pal_text = DGuiApplicationHelper::instance()->applicationPalette();
+#endif
         pal_text.setBrush(DPalette::Text, pal_text.color(DPalette::ToolTipText));
         this->setPalette(pal_text);
         pt.setPen(pal_text.color(DPalette::ToolTipText));
@@ -329,10 +348,18 @@ signals:
     void leaved();
 
 protected:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent(QEvent *) override
     {
         emit entered();
     }
+#else
+    void enterEvent(QEnterEvent *) override
+    {
+        emit entered();
+    }
+#endif
+
     void leaveEvent(QEvent *) override
     {
         emit leaved();
@@ -365,7 +392,11 @@ signals:
     void sigUnsupported();
 
 protected:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent(QEvent *ev) override;
+#else
+    void enterEvent(QEnterEvent *ev) override;
+#endif
     void leaveEvent(QEvent *ev) override;
     void wheelEvent(QWheelEvent *wev) override;
     void focusOutEvent(QFocusEvent *ev);

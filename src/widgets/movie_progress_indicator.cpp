@@ -24,7 +24,11 @@ MovieProgressIndicator::MovieProgressIndicator(QWidget *parent)
     font.setPixelSize(14);
     QFontMetrics fontMetrics(font);
     this->setFont(font);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_fixedSize = QSize(qMax(52, fontMetrics.width("999:99")), fontMetrics.height() + 10);
+#else
+    m_fixedSize = QSize(qMax(52, fontMetrics.horizontalAdvance("999:99")), fontMetrics.height() + 10);
+#endif
     this->setFixedSize(m_fixedSize);
 }
 /**

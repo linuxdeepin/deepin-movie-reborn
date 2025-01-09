@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 #ifndef _DMR_MPV_GLWIDGET_H
 #define _DMR_MPV_GLWIDGET_H
 
@@ -14,6 +13,9 @@
 #include "../../vendor/qthelper.hpp"
 #include <DGuiApplicationHelper>
 //DWIDGET_USE_NAMESPACE
+#include <QtOpenGL>
+#include <QtOpenGLWidgets>
+#include <QOpenGLWidget>
 
 //add by heyi
 typedef void (*mpv_render_contextSet_update_callback)(mpv_render_context *ctx,
@@ -63,10 +65,9 @@ protected:
      * @brief initMpvFuns 第一次播放需要初库始化函数指针
      */
     void initMpvFuns();
-#ifdef __x86_64__
+    
     //更新全屏时影院播放进度
     void updateMovieProgress(qint64 duration, qint64 pos);
-#endif
     void setRawFormatFlag(bool bRawFormat);
 
 protected slots:
@@ -93,8 +94,9 @@ private:
 
     bool m_bPlaying;                   //记录播放状态
     bool m_bInMiniMode;                //是否是最小化
-    bool m_bUseCustomFBO;              // 使用自定的 QOpenGLFramebufferObject 进行绘制
     bool m_bDoRoundedClipping;         // 裁剪圆角
+    
+    bool m_bUseCustomFBO;              //使用自定的 QOpenGLFramebufferObject 进行绘制
 
     QOpenGLVertexArrayObject m_vao;    //顶点数组对象
     QOpenGLBuffer m_vbo;               //顶点缓冲对象

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+# SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -20,13 +20,15 @@ option (USE_TEST "Use TESTS" ON)
 add_definitions( -DUSE_TEST )
 
 # 设置Qt模块
-set(QtModule Core Gui Widgets Network X11Extras PrintSupport DBus Sql Svg Multimedia MultimediaWidgets Concurrent LinguistTools Test Xml)
+# TODO: X11Extras qt6没适配X11Extras
+set(QtModule Core Gui Widgets Network  PrintSupport DBus Sql Svg Multimedia MultimediaWidgets Concurrent LinguistTools Test)
 
 # 设置工程名字
 project(deepin-movie-platform-test)
 
 # 查找Qt相关的库链接
-find_package(Qt5 REQUIRED ${QtModule})
+find_package(Qt6 REQUIRED ${QtModule})
+# find_package(gui-private)
 
 
 # 包含源码文件夹
@@ -43,8 +45,6 @@ include_directories(../../src/vendor)
 include_directories(../../src/backends)
 include_directories(../../src/backends/mpv)
 include_directories(../../src/backends/mediaplayer)
-include_directories(../../src/dlna)
-include_directories(../../src/dlna/dlnaHttpServer)
 
 #add_subdirectory(googletest)
 
@@ -59,9 +59,6 @@ FILE (GLOB allSource
     ../../src/backends/mpv/*.cpp
     ../../src/backends/mediaplayer/*.cpp
     ../../src/backends/*.cpp
-    ../../src/dlna/*.cpp
-    ../../src/dlna/dlnaHttpServer/*.cpp
-    ../../src/dlna/dlnaHttpServer/*.c
     )
 
 FILE (GLOB allTestSource
@@ -134,21 +131,35 @@ find_package(PkgConfig REQUIRED)
 #    PkgConfig::Mpv PkgConfig::MPRIS PkgConfig::DBusextended
 #    PkgConfig::AV pthread GL)
 # 检查第三方库(这里检查了名字为dtkwidget的库和名字为dtkgui的库)，然后取名3rd_lib
-pkg_check_modules(3rd_lib REQUIRED
-        dtkwidget dtkgui
-        libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
-        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 dbusextended-qt5 libva libva-x11
-        gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0
-        )
-    #libpulse-simple xcb-aux gtest
+
+if (Qt6_FOUND)
+# Qt6 environment
+    pkg_check_modules(3rd_lib REQUIRED
+    dtk6widget dtk6gui
+    libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
+    xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt6 libva libva-x11
+    gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0
+    )
+else()
+# Qt5 environment
+    pkg_check_modules(3rd_lib REQUIRED
+            dtkwidget dtkgui
+            libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
+            xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 libva libva-x11
+            gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0
+            )
+endif()
 # 添加第三方库的所有文件夹路径到工程中来(注意 *_INCLUDE_DIRS)
 target_include_directories(${PROJECT_NAME} PUBLIC ${3rd_lib_INCLUDE_DIRS})
 
 # 将第三方库链接进来(注意 *_LIBRARIES)
-target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES}  Qt5::GuiPrivate)
+target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES})
 #------------------------------添加第三方库end-------------------------------------
 
 target_link_libraries(${PROJECT_NAME} gmock gmock_main gtest gtest_main)
 
 # 将工程与Qt模块链接起来
-qt5_use_modules(${PROJECT_NAME} ${QtModule})
+if (Qt5_FOUND)
+    # Qt5 environment
+    qt_use_modules(${PROJECT_NAME} ${QtModule})
+endif()

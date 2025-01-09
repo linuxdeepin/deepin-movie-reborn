@@ -106,7 +106,11 @@ protected:
             tip->raise();
             tip->adjustSize();
             QPoint pos = he->globalPos() + QPoint{0, 0};
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             int nDesktopWidth = qApp->desktop()->availableGeometry(btn).width();
+#else
+            int nDesktopWidth = QGuiApplication::primaryScreen()->availableGeometry().width();
+#endif
             if (pos.x() + tip->width() > nDesktopWidth) {
                 pos.rx() = nDesktopWidth - tip->width();
             }
@@ -221,7 +225,11 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     m_pScrollArea->setAccessibleName(MOVIE_INFO_SCROLL_AREA);
     m_pScrollArea->viewport()->setObjectName(SCROLL_AREA_VIEWPORT);
     QPalette palette = m_pScrollArea->viewport()->palette();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     palette.setBrush(QPalette::Background, Qt::NoBrush);
+#else
+    palette.setBrush(QPalette::Window, Qt::NoBrush);
+#endif
     m_pScrollArea->viewport()->setPalette(palette);
     m_pScrollArea->setFrameShape(QFrame::Shape::NoFrame);
     m_pScrollArea->setWidgetResizable(true);
@@ -387,7 +395,11 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
         m_sFilePath = tmp->text();
         pFilePathLbl->setToolTip(tmp->text());
         auto t = new Tip(QPixmap(), tmp->text(), nullptr);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         t->resetSize(QApplication::desktop()->availableGeometry().width());
+#else
+        t->resetSize(QGuiApplication::primaryScreen()->availableGeometry().width());
+#endif
         t->setProperty("for", QVariant::fromValue<QWidget *>(pFilePathLbl));
         pFilePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         pFilePathLbl->installEventFilter(th);
@@ -397,7 +409,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     tmp = nullptr;
 
     connect(qApp, &QGuiApplication::fontChanged, this, &MovieInfoDialog::onFontChanged);
-    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, &MovieInfoDialog::slotThemeTypeChanged);
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MovieInfoDialog::slotThemeTypeChanged);
 
     m_expandGroup.at(0)->setExpand(true);
     m_expandGroup.at(1)->setExpand(true);
@@ -482,7 +494,12 @@ void MovieInfoDialog::addRow(QString sTitle, QString sField, QFormLayout *pForm,
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     f->setMinimumSize(60, 20);
     DFontSizeManager::instance()->bind(f, DFontSizeManager::T8);
-    DPalette pa1 = DApplicationHelper::instance()->palette(f);
+    
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    DPalette pa1 = DGuiApplicationHelper::instance()->palette(f);
+#else
+    DPalette pa1 = DGuiApplicationHelper::instance()->standardPalette(DGuiApplicationHelper::LightType);
+#endif
     pa1.setBrush(DPalette::Text, pa1.color(DPalette::TextTitle));
     f->setPalette(pa1);
 
@@ -491,7 +508,12 @@ void MovieInfoDialog::addRow(QString sTitle, QString sField, QFormLayout *pForm,
     t->setMinimumHeight(20);
     t->setWordWrap(true);
     DFontSizeManager::instance()->bind(t, DFontSizeManager::T8);
-    DPalette pa2 = DApplicationHelper::instance()->palette(t);
+    
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    DPalette pa2 = DGuiApplicationHelper::instance()->palette(t);
+#else
+    DPalette pa2 = DGuiApplicationHelper::instance()->standardPalette(DGuiApplicationHelper::LightType);
+#endif
     pa2.setBrush(DPalette::Text, pa2.color(DPalette::TextTitle));
     t->setPalette(pa2);
     pForm->addRow(f, t);

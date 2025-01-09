@@ -13,11 +13,19 @@
 #include <QPainterPath>
 
 #include <DDialog>
-#include <DImageButton>
 #include <DLabel>
 #include <DFontSizeManager>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DThemeManager>
-#include <DApplicationHelper>
+#include <QDesktopWidget>
+#else
+#include <QScreen>
+#include <QGuiApplication>
+#endif
+
+
+#include <DGuiApplicationHelper>
 #include <DGuiApplicationHelper>
 #include <DApplication>
 #include <DArrowLineDrawer>
@@ -126,7 +134,11 @@ protected:
         QRectF bgRect;
         bgRect.setSize(size());
         const QPalette pal = QGuiApplication::palette();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QColor bgColor = pal.color(QPalette::Background);
+#else
+        QColor bgColor = pal.color(QPalette::Window);
+#endif
 
         QPainterPath path;
         path.addRoundedRect(bgRect, 8, 8);

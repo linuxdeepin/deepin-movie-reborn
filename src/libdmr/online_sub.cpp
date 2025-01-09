@@ -9,6 +9,12 @@
 
 #include <functional>
 
+// 在 Qt6 中，QTextCodec 类被移到了 QStringConverter 中
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QTextCodec>
+#else
+#include <QStringDecoder>
+#endif
 
 namespace dmr {
 static OnlineSubtitle *_instance = nullptr;
@@ -208,8 +214,13 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
                 }
             }
             if (!name.isEmpty()) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                 auto codec = QTextCodec::codecForName("UTF-8");
                 name_tmpl = codec->toUnicode(name);
+#else           
+                // Qt6 中使用 QStringDecoder 来解码字符串
+                name_tmpl = QStringDecoder(QStringDecoder::Utf8)(name);
+#endif
             }
         } else {
             int id = reply->property("id").toInt();
@@ -258,7 +269,11 @@ bool OnlineSubtitle::hasHashConflict(const QString &path, const QString &tmpl, Q
         if (fi.fileName() == di.fileName())
             continue;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         s = s.replace(QRegExp("\\[\\d+\\]"), "");
+#else
+        s = s.replace(QRegularExpression("\\[\\d+\\]"), "");
+#endif
         if (tmpl == s) {
             auto h = utils::FullFileHash(di.fileInfo());
             qInfo() << "found " << di.fileName() << h;

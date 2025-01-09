@@ -11,7 +11,7 @@
 #include <DIconButton>
 #include <DFloatingButton>
 #include <DListWidget>
-#include <DApplicationHelper>
+#include <DGuiApplicationHelper>
 #include <DFontSizeManager>
 #include <QBrush>
 #include <DStyle>
@@ -49,8 +49,12 @@ protected:
     void paintEvent(QPaintEvent *pe) override
     {
         QPainter painter(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         painter.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform |
                                QPainter::Antialiasing);
+#else
+        painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing);
+#endif
         QSize size(_pic.size());
         QBitmap mask(size);
         QPainter painter1(&mask);
