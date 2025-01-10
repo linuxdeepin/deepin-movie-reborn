@@ -178,6 +178,8 @@ CompositingManager::CompositingManager()
         }
         if (_platform == Platform::Arm64 && isDriverLoaded)
             m_bHasCard = true;
+        //TODO
+        _composited = false;
         qInfo() << __func__ << "Composited is " << _composited;
         return;
     }
@@ -290,6 +292,8 @@ CompositingManager::CompositingManager()
     {
         _composited = true;
     }
+    //TODO
+    _composited = false;
     qInfo() << __func__ << "Composited is " << _composited;
 }
 
