@@ -926,7 +926,7 @@ void Platform_viewProgBarLoad::loadViewProgBar(QSize size)
     int length = strlen(time.toString("hh:mm:ss").toLatin1().data());
     memcpy(m_seekTime, time.toString("hh:mm:ss").toLatin1().data(), length + 1);
     m_video_thumbnailer->seek_time = m_seekTime;
-
+    if(m_pEngine->playlist().count() <= 0 ) return;
     auto url = m_pEngine->playlist().currentInfo().url;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
@@ -1018,12 +1018,14 @@ void Platform_ToolboxProxy::finishLoadSlot(QSize size)
 
     if(CompositingManager::get().platform() == Platform::X86) {
         if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
-            PlayItemInfo info = m_pEngine->playlist().currentInfo();
-            if (!info.url.isLocalFile()) {
-                qDebug() << "ThumbnailPreview finishLoadSlot not info.url.isLocalFile";
-                return;
+            if (m_pEngine->playlist().count() > 0) {
+                PlayItemInfo info = m_pEngine->playlist().currentInfo();
+                if (!info.url.isLocalFile()) {
+                    qDebug() << "ThumbnailPreview finishLoadSlot not info.url.isLocalFile";
+                    return;
+                }
+                m_pProgBar_Widget->setCurrentIndex(2);
             }
-            m_pProgBar_Widget->setCurrentIndex(2);
         }
     }
 }
@@ -1567,7 +1569,7 @@ void Platform_ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
         return;
     }
 
-    if (m_pEngine->playlist().currentInfo().url != url) {
+    if (m_pEngine->playlist().count() <= 0 || m_pEngine->playlist().currentInfo().url != url) {
         qDebug() << "ThumbnailPreview updateHoverPreview url not match";
         return;
     }
@@ -1760,7 +1762,9 @@ void Platform_ToolboxProxy::slotThemeTypeChanged()
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
         qDebug() << "ThumbnailPreview slotThemeTypeChanged not Idle";
-        bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
+        if(m_pEngine->getplaylist()->count() > 0) {
+            bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
+        }
         if(bRawFormat && !m_pEngine->currFileIsAudio()) {
             qDebug() << "ThumbnailPreview slotThemeTypeChanged bRawFormat && !m_pEngine->currFileIsAudio";
             m_pTimeLabel->setPalette(textPalette);
@@ -1907,7 +1911,7 @@ void Platform_ToolboxProxy::slotFileLoaded()
                 }
             }
         }
-        if(isAllAudio) {
+        if(isAllAudio || m_pEngine->getplaylist()->count() <= 0) {
             m_pMainWindow->slotExitMircast();
             qDebug() << "ThumbnailPreview slotFileLoaded isAllAudio, return";
             return;
@@ -2045,7 +2049,7 @@ void Platform_ToolboxProxy::slotUpdateThumbnailTimeOut()
 {
     qDebug() << "ThumbnailPreview slotUpdateThumbnailTimeOut";
     //如果视频长度小于1s应该直接返回不然会UI错误
-    if (m_pEngine->playlist().currentInfo().mi.duration < 1) {
+    if (m_pEngine->getplaylist()->count() <= 0 || m_pEngine->playlist().currentInfo().mi.duration < 1) {
         return;
     }
 
@@ -2229,8 +2233,9 @@ void Platform_ToolboxProxy::progressHoverChanged(int nValue)
         qDebug() << "ThumbnailPreview progressHoverChanged state Idle";
         return;
     }
+
     qDebug() << "ThumbnailPreview progressHoverChanged state != Idle";
-    if (m_pVolSlider->isVisible())
+    if (m_pVolSlider->isVisible() || m_pEngine->getplaylist()->count() <= 0)
         return;
     qDebug() << "ThumbnailPreview progressHoverChanged volSlider not visible";
     const auto &pif = m_pEngine->playlist().currentInfo();
@@ -2367,7 +2372,7 @@ void Platform_ToolboxProxy::updateButtonStates()
         palette.setColor(QPalette::Text, QColor(255, 255, 255, 40));
     }
 
-    if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+    if(m_pEngine->state() != PlayerEngine::CoreState::Idle && m_pEngine->getplaylist()->count() > 0) {
         qDebug() << "ThumbnailPreview updateButtonStates state != Idle";
         bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
         m_pMircastBtn->setEnabled(!m_pEngine->currFileIsAudio());

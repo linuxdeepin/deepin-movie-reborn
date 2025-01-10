@@ -357,12 +357,13 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl &url, const QList<QString> &
         qDebug() << "state is Idle, return";
         return;
     }
+
     if (!_current) {
         qDebug() << "current is null, return";
         return;
     }
 
-    if (playlist().currentInfo().url != url) {
+    if (playlist().count() <= 0 || playlist().currentInfo().url != url) {
         qDebug() << "playlist().currentInfo().url != url, return";
         return;
     }
@@ -384,7 +385,7 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl &url, const QList<QString> &
 bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
 {
     qDebug() << "Loading subtitle:" << fi.absoluteFilePath();
-    if (state() == CoreState::Idle) {
+    if (state() == CoreState::Idle || playlist().count() <= 0) {
         qDebug() << "Player is idle, ignoring subtitle load";
         return true;
     }
