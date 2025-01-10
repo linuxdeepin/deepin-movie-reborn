@@ -995,11 +995,13 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 
     if(CompositingManager::get().platform() == Platform::X86) {
         if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
-            PlayItemInfo info = m_pEngine->playlist().currentInfo();
-            if (!info.url.isLocalFile()) {
-                return;
+            if(m_pEngine->playlist().count() > 0) {
+                PlayItemInfo info = m_pEngine->playlist().currentInfo();
+                if (!info.url.isLocalFile()) {
+                    return;
+                }
+                m_pProgBar_Widget->setCurrentIndex(2);
             }
-            m_pProgBar_Widget->setCurrentIndex(2);
         }
     }
 }
@@ -1544,7 +1546,7 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle)
         return;
 
-    if (m_pEngine->playlist().currentInfo().url != url)
+    if (m_pEngine->playlist().count() <= 0 || m_pEngine->playlist().currentInfo().url != url)
         return;
 
     if (!Settings::get().isSet(Settings::PreviewOnMouseover))
@@ -1823,6 +1825,7 @@ void ToolboxProxy::slotFileLoaded()
             m_pMainWindow->slotExitMircast();
             return;
         }
+        if(m_pEngine->getplaylist()->count() <= 0) return;
         QString sCurPath = m_pEngine->getplaylist()->currentInfo().mi.filePath;
         int nIndex = -1;
         for(int i = 0; i < lstItemInfo.count(); i++) {
@@ -2119,7 +2122,7 @@ void ToolboxProxy::progressHoverChanged(int nValue)
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle)
         return;
 
-    if (m_pVolSlider->isVisible())
+    if (m_pEngine->getplaylist()->count() <= 0 || m_pVolSlider->isVisible())
         return;
 
     const auto &pif = m_pEngine->playlist().currentInfo();
@@ -2228,7 +2231,7 @@ void ToolboxProxy::updateButtonStates()
         palette.setColor(QPalette::Text, QColor(255, 255, 255, 40));
     }
 
-    if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+    if(m_pEngine->state() != PlayerEngine::CoreState::Idle && m_pEngine->getplaylist()->count() > 0) {
         bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
         m_pMircastBtn->setEnabled(!m_pEngine->currFileIsAudio());
         if(m_pEngine->currFileIsAudio())

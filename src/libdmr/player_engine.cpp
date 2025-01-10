@@ -299,7 +299,7 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl &url, const QList<QString> &
     }
     if (!_current) return;
 
-    if (playlist().currentInfo().url != url)
+    if (playlist().count() <= 0 || playlist().currentInfo().url != url)
         return;
 
     bool res = false;
@@ -318,7 +318,7 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl &url, const QList<QString> &
 
 bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
 {
-    if (state() == CoreState::Idle) {
+    if (state() == CoreState::Idle || playlist().count() <= 0) {
         return true;
     }
     if (!_current) return true;
