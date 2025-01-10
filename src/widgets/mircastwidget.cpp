@@ -500,11 +500,13 @@ void MircastWidget::startDlnaTp(ItemWidget *item)
         return;
     } else {
         dmr::PlayerEngine *pEngine = static_cast<dmr::PlayerEngine *>(m_pEngine);
-        if(pEngine && pEngine->playlist().currentInfo().url.isLocalFile()) {
-            m_dlnaContentServer->setDlnaFileName(pEngine->playlist().currentInfo().url.toLocalFile());
-            m_sLocalUrl = m_dlnaContentServer->getBaseUrl()  + QFileInfo(pEngine->playlist().currentInfo().url.toLocalFile()).fileName().toLatin1();
-        } else {
-            m_sLocalUrl = pEngine->playlist().currentInfo().url.toString();
+        if(pEngine && pEngine->playlist().count() > 0) {
+            if(pEngine && pEngine->playlist().currentInfo().url.isLocalFile()) {
+                m_dlnaContentServer->setDlnaFileName(pEngine->playlist().currentInfo().url.toLocalFile());
+                m_sLocalUrl = m_dlnaContentServer->getBaseUrl()  + QFileInfo(pEngine->playlist().currentInfo().url.toLocalFile()).fileName().toLatin1();
+            } else {
+                m_sLocalUrl = pEngine->playlist().currentInfo().url.toString();
+            }
         }
         m_isStartHttpServer = m_dlnaContentServer->getIsStartHttpServer();
     }
