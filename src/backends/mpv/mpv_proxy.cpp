@@ -1499,6 +1499,7 @@ void MpvProxy::slotStateChanged()
 void MpvProxy::refreshDecode()
 {
     QList<QString> canHwTypes;
+    if (dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size() <= 0) return;
     //bool bIsCanHwDec = HwdecProbe::get().isFileCanHwdec(_file.url(), canHwTypes);
 
     qInfo() << "DecodeMode:" << m_decodeMode << "(AUTO:0, HARDWARE:1, SOFTWARE:2, CUSTOM:3)";
