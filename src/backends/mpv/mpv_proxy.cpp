@@ -575,10 +575,10 @@ mpv_handle *MpvProxy::mpv_init()
         qInfo() << "-------- __mips__hwdec____________";
         m_sInitVo = "opengl-cb";
 #else
-        my_set_property(pHandle, "vo", "libmpv,opengl-cb");
+        my_set_property(pHandle, "vo", "libmpv");
         my_set_property(pHandle, "vd-lavc-dr", "no");
         my_set_property(pHandle, "gpu-sw", "on");
-        m_sInitVo = "libmpv,opengl-cb";
+        m_sInitVo = "libmpv";
 #endif
     } else {
         my_set_property(pHandle, "wid", m_pParentWidget->winId());

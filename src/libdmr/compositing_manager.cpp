@@ -178,8 +178,6 @@ CompositingManager::CompositingManager()
         }
         if (_platform == Platform::Arm64 && isDriverLoaded)
             m_bHasCard = true;
-        //TODO
-        _composited = false;
         qInfo() << __func__ << "Composited is " << _composited;
         return;
     }
@@ -212,7 +210,7 @@ CompositingManager::CompositingManager()
     file.close();
 
     //TODO: 临时处理方案
-    _composited = false;
+    _composited = true;
 #if defined (_MOVIE_USE_)
     //TODO
     // QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
@@ -292,8 +290,6 @@ CompositingManager::CompositingManager()
     {
         _composited = true;
     }
-    //TODO
-    _composited = false;
     qInfo() << __func__ << "Composited is " << _composited;
 }
 
