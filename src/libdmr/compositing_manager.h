@@ -78,7 +78,7 @@ public:
     bool composited() const
     {
 #if defined (_LIBDMR_)
-        return false;
+        return true;
 #endif
         return _composited;
     }
