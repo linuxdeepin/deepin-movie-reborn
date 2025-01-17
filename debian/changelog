@@ -1,3 +1,9 @@
+deepin-movie-reborn (5.15.13) unstable; urgency=medium
+
+  * fix: Fixed the issue that OpenGL could not be played
+
+ -- renbin <renbin@uniontech.com>  Fri, 17 Jan 2025 15:56:54 +0800
+
 deepin-movie-reborn (5.15.12) unstable; urgency=medium
 
   * chore: New version 5.15.12.
