@@ -26,6 +26,7 @@
 #include <QX11Info>
 #include <QLibrary>
 #include <va/va_x11.h>
+#include <malloc.h>
 
 namespace dmr {
 using namespace mpv::qt;
@@ -1250,6 +1251,7 @@ void MpvProxy::refreshDecode()
 {
     QList<QString> canHwTypes;
     if (dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size() <= 0) return;
+    malloc_trim(0);
     //bool bIsCanHwDec = HwdecProbe::get().isFileCanHwdec(_file.url(), canHwTypes);
 
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
