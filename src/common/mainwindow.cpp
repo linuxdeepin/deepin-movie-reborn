@@ -28,6 +28,7 @@
 #include "vendor/presenter.h"
 #include "filefilter.h"
 #include "eventlogutils.h"
+#include <malloc.h>
 
 //#include <QtWidgets>
 #include <QtDBus>
@@ -5605,6 +5606,7 @@ void MainWindow::diskRemoved(QString strDiskName)
 void MainWindow::sleepStateChanged(bool bSleep)
 {
     qInfo() << __func__ << bSleep;
+    malloc_trim(0);
 
     //if (m_bStateInLock) {                //休眠唤醒后会先执行锁屏操作,如果已经进行锁屏操作则忽略休眠唤醒信号
      //   m_bStartSleep = bSleep;
@@ -5630,6 +5632,7 @@ void MainWindow::sleepStateChanged(bool bSleep)
 void MainWindow::lockStateChanged(bool bLock)
 {
     qInfo() << __func__ << bLock;
+    malloc_trim(0);
     //锁屏退出投屏
     if(bLock && m_pMircastShowWidget && m_pMircastShowWidget->isVisible()) {
         qDebug() << "bLock && m_pMircastShowWidget && m_pMircastShowWidget->isVisible()";
