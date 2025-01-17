@@ -861,7 +861,7 @@ namespace dmr {
                         m_vboCorners[i].release();
                     }
                 }
-
+                pGLFunction->glBindTexture(GL_TEXTURE_2D, 0);
                 pGLFunction->glDisable(GL_BLEND);
             }
 #ifdef __x86_64__
