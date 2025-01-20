@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+# SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -6,11 +6,11 @@
 cmake_minimum_required(VERSION 3.10)
 
 # 设置cmake参数
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-set(CMAKE_CXX_STANDARD 17)
 
 #ADD_DEFINITIONS( -LITE_DIV)
 execute_process(COMMAND uname -m OUTPUT_VARIABLE MACH
@@ -20,15 +20,15 @@ option (USE_TEST "Use TESTS" ON)
 add_definitions( -DUSE_TEST )
 
 # 设置Qt模块
-set(QtModule Core Gui Widgets Network X11Extras PrintSupport DBus Sql Svg Multimedia MultimediaWidgets Concurrent LinguistTools Test Xml)
+# TODO:X11Extras 没适配
+set(QtModule Core Gui Widgets Network  PrintSupport DBus Sql Svg Multimedia MultimediaWidgets Concurrent LinguistTools Test)
 
 # 设置工程名字
 project(deepin-movie-test)
 
 # 查找Qt相关的库链接
-find_package(Qt5 REQUIRED ${QtModule})
-find_package(Qt5Xml)
-find_package(Qt5Test)
+find_package(Qt6 REQUIRED ${QtModule})
+#find_package(gui-private)
 
 
 # 包含源码文件夹
@@ -45,8 +45,6 @@ include_directories(../../src/vendor)
 include_directories(../../src/backends)
 include_directories(../../src/backends/mpv)
 include_directories(../../src/backends/mediaplayer)
-include_directories(../../src/dlna)
-include_directories(../../src/dlna/dlnaHttpServer)
 
 #add_subdirectory(googletest)
 
@@ -61,16 +59,13 @@ FILE (GLOB allSource
     ../../src/backends/mpv/*.cpp
     ../../src/backends/mediaplayer/*.cpp
     ../../src/backends/*.cpp
-    ../../src/dlna/*.cpp
-    ../../src/dlna/dlnaHttpServer/*.cpp
-    ../../src/dlna/dlnaHttpServer/*.c
     )
 
 FILE (GLOB allTestSource
     *.cpp
     *.sh
     common/*.cpp
-    dlna/*.cpp
+    widgets/*.cpp
     libdmr/*.cpp
     backends/*.cpp
     vendor/*.cpp
@@ -140,7 +135,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(3rd_lib REQUIRED
         dtkwidget dtkgui
         libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
-        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 dbusextended-qt5 libva libva-x11
+        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 libva libva-x11
         gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0
         )
     #libpulse-simple xcb-aux gtest
@@ -148,12 +143,10 @@ pkg_check_modules(3rd_lib REQUIRED
 target_include_directories(${PROJECT_NAME} PUBLIC ${3rd_lib_INCLUDE_DIRS})
 
 # 将第三方库链接进来(注意 *_LIBRARIES)
-target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES}  Qt5::GuiPrivate Qt5::Test
-    ${GTEST_LIBRARIES}
-    ${GTEST_MAIN_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES})
 #------------------------------添加第三方库end-------------------------------------
 
 target_link_libraries(${PROJECT_NAME} gmock gmock_main gtest gtest_main)
 
 # 将工程与Qt模块链接起来
-qt5_use_modules(${PROJECT_NAME} ${QtModule})
+#qt5_use_modules(${PROJECT_NAME} ${QtModule})

@@ -196,7 +196,11 @@ MovieInfo GstUtils:: parseFileByGst(const QFileInfo &fi)
 
     m_movieInfo.title = fi.fileName();
     m_movieInfo.filePath = fi.canonicalFilePath();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_movieInfo.creation = fi.created().toString();
+#else
+    m_movieInfo.creation = fi.birthTime().toString();
+#endif
     m_movieInfo.fileSize = fi.size();
     m_movieInfo.fileType = fi.suffix();
 

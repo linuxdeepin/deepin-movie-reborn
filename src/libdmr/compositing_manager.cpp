@@ -15,7 +15,6 @@
 #include <unistd.h>
 #include <QtCore>
 #include <QtGui>
-#include <QX11Info>
 #include <QDBusInterface>
 #include <DStandardPaths>
 
@@ -25,6 +24,18 @@
 #undef Bool
 #include "../vendor/qthelper.hpp"
 #include "sysutils.h"
+
+#include <QtGui/private/qtx11extras_p.h>
+#include <QtGui/private/qtguiglobal_p.h>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QX11Info>
+#else
+#include <QtGui/private/qtx11extras_p.h>
+#include <QtGui/private/qtguiglobal_p.h>
+#endif
+
+
 
 #define BUFFERSIZE 255
 
@@ -57,8 +68,13 @@ public:
                 string machine(data.trimmed().constData());
                 qInfo() << QString("machine: %1").arg(machine.c_str());
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                 QRegExp re("x86.*|i?86|ia64", Qt::CaseInsensitive);
                 if (re.indexIn(C2Q(machine)) != -1) {
+#else
+                QRegularExpression re("x86.*|i?86|ia64", QRegularExpression::CaseInsensitiveOption);
+                if (re.match(C2Q(machine)).hasMatch()) {
+#endif
                     qInfo() << "match x86";
                     _pf = Platform::X86;
 
@@ -193,32 +209,34 @@ CompositingManager::CompositingManager()
     }
     file.close();
 
+    //TODO: 临时处理方案
     _composited = true;
 #if defined (_MOVIE_USE_)
-    QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
-    QString aa = gsettings.get("composited").toString();
-    if ((gsettings.get("composited").toString() == "DisableComposited"
-            || gsettings.get("composited").toString() == "EnableComposited")) {
-        if (gsettings.keys().contains("composited")) {
-            if (gsettings.get("composited").toString() == "DisableComposited") {
-                _composited = false;
-            } else if (gsettings.get("composited").toString() == "EnableComposited") {
-                _composited = true;
-            }
-        }
-    } else {
-        if (_platform == Platform::X86) {
-            if (m_bZXIntgraphics) {
-                _composited = false;
-            } else {
-                _composited = true;
-            }
-        } else {
-            if (_platform == Platform::Arm64 && isDriverLoaded)
-                m_bHasCard = true;
-            _composited = false;
-        }
-    }
+    //TODO
+    // QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
+    // QString aa = gsettings.get("composited").toString();
+    // if ((gsettings.get("composited").toString() == "DisableComposited"
+    //         || gsettings.get("composited").toString() == "EnableComposited")) {
+    //     if (gsettings.keys().contains("composited")) {
+    //         if (gsettings.get("composited").toString() == "DisableComposited") {
+    //             _composited = false;
+    //         } else if (gsettings.get("composited").toString() == "EnableComposited") {
+    //             _composited = true;
+    //         }
+    //     }
+    // } else {
+    //     if (_platform == Platform::X86) {
+    //         if (m_bZXIntgraphics) {
+    //             _composited = false;
+    //         } else {
+    //             _composited = true;
+    //         }
+    //     } else {
+    //         if (_platform == Platform::Arm64 && isDriverLoaded)
+    //             m_bHasCard = true;
+    //         _composited = false;
+    //     }
+    // }
 #endif
 
     //针对jm显卡适配
@@ -562,6 +580,7 @@ OpenGLInteropKind CompositingManager::interopKind()
 
 bool CompositingManager::isDriverLoadedCorrectly()
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     static QRegExp aiglx_err("\\(EE\\)\\s+AIGLX error");
     static QRegExp dri_ok("direct rendering: DRI\\d+ enabled");
     static QRegExp swrast("GLX: Initialized DRISWRAST");
@@ -572,7 +591,20 @@ bool CompositingManager::isDriverLoadedCorrectly()
 #if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
     static QRegExp rendering("direct rendering");
 #endif
-    QString xorglog = QString("/var/log/Xorg.%1.log").arg(QX11Info::appScreen());
+#else
+    static QRegularExpression aiglx_err("\\(EE\\)\\s+AIGLX error");
+    static QRegularExpression dri_ok("direct rendering: DRI\\d+ enabled");
+    static QRegularExpression swrast("GLX: Initialized DRISWRAST");
+    static QRegularExpression regZX("loading driver: zx");
+    static QRegularExpression regCX4("loading driver: cx4");
+    static QRegularExpression arise("loading driver: arise");
+    static QRegularExpression controller("1ec8");
+#if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
+    static QRegularExpression rendering("direct rendering");
+#endif
+#endif
+
+    QString xorglog = QString("/var/log/Xorg.%1.log").arg(QGuiApplication::primaryScreen()->name().split("-").last());
     qInfo() << "check " << xorglog;
     QFile f(xorglog);
     if (!f.open(QFile::ReadOnly)) {
@@ -583,6 +615,8 @@ bool CompositingManager::isDriverLoadedCorrectly()
     QTextStream ts(&f);
     while (!ts.atEnd()) {
         QString ln = ts.readLine();
+        
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         if (aiglx_err.indexIn(ln) != -1) {
             qInfo() << "found aiglx error";
             return false;
@@ -592,6 +626,7 @@ bool CompositingManager::isDriverLoadedCorrectly()
             qInfo() << "dri enabled successfully";
             return true;
         }
+
 #if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
         if (rendering.indexIn(ln.toLower()) != -1) {
             qInfo() << "_loongarch dri enabled successfully";
@@ -611,8 +646,40 @@ bool CompositingManager::isDriverLoadedCorrectly()
             qInfo() << ln;
             return true;
         }
+#else
+        if (aiglx_err.match(ln).hasMatch()) {
+            qInfo() << "found aiglx error";
+            return false;
+        }
+
+        if (dri_ok.match(ln).hasMatch()) {
+            qInfo() << "dri enabled successfully";
+            return true;
+        }
+
+#if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
+        if (rendering.match(ln.toLower()).hasMatch()) {
+            qInfo() << "_loongarch dri enabled successfully";
+            return true;
+        }
+#endif
+        if (swrast.match(ln).hasMatch()) {
+            qInfo() << "swrast driver used";
+            return false;
+        }
+
+        if (regZX.match(ln).hasMatch() || regCX4.match(ln).hasMatch() || arise.match(ln).hasMatch()) {
+            m_bZXIntgraphics = true;
+        }
+
+        if (controller.match(ln).hasMatch()) {
+            qInfo() << ln;
+            return true;
+        }
+#endif
     }
     f.close();
+
 #if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
     return false;
 #endif

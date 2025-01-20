@@ -139,12 +139,23 @@ QPixmap Platform_ThumbnailWorker::genThumb(const QUrl &url, int secs)
 void Platform_ThumbnailWorker::run()
 {
     setPriority(QThread::IdlePriority);
-    while (!_quit.load()) {
-
+    while (
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        !_quit.load()
+#else
+        !_quit
+#endif
+    ) {
         QPair<QUrl, int> w;
         {
             QMutexLocker lock(&m_thumbLock);
-            while (_wq.isEmpty() && !_quit.load()) {
+            while (_wq.isEmpty() && 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                   !_quit.load()
+#else
+                   !_quit
+#endif
+            ) {
                 m_cond.wait(lock.mutex(), 40);
             }
 
@@ -154,7 +165,11 @@ void Platform_ThumbnailWorker::run()
             }
         }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         if (_quit.load()) break;
+#else
+        if (_quit) break;
+#endif
 
         {
             QMutexLocker lock(&m_thumbLock);

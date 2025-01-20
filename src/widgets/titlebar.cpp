@@ -8,7 +8,11 @@
 #include "utils.h"
 
 #include <QtGui>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DThemeManager>
+#endif
+
 #include <QPainterPath>
 #include "../accessibility/ac-deepin-movie-define.h"
 
@@ -172,7 +176,11 @@ void Titlebar::setTitleBarBackground(bool flag)
         d->m_shadowEffect->setColor(Qt::transparent);
     } else {
         QPalette palette;
+#if QT_VERSION  < QT_VERSION_CHECK(6, 0, 0)
         palette.setColor(QPalette::Background, QColor(200, 200, 200, 50));
+#else
+        palette.setColor(QPalette::Window, QColor(200, 200, 200, 50));
+#endif
         this->setPalette(palette);
         d->m_titlebar->setBackgroundTransparent(d->m_play);
         d->m_titlebar->setBlurBackground(d->m_play);
@@ -213,7 +221,11 @@ void Titlebar::paintEvent(QPaintEvent *pe)
         QPixmap pixmap = QPixmap(":resources/icons/titlebar.png");
         //palette.setBrush(QPalette::Background, QBrush(pixmap.scaled(window()->width(), 50)));
         bgColor = QBrush(pixmap);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         palette.setColor(QPalette::Background, QColor(0, 0, 0, 0));
+#else
+        palette.setColor(QPalette::Window, QColor(0, 0, 0, 0));
+#endif
         this->setPalette(palette);
     } else {
         bgColor = Qt::transparent;

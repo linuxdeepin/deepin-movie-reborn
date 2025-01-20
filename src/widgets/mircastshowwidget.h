@@ -32,7 +32,11 @@ signals:
     void exitMircast();
 
 protected:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent(QEvent *pEvent) override;
+#else
+    void enterEvent(QEnterEvent *pEvent) override;
+#endif
     void leaveEvent(QEvent *pEvent) override;
     void mousePressEvent(QMouseEvent *pEvent) override;
     void mouseReleaseEvent(QMouseEvent *pEvent) override;

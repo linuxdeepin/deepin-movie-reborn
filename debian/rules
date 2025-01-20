@@ -1,14 +1,21 @@
 #!/usr/bin/make -f
 include /usr/share/dpkg/default.mk
-export QT_SELECT=5
+export QT_SELECT=6
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 %:
-	dh $@ --parallel
+	dh $@ --parallel --with-compat=10
 
 override_dh_auto_configure:
 	dh_auto_configure -- \
 	  -DCMAKE_BUILD_TYPE=Release \
 	  -DCMAKE_INSTALL_PREFIX=/usr \
-      -DAPP_VERSION=$(DEB_VERSION_UPSTREAM) -DVERSION=$(DEB_VERSION_UPSTREAM) LIB_INSTALL_DIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	  -DAPP_VERSION=$(DEB_VERSION_UPSTREAM) \
+	  -DVERSION=$(DEB_VERSION_UPSTREAM) \
+	  -DLIB_INSTALL_DIR=/usr/lib/$(DEB_HOST_MULTIARCH) \
+	  -DQT_VERSION=6
+
+override_dh_install:
+	dh_install --exclude=usr/share/dsg/configs/org.deepin.movie \
+		   --exclude=usr/lib/uos-ai-assistant/functions
 

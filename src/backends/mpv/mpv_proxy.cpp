@@ -24,7 +24,14 @@
 
 #include <xcb/xproto.h>
 #include <xcb/xcb_aux.h>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QX11Info>
+#else
+#include <QtGui/private/qtx11extras_p.h>
+#include <QtGui/private/qtguiglobal_p.h>
+#endif
+
 #include <QLibrary>
 #include <va/va_x11.h>
 
@@ -201,8 +208,10 @@ void MpvProxy::firstInit()
             m_pMpvGLwidget = new MpvGLWidget(this, m_handle);
             connect(this, &MpvProxy::stateChanged, this, &MpvProxy::slotStateChanged);
 #ifdef __x86_64__
-            connect(this, &MpvProxy::elapsedChanged, [ this ]() {//更新opengl显示进度
+            connect(this, &MpvProxy::elapsedChanged, [ this ]() {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                 m_pMpvGLwidget->updateMovieProgress(duration(), elapsed());
+#endif
                 m_pMpvGLwidget->update();
             });
 #endif
@@ -566,10 +575,10 @@ mpv_handle *MpvProxy::mpv_init()
         qInfo() << "-------- __mips__hwdec____________";
         m_sInitVo = "opengl-cb";
 #else
-        my_set_property(pHandle, "vo", "libmpv,opengl-cb");
+        my_set_property(pHandle, "vo", "libmpv");
         my_set_property(pHandle, "vd-lavc-dr", "no");
         my_set_property(pHandle, "gpu-sw", "on");
-        m_sInitVo = "libmpv,opengl-cb";
+        m_sInitVo = "libmpv";
 #endif
     } else {
         my_set_property(pHandle, "wid", m_pParentWidget->winId());
@@ -1576,7 +1585,7 @@ void MpvProxy::play()
         listArgs << listOpts.join(',');
     }
 
-    qInfo() << listArgs;
+    qInfo()<<"" << listArgs << listOpts;
 
     //设置播放参数
     QMap<QString, QString>::iterator iter = m_pConfig->begin();
@@ -1600,7 +1609,11 @@ void MpvProxy::play()
             if (!QFile::exists(sub)) {
                 MovieConfiguration::get().removeFromListUrl(_file, ConfigKnownKey::ExternalSubs, sub);
             } else {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                 loadSubtitle(sub);
+#else
+                loadSubtitle(QFileInfo(sub));
+#endif
             }
         }
 
@@ -1825,9 +1838,15 @@ QImage MpvProxy::takeOneScreenshot()
         img.bits();
         int rotationdegree = videoRotation();
         if (rotationdegree && (CompositingManager::get().composited() || bNeedRotate)) {      //只有opengl窗口需要自己旋转
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             QMatrix matrix;
             matrix.rotate(rotationdegree);
             img = QPixmap::fromImage(img).transformed(matrix, Qt::SmoothTransformation).toImage();
+#else
+            QTransform transform;
+            transform.rotate(rotationdegree);
+            img = QPixmap::fromImage(img).transformed(transform, Qt::SmoothTransformation).toImage();
+#endif
         }
         m_freeNodecontents(&res);
         return img;

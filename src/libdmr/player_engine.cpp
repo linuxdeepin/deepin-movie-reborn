@@ -13,7 +13,7 @@
 #include "compositing_manager.h"
 #include "dguiapplicationhelper.h"
 #include "filefilter.h"
-#include "qtplayer_proxy.h"
+// #include "qtplayer_proxy.h"
 #include "eventlogutils.h"
 
 #include <QPainterPath>
@@ -52,9 +52,10 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
     if(CompositingManager::isMpvExists()){
         _current = new MpvProxy(this);
-    } else {
-        _current = new QtPlayerProxy(this);
     }
+    // else {
+    //     _current = new QtPlayerProxy(this);
+    // }
     if (_current) {
         connect(_current, &Backend::stateChanged, this, &PlayerEngine::onBackendStateChanged);
         connect(_current, &Backend::tracksChanged, this, &PlayerEngine::tracksChanged);
@@ -73,7 +74,10 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         l->addWidget(_current);
     }
 
-    connect(&_networkConfigMng, &QNetworkConfigurationManager::onlineStateChanged, this, &PlayerEngine::onlineStateChanged);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    connect(&_networkConfigMng, &QNetworkConfigurationManager::onlineStateChanged, 
+            this, &PlayerEngine::onlineStateChanged);
+#endif
 
     setLayout(l);
 
@@ -187,9 +191,11 @@ void PlayerEngine::waitLastEnd()
 {
     if (MpvProxy *mpv = dynamic_cast<MpvProxy *>(_current)) {
         mpv->pollingEndOfPlayback();
-    }else if (QtPlayerProxy *qtPlayer = dynamic_cast<QtPlayerProxy *>(_current)) {
-        qtPlayer->pollingEndOfPlayback();
     }
+    // TODO
+    // else if (QtPlayerProxy *qtPlayer = dynamic_cast<QtPlayerProxy *>(_current)) {
+    //     qtPlayer->pollingEndOfPlayback();
+    // }
 }
 
 void PlayerEngine::onBackendStateChanged()
@@ -230,7 +236,7 @@ void PlayerEngine::onBackendStateChanged()
             this->setPalette(pal);
         } else {
             QPalette pal(this->palette());
-            pal.setColor(QPalette::Background, Qt::black);
+            pal.setColor(QPalette::Window, Qt::black);
             this->setAutoFillBackground(true);
             this->setPalette(pal);
         }
@@ -305,7 +311,7 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl &url, const QList<QString> &
     bool res = false;
 
     for (auto &filename : filenames) {
-        if (true == _current->loadSubtitle(filename)) {
+        if (true == _current->loadSubtitle(QFileInfo(filename))) {
             res = true;
         } else {
             QFile::remove(filename);
@@ -752,6 +758,7 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 
     struct {
         bool operator()(const QUrl& fi1, const QUrl& fi2) const {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             static QRegExp rd("\\d+");
             int pos = 0;
             QString fileName1 = QFileInfo(fi1.toLocalFile()).fileName();
@@ -775,6 +782,32 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
                 pos += inc;
             }
             return fileName1.localeAwareCompare(fileName2) < 0;
+#else
+            static QRegularExpression rd("\\d+");
+            QRegularExpressionMatch match;
+            int pos = 0;
+            QString fileName1 = QFileInfo(fi1.toLocalFile()).fileName();
+            QString fileName2 = QFileInfo(fi2.toLocalFile()).fileName();
+            while ((match = rd.match(fileName1, pos)).hasMatch()) {
+                auto inc = match.capturedLength();
+                auto id1 = QStringView(fileName1).mid(match.capturedStart(), inc);
+
+                auto pos2 = rd.match(fileName2, pos).capturedStart();
+                if (pos == pos2) {
+                    auto id2 = QStringView(fileName2).mid(pos, rd.match(fileName2, pos).capturedLength());
+                    //qInfo() << "id compare " << id1 << id2;
+                    if (id1 != id2) {
+                        bool ok1, ok2;
+                        bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
+                        if (ok1 && ok2) return v;
+                        return id1.localeAwareCompare(id2) < 0;
+                    }
+                }
+
+                pos = match.capturedEnd();
+            }
+            return fileName1.localeAwareCompare(fileName2) < 0;
+#endif
         }
     } SortByDigits;
 
@@ -945,11 +978,11 @@ void PlayerEngine::toggleRoundedClip(bool roundClip)
     MpvProxy* pMpvProxy = nullptr;
 
     pMpvProxy = dynamic_cast<MpvProxy *>(_current);
-    if(!pMpvProxy) {
-        dynamic_cast<QtPlayerProxy *>(_current)->updateRoundClip(roundClip);
-    } else {
+    // if(!pMpvProxy) {
+    //     dynamic_cast<QtPlayerProxy *>(_current)->updateRoundClip(roundClip);
+    // } else {
         pMpvProxy->updateRoundClip(roundClip);
-    }
+    // }
 }
 
 bool PlayerEngine::currFileIsAudio()

@@ -8,6 +8,7 @@
 #include <QHostAddress>
 #include <QThreadPool>
 #include <QTimer>
+#include <QRegularExpression>
 
 static const qint64 qlen = 2048;
 const QString dlnaOrgOpFlagsSeekBytes{"DLNA.ORG_OP=01"};
@@ -161,10 +162,16 @@ void DlnaContentServer::streamFileNoRange(std::shared_ptr<QFile> file,
 
 std::optional<DlnaContentServer::Range> DlnaContentServer::Range::fromRange(
     const QString &rangeHeader, qint64 length) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QRegExp rx{"bytes[\\s]*=[\\s]*([\\d]+)-([\\d]*)"};
-
     if (rx.indexIn(rangeHeader) >= 0) {
         Range range{rx.cap(1).toLongLong(), rx.cap(2).toLongLong(), length};
+#else
+    QRegularExpression rx{"bytes\\s*=\\s*([\\d]+)-([\\d]*)"};
+    QRegularExpressionMatch match = rx.match(rangeHeader);
+    if (match.hasMatch()) {
+        Range range{match.captured(1).toLongLong(), match.captured(2).toLongLong(), length};
+#endif
         if (range.length <= 0) range.length = -1;
         if (range.end <= 0) range.end = -1;
         if (length > 0) {

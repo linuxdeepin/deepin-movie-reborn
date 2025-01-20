@@ -15,8 +15,13 @@
 #include <DPushButton>
 #include <DFloatingMessage>
 #include <QDBusAbstractInterface>
-#include <QtX11Extras/QX11Info>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QtX11Extras/QX11Info>
+#else
+#include <QtGui/private/qtx11extras_p.h>
+#include <QtGui/private/qtguiglobal_p.h>
+#endif
 #include "widgets/titlebar.h"
 #include "platform/platform_animationlabel.h"
 #include "diskcheckthread.h"

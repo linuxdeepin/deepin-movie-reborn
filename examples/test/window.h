@@ -10,11 +10,14 @@
 #include <playlist_model.h>
 #include <compositing_manager.h>
 #include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
 
 class Window: public QWidget {
     Q_OBJECT
 public:
-    Window(QWidget *parent = 0);
+    explicit Window(QWidget *parent = nullptr);
     void play(const QUrl& url);
 
 private:

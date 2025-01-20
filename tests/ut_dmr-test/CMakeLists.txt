@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+# SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -22,12 +22,12 @@ option (USE_TEST "Use TESTS" ON)
 add_definitions( -DUSE_TEST )
 
 # 设置Qt模块
-set(QtModule Core Gui Widgets Network X11Extras PrintSupport DBus Sql Svg Concurrent LinguistTools Test)
+set(QtModule Core Gui Widgets Network PrintSupport DBus Sql Svg SvgWidgets Concurrent LinguistTools Test)
 
 # 查找Qt相关的库链接
-find_package(Qt5 REQUIRED ${QtModule})
+find_package(Qt6 REQUIRED ${QtModule})
 
-pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
+pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtk6widget)
 
 include_directories(../../examples/test)
 include_directories(../../src)
@@ -72,9 +72,9 @@ set(OBJECT_DIR ${CMAKE_BINARY_DIR}/CMakeFiles/objects)
 # 使用第三方库需要用到的一个包
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(3rd_lib REQUIRED
-        dtkwidget dtkgui
+        dtk6widget dtk6gui
         libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
-        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 dbusextended-qt5 libva libva-x11
+        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt6 dbusextended-qt5 libva libva-x11
         )
     #libpulse-simple xcb-aux gtest
 # 添加第三方库的所有文件夹路径到工程中来(注意 *_INCLUDE_DIRS)
@@ -87,5 +87,5 @@ target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES} )
 target_link_libraries(${PROJECT_NAME} gmock gmock_main gtest gtest_main dmr)
 
 # 将工程与Qt模块链接起来
-qt5_use_modules(${PROJECT_NAME} ${QtModule})
+#qt5_use_modules(${PROJECT_NAME} ${QtModule})
 

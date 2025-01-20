@@ -46,7 +46,11 @@ protected:
             tip->adjustSize();
             tip->raise();
             QPoint pos = he->globalPos() + QPoint{0, 10};
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             int dw = qApp->desktop()->availableGeometry(item).width();
+#else
+            int dw = QGuiApplication::primaryScreen()->availableGeometry().width();
+#endif
             if (pos.x() + tip->width() > dw) {
                 pos.rx() = dw - tip->width();
             }
@@ -180,7 +184,11 @@ public:
         auto t = new Tip(QPixmap(), _pif.mi.title, nullptr);
         t->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint);
         t->setText(_pif.mi.title);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         t->resetSize(QApplication::desktop()->availableGeometry().width());
+#else
+        t->resetSize(QGuiApplication::primaryScreen()->availableGeometry().width());
+#endif
         t->setAttribute(Qt::WA_TranslucentBackground);
         t->setProperty("for", QVariant::fromValue<QWidget *>(this));
         t->layout()->setContentsMargins(5, 10, 5, 10);
@@ -416,6 +424,7 @@ protected:
 
         QFrame::leaveEvent(e);
     }
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent(QEvent *e) override
     {
         _closeBtn->show();
@@ -426,6 +435,18 @@ protected:
 
         QFrame::enterEvent(e);
     }
+#else
+    void enterEvent(QEnterEvent *e) override
+    {
+        _closeBtn->show();
+        _closeBtn->raise();
+
+        updateClosePosition();
+        setHovered(true);
+        QFrame::enterEvent(e);
+    }
+#endif
+
     bool eventFilter(QObject *obj, QEvent *e) override
     {
         if (e->type() == QEvent::MouseButtonDblClick) {
@@ -488,7 +509,11 @@ protected:
         }
 
         if (_hovered) {
-            DPalette pa = DApplicationHelper::instance()->palette(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            DPalette pa = DGuiApplicationHelper::instance()->palette(this);
+#else
+            DPalette pa = DGuiApplicationHelper::instance()->applicationPalette();
+#endif
             pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
             QColor bgColor(255, 255, 255, static_cast<int>(255 * 0.05));
             if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
@@ -707,7 +732,12 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     m_pClearButton->installEventFilter(this);
     DFontSizeManager::instance()->bind(m_pClearButton, DFontSizeManager::T6);
 
-    DPalette pa_cb = DApplicationHelper::instance()->palette(m_pClearButton);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    DPalette pa_cb = DGuiApplicationHelper::instance()->palette(m_pClearButton);
+#else
+    // 使用 applicationPalette() 可以获取当前应用程序的调色板，它会自动跟随系统主题变化
+    DPalette pa_cb = DGuiApplicationHelper::instance()->applicationPalette();
+#endif
     if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
         pa_cb.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
         pa_cb.setBrush(QPalette::Dark, QColor(92, 92, 92, 255));
@@ -720,7 +750,12 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     m_pClearButton->setContentsMargins(0, 0, 0, 0);
 
     QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, m_pClearButton, [ = ]() {
-        DPalette pa_cBtn = DApplicationHelper::instance()->palette(m_pClearButton);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        DPalette pa_cBtn = DGuiApplicationHelper::instance()->palette(m_pClearButton);
+#else
+    // 使用 applicationPalette() 可以获取当前应用程序的调色板，它会自动跟随系统主题变化
+        DPalette pa_cBtn = DGuiApplicationHelper::instance()->applicationPalette();
+#endif
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             pa_cBtn.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
             pa_cBtn.setBrush(QPalette::Dark, QColor(92, 92, 92, 255));
@@ -793,16 +828,30 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
     if (!_closeMapper) {
         _closeMapper = new QSignalMapper(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         connect(_closeMapper,
-                static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped), this, &Platform_PlaylistWidget::slotCloseItem);
-
+                static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped), 
+                this, &Platform_PlaylistWidget::slotCloseItem);
+#else
+        connect(_closeMapper, &QSignalMapper::mappedObject, 
+                this, [this](QObject *obj) {
+                    slotCloseItem(qobject_cast<QWidget *>(obj));
+                });
+#endif
     }
 
     if (!_activateMapper) {
         _activateMapper = new QSignalMapper(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         connect(_activateMapper,
-                static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped), this, &Platform_PlaylistWidget::slotDoubleClickedItem);
-
+                static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped), 
+                this, &Platform_PlaylistWidget::slotDoubleClickedItem);
+#else
+        connect(_activateMapper, &QSignalMapper::mappedObject,
+                this, [this](QObject *obj) {
+                    slotDoubleClickedItem(qobject_cast<QWidget *>(obj));
+                });
+#endif
     }
 
 #ifdef DTKWIDGET_CLASS_DSizeMode

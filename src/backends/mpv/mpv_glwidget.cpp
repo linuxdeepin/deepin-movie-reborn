@@ -9,7 +9,13 @@
 #include "mpv_glwidget.h"
 #include "sysutils.h"
 
-#include <QtX11Extras/QX11Info>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QX11Info>
+#else
+#include <QtGui/private/qtx11extras_p.h>
+#include <QtGui/private/qtguiglobal_p.h>
+#endif
+
 #include <QLibrary>
 #include <QPainterPath>
 
@@ -580,7 +586,18 @@ namespace dmr {
             m_pFbo->release();
             delete m_pFbo;
         }
-        m_pFbo = new QOpenGLFramebufferObject(desiredSize);
+        // 创建 FBO 格式
+        QOpenGLFramebufferObjectFormat format;
+        format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+        format.setSamples(0);  // 禁用多重采样，避免与视频渲染冲突
+        format.setTextureTarget(GL_TEXTURE_2D);
+        format.setInternalTextureFormat(GL_RGBA8);  // 使用 8 位 RGBA 格式
+        m_pFbo = new QOpenGLFramebufferObject(desiredSize, format);
+        // 检查 FBO 是否创建成功
+        if (!m_pFbo || !m_pFbo->isValid()) {
+            qWarning() << "Failed to create FBO with size:" << desiredSize;
+            return;
+        }
     }
 
     void MpvGLWidget::updateCornerMasks()
@@ -823,6 +840,17 @@ namespace dmr {
     void MpvGLWidget::paintGL() 
     {
         QOpenGLFunctions *pGLFunction = QOpenGLContext::currentContext()->functions();
+            if (!pGLFunction) {
+        qWarning() << "Failed to get OpenGL functions";
+        return;
+    }
+    
+    // 检查纹理是否有效
+    if (m_pLightTex && !m_pLightTex->isCreated()) {
+        qWarning() << "Light texture not created";
+        return;
+    }
+        
         if (m_bPlaying) {
 
             qreal dpr = qApp->devicePixelRatio();
@@ -842,8 +870,8 @@ namespace dmr {
 
                 m_renderContexRender(m_pRenderCtx, params);
             } else {
-                pGLFunction->glEnable(GL_BLEND);
-                pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                //pGLFunction->glEnable(GL_BLEND);
+                //pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
                 m_pFbo->bind();
 
@@ -907,7 +935,7 @@ namespace dmr {
                     }
                 }
 
-                pGLFunction->glDisable(GL_BLEND);
+                //pGLFunction->glDisable(GL_BLEND);
             }
 #ifdef __x86_64__
             QWidget *topWidget = topLevelWidget();

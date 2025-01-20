@@ -73,15 +73,24 @@ protected:
     void paintEvent(QPaintEvent *)
     {
         QPainter painter(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         painter.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform |
                                QPainter::Antialiasing);
+#else
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
+#endif
 
         QSize size(m_pixmap.size());
         QBitmap mask(size);
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QPainter painter1(&mask);
         painter1.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform |
                                 QPainter::Antialiasing);
+#else
+        QPainter painter1(&mask);
+        painter1.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+#endif
         painter1.fillRect(mask.rect(), Qt::white);
         painter1.setBrush(QColor(0, 0, 0));
         painter1.drawRoundedRect(mask.rect(), 5, 5);
@@ -163,9 +172,14 @@ protected:
         QPainter painter(this);
         QRect backgroundRect = rect();
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         painter.setRenderHints(QPainter::HighQualityAntialiasing |
                                QPainter::SmoothPixmapTransform |
                                QPainter::Antialiasing);
+#else
+        painter.setRenderHints(QPainter::Antialiasing |
+                               QPainter::SmoothPixmapTransform);
+#endif
 
         QPainterPath bpath;
 
@@ -215,7 +229,11 @@ protected:
         if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
             painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
         } else {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             painter.fillRect(rect(), this->palette().background());
+#else
+            painter.fillRect(rect(), this->palette().window());
+#endif
         }
     }
 };

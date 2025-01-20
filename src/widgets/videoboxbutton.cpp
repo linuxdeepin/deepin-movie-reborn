@@ -11,6 +11,14 @@
 #include <DPalette>
 
 DGUI_USE_NAMESPACE
+
+// 定义一个辅助宏来处理兼容性检查
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    #define MAP_CONTAINS(map, key) map.contains(key)
+#else
+    #define MAP_CONTAINS(map, key) (map.find(key) != map.end())
+#endif
+
 VideoBoxButton::VideoBoxButton(const QString &text, QWidget *parent)
     : DButtonBoxButton(text, parent)
 {
@@ -86,59 +94,17 @@ VideoBoxButton::VideoBoxButton(const QString &text, const QString &normalPic, co
 }*/
 
 
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void VideoBoxButton::enterEvent(QEvent *event)
 {
-//    status = 1;
-//    QString curPicPath = defaultPicPath.normalPicPath;
-//    if (propertyPicPaths.first.isEmpty() || !propertyPicPaths.second.contains(property(propertyPicPaths.first.toStdString().data()))) {
-//        QString curPropertyPicPathStr;
-//        if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
-//            curPropertyPicPathStr = defaultPicPath.checkedPicPath;
-//        } else {
-//            if (status == 1 && !defaultPicPath.hoverPicPath.isEmpty()) {
-//                curPropertyPicPathStr = defaultPicPath.hoverPicPath;
-//            } else if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
-//                curPropertyPicPathStr = defaultPicPath.pressPicPath;
-//            }
-//        }
-
-//        if (!curPropertyPicPathStr.isEmpty()) {
-//            curPicPath = curPropertyPicPathStr;
-//        }
-//    } else {
-//        QVariant value = property(propertyPicPaths.first.toStdString().data());
-//        VideoPicPathInfo curPropertyPicPath = propertyPicPaths.second[value];
-//        QString curPropertyPicPathStr;
-//        if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
-//            curPropertyPicPathStr = curPropertyPicPath.checkedPicPath;
-//        } else {
-//            if (status == 1 && !defaultPicPath.hoverPicPath.isEmpty()) {
-//                curPropertyPicPathStr = curPropertyPicPath.hoverPicPath;
-//            } else if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
-//                curPropertyPicPathStr = curPropertyPicPath.pressPicPath;
-//            } else {
-//                curPropertyPicPathStr = curPropertyPicPath.normalPicPath;
-//            }
-//        }
-//        if (!curPropertyPicPathStr.isEmpty()) {
-//            curPicPath = curPropertyPicPathStr;
-//        }
-//    }
-
-
-//    QIcon icon;
-//    icon.addFile(curPicPath);
-
-//    this->setIconSize(QSize(36, 36));
-//    this->setIcon(icon);
-//    DButtonBoxButton::enterEvent(event);
-//    if (autoChecked) {
-//        setChecked(true);
-//    }
-
     DButtonBoxButton::enterEvent(event);
 }
+#else
+void VideoBoxButton::enterEvent(QEnterEvent *event)
+{
+    DButtonBoxButton::enterEvent(event);
+}
+#endif
 
 void VideoBoxButton::leaveEvent(QEvent *event)
 {
@@ -196,7 +162,8 @@ void VideoBoxButton::mousePressEvent(QMouseEvent *event)
 {
     status = 2;
     QString curPicPath = defaultPicPath.normalPicPath;
-    if (propertyPicPaths.first.isEmpty() || !propertyPicPaths.second.contains(property(propertyPicPaths.first.toStdString().data()))) {
+    if (propertyPicPaths.first.isEmpty() || 
+        !MAP_CONTAINS(propertyPicPaths.second, property(propertyPicPaths.first.toStdString().data()))) {
         QString curPropertyPicPathStr;
         if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
             curPropertyPicPathStr = defaultPicPath.checkedPicPath;
@@ -244,7 +211,8 @@ void VideoBoxButton::mouseReleaseEvent(QMouseEvent *event)
 {
     status = 0;
     QString curPicPath = defaultPicPath.normalPicPath;
-    if (propertyPicPaths.first.isEmpty() || !propertyPicPaths.second.contains(property(propertyPicPaths.first.toStdString().data()))) {
+    if (propertyPicPaths.first.isEmpty() || 
+        !MAP_CONTAINS(propertyPicPaths.second, property(propertyPicPaths.first.toStdString().data()))) {
         QString curPropertyPicPathStr;
         if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
             curPropertyPicPathStr = defaultPicPath.checkedPicPath;

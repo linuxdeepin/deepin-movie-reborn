@@ -77,6 +77,7 @@ void VolumeButton::changeStyle()
         setIcon(QIcon::fromTheme("dcc_mute"));
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void VolumeButton::enterEvent(QEvent *ev)
 {
     emit entered();
@@ -85,6 +86,16 @@ void VolumeButton::enterEvent(QEvent *ev)
 
     DIconButton::enterEvent(ev);
 }
+#else
+void VolumeButton::enterEvent(QEnterEvent *ev)
+{
+    emit entered();
+    if (!utils::check_wayland_env() && !m_showTime.isActive())
+        m_showTime.start(1000);
+
+    DIconButton::enterEvent(ev);
+}
+#endif
 
 void VolumeButton::leaveEvent(QEvent *ev)
 {

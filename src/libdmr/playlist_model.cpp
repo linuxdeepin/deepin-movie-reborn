@@ -350,8 +350,13 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.resolution = QString("%1x%2").arg(mi.width).arg(mi.height);
     mi.title = fi.fileName(); //FIXME this
     mi.filePath = fi.canonicalFilePath();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     qInfo() << __func__ << "created:" << fi.created() << "       toString:" << fi.created().toString();
     mi.creation = fi.created().toString();
+#else
+    qInfo() << __func__ << "created:" << fi.birthTime() << "       toString:" << fi.birthTime().toString();
+    mi.creation = fi.birthTime().toString();
+#endif
     mi.fileSize = fi.size();
     mi.fileType = fi.suffix();
 #ifdef _MOVIE_USE_
@@ -1662,7 +1667,13 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.resolution = QString("%1x%2").arg(mi.width).arg(mi.height);
     mi.title = fi.fileName(); //FIXME this
     mi.filePath = fi.canonicalFilePath();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    qInfo() << __func__ << "created:" << fi.created() << "       toString:" << fi.created().toString();
     mi.creation = fi.created().toString();
+#else
+    qInfo() << __func__ << "created:" << fi.birthTime() << "       toString:" << fi.birthTime().toString();
+    mi.creation = fi.birthTime().toString();
+#endif
     mi.fileSize = fi.size();
     mi.fileType = fi.suffix();
 

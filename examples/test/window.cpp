@@ -10,9 +10,9 @@ Window::Window(QWidget *parent) : QWidget (parent)
 
     auto l = new QVBoxLayout(this);
 
-    //if (dmr::CompositingManager::get().composited()) {
-    //dmr::CompositingManager::get().overrideCompositeMode(false);
-    //}
+    if (dmr::CompositingManager::get().composited()) {
+    dmr::CompositingManager::get().overrideCompositeMode(false);
+    }
 
     player = new dmr::PlayerWidget;
     l->addWidget(player);
