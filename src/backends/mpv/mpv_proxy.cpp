@@ -215,7 +215,7 @@ void MpvProxy::firstInit()
                 m_pMpvGLwidget->update();
             });
 #endif
-#if defined(USE_DXCB) || defined(_LIBDMR_)
+#if defined(USE_DXCB)
             m_pMpvGLwidget->toggleRoundedClip(false);
 #endif
             QHBoxLayout *pLayout = new QHBoxLayout(this);

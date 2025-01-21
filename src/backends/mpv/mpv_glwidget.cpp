@@ -512,15 +512,7 @@ namespace dmr {
         setupIdlePipe();
         setupBlendPipe();
 
-#ifdef _LIBDMR_
-        if(utils::check_wayland_env()){
-            m_bDoRoundedClipping = true;
-            toggleRoundedClip(true);
-        }else{
-            m_bDoRoundedClipping = false;
-            toggleRoundedClip(false);
-        }
-#else
+#ifndef _LIBDMR_
 #ifndef USE_DXCB
         connect(window()->windowHandle(), &QWindow::windowStateChanged, [=]() {
             QWidget* pTopWid = this->topLevelWidget();
