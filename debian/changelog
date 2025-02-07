@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.5.0) unstable; urgency=medium
+
+  * New tag 
+
+ -- Liu zheng <liuzheng@uniontech.com>  Fri, 07 Feb 2025 14:01:17 +0800
+
 deepin-movie-reborn (5.15.13) unstable; urgency=medium
 
   * fix: Fixed the issue that OpenGL could not be played
