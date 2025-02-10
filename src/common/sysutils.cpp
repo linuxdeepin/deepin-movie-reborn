@@ -22,7 +22,13 @@ bool SysUtils::libExist(const QString &strlib)
     else
         libName = strlib;
     QLibrary lib(libName);
-    return lib.load();
+    bool bExist = lib.load();
+    if (!bExist) {
+        qWarning() << "Failed to load library:" << lib.errorString();
+        lib.setFileName(libPath(strlib));
+        bExist = lib.load();
+    }
+    return bExist;
 }
 
 QString SysUtils::libPath(const QString &strlib)
