@@ -3156,7 +3156,7 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
     m_pEngine->savePlaybackPosition();
 
     pEvent->accept();
-    if (utils::check_wayland_env()) {
+    //if (utils::check_wayland_env()) {
 #ifndef _LIBDMR_
         if (Settings::get().isSet(Settings::ClearWhenQuit)) {
             m_pEngine->playlist().clearPlaylist();
@@ -3178,7 +3178,7 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
         /*lmh0724临时规避退出崩溃问题*/
         QApplication::quit();
         _Exit(0);
-    }
+    //}
 }
 
 void MainWindow::wheelEvent(QWheelEvent *pEvent)
