@@ -2529,7 +2529,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                 qDebug() << "m_bMaximized";
                 showMaximized();
             } else {
-                if (m_lastRectInNormalMode.isValid() && !m_bMiniMode && !isMaximized()) {
+                if (!utils::check_wayland_env() && m_lastRectInNormalMode.isValid() && !m_bMiniMode && !isMaximized()) {
                     qDebug() << "m_lastRectInNormalMode.isValid() && !m_bMiniMode && !isMaximized()";
                     setGeometry(m_lastRectInNormalMode);
                     move(m_lastRectInNormalMode.x(), m_lastRectInNormalMode.y());
@@ -4618,7 +4618,7 @@ void MainWindow::resizeEvent(QResizeEvent *pEvent)
     QRect deskRect = this->screen()->availableGeometry();
 #endif
 
-    if(!deskRect.intersects(geoRect)) {
+    if(!utils::check_wayland_env() && !deskRect.intersects(geoRect)) {
         move(deskRect.x(), deskRect.y());
     }
 }
