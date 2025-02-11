@@ -658,6 +658,9 @@ mpv_handle *MpvProxy::mpv_init()
         ++p;
     }
 
+    if(utils::check_wayland_env()) {
+        my_set_property(m_handle, "pulse-allow-suspended", "yes");
+    }
     //设置hwdec和vo配置
     CompositingManager::get().getMpvConfig(m_pConfig);
     QMap<QString, QString>::iterator iter = m_pConfig->begin();
@@ -1441,6 +1444,9 @@ void MpvProxy::refreshDecode()
         auto codec = currentInfo.mi.videoCodec();
         my_set_property(m_handle, "hwdec-codecs", codec.toLower());
 
+        if(utils::check_wayland_env()) {
+            my_set_property(m_handle, "pulse-allow-suspended", "yes");
+        }
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
         QMap<QString, QString>::iterator iter = m_pConfig->begin();
