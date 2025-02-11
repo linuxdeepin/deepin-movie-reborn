@@ -14,6 +14,7 @@ Build-Depends:
     libxcb-ewmh-dev,
     xcb-proto,
     x11proto-record-dev,
+    x11-utils,
     libxtst-dev,
     libavcodec-dev,
     libavformat-dev,
