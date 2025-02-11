@@ -848,6 +848,9 @@ mpv_handle *MpvProxy::mpv_init()
     }
     qDebug() << "DEBUG: Finished applying best profile.";
 
+    if(utils::check_wayland_env()) {
+        my_set_property(m_handle, "pulse-allow-suspended", "yes");
+    }
     //设置hwdec和vo配置
     CompositingManager::get().getMpvConfig(m_pConfig);
     qDebug() << "DEBUG: MPV config retrieved for hwdec and vo settings.";
@@ -1714,6 +1717,9 @@ void MpvProxy::refreshDecode()
         auto codec = currentInfo.mi.videoCodec();
         my_set_property(m_handle, "hwdec-codecs", codec.toLower());
 
+        if(utils::check_wayland_env()) {
+            my_set_property(m_handle, "pulse-allow-suspended", "yes");
+        }
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
 #ifndef _LIBDMR_
