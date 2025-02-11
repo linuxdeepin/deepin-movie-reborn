@@ -316,7 +316,7 @@ int main(int argc, char *argv[])
     if (clm.debug()) {
         Dtk::Core::DLogManager::registerConsoleAppender();
     }
-    // Dtk::Core::DLogManager::registerFileAppender();
+    Dtk::Core::DLogManager::registerFileAppender();
 
     dmr::Settings::get().crashCheck();
 
@@ -404,7 +404,11 @@ int main(int argc, char *argv[])
         QDBusConnection::sessionBus().registerService("com.deepin.movie");
         QDBusConnection::sessionBus().registerObject("/", &mw);
 
-        return app->exec();
+        int ret = app->exec();
+        if (ret == 2)
+            execv( app->applicationFilePath().toUtf8().data(), nullptr);
+
+        return ret;
     } else {
         dmr::Platform_MainWindow platform_mw;
         Presenter *presenter = new Presenter(&platform_mw);
@@ -427,8 +431,11 @@ int main(int argc, char *argv[])
         Platform_ApplicationAdaptor adaptor(&platform_mw);
         QDBusConnection::sessionBus().registerService("com.deepin.movie");
         QDBusConnection::sessionBus().registerObject("/", &platform_mw);
+        int ret = app->exec();
+        if (ret == 2)
+            execv( app->applicationFilePath().toUtf8().data(), nullptr);
 
-        return app->exec();
+        return ret;
     }
 }
 
