@@ -33,14 +33,16 @@ pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
 pkg_check_modules(DBusextended REQUIRED IMPORTED_TARGET dbusextended-qt5)
 pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gobject-2.0)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
-pkg_check_modules(Other REQUIRED  gsettings-qt)
+pkg_check_modules(Other REQUIRED gsettings-qt)
+pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavcodec)
+
+include_directories(${FFMPEG_INCLUDE_DIRS})
 
 qt5_add_resources(RCS ../assets/resources.qrc)
 qt5_add_resources(RCS ../assets/icons/theme-icons.qrc)
 if (${Dtk_VERSION} LESS 2.0.6.1)
     qt5_add_resources(RCS ../assets/theme.qrc)
 endif()
-
 
 file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp dlna/*.cpp dlna/*.c)
 list(APPEND SRCS main.cpp)
