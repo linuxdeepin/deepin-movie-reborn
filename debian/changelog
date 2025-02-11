@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.0.13) unstable; urgency=medium
+
+  * fix loogn64 exit fail
+
+ -- Liu zheng <liuzheng@uniontech.com>  Tue, 11 Feb 2025 09:41:47 +0800
+
 deepin-movie-reborn (6.0.12) unstable; urgency=medium
 
   * fix:startup stuck problem
