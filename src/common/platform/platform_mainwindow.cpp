@@ -2924,8 +2924,7 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
         msgBox.setOnButtonClickedClose(true);
         if (msgBox.exec() == 1) {
             Settings::get().settings()->setOption("set.start.crash", "2");
-            qApp->exit();
-            QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
+            qApp->exit(2);
         } else {
             if (decodeType != 3) {
                 Settings::get().settings()->setOption("base.decode.select", decodeType);
@@ -2949,8 +2948,7 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
                 msgBox.setOnButtonClickedClose(true);
                 if (msgBox.exec() == 1) {
                     Settings::get().settings()->setOption("set.start.crash", "2");
-                    qApp->exit();
-                    QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
+                    qApp->exit(2);
                 } else {
                     if (decodeType != 3) {
                         Settings::get().settings()->setOption("base.decode.select", decodeMode);
