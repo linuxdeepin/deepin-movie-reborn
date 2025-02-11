@@ -149,6 +149,11 @@ CompositingManager::CompositingManager()
             _composited = true;//libmpv只能走opengl
         }
     }
+
+    //genbu显卡使用vo=gpu渲染
+    if (QFile::exists("/sys/bus/pci/drivers/gb"))
+        _composited = false;
+
     //单元测试
 #ifdef USE_TEST
     utils::getPlayProperty("/data/source/deepin-movie-reborn/movie/play.conf", m_pMpvConfig);
