@@ -2764,10 +2764,18 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
     case ActionFactory::ActionKind::GoToScreenshotSolder: {
         QString filePath = Settings::get().screenshotLocation();
         qInfo() << __func__ << filePath;
-        QProcess *pProcess = new QProcess();
-        QObject::connect(pProcess, SIGNAL(finished(int)), pProcess, SLOT(deleteLater()));
-        pProcess->start("dde-file-manager", QStringList(filePath));
-        pProcess->waitForStarted(3000);
+        QDBusInterface iface("org.freedesktop.FileManager1",
+                             "/org/freedesktop/FileManager1",
+                             "org.freedesktop.FileManager1",
+                             QDBusConnection::sessionBus());
+        if (iface.isValid()) {
+            // Convert filepath to URI first.
+            const QStringList uris = { filePath };
+            qInfo() << "freedesktop.FileManager";
+            // StartupId is empty here.
+            QDBusPendingCall call = iface.asyncCall("Open", uris);
+            Q_UNUSED(call);
+        }
         break;
     }
 
