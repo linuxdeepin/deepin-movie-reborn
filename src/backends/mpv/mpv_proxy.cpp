@@ -917,7 +917,7 @@ void MpvProxy::handle_mpv_events()
                     "reason " << ev_ef->reason;
 
             setState(PlayState::Stopped);
-            m_bLoadMedia = false;
+//            m_bLoadMedia = false;
             break;
         }
 
