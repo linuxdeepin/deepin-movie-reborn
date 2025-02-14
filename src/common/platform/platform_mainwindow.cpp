@@ -4797,8 +4797,7 @@ void Platform_MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         bFlags = false;
     }
 
-    if (!insideResizeArea(ev->globalPos()) && !m_bMouseMoved && (m_pPlaylist->state() != Platform_PlaylistWidget::Opened)) {
-        qDebug() << "!insideResizeArea(ev->globalPos()) && !m_bMouseMoved && (m_pPlaylist->state() != Platform_PlaylistWidget::Opened)";
+    if (!m_bMouseMoved && (m_pPlaylist->state() != Platform_PlaylistWidget::Opened)) {
         if (!insideToolsArea(ev->pos())) {
             qDebug() << "!insideToolsArea(ev->pos())";
             m_delayedMouseReleaseTimer.start(120);
@@ -4985,11 +4984,11 @@ bool Platform_MainWindow::insideToolsArea(const QPoint &p)
     qDebug() << "Enter insideToolsArea function";
     if (CompositingManager::get().platform() == Platform::X86) {
         qDebug() << "CompositingManager::get().platform() == Platform::X86";
-        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->geometry().contains(p) || (m_pToolbox->volumeSlider()->isVisible() && m_pToolbox->volumeSlider()->geometry().contains(p)) ||
                 m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
     } else {
         qDebug() << "CompositingManager::get().platform() != Platform::X86";
-        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->rect().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->rect().contains(p) || m_pToolbox->geometry().contains(p) || (m_pToolbox->volumeSlider()->isVisible() && m_pToolbox->volumeSlider()->geometry().contains(p)) ||
                 m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
     }
 }
