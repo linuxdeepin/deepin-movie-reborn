@@ -4023,8 +4023,7 @@ void Platform_MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         repaint();
         bFlags = false;
     }
-
-    if (!insideResizeArea(ev->globalPos()) && !m_bMouseMoved && (m_pPlaylist->state() != Platform_PlaylistWidget::Opened)) {
+    if (!m_bMouseMoved && (m_pPlaylist->state() != Platform_PlaylistWidget::Opened)) {
         if (!insideToolsArea(ev->pos())) {
             m_delayedMouseReleaseTimer.start(120);
         } else {
@@ -4192,10 +4191,10 @@ void Platform_MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
 bool Platform_MainWindow::insideToolsArea(const QPoint &p)
 {
     if (CompositingManager::get().platform() == Platform::X86) {
-        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->geometry().contains(p) || (m_pToolbox->volumeSlider()->isVisible() && m_pToolbox->volumeSlider()->geometry().contains(p)) ||
                 m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
     } else {
-        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->rect().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->rect().contains(p) || m_pToolbox->geometry().contains(p) || (m_pToolbox->volumeSlider()->isVisible() && m_pToolbox->volumeSlider()->geometry().contains(p)) ||
                 m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
     }
 }
