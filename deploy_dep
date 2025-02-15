@@ -11,7 +11,7 @@ ID_VALUE=$(awk -F ': ' '/^  id: / {print $2}' linglong.yaml)
 
 ## 获取安装的文件列表并写入安装脚本（排除头文件、pc和cmake文件）
 # cmake 安装
-if ! grep -- "-- Installing:" install.log | awk '{print $NF}' | grep -vE '\.(h|cmake|pc)$' > ${ID_VALUE}.install; then
+if ! grep -- "-- Installing:" install.log | sed 's/-- Installing: //' | grep -vE '\.(h|cmake|pc)$' > ${ID_VALUE}.install; then
     echo "cmake install files are empty!"
 fi
 # qmake 安装
@@ -34,13 +34,13 @@ done
 for LDFILE in "$@"; do
 
     # 判断文件是否以 .so 结尾
-    if [[ "$LDFILE" == *.so ]]; then
+    if [[ "$LDFILE" == *.so || "$LDFILE" == *.so.? ]]; then
         FILE_PATH="${PREFIX}/lib/${TRIPLET}/$LDFILE"
 
         # 添加依赖库到 install 文件
         for SOFILE in "${PREFIX}/lib/${TRIPLET}"/${LDFILE}*; do
             if [[ -f "$SOFILE" ]]; then
-                echo "$SOFILE" >> "${ID_VALUE}.install"
+                echo `realpath -s $SOFILE` >> "${ID_VALUE}.install"
             fi
         done
     else
