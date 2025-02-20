@@ -877,6 +877,10 @@ void MpvProxy::handle_mpv_events()
                         << "codec: " << my_get_property(m_handle, "video-codec")
                         << "format: " << my_get_property(m_handle, "video-format");
             }
+#if MPV_CLIENT_API_VERSION > MPV_MAKE_VERSION(2,0)
+            updatePlayingMovieInfo();
+            emit tracksChanged();
+#endif
 //            if (!m_bIsJingJia) {
 //#ifdef __mips__
 //                qInfo() << "MPV_EVENT_FILE_LOADED __mips__";
