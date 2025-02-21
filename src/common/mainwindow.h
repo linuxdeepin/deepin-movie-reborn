@@ -15,6 +15,7 @@
 #include <DPushButton>
 #include <DFloatingMessage>
 #include <QDBusAbstractInterface>
+#include <QOpenGLWidget>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QX11Info>
@@ -597,6 +598,7 @@ private:
     bool m_bMaximized;                                ///全屏前最大化窗口记录
     bool m_bHaveFile;                                 ///导入是否包含文件（用于导入文件或文件夹）
     DSettingsDialog *m_pDSettingDilog{nullptr};
+    QOpenGLWidget *m_backgroundWidget {nullptr};
 };
 };
 
