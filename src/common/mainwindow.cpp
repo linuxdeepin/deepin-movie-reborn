@@ -1054,6 +1054,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_pDVDHintWid->setAnchorPoint(QPoint(30, 58));
     m_pDVDHintWid->hide();
 
+    m_backgroundWidget = new QOpenGLWidget(this);
+    m_backgroundWidget->hide();
+
 #ifdef USE_DXCB
     m_pEventListener = new MainWindowEventListener(this);
     this->windowHandle()->installEventFilter(m_pEventListener);
@@ -5279,5 +5282,8 @@ MainWindow::~MainWindow()
         m_pShortcutViewProcess->deleteLater();
         m_pShortcutViewProcess = nullptr;
     }
+
+    delete m_backgroundWidget;
+    m_backgroundWidget = nullptr;
 }
 #include "mainwindow.moc"
