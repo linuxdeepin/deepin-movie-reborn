@@ -4687,7 +4687,7 @@ void Platform_MainWindow::lockStateChanged(bool bLock)
         QTimer::singleShot(500, [=](){
             //龙芯5000使用命令sudo rtcwake -l -m mem -s 20, 待机唤醒后无dBus信号“PrepareForSleep”发出,加入seek保证解锁后播放不会卡帧
             m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));
-            requestAction(ActionFactory::ActionKind::TogglePause);
+            // requestAction(ActionFactory::ActionKind::TogglePause); //需求变更，唤醒后不恢复播放
         });
     }
 }
@@ -4873,7 +4873,7 @@ void Platform_MainWindow::onSysLockState(QString, QVariantMap key2value, QString
         requestAction(ActionFactory::TogglePause);
     } else if (!key2value.value("Locked").value<bool>() && m_bStateInLock) {
         m_bStateInLock = false;
-        requestAction(ActionFactory::TogglePause);
+        // requestAction(ActionFactory::TogglePause); //需求变更，唤醒后不恢复播放
     }
 }
 
