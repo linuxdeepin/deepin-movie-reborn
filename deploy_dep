@@ -33,7 +33,7 @@ done
 # 获取依赖的所有文件
 for LDFILE in "$@"; do
 
-    # 判断文件是否以 .so 结尾
+    # 判断文件是否以 .so 或 *.so.? 结尾
     if [[ "$LDFILE" == *.so || "$LDFILE" == *.so.? ]]; then
         FILE_PATH="${PREFIX}/lib/${TRIPLET}/$LDFILE"
 

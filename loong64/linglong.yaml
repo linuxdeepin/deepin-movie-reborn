@@ -20,7 +20,8 @@ command:
 
 build: |
   # libxcb1-dev：解决构建失败
-  bash ./install_dep linglong/sources "${PREFIX}" "libxcb1-dev"
+  # libmpv.so 依赖于 libatomic.so.1，但 libatomic1 包只包含在 base develop 中
+  bash ./install_dep linglong/sources "${PREFIX}" "libxcb1-dev,libatomic1"
 
   # 调整头文件查找路径
   sed -i "s|/usr/include/glib-2.0|/runtime/include/glib-2.0|g" src/CMakeLists.txt
@@ -59,6 +60,8 @@ build: |
     libgstpbutils-1.0.so
     libffmpegthumbnailer.so
     ../libdeepin-event-log.so
+    # libmpv.so 依赖于 libatomic.so.1，但 libatomic1 包只包含在 base develop 中
+    libatomic.so.1
   )
 
   # 生成.install 文件
