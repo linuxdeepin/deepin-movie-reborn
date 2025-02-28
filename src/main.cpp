@@ -318,8 +318,6 @@ int main(int argc, char *argv[])
     }
     Dtk::Core::DLogManager::registerFileAppender();
 
-    dmr::Settings::get().crashCheck();
-
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
     QString movieName = "";
     if (clm.isSet("functioncall")) {

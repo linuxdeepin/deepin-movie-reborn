@@ -12,9 +12,9 @@
                     "options": [
                         {
                             "key": "crash",
-                            "type": "checkbox",
+                            "type": "combobox",
                             "hide": true,
-                            "default": false
+                            "default": 0
                         }
                     ]
                 }
