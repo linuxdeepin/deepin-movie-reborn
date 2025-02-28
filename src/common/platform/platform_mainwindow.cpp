@@ -1187,7 +1187,7 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     qInfo() << "session Path is :" << path;
     connect(dynamic_cast<MpvProxy *>(m_pEngine->getMpvProxy()),&MpvProxy::crashCheck,&Settings::get(),&Settings::crashCheck);
     //解码初始化
-    //decodeInit();
+    decodeInit();
 }
 
 void Platform_MainWindow::setupTitlebar()
@@ -2922,6 +2922,12 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
     dsd ->show();
 #endif
 
+    static QEventLoop loop;
+    QFileSystemWatcher fileWatcher;
+    fileWatcher.addPath(Settings::get().configPath());
+    connect(&fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](){
+        loop.quit();
+    });
     if (Settings::get().settings()->getOption("base.decode.select").toInt() != decodeType &&
             (Settings::get().settings()->getOption("base.decode.select").toInt() == 3 || decodeType == 3)) {
         DDialog msgBox;
@@ -2931,7 +2937,9 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
         msgBox.addButton(tr("Restart"), true, DDialog::ButtonType::ButtonWarning);
         msgBox.setOnButtonClickedClose(true);
         if (msgBox.exec() == 1) {
-            Settings::get().settings()->setOption("set.start.crash", "2");
+            Settings::get().settings()->setOption(QString("set.start.crash"), 2);
+            Settings::get().settings()->sync();
+            loop.exec();
             qApp->exit(2);
         } else {
             if (decodeType != 3) {
@@ -2956,6 +2964,8 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
                 msgBox.setOnButtonClickedClose(true);
                 if (msgBox.exec() == 1) {
                     Settings::get().settings()->setOption("set.start.crash", "2");
+                    Settings::get().settings()->sync();
+                    loop.exec();
                     qApp->exit(2);
                 } else {
                     if (decodeType != 3) {
@@ -3685,18 +3695,16 @@ void Platform_MainWindow::closeEvent(QCloseEvent *pEvent)
             Settings::get().setInternalOption("playlist_pos", nCur);
         }
     }
-    int volume = Settings::get().internalOption("global_volume").toInt();
-    if (m_nDisplayVolume != volume) {
-        static QEventLoop loop;
-        QFileSystemWatcher fileWatcher;
-        fileWatcher.addPath(Settings::get().configPath());
-        connect(&fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](){
-            loop.quit();
-        });
-        //关闭窗口时保存音量值
-        Settings::get().setInternalOption("global_volume", m_nDisplayVolume > 100 ? 100 : m_nDisplayVolume);
-        loop.exec();
-    }
+    static QEventLoop loop;
+    QFileSystemWatcher fileWatcher;
+    fileWatcher.addPath(Settings::get().configPath());
+    connect(&fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](){
+        loop.quit();
+    });
+    //关闭窗口时保存音量值
+    Settings::get().setInternalOption("global_volume", m_nDisplayVolume > 100 ? 100 : m_nDisplayVolume);
+    Settings::get().onSetCrash();
+    loop.exec();
     m_pEngine->savePlaybackPosition();
 
     pEvent->accept();
@@ -4394,13 +4402,20 @@ void Platform_MainWindow::decodeInit()
         return;
 
     //崩溃检测
-    bool bcatch = Settings::get().settings()->getOption(QString("set.start.crash")).toBool();
-    if (bcatch) {
+    int bcatch = Settings::get().settings()->getOption(QString("set.start.crash")).toInt();
+    switch (bcatch) {
+    case 1:
         pMpvProxy->setDecodeModel(DecodeMode::AUTO);
         Settings::get().settings()->setOption(QString("base.decode.select"),DecodeMode::AUTO);
-    } else {
-        int value = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
-        pMpvProxy->setDecodeModel(value);
+        break;
+    case 2:
+        pMpvProxy->setDecodeModel(Settings::get().settings()->
+                                  getOption(QString("base.decode.select")).toInt());
+        dmr::Settings::get().crashCheck();
+        break;
+    case 0:
+    default:
+        break;
     }
 }
 

@@ -72,10 +72,19 @@ Settings::Settings()
             if (index  == 1) {
                 if (voFamily) {
                     voFamily->setData("items", QStringList() << "OpenGL");
+                    auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                    if (decodeFamily)
+                         decodeFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy");
                 }
             } else if (index == 2) {
-                if (voFamily)
+                if (voFamily) {
+                    if (voFamily->value().toInt() == 0) {
+                        auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
+                        if (decodeFamily)
+                            decodeFamily->setData("items", QStringList());
+                    }
                     voFamily->setData("items", QStringList() << "" << "gpu" << "vaapi" << "vdpau" << "xv" << "x11");
+                }
             }
             emit baseChanged(key, value);
         }
