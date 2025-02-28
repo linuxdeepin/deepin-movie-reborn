@@ -1,7 +1,7 @@
 [Desktop Entry]
 Categories=AudioVideo;Player;
 Comment=Play your video collection
-Exec=deepin-movie %U
+Exec=deepin-movie %F
 GenericName=Movie
 Icon=deepin-movie
 Keywords=Player;Movie;Theater;Theatre;Video;
