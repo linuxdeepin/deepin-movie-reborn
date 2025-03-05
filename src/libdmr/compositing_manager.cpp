@@ -153,17 +153,17 @@ CompositingManager::CompositingManager()
         m_setSpecialControls = detect550Series();
     }
 
-//    bool isI915 = false;
-//    for (int id = 0; id <= 10; id++) {
-//        if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
-//        if (is_device_viable(id)) {
-//            vector<string> drivers = {"i915"};
-//            isI915 = is_card_exists(id, drivers);
-//            break;
-//        }
-//    }
-//    if (isI915) qInfo() << "is i915!";
-//    m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
+   bool isI915 = false;
+   for (int id = 0; id <= 10; id++) {
+       if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
+       if (is_device_viable(id)) {
+           vector<string> drivers = {"i915", "arise"};
+           isI915 = is_card_exists(id, drivers);
+           break;
+       }
+   }
+   if (isI915) qInfo() << "is i915!";
+   m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
 
     if (dmr::utils::check_wayland_env()) {
         _composited = true;
@@ -225,17 +225,17 @@ CompositingManager::CompositingManager()
     //         }
     //     }
     // } else {
-    //     if (_platform == Platform::X86) {
-    //         if (m_bZXIntgraphics) {
-    //             _composited = false;
-    //         } else {
-    //             _composited = true;
-    //         }
-    //     } else {
-    //         if (_platform == Platform::Arm64 && isDriverLoaded)
-    //             m_bHasCard = true;
-    //         _composited = false;
-    //     }
+    if (_platform == Platform::X86) {
+        if (m_bZXIntgraphics) {
+            _composited = false;
+        } else {
+            _composited = true;
+        }
+    } else {
+        if (_platform == Platform::Arm64 && isDriverLoaded)
+            m_bHasCard = true;
+        _composited = false;
+    }
     // }
 #endif
 

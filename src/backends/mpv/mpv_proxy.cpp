@@ -456,16 +456,23 @@ mpv_handle *MpvProxy::mpv_init()
             process.waitForFinished();
             process.waitForReadyRead();
 
-            QString comStr = process.readAllStandardOutput();
-            comStr = comStr.right(3).left(2);
-            int version = comStr.toInt();
-            if (version >= 10) {
-                my_set_property(pHandle, "vo", "vaapi");
-                my_set_property(pHandle, "hwdec", "vaapi");
-                m_sInitVo = "vaapi";
+            QString error = process.readAllStandardError();
+            if (error.isEmpty()) {
+                QString comStr = process.readAllStandardOutput();
+                comStr = comStr.right(3).left(2);
+                int version = comStr.toInt();
+                if (version >= 10) {
+                    my_set_property(pHandle, "vo", "vaapi");
+                    my_set_property(pHandle, "hwdec", "vaapi");
+                    m_sInitVo = "vaapi";
+                } else {
+                    my_set_property(pHandle, "vo", "gpu");
+                    m_sInitVo = "gpu";
+                }
             } else {
-                my_set_property(pHandle, "vo", "gpu");
-                m_sInitVo = "gpu";
+                my_set_property(pHandle, "vo", "x11,xv");
+                my_set_property(pHandle, "hwdec", "vaapi");
+                m_sInitVo = "x11,xv";
             }
         }
 #endif
