@@ -1,3 +1,10 @@
+deepin-movie-reborn (6.5.6) unstable; urgency=medium
+
+  * fix: Fixed playback issues(Bug: 306447)
+  * fix: Fixed custom mode exceptions
+
+ -- renbin <renbin@uniontech.com>  Thu, 06 Mar 2025 19:54:28 +0800
+
 deepin-movie-reborn (6.5.5) unstable; urgency=medium
 
   * chore: New version 6.5.5.
