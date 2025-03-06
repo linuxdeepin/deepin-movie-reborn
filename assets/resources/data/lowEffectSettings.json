@@ -132,6 +132,12 @@
                             "default": true
                         },
                         {
+                            "key": "vaapifirst",
+                            "text": "Prioritize the use of VAAPI",
+                            "type": "checkbox",
+                            "default": false
+                        },
+                        {
                             "key": "playmode",
                             "name": "Default play mode",
                             "type": "combobox",

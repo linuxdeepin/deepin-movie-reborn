@@ -419,9 +419,14 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(pHandle, "vo", "gpu,x11");
         m_sInitVo = "gpu,x11";
 #elif defined (__aarch64__)
-        if (!fi.exists() && !jmfi.exists()) { //2.1.1景嘉微
-            my_set_property(pHandle, "vo", "gpu,xv,x11");
-            m_sInitVo = "gpu,xv,x11";
+        if (utils::check_wayland_env()) {
+            my_set_property(pHandle, "hwdec", "vaapi-copy");
+            my_set_property(pHandle, "vd-queue-enable", "yes");
+        } else {
+            if (!fi.exists() && !jmfi.exists()) { //2.1.1景嘉微
+                my_set_property(pHandle, "vo", "gpu,xv,x11");
+                m_sInitVo = "gpu,xv,x11";
+            }
         }
 #else
         //去除9200显卡适配
@@ -558,6 +563,12 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "vo", "vaapi");
             m_sInitVo = "vaapi";
         }
+#if defined (__aarch64__)
+        if (utils::check_wayland_env()) {
+            my_set_property(pHandle, "hwdec", "vaapi-copy");
+            my_set_property(pHandle, "vd-queue-enable", "yes");
+        }
+#endif
     }
 
     if (composited) {
@@ -1369,6 +1380,20 @@ void MpvProxy::refreshDecode()
                 my_set_property(m_handle, "vo","vaapi");
             }
         }
+#if defined (__aarch64__)
+        if (utils::check_wayland_env()) {
+            PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+            auto codec = currentInfo.mi.videoCodec();
+#ifndef _LIBDMR_
+            if (codec.toLower().contains("h264") && Settings::get().internalOption("vaapifirst").toBool()) {
+                my_set_property(m_handle, "hwdec", "vaapi-copy");
+            } else {
+                my_set_property(m_handle, "hwdec", "omx-copy");
+            }
+#endif
+            my_set_property(m_handle, "vd-queue-enable", "yes");
+        }
+#endif
     } else { //3.设置硬解
 #ifndef _LIBDMR_
 
@@ -1447,6 +1472,19 @@ void MpvProxy::refreshDecode()
         if(utils::check_wayland_env()) {
             my_set_property(m_handle, "pulse-allow-suspended", "yes");
         }
+#if defined (__aarch64__)
+        if (utils::check_wayland_env()) {
+            PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+            auto codec = currentInfo.mi.videoCodec();
+#ifndef _LIBDMR_
+            if (codec.toLower().contains("h264") && Settings::get().internalOption("vaapifirst").toBool()) {
+                my_set_property(m_handle, "hwdec", "vaapi-copy");
+            } else
+                my_set_property(m_handle, "hwdec", "omx-copy");
+#endif
+            my_set_property(m_handle, "vd-queue-enable", "yes");
+        }
+#endif
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
         QMap<QString, QString>::iterator iter = m_pConfig->begin();
