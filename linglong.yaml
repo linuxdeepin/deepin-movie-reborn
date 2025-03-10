@@ -64,6 +64,9 @@ build: |
   # 生成.install 文件
   bash ./deploy_dep "${LDD_FILES[@]}"
 
+  ID_VALUE=$(awk -F ': ' '/^  id: / {print $2}' linglong.yaml)
+  find $PREFIX/bin/xprop >> "${ID_VALUE}.install"
+
 sources:
   # linglong:gen_deb_source sources amd64 http://10.20.64.92:8080/testing25_daily stable main
   # linglong:gen_deb_source install libmpv-dev, libxcb1-dev, libxcb-util0-dev, libffmpegthumbnailer-dev, libxcb-shape0-dev, libxcb-ewmh-dev, xcb-proto, x11proto-record-dev, x11-utils, libxtst-dev, libavcodec-dev, libavformat-dev, libavutil-dev, libpulse-dev, libdvdnav-dev, libgsettings-qt-dev, libva-dev, libgstreamer-plugins-base1.0-dev, libgstreamer1.0-dev
