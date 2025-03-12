@@ -78,6 +78,9 @@ public:
     bool composited() const
     {
 #if defined (_LIBDMR_)
+        if (property("forceBind").isValid() && property("forceBind").toBool()) {
+            return false;
+        }
         return true;
 #endif
         return _composited;

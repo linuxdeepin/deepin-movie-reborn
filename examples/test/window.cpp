@@ -10,6 +10,7 @@ Window::Window(QWidget *parent) : QWidget (parent)
 
     auto l = new QVBoxLayout(this);
 
+    dmr::CompositingManager::get().setProperty("forceBind", true);
     if (dmr::CompositingManager::get().composited()) {
     dmr::CompositingManager::get().overrideCompositeMode(false);
     }
