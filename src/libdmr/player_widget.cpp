@@ -6,12 +6,16 @@
 #include "player_widget.h"
 #include "filefilter.h"
 #include <player_engine.h>
+#include <compositing_manager.h>
 
 namespace dmr {
 
 PlayerWidget::PlayerWidget(QWidget *parent)
     : QWidget (parent)
 {
+    if (parent->property("forceBind").toBool()) {
+        CompositingManager::get().setProperty("forceBind", true);
+    }
     utils::first_check_wayland_env();
     _engine = new PlayerEngine(this);
     auto *l = new QVBoxLayout;
