@@ -1361,6 +1361,10 @@ void MpvProxy::refreshDecode()
             } else { //2.2.2 非特殊硬件 + 非特殊格式
                  my_set_property(m_handle, "hwdec","auto");
                 //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
+#if defined (__sw_64__)
+        //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
+        my_set_property(m_handle, "hwdec", "vdpau");
+#endif
             }
         }
 
