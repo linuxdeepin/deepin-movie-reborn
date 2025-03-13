@@ -4418,19 +4418,12 @@ void Platform_MainWindow::decodeInit()
 
     //崩溃检测
     int bcatch = Settings::get().settings()->getOption(QString("set.start.crash")).toInt();
-    switch (bcatch) {
-    case 1:
+    if (bcatch == 1) {
         pMpvProxy->setDecodeModel(DecodeMode::AUTO);
         Settings::get().settings()->setOption(QString("base.decode.select"),DecodeMode::AUTO);
-        break;
-    case 2:
-        pMpvProxy->setDecodeModel(Settings::get().settings()->
-                                  getOption(QString("base.decode.select")).toInt());
-        dmr::Settings::get().crashCheck();
-        break;
-    case 0:
-    default:
-        break;
+    } else {
+        if (Settings::get().settings()->option("base.decode.select")->value().toInt() == 3)
+            dmr::Settings::get().crashCheck();
     }
 }
 
