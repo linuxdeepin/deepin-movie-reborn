@@ -1164,9 +1164,17 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     m_pDBus = new QDBusInterface("org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", QDBusConnection::systemBus());
     connect(m_pDBus, SIGNAL(PrepareForSleep(bool)), this, SLOT(sleepStateChanged(bool)));
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QDBusConnection::sessionBus().connect("org.deepin.dde.ShutdownFront1", "/org/deepin/dde/lockFront1",
                                           "org.deepin.dde.lockFront1", "Visible", this,
                                           SLOT(lockStateChanged(bool)));
+#else
+#if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
+    QDBusConnection::sessionBus().connect("org.deepin.dde.LockFront1", "/org/deepin/dde/LockFront1",
+                                          "org.deepin.dde.LockFront1", "Visible", this,
+                                          SLOT(lockStateChanged(bool)));
+#endif
+#endif
 
     m_pMovieWidget = new MovieWidget(this);
     m_pMovieWidget->hide();
