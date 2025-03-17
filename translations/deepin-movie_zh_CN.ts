@@ -328,8 +328,28 @@ Please do not exit the Movie app during the process.</source>
         <translation>软件解码</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="201"/>
-        <location filename="../src/common/mainwindow.cpp" line="203"/>
+        <location filename="../src/common/settings_translation.cpp" line="64"/>
+        <source>Customize</source>
+        <translation>专业模式</translation>
+    </message>
+    <message>
+        <location filename="../src/common/settings_translation.cpp" line="65"/>
+        <source>Decode mode</source>
+        <translation type="unfinished">解码方式</translation>
+    </message>
+    <message>
+        <location filename="../src/common/settings_translation.cpp" line="66"/>
+        <source>Video out</source>
+        <translation type="unfinished">输出驱动</translation>
+    </message>
+    <message>
+        <location filename="../src/common/settings_translation.cpp" line="67"/>
+        <source>Rendering engine</source>
+        <translation type="unfinished">渲染引擎</translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="326"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>此文件夹没有操作权限</translation>
     </message>
@@ -352,8 +372,18 @@ Please do not exit the Movie app during the process.</source>
         <translation>打开文件夹</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2987"/>
-        <location filename="../src/common/mainwindow.cpp" line="3026"/>
+        <location filename="../src/common/mainwindow.cpp" line="2861"/>
+        <location filename="../src/common/mainwindow.cpp" line="2885"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2871"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2897"/>
+        <source>The custom decoding method needs to be restarted before it can take effect,
+and whether to restart it?</source>
+        <translation type="unfinished">自定义解码方式需要重启后才能生效，
+是否重启？</translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="3297"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3274"/>
         <source>Network disconnected</source>
         <translation>网络已断开</translation>
     </message>
@@ -811,7 +841,31 @@ Please do not exit the Movie app during the process.</source>
         <translation>正在截图，请稍候...</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2808"/>
+        <location filename="../src/common/mainwindow.cpp" line="2862"/>
+        <location filename="../src/common/mainwindow.cpp" line="2886"/>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="2863"/>
+        <location filename="../src/common/mainwindow.cpp" line="2887"/>
+        <source>Restart</source>
+        <translation type="unfinished">重启</translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="2981"/>
+        <source>Professional mode is only for professionals to use</source>
+        <translation type="unfinished">专业模式仅供专业人员使用</translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="2982"/>
+        <source>During the adaptation process, there may be issues such as screen distortion, freezing, stuttering, torn images, 
+unsynchronized audio and video, and player crashes. Please use with caution.</source>
+        <translation type="unfinished">适配过程中可能出现花屏、卡死、卡顿、画面撕裂、音画不同步、
+播放器闪退等问题，请谨慎使用。</translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="3079"/>
         <source>Reading DVD files...</source>
         <translation>正在读取光盘文件...</translation>
     </message>
@@ -1238,7 +1292,31 @@ Please do not exit the Movie app during the process.</source>
         <translation>正在截图，请稍候...</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2786"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2872"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2898"/>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
+        <source>Restart</source>
+        <translation type="unfinished">重启</translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2981"/>
+        <source>Professional mode is only for professionals to use</source>
+        <translation type="unfinished">专业模式仅供专业人员使用</translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2982"/>
+        <source>During the adaptation process, there may be issues such as screen distortion, freezing, stuttering, torn images, 
+unsynchronized audio and video, and player crashes. Please use with caution.</source>
+        <translation type="unfinished">适配过程中可能出现花屏、卡死、卡顿、画面撕裂、音画不同步、
+播放器闪退等问题，请谨慎使用。</translation>
+    </message>
+    <message>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3073"/>
         <source>Reading DVD files...</source>
         <translation>正在读取光盘文件...</translation>
     </message>
