@@ -1,0 +1,16 @@
+{
+    "magic": "dsg.config.meta",
+    "version": "1.0",
+    "contents": {
+        "screenCasting": {
+            "value": true,
+            "serial": 0,
+            "flags": ["global"],
+            "name": "screenCasting",
+            "description[zh_CN]": "是否显示投屏按钮",
+            "description": "",
+            "permissions": "readwrite",
+            "visibility": "private"
+        }
+    }
+}

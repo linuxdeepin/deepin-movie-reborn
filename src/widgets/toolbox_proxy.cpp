@@ -32,6 +32,9 @@
 #include <DToolButton>
 #include <dthememanager.h>
 #include <iostream>
+#ifdef DTKCORE_CLASS_DConfigFile
+#include <DConfig>
+#endif
 #include "../accessibility/ac-deepin-movie-define.h"
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
@@ -1281,8 +1284,25 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(m_pMircastBtn, "mircast");
     connect(m_mircastWidget, &MircastWidget::mircastState, this, &ToolboxProxy::slotUpdateMircast);
 
+#ifdef DTKCORE_CLASS_DConfigFile
+//投屏按钮是否显示
+DConfig *dconfig = DConfig::create("org.deepin.movie", "org.deepin.movie.customui");
+if (dconfig && dconfig->isValid()&& dconfig->keyList().contains("screenCasting")) {
+       bool bScreenCasting = dconfig->value("screenCasting").toBool();
+       if(bScreenCasting) {
+        _right->addWidget(m_pMircastBtn);
+        _right->addSpacing(10);
+    } else {
+       m_pMircastBtn->setVisible(false);
+    }
+} else {
     _right->addWidget(m_pMircastBtn);
     _right->addSpacing(10);
+}
+#else
+    _right->addWidget(m_pMircastBtn);
+    _right->addSpacing(10);
+#endif
 
     m_pListBtn = new ToolButton(m_pBotToolWgt);
     m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
