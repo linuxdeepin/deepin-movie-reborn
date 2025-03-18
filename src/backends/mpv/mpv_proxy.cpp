@@ -604,6 +604,7 @@ mpv_handle *MpvProxy::mpv_init()
     my_set_property(pHandle, "sub-border-size", 0);
     my_set_property(pHandle, "screenshot-template", "deepin-movie-shot%n");
     my_set_property(pHandle, "screenshot-directory", "/tmp");
+    my_set_property(m_handle, "vd-queue-enable","no");
 
 #ifndef _LIBDMR_
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
@@ -670,6 +671,9 @@ mpv_handle *MpvProxy::mpv_init()
         QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
         decodeMode = decodeMode.isEmpty() ? "auto" : decodeMode;
         m_pConfig->insert("hwdec", decodeMode);
+        if (decodeMode == "vaapi-copy") {
+            my_set_property(m_handle, "vd-queue-enable","yes");
+        }
 
         if (!CompositingManager::get().composited()) {
             int voIndex = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();
