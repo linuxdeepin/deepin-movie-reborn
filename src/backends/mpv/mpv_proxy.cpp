@@ -777,6 +777,7 @@ mpv_handle *MpvProxy::mpv_init()
     my_set_property(pHandle, "sub-border-size", 0);
     my_set_property(pHandle, "screenshot-template", "deepin-movie-shot%n");
     my_set_property(pHandle, "screenshot-directory", "/tmp");
+    my_set_property(pHandle, "vd-queue-enable","no");
     my_set_property(pHandle, "stop-screensaver", "no"); // 屏幕保护逻辑影院自己控制，不由mpv控制
     qDebug() << "DEBUG: Basic MPV properties set.";
 
@@ -863,6 +864,9 @@ mpv_handle *MpvProxy::mpv_init()
         decodeMode = decodeMode.isEmpty() ? "auto" : decodeMode;
         m_pConfig->insert("hwdec", decodeMode);
         qDebug() << "DEBUG: hwdec set to:" << decodeMode;
+        if (decodeMode == "vaapi-copy") {
+            my_set_property(pHandle, "vd-queue-enable","yes");
+        }
 
         if (!CompositingManager::get().composited()) {
             qDebug() << "DEBUG: Not composited, setting vo from custom decode settings.";
