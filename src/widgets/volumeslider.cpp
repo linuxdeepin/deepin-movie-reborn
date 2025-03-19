@@ -203,7 +203,7 @@ void VolumeSlider::popup()
 void VolumeSlider::delayedHide()
 {
     m_mouseIn = false;
-    DUtil::TimerSingleShot(100, [this]() {
+    DUtil::TimerSingleShot(200, [this]() {
         if (!m_mouseIn)
             hide();
     });
@@ -334,10 +334,10 @@ void VolumeSlider::setThemeType(int type)
     Q_UNUSED(type)
 }
 
-void VolumeSlider::enterEvent(QEvent *e)
+void VolumeSlider::enterEvent(QEnterEvent *e)
 {
     m_mouseIn = true;
-    QWidget::leaveEvent(e);
+    QWidget::enterEvent(e);
 }
 void VolumeSlider::showEvent(QShowEvent *se)
 {

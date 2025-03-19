@@ -340,10 +340,10 @@ void Platform_VolumeSlider::setThemeType(int type)
     Q_UNUSED(type)
 }
 
-void Platform_VolumeSlider::enterEvent(QEvent *e)
+void Platform_VolumeSlider::enterEvent(QEnterEvent *e)
 {
     m_mouseIn = true;
-    QWidget::leaveEvent(e);
+    QWidget::enterEvent(e);
 }
 void Platform_VolumeSlider::showEvent(QShowEvent *se)
 {
