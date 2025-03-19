@@ -63,7 +63,7 @@ public slots:
     void delayedHide();
 
 protected:
-    void enterEvent(QEvent *e);
+    void enterEvent(QEnterEvent *e);
     void showEvent(QShowEvent *se);
     void leaveEvent(QEvent *e);
     void paintEvent(QPaintEvent *);
