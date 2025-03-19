@@ -3399,7 +3399,7 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
                     qDebug() << "msgBox.exec() != 1";
                     if (decodeType != 3) {
                         qDebug() << "decodeType != 3";
-                        Settings::get().settings()->setOption("base.decode.select", decodeMode);
+                        Settings::get().settings()->setOption("base.decode.select", decodeType);
                     }
                     Settings::get().settings()->setOption("base.decode.Effect", effectMode);
                     Settings::get().settings()->setOption("base.decode.Decodemode", decodeMode);
