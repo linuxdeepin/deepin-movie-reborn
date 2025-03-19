@@ -2926,7 +2926,7 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
                     QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
                 } else {
                     if (decodeType != 3) {
-                        Settings::get().settings()->setOption("base.decode.select", decodeMode);
+                        Settings::get().settings()->setOption("base.decode.select", decodeType);
                     }
                     Settings::get().settings()->setOption("base.decode.Effect", effectMode);
                     Settings::get().settings()->setOption("base.decode.Decodemode", decodeMode);
