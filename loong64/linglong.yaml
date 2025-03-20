@@ -7,7 +7,7 @@ version: "1"
 package:
   id: org.deepin.movie
   name: "deepin-movie"
-  version: 6.5.6.1
+  version: 6.5.7.1
   kind: app
   description: |
     movie for deepin os.
