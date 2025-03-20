@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.5.7) unstable; urgency=medium
+
+  * chore: New version 6.5.7.
+
+ -- xiepengfei <xiepengfei@uniontech.com>  Thu, 20 Mar 2025 19:07:06 +0800
+
 deepin-movie-reborn (6.5.6) unstable; urgency=medium
 
   * fix: Fixed playback issues(Bug: 306447)
