@@ -101,6 +101,8 @@ typedef struct  {
 //返回值大于0表示支持硬解， index 视频格式解码请求值， result 返回解码支持信息
 typedef unsigned int (*gpu_decoderInfo)(decoder_profile index, VDP_Decoder_t *result );
 
+bool isSpecialHWHardware();
+
 static void mpv_callback(void *d)
 {
     qDebug() << "DEBUG: Entering mpv_callback.";
@@ -521,9 +523,11 @@ mpv_handle *MpvProxy::mpv_init()
         } else if (CompositingManager::get().isOnlySoftDecode()) {//2.1.3 鲲鹏920 || 曙光+英伟达 || 浪潮
             qDebug() << "DEBUG: Only soft decode enabled. Setting hwdec to no.";
             my_set_property(pHandle, "hwdec", "no");
+        } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
+            my_set_property(pHandle, "hwdec", "omx-copy");
         } else if (isVirtualMachine) {
             qDebug() << "DEBUG: Virtual machine detected. Setting vo to x11.";
-            my_set_property(m_handle, "vo", "x11");
+            my_set_property(pHandle, "vo", "x11");
             m_sInitVo = "x11";
         } else { //2.2非特殊硬件
             qDebug() << "DEBUG: No special hardware detected. Setting hwdec to auto.";
@@ -670,6 +674,8 @@ mpv_handle *MpvProxy::mpv_init()
             qDebug() << "DEBUG: X100 GPU and VPU detected. Setting hwdec to ftomx-copy and vo to gpu.";
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
+        } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
+            my_set_property(pHandle, "hwdec", "omx-copy");
         } else {
             qDebug() << "DEBUG: No special GPU detected. Setting hwdec to auto.";
             my_set_property(pHandle, "hwdec", "auto");
@@ -975,8 +981,8 @@ bool isSpecialHWHardware()
             return false;
         }
 
-        QStringList specilDev{"KLVV", "KLVU", "PGUV", "PGUW", "L540", "W585"};
-        for (const QString &dev : specilDev) {
+        QStringList specialDev {"KLVV", "KLVU", "PGUV", "PGUW", "L540", "W585", "L420"};
+        for (const QString &dev : specialDev) {
             if (info.contains(dev)) {
                 s_DevType = IsHWDev;
                 break;
@@ -1599,7 +1605,7 @@ void MpvProxy::refreshDecode()
                     }else if (jmfi.exists() && jmdir.exists()) {
                         my_set_property(m_handle, "hwdec", "vaapi");
                         my_set_property(m_handle, "vo", "vaapi");
-                    }else {
+                    } else {
                         my_set_property(m_handle, "hwdec", "auto");
                     }
                 }
@@ -1614,6 +1620,8 @@ void MpvProxy::refreshDecode()
                 my_set_property(m_handle, "hwdec", "no");
             } else if (CompositingManager::get().isSpecialControls()) {
                 my_set_property(m_handle, "hwdec", "vaapi");
+            } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
+                my_set_property(m_handle, "hwdec", "omx-copy");
             } else { //2.2.2 非特殊硬件 + 非特殊格式
                  my_set_property(m_handle, "hwdec","auto");
                 //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
@@ -1685,7 +1693,7 @@ void MpvProxy::refreshDecode()
             }else if (jmfi.exists() && jmdir.exists()) {
                 my_set_property(m_handle, "hwdec", "vaapi");
                 my_set_property(m_handle, "vo", "vaapi");
-            }else {
+            } else {
                 my_set_property(m_handle, "hwdec", "auto");
             }
 #ifdef _LIBDMR_
@@ -1695,6 +1703,8 @@ void MpvProxy::refreshDecode()
             qDebug() << "DEBUG: X100 GPU/VPU detected (harddec mode). Setting hwdec to ftomx-copy, vo to gpu.";
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
+        } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
+            my_set_property(m_handle, "hwdec", "omx-copy");
         }
 
         if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
