@@ -94,6 +94,8 @@ typedef struct  {
 //返回值大于0表示支持硬解， index 视频格式解码请求值， result 返回解码支持信息
 typedef unsigned int (*gpu_decoderInfo)(decoder_profile index, VDP_Decoder_t *result );
 
+bool isSpecialHWHardware();
+
 static void mpv_callback(void *d)
 {
     MpvProxy *pMpv = static_cast<MpvProxy *>(d);
@@ -388,6 +390,8 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(m_handle, "vo", "gpu");
         } else if (CompositingManager::get().isOnlySoftDecode()) {//2.1.3 鲲鹏920 || 曙光+英伟达 || 浪潮
             my_set_property(pHandle, "hwdec", "no");
+        } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
+            my_set_property(pHandle, "hwdec", "omx-copy");
         } else { //2.2非特殊硬件
             my_set_property(pHandle, "hwdec", "auto");
         }
@@ -511,6 +515,8 @@ mpv_handle *MpvProxy::mpv_init()
         } else if (X100GPU.exists() && X100VPU.exists()) {
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
+        } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
+            my_set_property(pHandle, "hwdec", "omx-copy");
         } else {
             my_set_property(pHandle, "hwdec", "auto");
         }
@@ -769,7 +775,7 @@ bool isSpecialHWHardware()
             return false;
         }
 
-        QStringList specilDev{"KLVV", "KLVU", "PGUV", "PGUW", "L540", "W585"};
+        QStringList specilDev{"KLVV", "KLVU", "PGUV", "PGUW", "L540", "W585", "L420"};
         for (const QString &dev : specilDev) {
             if (info.contains(dev)) {
                 s_DevType = IsHWDev;
@@ -1354,7 +1360,7 @@ void MpvProxy::refreshDecode()
                     }else if (jmfi.exists() && jmdir.exists()) {
                         my_set_property(m_handle, "hwdec", "vaapi");
                         my_set_property(m_handle, "vo", "vaapi");
-                    }else {
+                    } else {
                         my_set_property(m_handle, "hwdec", "auto");
                     }
                 }
@@ -1368,6 +1374,8 @@ void MpvProxy::refreshDecode()
                 my_set_property(m_handle, "hwdec", "no");
             } else if (CompositingManager::get().isSpecialControls()) {
                 my_set_property(m_handle, "hwdec", "vaapi");
+            } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
+                my_set_property(m_handle, "hwdec", "omx-copy");
             } else { //2.2.2 非特殊硬件 + 非特殊格式
                  my_set_property(m_handle, "hwdec","auto");
                 //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
@@ -1432,7 +1440,7 @@ void MpvProxy::refreshDecode()
             }else if (jmfi.exists() && jmdir.exists()) {
                 my_set_property(m_handle, "hwdec", "vaapi");
                 my_set_property(m_handle, "vo", "vaapi");
-            }else {
+            } else {
                 my_set_property(m_handle, "hwdec", "auto");
             }
 #ifdef _LIBDMR_
@@ -1441,6 +1449,8 @@ void MpvProxy::refreshDecode()
         } else if (X100GPU.exists() && X100VPU.exists()) {
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
+        } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
+            my_set_property(m_handle, "hwdec", "omx-copy");
         }
 
         if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
