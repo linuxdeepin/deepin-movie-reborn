@@ -609,7 +609,18 @@ bool CompositingManager::isDriverLoadedCorrectly()
 #endif
 #endif
 
-    QString xorglog = QString("/var/log/Xorg.%1.log").arg(QGuiApplication::primaryScreen()->name().split("-").last());
+    QString xorglog;
+    if (_platform == Platform::Mips) {
+        QDir logDir("/var/log/");
+        QStringList filters;
+        filters << "Xorg.*.log";
+        QStringList xorglogs = logDir.entryList(filters, QDir::Files);
+        if (xorglogs.isEmpty())
+            return false;
+        xorglog = xorglogs.last();
+    } else {
+        xorglog = QString("/var/log/Xorg.%1.log").arg(QGuiApplication::primaryScreen()->name().split("-").last());
+    }
     qInfo() << "check " << xorglog;
     QFile f(xorglog);
     if (!f.open(QFile::ReadOnly)) {
