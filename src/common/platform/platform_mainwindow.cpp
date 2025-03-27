@@ -3726,8 +3726,13 @@ void Platform_MainWindow::closeEvent(QCloseEvent *pEvent)
         Settings::get().onSetCrash();
         needWait = true;
     }
-    if (needWait)
+    if (needWait) {
+        QTimer::singleShot(2000, this, [=](){
+            if (loop.isRunning())
+                loop.quit();
+        });
         loop.exec();
+    }
     m_pEngine->savePlaybackPosition();
 
     pEvent->accept();
