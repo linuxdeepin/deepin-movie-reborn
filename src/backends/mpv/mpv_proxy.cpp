@@ -644,7 +644,7 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "vo", "vaapi");
             m_sInitVo = "vaapi";
         }
-    } else { //3.设置硬解
+    } else if (DecodeMode::HARDWARE == m_decodeMode) { //3.设置硬解
         qDebug() << "DEBUG: Decode mode set to HARDWARE. Checking specific hardware.";
         QFileInfo fi("/dev/mwv206_0");
         QFileInfo jmfi("/dev/jmgpu");
@@ -862,7 +862,7 @@ mpv_handle *MpvProxy::mpv_init()
     CompositingManager::get().getMpvConfig(m_pConfig);
     qDebug() << "DEBUG: MPV config retrieved for hwdec and vo settings.";
 #ifndef _LIBDMR_
-    if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == 3) {
+    if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == DecodeMode::CUSTOM) {
         qDebug() << "DEBUG: Custom decode settings enabled.";
         int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
         auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
@@ -1649,7 +1649,7 @@ void MpvProxy::refreshDecode()
                 my_set_property(m_handle, "vo","vaapi");
             }
         }
-    } else { //3.设置硬解
+    } else if (DecodeMode::HARDWARE == m_decodeMode) { //3.设置硬解
 #ifndef _LIBDMR_
 
 #if defined (__aarch64__)
@@ -1736,23 +1736,6 @@ void MpvProxy::refreshDecode()
         }
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
-#ifndef _LIBDMR_
-        if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == 3) {
-            int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
-            auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
-            QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
-            decodeMode = decodeMode.isEmpty() ? "auto" : decodeMode;
-            m_pConfig->insert("hwdec", decodeMode);
-
-            if (!CompositingManager::get().composited()) {
-                int voIndex = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();
-                auto voOpt = Settings::get().settings()->option("base.Customize.Videoout");
-                QString voMode = voOpt.data()->data("items").toStringList()[voIndex];
-                voMode = voMode.isEmpty() ? "auto" : voMode;
-                m_pConfig->insert("vo", voMode);
-            }
-        }
-#endif
         QMap<QString, QString>::iterator iter = m_pConfig->begin();
         while (iter != m_pConfig->end()) {
             if (iter.key().contains(QString("hwdec"))) {
@@ -1762,6 +1745,23 @@ void MpvProxy::refreshDecode()
             iter++;
         }
     }
+#ifndef _LIBDMR_
+    else if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == DecodeMode::CUSTOM) {
+        int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
+        auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
+        QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
+        decodeMode = decodeMode.isEmpty() ? "auto" : decodeMode;
+        m_pConfig->insert("hwdec", decodeMode);
+
+        if (!CompositingManager::get().composited()) {
+            int voIndex = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();
+            auto voOpt = Settings::get().settings()->option("base.Customize.Videoout");
+            QString voMode = voOpt.data()->data("items").toStringList()[voIndex];
+            voMode = voMode.isEmpty() ? "auto" : voMode;
+            m_pConfig->insert("vo", voMode);
+        }
+    }
+#endif
 }
 
 void MpvProxy::initMember()

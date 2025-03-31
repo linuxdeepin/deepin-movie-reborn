@@ -83,7 +83,8 @@ class MpvGLWidget;
 enum DecodeMode {
     AUTO = 0,
     HARDWARE,
-    SOFTWARE
+    SOFTWARE,
+    CUSTOM
 };
 
 /**
