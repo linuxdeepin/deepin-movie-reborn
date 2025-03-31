@@ -1170,7 +1170,7 @@ MainWindow::MainWindow(QWidget *parent)
         });
     }
     //解码初始化
-    //decodeInit();
+    decodeInit();
 }
 
 void MainWindow::setupTitlebar()
@@ -4339,8 +4339,8 @@ void MainWindow::decodeInit()
         return;
 
     //崩溃检测
-    bool bcatch = Settings::get().settings()->getOption(QString("set.start.crash")).toBool();
-    if (bcatch) {
+    int bcatch = Settings::get().settings()->getOption(QString("set.start.crash")).toInt(); // this value can be 0 1 2 after `Custom Decode mode`. 1:crash 2:restart
+    if (bcatch == 1) {
         pMpvProxy->setDecodeModel(DecodeMode::AUTO);
         Settings::get().settings()->setOption(QString("base.decode.select"),DecodeMode::AUTO);
     } else {

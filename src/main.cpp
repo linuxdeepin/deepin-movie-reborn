@@ -329,9 +329,8 @@ int main(int argc, char *argv[])
         dmr::Settings::get().settings()->setOption("base.decode.select", 0);
         dmr::Settings::get().settings()->setOption("base.decode.Decodemode", 0);
         dmr::Settings::get().settings()->setOption("base.decode.Videoout", 0);
+        dmr::Settings::get().crashCheck();
     }
-
-    dmr::Settings::get().crashCheck();
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
     QString movieName = "";
