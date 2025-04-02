@@ -10,6 +10,9 @@
 #ifndef _LIBDMR_
 #include "options.h"
 #endif
+#ifdef DTKCORE_CLASS_DConfigFile
+#include <DConfig>
+#endif
 
 #include <iostream>
 #include <unistd.h>
@@ -217,19 +220,42 @@ CompositingManager::CompositingManager()
     //TODO: 临时处理方案
     _composited = true;
 #if defined (_MOVIE_USE_)
-    //TODO
-    // QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
-    // QString aa = gsettings.get("composited").toString();
-    // if ((gsettings.get("composited").toString() == "DisableComposited"
-    //         || gsettings.get("composited").toString() == "EnableComposited")) {
-    //     if (gsettings.keys().contains("composited")) {
-    //         if (gsettings.get("composited").toString() == "DisableComposited") {
-    //             _composited = false;
-    //         } else if (gsettings.get("composited").toString() == "EnableComposited") {
-    //             _composited = true;
-    //         }
-    //     }
-    // } else {
+#ifdef DTKCORE_CLASS_DConfigFile
+    //需要查询是否支持特殊特殊机型打开迷你模式，例如hw机型
+    DConfig *dconfig = DConfig::create("org.deepin.movie","org.deepin.movie.minimode");
+    if(dconfig && dconfig->isValid() && dconfig->keyList().contains("compositedHandling")){
+        QString compositedHandling = dconfig->value("compositedHandling").toString();
+        if (compositedHandling == "DisableComposited") {
+            _composited = false;
+        } else if (compositedHandling == "EnableComposited") {
+            _composited = true;
+        } else {
+            if (_platform == Platform::X86) {
+                if (m_bZXIntgraphics) {
+                    _composited = false;
+                } else {
+                    _composited = true;
+                }
+            } else {
+                if (_platform == Platform::Arm64 && isDriverLoaded)
+                    m_bHasCard = true;
+                _composited = false;
+            }
+        }
+    } else {
+        if (_platform == Platform::X86) {
+            if (m_bZXIntgraphics) {
+                _composited = false;
+            } else {
+                _composited = true;
+            }
+        } else {
+            if (_platform == Platform::Arm64 && isDriverLoaded)
+                m_bHasCard = true;
+            _composited = false;
+        }
+    }
+#else
     if (_platform == Platform::X86) {
         if (m_bZXIntgraphics) {
             _composited = false;
@@ -241,7 +267,7 @@ CompositingManager::CompositingManager()
             m_bHasCard = true;
         _composited = false;
     }
-    // }
+#endif
 #endif
 
     //针对jm显卡适配

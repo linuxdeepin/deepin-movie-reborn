@@ -16,6 +16,5 @@ override_dh_auto_configure:
 	  -DQT_VERSION=6
 
 override_dh_install:
-	dh_install --exclude=usr/share/dsg/configs/org.deepin.movie \
-		   --exclude=usr/lib/uos-ai-assistant/functions
+	dh_install --exclude=usr/lib/uos-ai-assistant/functions
 
