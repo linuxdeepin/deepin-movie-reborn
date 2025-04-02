@@ -36,6 +36,7 @@ find_package(Qt6 COMPONENTS Gui Widgets DBus LinguistTools Network Concurrent Sq
 
 if (Qt6_FOUND)
     # Qt6 environment
+    find_package(Dtk6 REQUIRED COMPONENTS Core)
     pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtk6widget)
     pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtk6gui)
     pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtk6core)
@@ -107,6 +108,13 @@ if (Qt6_FOUND)
         RENAME deepin-movie.svg)
     install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/deepin-movie DESTINATION ${CMAKE_INSTALL_DATADIR}/deepin-manual/manual-assets/application/)
     install (FILES ${CMAKE_SOURCE_DIR}/com.deepin.movie.service DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/services/)
+
+    set(APPID org.deepin.movie)
+    set(configFile ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json)
+    if (DEFINED DSG_DATA_DIR)
+        message("-- DConfig is supported by DTK")
+        dtk_add_config_meta_files(APPID ${APPID} FILES ${configFile})
+    endif()
 
     # 加速编译优化参数
     if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")

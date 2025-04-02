@@ -7,11 +7,15 @@
 #include <QtDBus>
 #include <QtWidgets>
 #include <QPainterPath>
+#include "dtkcore_config.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QDesktopWidget>
 #else
 #include <QScreen>	
+#endif
+#ifdef DTKCORE_CLASS_DConfigFile
+#include <DConfig>
 #endif
 
 namespace dmr {
@@ -598,6 +602,22 @@ QString ElideText(const QString &text, const QSize &size,
 
 void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
 {
+    Q_UNUSED(path);
+#ifdef DTKCORE_CLASS_DConfigFile
+    Dtk::Core::DConfig *dconfig = Dtk::Core::DConfig::create("org.deepin.movie","org.deepin.movie.minimode");
+    if(dconfig && dconfig->isValid() && dconfig->keyList().contains("playConfigHandling")){
+        QString compositedHandling = dconfig->value("playConfigHandling").toString();
+        QStringList confList = compositedHandling.split(";", Qt::SkipEmptyParts);
+        if (!confList.isEmpty()) {
+            foreach (QString item, confList) {
+                QStringList confItem = item.split("=", Qt::SkipEmptyParts);
+                if (confItem.size() == 2) {
+                    proMap->insert(confItem.first(), confItem.last());
+                }
+            }
+        }
+    }
+#else
     QFileInfo fi(path);
     if ((fi.exists() && fi.isFile()) && fi.isReadable()) {
         QFile file(path);
@@ -622,6 +642,7 @@ void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
     } else {
         qWarning() << __func__ << "file path error!!!!!";
     }
+#endif
 }
 }
 }

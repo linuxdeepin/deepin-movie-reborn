@@ -11,6 +11,26 @@
           "description": "Mini mode special handling, like Huawei",
           "permissions": "readwrite",
           "visibility": "private"
-      }
+      },
+      "compositedHandling": {
+        "value": "Default",
+        "serial": 0,
+        "flags": ["global"],
+        "name": "composited Handling",
+        "name[zh_CN]": "混合模式判断",
+        "description": "composited mode judgment",
+        "permissions": "readwrite",
+        "visibility": "private"
+    },
+      "playConfigHandling": {
+        "value": "",
+        "serial": 0,
+        "flags": ["global"],
+        "name": "Play config Handling",
+        "name[zh_CN]": "播放配置",
+        "description": "Play config Handling",
+        "permissions": "readwrite",
+        "visibility": "private"
+    }
   }
 }
