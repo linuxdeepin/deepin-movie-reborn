@@ -4432,9 +4432,15 @@ void Platform_MainWindow::sleepStateChanged(bool bSleep)
     if (bSleep && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
         m_bStartSleep = true;
         requestAction(ActionFactory::ActionKind::TogglePause);
+        MpvProxy* pMpvProxy = nullptr;
+        pMpvProxy = dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy());
+        if(pMpvProxy)
+            pMpvProxy->setProperty("hwdec", "no");
     } else if (!bSleep && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
         m_bStartSleep = false;
-        m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));      //保证休眠后不管是否播放都不会卡帧
+        QTimer::singleShot(5000, [=](){
+            onRefreshDecode();
+        });
     }
 }
 
@@ -4454,12 +4460,14 @@ void Platform_MainWindow::lockStateChanged(bool bLock)
     if (bLock && m_pEngine->state() == PlayerEngine::CoreState::Playing && !m_bStateInLock) {
         m_bStateInLock = true;
         requestAction(ActionFactory::ActionKind::TogglePause);
+        MpvProxy* pMpvProxy = nullptr;
+        pMpvProxy = dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy());
+        if(pMpvProxy)
+            pMpvProxy->setProperty("hwdec", "no");
     } else if (!bLock && m_pEngine->state() == PlayerEngine::CoreState::Paused && m_bStateInLock) {
         m_bStateInLock = false;
-        QTimer::singleShot(500, [=](){
-            //龙芯5000使用命令sudo rtcwake -l -m mem -s 20, 待机唤醒后无dBus信号“PrepareForSleep”发出,加入seek保证解锁后播放不会卡帧
-            m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));
-            // requestAction(ActionFactory::ActionKind::TogglePause); //需求变更，唤醒后不恢复播放
+        QTimer::singleShot(5000, [=](){
+            onRefreshDecode();
         });
     }
 }
