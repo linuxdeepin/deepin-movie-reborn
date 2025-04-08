@@ -368,6 +368,12 @@ mpv_handle *MpvProxy::mpv_init()
         QFileInfo X100GPU("/dev/x100gpu");
         QFileInfo X100VPU("/dev/vxd0");
         QFileInfo mtfi("/dev/mtgpu.0");
+        QFile cpuInfo("/proc/cpuinfo");
+        bool isVirtualMachine = false;
+        if (cpuInfo.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            isVirtualMachine = cpuInfo.readAll().contains("hypervisor");
+            cpuInfo.close();
+        }
         if (fi.exists() || jmfi.exists()) { //2.1.1景嘉微
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
@@ -394,8 +400,12 @@ mpv_handle *MpvProxy::mpv_init()
         }  else if (X100GPU.exists() && X100VPU.exists()) {
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
+            m_sInitVo = "gpu";
         } else if (CompositingManager::get().isOnlySoftDecode()) {//2.1.3 鲲鹏920 || 曙光+英伟达 || 浪潮
             my_set_property(pHandle, "hwdec", "no");
+        } else if (isVirtualMachine) {
+            my_set_property(m_handle, "vo", "x11");
+            m_sInitVo = "x11";
         } else { //2.2非特殊硬件
             my_set_property(pHandle, "hwdec", "auto");
         }
@@ -2095,6 +2105,8 @@ void MpvProxy::setProperty(const QString &sName, const QVariant &val)
         QObject::setProperty("dmrhwdec-switch", val);
     } else {
         my_set_property(m_handle, sName.toUtf8().data(), val);
+        if (sName == "vo")
+            m_sInitVo = val.toString();
     }
 }
 
