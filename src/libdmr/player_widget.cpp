@@ -13,7 +13,8 @@ namespace dmr {
 PlayerWidget::PlayerWidget(QWidget *parent)
     : QWidget (parent)
 {
-    if (parent->property("forceBind").toBool()) {
+    auto forceBind = parent->property("forceBind");
+    if (forceBind.isValid() && forceBind.toBool()) {
         CompositingManager::get().setProperty("forceBind", true);
     }
     utils::first_check_wayland_env();
