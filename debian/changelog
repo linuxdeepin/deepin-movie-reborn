@@ -1,3 +1,10 @@
+deepin-movie-reborn (6.5.11) unstable; urgency=medium
+
+  * chore: New version 6.5.5.
+  * fix: [libdmr] crash when create playerWidget
+
+ -- zhangtingan <zhangtingan@uniontech.com>  Thr, 11 Apr 2025 9:38:00 +0800
+
 deepin-movie-reborn (6.5.10) unstable; urgency=medium
 
   * fix: [libdmr] crash when create playerWidget
