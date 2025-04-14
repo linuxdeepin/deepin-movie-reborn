@@ -10,7 +10,6 @@
 #include "compositing_manager.h"
 #include "player_engine.h"
 #include "hwdec_probe.h"
-#include "sysutils.h"
 
 #ifndef _LIBDMR_
 #include "dmr_settings.h"

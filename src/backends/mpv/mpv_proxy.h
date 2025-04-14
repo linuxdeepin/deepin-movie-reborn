@@ -13,6 +13,7 @@
 #include <xcb/xproto.h>
 #undef Bool
 #include "../../vendor/qthelper.hpp"
+#include "sysutils.h"
 
 typedef mpv_event *(*mpv_waitEvent)(mpv_handle *ctx, double timeout);
 typedef int (*mpv_set_optionString)(mpv_handle *ctx, const char *name, const char *data);
@@ -44,8 +45,9 @@ class MpvHandle
         explicit container(mpv_handle *pHandle) : m_pHandle(pHandle) {}
         ~container()
         {
-            mpv_terminateDestroy func = (mpv_terminateDestroy)QLibrary::resolve("libmpv", "mpv_terminate_destroy");
-            func(m_pHandle);
+            mpv_terminateDestroy func = (mpv_terminateDestroy)QLibrary::resolve(SysUtils::libPath("libmpv.so"), "mpv_terminate_destroy");
+            if (func)
+                func(m_pHandle);
         }
         mpv_handle *m_pHandle;
     };
