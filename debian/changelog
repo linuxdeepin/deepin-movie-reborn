@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.5.13) unstable; urgency=medium
+
+  * fix: Remove the description of the community edition.
+
+ -- zhangtingan <zhangtingan@uniontech.com>  Thu, 24 Apr 2025 17:23:23 +0800
+
 deepin-movie-reborn (6.5.12) unstable; urgency=medium
 
   * fix: [libmpv] crash when app exit(Bug: 312559)
