@@ -550,6 +550,12 @@ void PlayerEngine::requestPlay(int id)
     DRecentManager::addItem(item.url.toLocalFile(), data);
 
     if (_current->isPlayable()) {
+#ifdef __sw_64__
+        // 1.1.0以上版本的dav1d在多线程环境下会卡死，更换解码器使用
+        if(!FileFilter::instance()->isFormatSupported(item.url)) {
+            _current->setProperty("vd", "libaom-av1");
+        }
+#endif
         _current->play();
     } else {
         // TODO: delete and try next backend?
