@@ -111,6 +111,9 @@ public:
      */
     MediaType typeJudgeByGst(const QUrl& url);
 
+    // 目前只用于sw架构下判断是否是av1格式，sw架构下高版本dav1d会卡死
+    bool isFormatSupported(const QUrl &url);
+
     static void discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GError *err, MediaType *miType);
 
     static void finished(GstDiscoverer *discoverer, GMainLoop *loop);

@@ -281,6 +281,34 @@ FileFilter::MediaType FileFilter::typeJudgeByGst(const QUrl &url)
     return m_miType;
 }
 
+bool FileFilter::isFormatSupported(const QUrl &url)
+{
+    AVFormatContext *av_ctx = nullptr;
+
+    auto nRet = g_mvideo_avformat_open_input(&av_ctx, url.toLocalFile().toUtf8().constData(), nullptr, nullptr);
+
+    if(nRet < 0)
+    {
+        return false;
+    }
+    if(g_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0)
+    {
+        return false;
+    }
+
+#ifdef __sw_64__
+    for (int i = 0; i < static_cast<int>(av_ctx->nb_streams); i++)
+    {
+        AVStream *in_stream = av_ctx->streams[i];
+        if (in_stream->codecpar->codec_id == AVCodecID::AV_CODEC_ID_AV1) {
+            return false;
+        }
+    }
+#endif
+
+    return true;
+}
+
 void FileFilter::stopThread()
 {
     m_stopRunningThread = true;
