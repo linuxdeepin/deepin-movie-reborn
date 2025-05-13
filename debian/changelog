@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.5.14) unstable; urgency=medium
+
+  * fix:  resolve AV1 video decoding freeze issue on SW64 architecture
+
+ -- zhangtingan <zhangtingan@uniontech.com>  Tue, 13 May 2025 14:15:28 +0800
+
 deepin-movie-reborn (6.5.13) unstable; urgency=medium
 
   * fix: Remove the description of the community edition.
