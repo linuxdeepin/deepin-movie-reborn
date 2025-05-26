@@ -14,6 +14,7 @@ namespace dmr {
 VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     : QWidget(parent), _mw(mw)
 {
+    qDebug() << "VolumeSlider initializing";
     if (CompositingManager::get().platform() != Platform::X86 && !utils::check_wayland_env())
         setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
     m_iStep = 0;
@@ -83,6 +84,7 @@ void VolumeSlider::initVolume()
         int nVolume = Settings::get().internalOption("global_volume").toInt();
         bool bMute = Settings::get().internalOption("mute").toBool();
 
+        qInfo() << "Initializing volume settings - Volume:" << nVolume << "Mute:" << bMute;
         changeVolume(nVolume);
         changeMuteState(bMute);
 
@@ -133,6 +135,7 @@ void VolumeSlider::setMute(bool muted)
                                   "org.deepin.dde.Audio1.SinkInput",
                                   QDBusConnection::sessionBus());
         if (!ainterface.isValid()) {
+            qWarning() << "Failed to create D-Bus interface for audio control";
             return;
         }
 
@@ -243,10 +246,12 @@ void VolumeSlider::volumeUp()
         m_bIsWheel = false;
         if(qAbs(m_iStep) >= 120) {
             m_nVolume += qAbs(m_iStep) / 120 * 10;
+            qDebug() << "Volume increased by wheel - New volume:" << qMin(m_nVolume, 200);
             changeVolume(qMin(m_nVolume, 200));
             m_iStep = 0;
         }
     } else {
+        qDebug() << "Volume increased by button - New volume:" << qMin(m_nVolume + 10, 200);
         changeVolume(qMin(m_nVolume + 10, 200));
     }
 }
@@ -257,10 +262,12 @@ void VolumeSlider::volumeDown()
         m_bIsWheel = false;
         if(qAbs(m_iStep) >= 120){
             m_nVolume -= qAbs(m_iStep) / 120 * 10 ;
+            qDebug() << "Volume decreased by wheel - New volume:" << qMax(m_nVolume, 0);
             changeVolume(qMax(m_nVolume, 0));
             m_iStep = 0;
         }
     }else{
+        qDebug() << "Volume decreased by button - New volume:" << qMax(m_nVolume - 10, 0);
         changeVolume(qMax(m_nVolume - 10, 0));
     }
 
@@ -272,6 +279,7 @@ void VolumeSlider::changeMuteState(bool bMute)
         return;
     }
 
+    qInfo() << "Changing mute state to:" << bMute;
     m_bIsMute = bMute;
     refreshIcon();
     Settings::get().setInternalOption("mute", m_bIsMute);
@@ -281,6 +289,7 @@ void VolumeSlider::changeMuteState(bool bMute)
 void VolumeSlider::volumeChanged(int nVolume)
 {
     if (m_nVolume != nVolume) {
+        qDebug() << "Volume changed from" << m_nVolume << "to" << nVolume;
         m_nVolume = nVolume;
     }
 
@@ -433,7 +442,7 @@ bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)
 {
     if (e->type() == QEvent::Wheel) {
         QWheelEvent *we = static_cast<QWheelEvent *>(e);
-        qInfo() << we->angleDelta() << we->modifiers() << we->buttons();
+        qDebug() << "Wheel event - Delta:" << we->angleDelta() << "Modifiers:" << we->modifiers() << "Buttons:" << we->buttons();
         if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
             calculationStep(we->angleDelta().y());
             if (we->angleDelta().y() > 0 ) {
@@ -450,6 +459,7 @@ bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)
 
 VolumeSlider::~VolumeSlider()
 {
+    qDebug() << "VolumeSlider destroyed";
 }
 
 }

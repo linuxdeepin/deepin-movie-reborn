@@ -45,18 +45,21 @@ const QStringList PlayerEngine::subtitle_suffixs = {"ass", "sub", "srt", "aqt", 
 PlayerEngine::PlayerEngine(QWidget *parent)
     : QWidget(parent)
 {
+    qDebug() << "Initializing PlayerEngine";
     m_bAudio = false;
     m_stopRunningThread = false;
     auto *l = new QVBoxLayout(this);
     l->setContentsMargins(0, 0, 0, 0);
 
     if(CompositingManager::isMpvExists()){
+        qDebug() << "MPV backend exists, creating MpvProxy";
         _current = new MpvProxy(this);
     }
     // else {
     //     _current = new QtPlayerProxy(this);
     // }
     if (_current) {
+        qDebug() << "Setting up backend connections";
         connect(_current, &Backend::stateChanged, this, &PlayerEngine::onBackendStateChanged);
         connect(_current, &Backend::tracksChanged, this, &PlayerEngine::tracksChanged);
         connect(_current, &Backend::elapsedChanged, this, &PlayerEngine::elapsedChanged);
@@ -72,6 +75,8 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::urlpause, this, &PlayerEngine::urlpause);
         connect(_current, &Backend::sigMediaError, this, &PlayerEngine::sigMediaError);
         l->addWidget(_current);
+    } else {
+        qWarning() << "Failed to create backend";
     }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -93,10 +98,12 @@ PlayerEngine::PlayerEngine(QWidget *parent)
     connect(_playlist, &PlaylistModel::asyncAppendFinished, this,
             &PlayerEngine::onPlaylistAsyncAppendFinished, Qt::DirectConnection);
     connect(_playlist, &PlaylistModel::updateDuration, this, &PlayerEngine::updateDuration);
+    qDebug() << "PlayerEngine initialization completed";
 }
 
 PlayerEngine::~PlayerEngine()
 {
+    qDebug() << "Destroying PlayerEngine";
     m_stopRunningThread = true;
     FileFilter::instance()->stopThread();
     if (_current) {
@@ -110,15 +117,18 @@ PlayerEngine::~PlayerEngine()
         delete _playlist;
         _playlist = nullptr;
     }
-    qInfo() << __func__;
+    qDebug() << "PlayerEngine destroyed";
 }
 
 bool PlayerEngine::isPlayableFile(const QUrl &url)
 {
+    qDebug() << "Checking if file is playable:" << url.toString();
     if (FileFilter::instance()->isMediaFile(url)) {
+        qDebug() << "File is playable";
         return true;
     } else {    // 网络文件不提示
         if(url.isLocalFile()) {
+            qWarning() << "Invalid file:" << QFileInfo(url.toLocalFile()).fileName();
             emit sigInvalidFile(QFileInfo(url.toLocalFile()).fileName());
         }
         return false;
@@ -159,20 +169,25 @@ bool PlayerEngine::isSubtitle(const QString &name)
 
 void PlayerEngine::updateSubStyles()
 {
+    qDebug() << "Updating subtitle styles";
 #ifndef _LIBDMR_
     QPointer<DSettingsOption> pFontOpt = Settings::get().settings()->option("subtitle.font.family");
     QPointer<DSettingsOption> pSizeOpt = Settings::get().settings()->option("subtitle.font.size");
-    if(!pFontOpt || !pSizeOpt)
-    {
+    if(!pFontOpt || !pSizeOpt) {
+        qWarning() << "Failed to get subtitle style settings";
         return;
     }
 
     int fontId = pFontOpt->value().toInt();
     int size = pSizeOpt->value().toInt();
     QString font = pFontOpt->data("items").toStringList()[fontId];
+    qDebug() << "Subtitle style - Font:" << font << "Size:" << size;
 
     if (_state != CoreState::Idle) {
-        if (_playlist->current() < 0) return;
+        if (_playlist->current() < 0) {
+            qDebug() << "No current playlist item";
+            return;
+        }
 
         auto vh = videoSize().height();
         if (vh <= 0) {
@@ -182,6 +197,7 @@ void PlayerEngine::updateSubStyles()
         size /= scale;
         /* magic scale number 2.0 comes from my mind, test with my eyes... */
         size *= 2.0;
+        qDebug() << "Updating subtitle style with scaled size:" << size;
         updateSubStyle(font, size);
     }
 #endif
@@ -200,7 +216,10 @@ void PlayerEngine::waitLastEnd()
 
 void PlayerEngine::onBackendStateChanged()
 {
-    if (!_current) return;
+    if (!_current) {
+        qWarning() << "Backend state changed but no backend exists";
+        return;
+    }
 
     CoreState old = _state;
     switch (_current->state()) {
@@ -208,22 +227,29 @@ void PlayerEngine::onBackendStateChanged()
         _state = CoreState::Playing;
         if (_playlist->count() > 0) {
             m_bAudio = currFileIsAudio();
+            qDebug() << "State changed to Playing, is audio:" << m_bAudio;
         }
         //playing . emit thumbnail progress mode signal with setting file
-        if (old == CoreState::Idle)
+        if (old == CoreState::Idle) {
+            qDebug() << "Initializing thumbnail settings";
             emit siginitthumbnailseting();
+        }
         break;
     case Backend::PlayState::Paused:
         _state = CoreState::Paused;
+        qDebug() << "State changed to Paused";
         break;
     case Backend::PlayState::Stopped:
         _state = CoreState::Idle;
+        qDebug() << "State changed to Idle";
         break;
     }
 
     updateSubStyles();
-    if (old != _state)
+    if (old != _state) {
+        qDebug() << "State changed from" << old << "to" << _state;
         emit stateChanged();
+    }
 
     auto systemEnv = QProcessEnvironment::systemEnvironment();
     QString XDG_SESSION_TYPE = systemEnv.value(QStringLiteral("XDG_SESSION_TYPE"));
@@ -324,10 +350,15 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl &url, const QList<QString> &
 
 bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
 {
+    qDebug() << "Loading subtitle:" << fi.absoluteFilePath();
     if (state() == CoreState::Idle) {
+        qDebug() << "Player is idle, ignoring subtitle load";
         return true;
     }
-    if (!_current) return true;
+    if (!_current) {
+        qWarning() << "No backend available";
+        return true;
+    }
 
     const auto &pmf = _current->playingMovieInfo();
     auto pif = playlist().currentInfo();
@@ -336,6 +367,7 @@ bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
         if (sub["external"].toBool()) {
             auto path = sub["external-filename"].toString();
             if (path == fi.canonicalFilePath()) {
+                qDebug() << "Subtitle already loaded, selecting it";
                 this->selectSubtitle(i);
                 return true;
             }
@@ -344,21 +376,28 @@ bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
     }
 
     if (_current->loadSubtitle(fi)) {
+        qDebug() << "Subtitle loaded successfully";
 #ifndef _LIBDMR_
         MovieConfiguration::get().append2ListUrl(pif.url, ConfigKnownKey::ExternalSubs,
                                                  fi.canonicalFilePath());
 #endif
         return true;
     }
+    qWarning() << "Failed to load subtitle";
     return false;
 }
 
 void PlayerEngine::loadOnlineSubtitle(const QUrl &url)
 {
+    qDebug() << "Requesting online subtitle for:" << url.toString();
     if (state() == CoreState::Idle) {
+        qDebug() << "Player is idle, ignoring subtitle request";
         return;
     }
-    if (!_current) return;
+    if (!_current) {
+        qWarning() << "No backend available";
+        return;
+    }
 
     OnlineSubtitle::get().requestSubtitle(url);
 }
@@ -535,13 +574,20 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
     return QWidget::paintEvent(e);
 }
 
-//FIXME: TODO: update _current according to file
 void PlayerEngine::requestPlay(int id)
 {
-    if (!_current) return;
-    if (id >= _playlist->count()) return;
+    qDebug() << "Requesting play for item" << id;
+    if (!_current) {
+        qWarning() << "No backend available";
+        return;
+    }
+    if (id >= _playlist->count()) {
+        qWarning() << "Invalid playlist index:" << id;
+        return;
+    }
 
     const auto &item = _playlist->items()[id];
+    qDebug() << "Setting play file:" << item.url.toString();
     _current->setPlayFile(item.url);
 
     DRecentData data;
@@ -550,9 +596,11 @@ void PlayerEngine::requestPlay(int id)
     DRecentManager::addItem(item.url.toLocalFile(), data);
 
     if (_current->isPlayable()) {
+        qDebug() << "File is playable, starting playback";
 #ifdef __sw_64__
         // 1.1.0以上版本的dav1d在多线程环境下会卡死，更换解码器使用
         if(!FileFilter::instance()->isFormatSupported(item.url)) {
+            qDebug() << "Using libaom-av1 decoder for unsupported format";
             _current->setProperty("vd", "libaom-av1");
         }
 #endif
@@ -571,6 +619,7 @@ void PlayerEngine::requestPlay(int id)
         {"coding_format",  utils::videoIndex2str(item.mi.vCodecID)}
     };
 
+    qDebug() << "Logging playback event:" << obj;
     EventLogUtils::get().writeLogs(obj);
 }
 
@@ -598,14 +647,20 @@ void PlayerEngine::makeCurrent()
 
 void PlayerEngine::play()
 {
-    if (!_current || !_playlist->count()) return;
+    qDebug() << "Play requested";
+    if (!_current || !_playlist->count()) {
+        qWarning() << "Cannot play: no backend or empty playlist";
+        return;
+    }
 
     if (state() == CoreState::Paused &&
             getBackendProperty("keep-open").toBool() &&
             getBackendProperty("eof-reached").toBool()) {
+        qDebug() << "End of file reached, stopping and playing next";
         stop();
         next();
     } else if (state() == CoreState::Idle) {
+        qDebug() << "Player is idle, playing next item";
         next();
     }
 }
@@ -675,7 +730,11 @@ void PlayerEngine::clearPlaylist()
 
 void PlayerEngine::pauseResume()
 {
-    if (!_current) return;
+    qDebug() << "Pause/Resume requested";
+    if (!_current) {
+        qWarning() << "No backend available";
+        return;
+    }
     if (_state == CoreState::Idle)
         return;
 
@@ -684,7 +743,11 @@ void PlayerEngine::pauseResume()
 
 void PlayerEngine::stop()
 {
-    if (!_current) return;
+    qDebug() << "Stop requested";
+    if (!_current) {
+        qWarning() << "No backend available";
+        return;
+    }
     _current->stop();
 }
 
@@ -710,20 +773,31 @@ void PlayerEngine::stopBurstScreenshot()
 
 void PlayerEngine::seekForward(int secs)
 {
-    if (state() == CoreState::Idle) return;
+    qDebug() << "Seeking forward" << secs << "seconds";
+    if (state() == CoreState::Idle) {
+        qDebug() << "Player is idle, ignoring seek";
+        return;
+    }
 
     static int lastElapsed = 0;
 
-    if (elapsed() == lastElapsed)
-        return ;
+    if (elapsed() == lastElapsed) {
+        qDebug() << "Elapsed time unchanged, ignoring seek";
+        return;
+    }
     _current->seekForward(secs);
 }
 
 void PlayerEngine::seekBackward(int secs)
 {
-    if (state() == CoreState::Idle) return;
+    qDebug() << "Seeking backward" << secs << "seconds";
+    if (state() == CoreState::Idle) {
+        qDebug() << "Player is idle, ignoring seek";
+        return;
+    }
 
     if (elapsed() - abs(secs) <= 0) {
+        qDebug() << "Seeking to start of file";
         _current->seekBackward(static_cast<int>(elapsed()));
     } else {
         _current->seekBackward(secs);
@@ -733,7 +807,11 @@ void PlayerEngine::seekBackward(int secs)
 
 void PlayerEngine::seekAbsolute(int pos)
 {
-    if (state() == CoreState::Idle) return;
+    qDebug() << "Seeking to absolute position:" << pos;
+    if (state() == CoreState::Idle) {
+        qDebug() << "Player is idle, ignoring seek";
+        return;
+    }
 
     _current->seekAbsolute(pos);
 }
@@ -748,19 +826,23 @@ void PlayerEngine::setDVDDevice(const QString &path)
 
 bool PlayerEngine::addPlayFile(const QUrl &url)
 {
-    QUrl realUrl;
-
-    realUrl = FileFilter::instance()->fileTransfer(url.toString());
-    if (!isPlayableFile(realUrl))
+    qDebug() << "Adding file to playlist:" << url.toString();
+    QUrl realUrl = FileFilter::instance()->fileTransfer(url.toString());
+    if (!isPlayableFile(realUrl)) {
+        qWarning() << "File is not playable:" << realUrl.toString();
         return false;
+    }
 
     _playlist->append(realUrl);
+    qDebug() << "File added to playlist successfully";
     return true;
 }
 
 QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 {
+    qDebug() << "Adding directory to playlist:" << dir.path();
     QList<QUrl> valids = FileFilter::instance()->filterDir(dir);
+    qDebug() << "Found" << valids.size() << "valid files in directory";
 
     struct {
         bool operator()(const QUrl& fi1, const QUrl& fi2) const {
@@ -826,16 +908,19 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 
 QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 {
-    qInfo() << __func__;
+    qDebug() << "Adding" << urls.size() << "files to playlist";
     QList<QUrl> valids;
 
     for (QUrl url : urls) {
-        if (m_stopRunningThread)
+        if (m_stopRunningThread) {
+            qDebug() << "Thread stopped, breaking file addition";
             break;
+        }
         if (isPlayableFile(url))
             valids << url;
     }
 
+    qDebug() << "Found" << valids.size() << "playable files";
     _playlist->appendAsync(valids);
 
     return valids;

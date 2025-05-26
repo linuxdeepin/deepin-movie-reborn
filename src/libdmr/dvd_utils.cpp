@@ -65,11 +65,12 @@ static QWaitCondition cond;
 
 RetrieveDvdThread::RetrieveDvdThread()
 {
-
+    qDebug() << "Initializing RetrieveDvdThread";
 }
 
 RetrieveDvdThread::~RetrieveDvdThread()
 {
+    qDebug() << "Destroying RetrieveDvdThread";
     this->requestInterruption();
     this->quit();
     this->wait();
@@ -81,15 +82,15 @@ RetrieveDvdThread *RetrieveDvdThread::get()
 {
     if (_instance == nullptr) {
         QMutexLocker lock(&_instLock);
-//        if (_instance == nullptr) {
-            _instance = new RetrieveDvdThread;
-//        }
+        _instance = new RetrieveDvdThread;
+        qDebug() << "Created new RetrieveDvdThread instance";
     }
     return _instance;
 }
 
 void RetrieveDvdThread::startDvd(const QString &dev)
 {
+    qInfo() << "Starting DVD retrieval for device:" << dev;
     m_dev = dev;
     QMutexLocker lock(&_runLock);
     start();
@@ -97,6 +98,7 @@ void RetrieveDvdThread::startDvd(const QString &dev)
 
 void RetrieveDvdThread::run()
 {
+    qDebug() << "RetrieveDvdThread running";
     setPriority(QThread::IdlePriority);
 
     do {
@@ -105,17 +107,20 @@ void RetrieveDvdThread::run()
             cond.wait(lock.mutex(), 40);
         }
 
-        if (_quit.load()) break;
+        if (_quit.load()) {
+            qDebug() << "RetrieveDvdThread quitting";
+            break;
+        }
 
         auto title = getDvdMsg(m_dev);
-        qInfo() << "-----" << title;
+        qInfo() << "Retrieved DVD title:" << title;
         emit sigData(title);
     } while (false);
 }
 
 QString RetrieveDvdThread::getDvdMsg(const QString &device)
 {
-    qInfo() << "device" << device;
+    qInfo() << "Getting DVD message for device:" << device;
     const char *title = nullptr;
 
     dvdnav_t *handle = nullptr;
@@ -123,8 +128,8 @@ QString RetrieveDvdThread::getDvdMsg(const QString &device)
 #ifndef __mips__
     res = dvdnav_open(&handle, device.toUtf8().constData());
     if (res == DVDNAV_STATUS_ERR) {
-        qCritical() << "dvdnav open " << device << "failed";
-        qCritical() << dvdnav_err_to_string(handle);
+        qCritical() << "Failed to open DVD device:" << device;
+        qCritical() << "DVD error:" << dvdnav_err_to_string(handle);
         if (handle) dvdnav_close(handle);
         return "dvd open failed";
     }
@@ -132,11 +137,14 @@ QString RetrieveDvdThread::getDvdMsg(const QString &device)
     int32_t nr_titles = 0;
     res = dvdnav_get_number_of_titles(handle, &nr_titles);
     if (res == DVDNAV_STATUS_ERR) {
+        qWarning() << "Failed to get number of DVD titles";
         goto on_error;
     }
+    qDebug() << "Number of DVD titles:" << nr_titles;
 
     res = dvdnav_get_title_string(handle, &title);
     if (res == DVDNAV_STATUS_ERR) {
+        qWarning() << "Failed to get DVD title string";
         goto on_error;
     }
 
@@ -153,12 +161,18 @@ QString RetrieveDvdThread::getDvdMsg(const QString &device)
         }
     }
 #endif
-    if (handle) dvdnav_close(handle);
+    if (handle) {
+        dvdnav_close(handle);
+        qDebug() << "DVD handle closed successfully";
+    }
     return QString::fromUtf8(title);
 
 on_error:
-    qWarning() << dvdnav_err_to_string(handle);
-    if (handle) dvdnav_close(handle);
+    qWarning() << "DVD error occurred:" << dvdnav_err_to_string(handle);
+    if (handle) {
+        dvdnav_close(handle);
+        qDebug() << "DVD handle closed after error";
+    }
     return "";
 }
 

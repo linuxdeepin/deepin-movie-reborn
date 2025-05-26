@@ -44,6 +44,7 @@ public:
  */
 Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new TitlebarPrivate(this))
 {
+    qDebug() << "Initializing Titlebar";
     Q_D(Titlebar);
 
     setAttribute(Qt::WA_TranslucentBackground, false);
@@ -89,24 +90,28 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
 
     d->m_shadowEffect = new QGraphicsDropShadowEffect(this);
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &Titlebar::slotThemeTypeChanged);
+    qDebug() << "Titlebar initialized";
 }
 
 Titlebar::~Titlebar()
 {
-
+    qDebug() << "Titlebar destroyed";
 }
 
 void Titlebar::setIcon(QPixmap& mp)
 {
     Q_D(const Titlebar);
+    qDebug() << "Setting titlebar icon";
     d->m_titlebar->setIcon(mp);
 }
 
 void Titlebar::slotThemeTypeChanged()
 {
     Q_D(const Titlebar);
+    qDebug() << "Theme type changed, current theme:" << (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType ? "Dark" : "Light");
     QPalette pa1, pa2;
     if (d->m_play) {
+        qDebug() << "Updating theme for playing state";
         pa1.setColor(QPalette::ButtonText, d->playColor);
         pa2.setColor(QPalette::WindowText, d->playColor);
         d->m_titlebar->setPalette(pa1);
@@ -116,6 +121,7 @@ void Titlebar::slotThemeTypeChanged()
         d->m_shadowEffect->setColor(d->darkEffectColor);
     } else {
         if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
+            qDebug() << "Applying dark theme colors";
             pa1.setColor(QPalette::ButtonText, d->playColor);
             pa2.setColor(QPalette::WindowText, d->playColor);
             d->m_titlebar->setPalette(pa1);
@@ -124,6 +130,7 @@ void Titlebar::slotThemeTypeChanged()
             d->m_shadowEffect->setBlurRadius(d->offsetY);
             d->m_shadowEffect->setColor(d->darkEffectColor);
         } else {
+            qDebug() << "Applying light theme colors";
             pa1.setColor(QPalette::ButtonText, QColor(98, 110, 136, 225));
             pa2.setColor(QPalette::WindowText, QColor(98, 110, 136, 225));
             d->m_titlebar->setPalette(pa1);
@@ -151,6 +158,7 @@ DTitlebar *Titlebar::titlebar()
 void Titlebar::setTitletxt(const QString &title)
 {
     Q_D(const Titlebar);
+    qDebug() << "Setting titlebar text:" << title;
     d->m_titletxt->setText(title);
 }
 /**
@@ -160,12 +168,14 @@ void Titlebar::setTitletxt(const QString &title)
 void Titlebar::setTitleBarBackground(bool flag)
 {
     Q_D(Titlebar);
+    qDebug() << "Setting titlebar background, playing state:" << flag;
 
     QPalette pa1, pa2;
 
     d->m_play = flag;
 
     if (d->m_play) {
+        qDebug() << "Applying playing state background";
         d->m_titlebar->setBackgroundTransparent(d->m_play);
         pa1.setColor(QPalette::ButtonText, d->playColor);
         pa2.setColor(QPalette::WindowText, d->playColor);
@@ -175,6 +185,7 @@ void Titlebar::setTitleBarBackground(bool flag)
         d->m_shadowEffect->setBlurRadius(d->offsetX);
         d->m_shadowEffect->setColor(Qt::transparent);
     } else {
+        qDebug() << "Applying normal state background";
         QPalette palette;
 #if QT_VERSION  < QT_VERSION_CHECK(6, 0, 0)
         palette.setColor(QPalette::Background, QColor(200, 200, 200, 50));
@@ -185,6 +196,7 @@ void Titlebar::setTitleBarBackground(bool flag)
         d->m_titlebar->setBackgroundTransparent(d->m_play);
         d->m_titlebar->setBlurBackground(d->m_play);
         if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
+            qDebug() << "Applying dark theme colors for normal state";
             pa1.setColor(QPalette::ButtonText, d->playColor);
             pa2.setColor(QPalette::WindowText, d->playColor);
             d->m_titlebar->setPalette(pa1);
@@ -193,6 +205,7 @@ void Titlebar::setTitleBarBackground(bool flag)
             d->m_shadowEffect->setBlurRadius(d->blurRadius);
             d->m_shadowEffect->setColor(d->darkEffectColor);
         } else {
+            qDebug() << "Applying light theme colors for normal state";
             pa1.setColor(QPalette::ButtonText, QColor(98, 110, 136, 225));
             pa2.setColor(QPalette::WindowText, QColor(98, 110, 136, 225));
             d->m_titlebar->setPalette(pa1);

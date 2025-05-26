@@ -22,6 +22,7 @@ namespace dmr {
 BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo &PlayItemInfo)
     : DAbstractDialog(nullptr)
 {
+    qDebug() << "Initializing BurstScreenshotsDialog";
     MovieInfo strMovieInfo = PlayItemInfo.mi;
 
     //title
@@ -129,6 +130,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo &PlayItemInfo)
  */
 void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>> &frames)
 {
+    qDebug() << "Updating frames - Total frames:" << frames.size();
     qreal devicePixelRatio = qApp->devicePixelRatio();
     //参考设计图
     QSize size(static_cast<int>(178 * devicePixelRatio), static_cast<int>(100 * devicePixelRatio));
@@ -141,6 +143,7 @@ void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>>
 
         int nRowCount = nCount / 3;
         int nColumn = nCount % 3;
+        qDebug() << "Processing frame" << nCount << "at position" << nRowCount << "," << nColumn;
 
         QPixmap pixmap = QPixmap::fromImage(image);
         pixmap = pixmap.scaled(size.width() - 2, size.height() - 2, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -201,10 +204,12 @@ int BurstScreenshotsDialog::exec()
  */
 void BurstScreenshotsDialog::savePoster()
 {
+    qDebug() << "Saving poster";
     //参考设计图
     m_pTitlebar->setFixedWidth(610);
     QPixmap img = this->grab(rect().marginsRemoved(QMargins(10, 0, 10, 45)));
     m_sPosterPath = Settings::get().screenshotNameTemplate();
+    qInfo() << "Saving poster to:" << m_sPosterPath;
     img.save(m_sPosterPath);
     DAbstractDialog::accept();
 }
@@ -215,6 +220,7 @@ void BurstScreenshotsDialog::savePoster()
  */
 QString BurstScreenshotsDialog::savedPosterPath()
 {
+    qDebug() << "Getting saved poster path:" << m_sPosterPath;
     return m_sPosterPath;
 }
 

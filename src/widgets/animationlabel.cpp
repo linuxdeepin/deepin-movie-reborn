@@ -28,6 +28,7 @@ using namespace dmr;
 AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow)
     : QFrame(parent)
 {
+    qDebug() << "Initializing AnimationLabel";
     initMember(pMainWindow);
     setAttribute(Qt::WA_TransparentForMouseEvents);
 
@@ -39,6 +40,7 @@ AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow)
  */
 void AnimationLabel::pauseAnimation()
 {
+    qDebug() << "Starting pause animation";
     if (m_pPauseAnimationGroup && m_pPauseAnimationGroup->state() == QAbstractAnimation::Running)
         m_pPauseAnimationGroup->stop();
     m_pPlayAnimationGroup->start();
@@ -52,6 +54,7 @@ void AnimationLabel::pauseAnimation()
  */
 void AnimationLabel::playAnimation()
 {
+    qDebug() << "Starting play animation";
     if (m_pPlayAnimationGroup && m_pPlayAnimationGroup->state() == QAbstractAnimation::Running)
         m_pPlayAnimationGroup->stop();
     m_pPauseAnimationGroup->start();
@@ -62,6 +65,7 @@ void AnimationLabel::playAnimation()
 
 void AnimationLabel::setWM(bool isWM)
 {
+    qDebug() << "Setting WM mode to:" << isWM;
     m_bIsWM = isWM;
 }
 
@@ -71,6 +75,7 @@ void AnimationLabel::setWM(bool isWM)
  */
 void AnimationLabel::initMember(QWidget *pMainwindow)
 {
+    qDebug() << "Initializing AnimationLabel members";
     initPlayAnimation();
     initPauseAnimation();
     m_pMainWindow = pMainwindow;
@@ -82,6 +87,7 @@ void AnimationLabel::initMember(QWidget *pMainwindow)
  */
 void AnimationLabel::initPauseAnimation()
 {
+    qDebug() << "Initializing pause animation";
     m_pPauseAnimationGroup = new QSequentialAnimationGroup(this);
     m_pPauseShowAnimation = new QPropertyAnimation(this, "fps");
     m_pPauseHideAnimation = new QPropertyAnimation(this, "fps");
@@ -112,6 +118,7 @@ void AnimationLabel::initPauseAnimation()
  */
 void AnimationLabel::initPlayAnimation()
 {
+    qDebug() << "Initializing play animation";
     m_pPlayAnimationGroup = new QSequentialAnimationGroup(this);
     m_pPlayShowAnimation = new QPropertyAnimation(this, "fps");
     m_pPlayHideAnimation = new QPropertyAnimation(this, "fps");
@@ -143,6 +150,7 @@ void AnimationLabel::initPlayAnimation()
  */
 void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
 {
+    qDebug() << "Play animation frame changed to:" << value.toInt();
 #if defined (__aarch64__) || defined (__mips__)
     if (m_bIsWM || utils::check_wayland_env()) {
         m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
@@ -163,6 +171,7 @@ void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
  */
 void AnimationLabel::onPauseAnimationChanged(const QVariant &value)
 {
+    qDebug() << "Pause animation frame changed to:" << value.toInt();
 #if defined (__aarch64__) || defined (__mips__)
     if (m_bIsWM || utils::check_wayland_env()) {
         m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
@@ -179,6 +188,7 @@ void AnimationLabel::onPauseAnimationChanged(const QVariant &value)
 
 void AnimationLabel::onHideAnimation()
 {
+    qDebug() << "Hiding animation";
     hide();
     if(m_pMainWindow) {
         m_pMainWindow->update();

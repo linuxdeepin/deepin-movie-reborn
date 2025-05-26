@@ -32,9 +32,12 @@ using namespace dmr;
 MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
 : DFloatingWidget(mainWindow), m_pEngine(pEngine)
 {
+    qDebug() << "Initializing MircastWidget";
     setAttribute(Qt::WA_NoMousePropagation, true);//鼠标事件不进入父窗口
-    if(!CompositingManager::get().composited())
+    if(!CompositingManager::get().composited()) {
+        qDebug() << "Compositing not enabled, setting native window attribute";
         setAttribute(Qt::WA_NativeWindow);
+    }
     qRegisterMetaType<DlnaPositionInfo>("DlnaPositionInfo");
     setFixedSize(MIRCASTWIDTH + 14, MIRCASTHEIGHT + 12);
     setFramRadius(8);
@@ -52,6 +55,7 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     m_searchTime.setSingleShot(true);
     connect(&m_searchTime, &QTimer::timeout, this, &MircastWidget::slotSearchTimeout);
     connect(&m_mircastTimeOut, &QTimer::timeout, this, &MircastWidget::slotMircastTimeout);
+    qDebug() << "Timers initialized and connected";
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(1, 0, 0, 0);
@@ -74,6 +78,7 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     m_refreshBtn = new RefreButtonWidget(topWdiget);
     topLayout->addWidget(m_refreshBtn);
     connect(m_refreshBtn, &RefreButtonWidget::buttonClicked, this, &MircastWidget::slotRefreshBtnClicked);
+    qDebug() << "Top widget and refresh button initialized";
 
     QFrame *spliter = new QFrame(this);
     spliter->setAutoFillBackground(true);
@@ -99,6 +104,7 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     m_hintLabel->setWordWrap(true);
     hintLayout->addWidget(m_hintLabel);
     m_hintLabel->show();
+    qDebug() << "Hint widget and label initialized";
 
     m_listWidget = new ListWidget;
     m_mircastArea = new QScrollArea;
@@ -138,6 +144,7 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
 
     mainLayout->addStretch();
     m_dlnaContentServer = nullptr;
+    qDebug() << "MircastWidget initialization completed";
 }
 /**
  * @brief getMircastState 获取投屏连接状态
@@ -158,6 +165,7 @@ MircastWidget::MircastPlayState MircastWidget::getMircastPlayState()
  */
 void MircastWidget::playNext()
 {
+    qDebug() << "Playing next - Current state:" << m_mircastState;
     if (m_mircastState != MircastState::Idel) {
         m_mircastTimeOut.stop();
         m_attempts = 0;
@@ -165,8 +173,8 @@ void MircastWidget::playNext()
         PlayerEngine *engine =static_cast<PlayerEngine *>(m_pEngine);
         engine->pauseResume();
         engine->seekAbsolute(0);
-//        stopDlnaTP();
         startDlnaTp();
+        qDebug() << "Started DLNA transport";
     }
 }
 /**
@@ -175,6 +183,7 @@ void MircastWidget::playNext()
  */
 void MircastWidget::seekMircast(int nSec)
 {
+    qDebug() << "Seeking Miracast - Seconds:" << nSec << "Current state:" << m_mircastState;
     if(m_mircastState != MircastWidget::Screening) return;
     int nSeek = m_nCurAbsTime + nSec;
     if(nSeek < 0) {
@@ -190,6 +199,7 @@ void MircastWidget::seekMircast(int nSec)
  */
 void MircastWidget::togglePopup()
 {
+    qDebug() << "Toggling popup - Current visibility:" << isVisible() << "Is toggling:" << m_bIsToggling;
     if (m_bIsToggling) return;
     if (isVisible()) {
         hide();
@@ -206,6 +216,7 @@ void MircastWidget::togglePopup()
  */
 void MircastWidget::slotRefreshBtnClicked()
 {
+    qDebug() << "Refresh button clicked";
     initializeHttpServer();
     searchDevices();
     update();
@@ -215,7 +226,7 @@ void MircastWidget::slotRefreshBtnClicked()
  */
 void MircastWidget::slotSearchTimeout()
 {
-    qInfo() << "search timeout!!";
+    qInfo() << "Search timeout - Device list empty:" << m_devicesList.isEmpty();
     if (m_devicesList.isEmpty())
         updateMircastState(SearchState::NoDevices);
     else
@@ -229,6 +240,7 @@ void MircastWidget::slotSearchTimeout()
  */
 void MircastWidget::slotMircastTimeout()
 {
+    qDebug() << "Miracast timeout - Current timeout count:" << m_connectTimeout;
     m_pDlnaSoapPost->SoapOperPost(DLNA_GetPositionInfo, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
     m_connectTimeout++;
     if (m_connectTimeout >= MAXMIRCAST) {
@@ -237,6 +249,7 @@ void MircastWidget::slotMircastTimeout()
             emit mircastState(MIRCAST_DISCONNECTIONED);
         else
             emit mircastState(MIRCAST_CONNECTION_FAILED);
+        qWarning() << "Miracast connection failed after" << MAXMIRCAST << "attempts";
     }
 }
 /**
@@ -244,12 +257,14 @@ void MircastWidget::slotMircastTimeout()
  */
 void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
 {
+    qDebug() << "Getting position info - Current state:" << m_mircastState;
     if (m_mircastState == MircastState::Idel)
         return;
     //TODO:测试电视退出投屏后是否会有返回
     m_connectTimeout = 0;
     PlayerEngine *engine =static_cast<PlayerEngine *>(m_pEngine);
     if (engine->state() == PlayerEngine::CoreState::Idle) {
+        qDebug() << "Engine is idle, exiting Miracast";
         emit mircastState(MIRCAST_EXIT);
         slotExitMircast();
         return;
@@ -262,23 +277,29 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
         int duration = timeConversion(info.sTrackDuration);
         m_sTrackURI = info.sTrackURI;
         updateTime(absTime);
+        qDebug() << "Screening state - Abs time:" << absTime << "Duration:" << duration;
         if (info.sAbsTime == info.sTrackDuration ||
                 (info.sAbsTime.toUpper() == "NOT_IMPLEMENTED" && duration != 0)) {
             if (playMode == PlaylistModel::SinglePlay ||
                     (playMode == PlaylistModel::OrderPlay && model->current() == (model->count() - 1))) {
+                qDebug() << "Playback completed, exiting Miracast";
                 emit mircastState(MIRCAST_EXIT);
                 slotExitMircast();
             } else if (playMode == PlaylistModel::SingleLoop) {
+                qDebug() << "Single loop mode, restarting DLNA transport";
                 startDlnaTp();
             } else {
+                qDebug() << "Playing next item";
                 model->playNext(true);
                 m_mircastState = Connecting;
             }
             m_attempts = 0;
         } else if (info.sAbsTime.toUpper() == "NOT_IMPLEMENTED" && duration == 0) {
+            qDebug() << "Invalid duration, exiting Miracast";
             emit mircastState(MIRCAST_EXIT);
             slotExitMircast();
         } else if (m_sTrackURI != m_sLocalUrl) {
+            qDebug() << "Track URI mismatch, exiting Miracast";
             emit mircastState(MIRCAST_EXIT);
             slotExitMircast();
         }
@@ -288,11 +309,13 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
     }
     int duration = timeConversion(info.sTrackDuration);
     int absTime = timeConversion(info.sAbsTime);
+    qDebug() << "Connection state - Duration:" << duration << "Abs time:" << absTime;
     if (duration > 0 && absTime > 0) {
         m_mircastState = MircastState::Screening;
         if (m_connectDevice.deviceState == Connecting) {
             m_connectDevice.deviceState = MircastState::Screening;
             emit mircastState(MIRCAST_SUCCESSED, m_connectDevice.miracastDevice.name);
+            qDebug() << "Miracast connection successful";
         }
         ItemWidget *item = m_listWidget->currentItemWidget();
         if(item)
@@ -302,9 +325,9 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
         if (duration > 0 && m_connectDevice.deviceState == Connecting) {
             emit mircastState(MIRCAST_SUCCESSED, m_connectDevice.miracastDevice.name);
         }
-        qWarning() << "miracast failed!";
+        qWarning() << "Miracast connection failed - Attempts:" << m_attempts;
         if (m_attempts >= MAXMIRCAST * 10) {
-            qWarning() << "attempts time out! try next.";
+            qWarning() << "Maximum attempts reached, trying next item";
             m_attempts = 0;
             m_mircastTimeOut.stop();
             if (playMode == PlaylistModel::SinglePlay ||
@@ -331,11 +354,13 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
  */
 void MircastWidget::slotConnectDevice(ItemWidget *item)
 {
+    qDebug() << "Connecting to device:" << item->getDevice().name;
     QString newURLAddrPro = item->property(urlAddrPro).toString();
     if (newURLAddrPro == m_URLAddrPro && m_mircastState == MircastState::Screening)
         return;
     PlayerEngine *engine =static_cast<PlayerEngine *>(m_pEngine);
     if (engine->state() == PlayerEngine::CoreState::Idle) {
+        qDebug() << "Engine is idle, cannot connect";
         return;
     }
     m_connectDevice.miracastDevice = item->getDevice();
@@ -350,7 +375,7 @@ void MircastWidget::slotConnectDevice(ItemWidget *item)
  */
 void MircastWidget::searchDevices()
 {
-    qInfo() << __func__ << "start search Devices!";
+    qInfo() << "Starting device search";
     m_devicesList.clear();
     m_listWidget->clear();
     m_searchTime.start(REFRESHTIME);
@@ -362,6 +387,7 @@ void MircastWidget::searchDevices()
  */
 void MircastWidget::updateMircastState(MircastWidget::SearchState state)
 {
+    qDebug() << "Updating Miracast state:" << state;
     switch (state) {
     case Searching:
         if (!m_devicesList.isEmpty())
@@ -425,7 +451,7 @@ void MircastWidget::slotReadyRead()
  */
 void MircastWidget::slotExitMircast()
 {
-    qInfo() << __func__ << "Exit Mircast.";
+    qInfo() << "Exiting Miracast - Current state:" << m_mircastState;
     if (m_mircastState == Idel)
         return;
     m_mircastState = Idel;
@@ -462,6 +488,7 @@ void MircastWidget::slotPauseDlnaTp()
  */
 void MircastWidget::initializeHttpServer(int port)
 {
+    qDebug() << "Initializing HTTP server on port:" << port;
     if(!m_dlnaContentServer) {
         m_search = new CSSDPSearch(this);
         m_pDlnaSoapPost = new CDlnaSoapPost(this);
@@ -477,11 +504,12 @@ void MircastWidget::initializeHttpServer(int port)
                  break;
              }
         }
+        qDebug() << "Local IP address:" << sLocalIp;
         m_dlnaContentServer = new DlnaContentServer(NULL, port);
         connect(this, &MircastWidget::closeServer, m_dlnaContentServer, &DlnaContentServer::closeServer);
 
-
         m_dlnaContentServer->setBaseUrl(QString("http://%1:%2/").arg(sLocalIp, QString::number(port)));
+        qDebug() << "Base URL set to:" << m_dlnaContentServer->getBaseUrl();
     }
 }
 /**
@@ -489,6 +517,7 @@ void MircastWidget::initializeHttpServer(int port)
  */
 void MircastWidget::startDlnaTp(ItemWidget *item)
 {
+    qDebug() << "Starting DLNA transport - Item:" << (item ? item->getDevice().name : "null");
     if (item != nullptr) {
         m_ControlURLPro = item->property(controlURLPro).toString();
         m_URLAddrPro = item->property(urlAddrPro).toString();
@@ -496,7 +525,7 @@ void MircastWidget::startDlnaTp(ItemWidget *item)
 
     if(!m_dlnaContentServer)
     {
-        qInfo() << "note: please Create httpServer!";
+        qWarning() << "HTTP server not initialized";
         return;
     } else {
         dmr::PlayerEngine *pEngine = static_cast<dmr::PlayerEngine *>(m_pEngine);
@@ -507,10 +536,11 @@ void MircastWidget::startDlnaTp(ItemWidget *item)
             m_sLocalUrl = pEngine->playlist().currentInfo().url.toString();
         }
         m_isStartHttpServer = m_dlnaContentServer->getIsStartHttpServer();
+        qDebug() << "Local URL set to:" << m_sLocalUrl;
     }
     if(!m_isStartHttpServer)
     {
-        qInfo() << "note: please start httpServer!";
+        qWarning() << "HTTP server not started";
         return;
     }
 //    if(btn->text() != "Stop") {
@@ -527,6 +557,7 @@ void MircastWidget::startDlnaTp(ItemWidget *item)
     m_nCurDuration = -1;
     m_nCurAbsTime = -1;
     emit updatePlayStatus();
+    qDebug() << "DLNA transport started successfully";
 }
 /**
  * @brief startDlnaTp 时间字符串装换为int秒 时间格式"00:00:00"
@@ -574,6 +605,7 @@ void MircastWidget::seekDlnaTp(int nSeek)
  */
 void MircastWidget::stopDlnaTP()
 {
+    qDebug() << "Stopping DLNA transport - Control URL:" << m_ControlURLPro;
     m_nPlayStatus = MircastWidget::Stop;
     if (m_ControlURLPro.isNull() || m_ControlURLPro.isEmpty()) return;
     if(m_sTrackURI == m_sLocalUrl)//当前播放自身投屏的视频才启动停止投屏操作

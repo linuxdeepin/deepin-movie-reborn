@@ -169,8 +169,10 @@ protected:
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent)
     : DDialog(parent)
 {
+    qDebug() << "Initializing MovieInfoDialog";
     initMember();
     if(utils::check_wayland_env()){
+        qDebug() << "Wayland environment detected, setting window flags";
         setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
     }
 
@@ -182,6 +184,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     addContent(content);
 
     const MovieInfo &strMovieInfo = pif.mi;
+    qDebug() << "Loading movie info for:" << strMovieInfo.filePath;
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     pMainLayout->setContentsMargins(0, 0, 0, 0);
@@ -195,8 +198,10 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     qreal pixelRatio = qApp->devicePixelRatio();
     QPixmap cover;
     if (pif.thumbnail.isNull()) {
+        qDebug() << "No thumbnail available, using default logo";
         cover = (utils::LoadHiDPIPixmap(LOGO_BIG));
     } else {
+        qDebug() << "Loading thumbnail with pixel ratio:" << pixelRatio;
         QSize sz(220, 128);
         sz *= pixelRatio;
         auto img = pif.thumbnail.scaledToWidth(sz.width(), Qt::SmoothTransformation);
@@ -212,7 +217,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 
     m_pFileNameLbl->setMinimumWidth(260);
     DFontSizeManager::instance()->bind(m_pFileNameLbl, DFontSizeManager::T8);
-    m_pFileNameLbl->setText(m_pFileNameLbl->fontMetrics().elidedText(QFileInfo(strMovieInfo.filePath).fileName(), Qt::ElideMiddle, 260));
+    QString fileName = QFileInfo(strMovieInfo.filePath).fileName();
+    m_pFileNameLbl->setText(m_pFileNameLbl->fontMetrics().elidedText(fileName, Qt::ElideMiddle, 260));
+    qDebug() << "Setting file name:" << fileName;
     m_pFileNameLbl->setAlignment(Qt::AlignCenter);
     pMainLayout->addWidget(m_pFileNameLbl);
     pMainLayout->setAlignment(m_pFileNameLbl, Qt::AlignHCenter);
@@ -234,6 +241,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     m_pScrollArea->setFrameShape(QFrame::Shape::NoFrame);
     m_pScrollArea->setWidgetResizable(true);
     pMainLayout->addWidget(m_pScrollArea);
+    qDebug() << "Scroll area initialized";
 
     QWidget *scrollContentWidget = new QWidget(m_pScrollArea);
     scrollContentWidget->setObjectName(MOVIE_INFO_SCROLL_CONTENT);
@@ -258,9 +266,10 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     film->setContent(infoRect);
     film->setFixedWidth(280);
     infoRect->setFixedWidth(280);
-//    infoRect->setMinimumHeight(132);
     film->setExpand(true);
     m_expandGroup.append(film);
+    qDebug() << "Film info section initialized";
+
     QFormLayout *pFormLayout = new QFormLayout(infoRect);
     pFormLayout->setContentsMargins(10, 5, 20, 16);
     pFormLayout->setVerticalSpacing(6);
@@ -300,6 +309,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     QString strChannels = strMovieInfo.channels > 0 ? QString(tr("%1 channels")).arg(strMovieInfo.channels) : "-";
     QString strSamp = strMovieInfo.sampling > 0 ? QString(tr("%1hz")).arg(strMovieInfo.sampling) : "-";
 
+    qDebug() << "Adding basic movie information";
     addRow(tr("Type"), strMovieInfo.fileType, pFormLayout, tipLst);
     addRow(tr("Size"), strMovieInfo.sizeStr(), pFormLayout, tipLst);
     addRow(tr("Duration"), strDuration, pFormLayout, tipLst);
@@ -310,6 +320,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     addRow(tr("Path"), strMovieInfo.filePath, pFormLayout, tipLst);
 
     //添加视频信息
+    qDebug() << "Adding video codec information";
     ArrowLine *video = new ArrowLine;
     video->setObjectName(CODEC_INFO_WIDGET);
     video->setTitle(tr("Codec info"));
@@ -340,6 +351,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     addRow(tr("Resolution"), strResolution, pVideoFormLayout, tipLst);
 
     //添加音频信息
+    qDebug() << "Adding audio codec information";
     ArrowLine *audio = new ArrowLine;
     audio->setObjectName(AUDIO_INFO_WIDGET);
     audio->setTitle(tr("Audio info"));
@@ -370,11 +382,13 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     addRow(tr("Sampling"), strSamp, audioForm, tipLst);
 
     setFixedSize(300, 642);
+    qDebug() << "Dialog size set to 300x642";
 
     if (!m_titleList.isEmpty()) {
         auto f = m_titleList[10]->fontMetrics();
         auto widget = f.boundingRect(m_titleList[10]->text()).width();
         if (widget > 60) {
+            qDebug() << "Adjusting title widths to:" << widget + 3;
             foreach (QLabel *l, m_titleList) {
                 l->setFixedWidth(widget + 3);
             }
@@ -403,6 +417,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
         t->setProperty("for", QVariant::fromValue<QWidget *>(pFilePathLbl));
         pFilePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         pFilePathLbl->installEventFilter(th);
+        qDebug() << "Tooltip initialized for file path label";
     }
 
     delete tmp;
@@ -414,6 +429,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     m_expandGroup.at(0)->setExpand(true);
     m_expandGroup.at(1)->setExpand(true);
     m_expandGroup.at(2)->setExpand(true);
+    qDebug() << "MovieInfoDialog initialization completed";
 }
 /**
  * @brief paintEvent 重载绘制事件函数
@@ -433,8 +449,8 @@ void MovieInfoDialog::paintEvent(QPaintEvent *ev)
 
 void MovieInfoDialog::showEvent(QShowEvent *pEvent)
 {
+    qDebug() << "Showing MovieInfoDialog";
     moveToCenter();
-
     return QDialog::showEvent(pEvent);
 }
 /**
@@ -443,6 +459,7 @@ void MovieInfoDialog::showEvent(QShowEvent *pEvent)
  */
 void MovieInfoDialog::onFontChanged(const QFont &font)
 {
+    qDebug() << "Font changed, updating text display";
     QFontMetrics fm(font);
     QString strFileName = m_pFileNameLbl->fontMetrics().elidedText(QFileInfo(m_sFilePath).fileName(), Qt::ElideMiddle, m_pFileNameLbl->width());
     m_pFileNameLbl->setText(strFileName);
@@ -458,6 +475,7 @@ void MovieInfoDialog::onFontChanged(const QFont &font)
  */
 void MovieInfoDialog::changedHeight(const int height)
 {
+    qDebug() << "Height changed to:" << height;
     QRect rc = geometry();
     int expandsHeight = 30;
     QList<DDrawer *>::const_iterator expand = m_expandGroup.cbegin();
@@ -472,6 +490,7 @@ void MovieInfoDialog::changedHeight(const int height)
 
     setGeometry(rc);
     this->setFixedHeight(qMin(615, expandsHeight + 265));
+    qDebug() << "New dialog height:" << this->height();
 }
 /**
  * @brief slotThemeTypeChanged
@@ -479,6 +498,7 @@ void MovieInfoDialog::changedHeight(const int height)
  */
 void MovieInfoDialog::slotThemeTypeChanged()
 {
+    qDebug() << "Theme type changed, updating text color";
     m_pFileNameLbl->setForegroundRole(DPalette::BrightText);
 }
 /**
@@ -490,6 +510,7 @@ void MovieInfoDialog::slotThemeTypeChanged()
  */
 void MovieInfoDialog::addRow(QString sTitle, QString sField, QFormLayout *pForm, QList<DLabel *> &tipList)
 {
+    qDebug() << "Adding info row - Title:" << sTitle << "Field:" << sField;
     auto f = new DLabel(sTitle, this);
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     f->setMinimumSize(60, 20);
@@ -525,6 +546,7 @@ void MovieInfoDialog::addRow(QString sTitle, QString sField, QFormLayout *pForm,
  */
 void MovieInfoDialog::initMember()
 {
+    qDebug() << "Initializing MovieInfoDialog members";
     m_pFileNameLbl = new DLabel(this);
     m_pFilePathLbl = nullptr;
     m_sFilePath = QString();

@@ -14,6 +14,7 @@
 
 #include <DApplication>
 #include <QProcess>
+#include <QDebug>
 
 #define TOOLBOX_TOP_EXTENT 12
 DWIDGET_USE_NAMESPACE
@@ -25,15 +26,18 @@ namespace dmr {
  */
 DMRSlider::DMRSlider(QWidget *parent): DSlider(Qt::Horizontal, parent)
 {
+    qDebug() << "Initializing DMRSlider";
     initMember();
     slider()->setTracking(false);
     slider()->setMouseTracking(true);
     setMouseTracking(true);
+    qDebug() << "DMRSlider initialized";
 }
 
 void DMRSlider::setEnableIndication(bool on)
 {
     if (m_bIndicatorEnabled != on) {
+        qDebug() << "Setting indicator enabled:" << on;
         m_bIndicatorEnabled = on;
         update();
     }
@@ -51,6 +55,7 @@ DMRSlider::~DMRSlider()
 void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
 {
     if (m_bDown) {
+        qDebug() << "Mouse released on slider";
         m_bDown = false;
         QWidget::mouseReleaseEvent(e);
     }
@@ -63,14 +68,17 @@ void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
 int DMRSlider::position2progress(const QPoint &p)
 {
     qreal total = (maximum() - minimum());
+    int progress;
 
     if (orientation() == Qt::Horizontal) {
         qreal span = static_cast<qreal>(total) / contentsRect().width();
-        return static_cast<int>(span * (p.x()) + minimum());
+        progress = static_cast<int>(span * (p.x()) + minimum());
     } else {
         qreal span = static_cast<qreal>(total) / contentsRect().height();
-        return static_cast<int>(span * (height() - p.y()) + minimum());
+        progress = static_cast<int>(span * (height() - p.y()) + minimum());
     }
+    qDebug() << "Converting position" << p << "to progress:" << progress;
+    return progress;
 }
 /**
  * @brief mousePressEvent 鼠标按下事件函数
@@ -84,15 +92,15 @@ void DMRSlider::mousePressEvent(QMouseEvent *e)
 
     if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
             WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-        return ;
+        qDebug() << "Ignoring mouse press in Wayland environment";
+        return;
     }
 
     if (e->buttons() == Qt::LeftButton && isEnabled()) {
+        qDebug() << "Mouse pressed on slider";
         QWidget::mousePressEvent(e);
 
-        int v = position2progress(e->pos());;
-        //wayland 此处注释
-        //slider()->setSliderPosition(v);
+        int v = position2progress(e->pos());
         emit sliderMoved(v);
         m_bDown = true;
     }
@@ -103,7 +111,10 @@ void DMRSlider::mousePressEvent(QMouseEvent *e)
  */
 void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 {
-    if (!isEnabled()) return;
+    if (!isEnabled()) {
+        qDebug() << "Ignoring mouse move - slider disabled";
+        return;
+    }
 
     int nValue = position2progress(e->pos());
     if (m_bDown) {
@@ -114,6 +125,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
     } else {
         // a mouse enter from previewer happens
         if (m_bIndicatorEnabled && !property("Hover").toBool()) {
+            qDebug() << "Mouse entered slider area";
             setProperty("Hover", "true");
             m_bShowIndicator = true;
             update();
@@ -138,6 +150,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 void DMRSlider::leaveEvent(QEvent *pEvent)
 {
     if (m_bIndicatorEnabled) {
+        qDebug() << "Mouse left slider area";
         m_bShowIndicator = false;
         update();
     }
@@ -146,11 +159,15 @@ void DMRSlider::leaveEvent(QEvent *pEvent)
     QPoint pos = mapFromGlobal(QCursor::pos());
     if (pos.y() > 0 && pos.y() < 6) {
         // preview may popup
+        qDebug() << "Ignoring leave event - cursor in preview area";
         return;
     }
 
     m_nLastHoverValue = 0;
-    if (m_bDown) m_bDown = false;
+    if (m_bDown) {
+        qDebug() << "Resetting down state on leave";
+        m_bDown = false;
+    }
 
     emit leave();
     if (pEvent) pEvent->accept();
@@ -194,7 +211,7 @@ void DMRSlider::enterEvent(QEnterEvent *pEvent)
 void DMRSlider::wheelEvent(QWheelEvent *pWheelEvent)
 {
     if (pWheelEvent->buttons() == Qt::MiddleButton && pWheelEvent->modifiers() == Qt::NoModifier) {
-        qInfo() << "angleDelta" << pWheelEvent->angleDelta();
+        qDebug() << "Middle button wheel event - angle delta:" << pWheelEvent->angleDelta();
     }
     pWheelEvent->accept();
 }
@@ -209,6 +226,7 @@ void DMRSlider::paintEvent(QPaintEvent *pPaintEvent)
 
 void DMRSlider::initMember()
 {
+    qDebug() << "Initializing slider member variables";
     m_bDown = false;
     m_bIndicatorEnabled = false;
     m_bShowIndicator = false;
@@ -222,6 +240,7 @@ bool DMRSlider::event(QEvent *pEvent)
     if(!isEnabled() && pMouseEvent)                  // 进度条不能使用时需要给出提示
     {
         if(pMouseEvent->type() == QEvent::MouseButtonPress) {
+            qDebug() << "Mouse press on disabled slider - emitting unsupported signal";
             emit sigUnsupported();
         }
         return true;

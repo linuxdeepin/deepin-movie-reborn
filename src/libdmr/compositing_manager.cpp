@@ -151,29 +151,35 @@ CompositingManager &CompositingManager::get()
 
 CompositingManager::CompositingManager()
 {
+    qDebug() << "Initializing CompositingManager";
     initMember();
     bool isDriverLoaded = isDriverLoadedCorrectly();
     setProperty("directRendering", isDriverLoaded); //是否支持直接渲染
+    qInfo() << "Driver loaded status:" << isDriverLoaded;
     softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
     // 检测是否为 AMD 550 系列显卡，若为则走vaapi
     if (!m_setSpecialControls) {
         m_setSpecialControls = detect550Series();
+        qInfo() << "Special controls set for 550 series:" << m_setSpecialControls;
     }
 
-   bool isI915 = false;
-   for (int id = 0; id <= 10; id++) {
-       if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
-       if (is_device_viable(id)) {
-           vector<string> drivers = {"i915", "arise"};
-           isI915 = is_card_exists(id, drivers);
-           break;
-       }
-   }
-   if (isI915) qInfo() << "is i915!";
-   m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
+    bool isI915 = false;
+    for (int id = 0; id <= 10; id++) {
+        if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
+        if (is_device_viable(id)) {
+            vector<string> drivers = {"i915", "arise"};
+            isI915 = is_card_exists(id, drivers);
+            break;
+        }
+    }
+    if (isI915) {
+        qInfo() << "Detected i915 graphics";
+    }
+    m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
 
     if (dmr::utils::check_wayland_env()) {
+        qInfo() << "Running in Wayland environment";
         _composited = true;
         //读取配置
         m_pMpvConfig = new QMap<QString, QString>;
@@ -182,11 +188,14 @@ CompositingManager::CompositingManager()
             QString value = m_pMpvConfig->find("vo").value();
             if ("libmpv" == value) {
                 _composited = true;//libmpv只能走opengl
+                qInfo() << "Using libmpv, forcing composited mode";
             }
         }
-        if (_platform == Platform::Arm64 && isDriverLoaded)
+        if (_platform == Platform::Arm64 && isDriverLoaded) {
             m_bHasCard = true;
-        qInfo() << __func__ << "Composited is " << _composited;
+            qInfo() << "Arm64 platform with loaded driver detected";
+        }
+        qInfo() << "Composited mode:" << _composited;
         return;
     }
 
@@ -433,22 +442,25 @@ bool CompositingManager::runningOnNvidia()
 void CompositingManager::softDecodeCheck()
 {
     //获取cpu型号
+    qDebug() << "Starting soft decode check";
     QFile cpuInfo("/proc/cpuinfo");
     if (cpuInfo.open(QIODevice::ReadOnly)) {
         QString line = cpuInfo.readLine();
         while (!cpuInfo.atEnd()) {
             line = cpuInfo.readLine();
             QStringList listPara = line.split(":");
-            qInfo() << listPara;
             if (listPara.size() < 2) {
                 continue;
             }
             if (listPara.at(0).contains("model name")) {
                 m_cpuModelName = listPara.at(1);
+                qInfo() << "CPU model detected:" << m_cpuModelName;
                 break;
             }
         }
         cpuInfo.close();
+    } else {
+        qWarning() << "Failed to open /proc/cpuinfo";
     }
 
     //获取设备名
@@ -457,9 +469,12 @@ void CompositingManager::softDecodeCheck()
         QString line = board.readLine();
         while (!board.atEnd()) {
             m_boardVendor = line;
+            qInfo() << "Board vendor detected:" << m_boardVendor;
             break;
         }
         board.close();
+    } else {
+        qWarning() << "Failed to open board vendor file";
     }
 
     if (m_cpuModelName.contains("KX-U6780A")) {
@@ -467,12 +482,12 @@ void CompositingManager::softDecodeCheck()
         if (modaInfo.open(QIODevice::ReadOnly)) {
             QString data = modaInfo.readAll();
             QStringList modaList = data.split(":");
-            qInfo() << data;
             if (modaList.size() >= 7) {
-                if (modaList[6].contains("M630Z"))
+                if (modaList[6].contains("M630Z")) {
                     m_bOnlySoftDecode = true;
+                    qInfo() << "M630Z detected, enabling soft decode only";
+                }
             }
-
             modaInfo.close();
         }
     }
@@ -480,9 +495,11 @@ void CompositingManager::softDecodeCheck()
     if ((runningOnNvidia() && m_boardVendor.contains("Sugon"))
             || m_cpuModelName.contains("Kunpeng 920")) {
         m_bOnlySoftDecode = true;
+        qInfo() << "NVIDIA with Sugon or Kunpeng 920 detected, enabling soft decode only";
     }
     if(m_boardVendor.toLower().contains("huawei")) {
         m_bHasCard = true;
+        qInfo() << "Huawei board detected, setting hasCard to true";
     }
 
     m_setSpecialControls = m_boardVendor.contains("PHYTIUM");
@@ -498,9 +515,10 @@ void CompositingManager::softDecodeCheck()
             start++;
             version = str.mid(start, 6);
         }
-        qInfo() << "nvidia version :" << version;
+        qInfo() << "NVIDIA driver version:" << version;
         if (version.toFloat() >= 460.39) {
             m_bOnlySoftDecode = true;
+            qInfo() << "NVIDIA driver version >= 460.39, enabling soft decode only";
         }
         nvidiaVersion.close();
     }
@@ -641,16 +659,19 @@ bool CompositingManager::isDriverLoadedCorrectly()
         QStringList filters;
         filters << "Xorg.*.log";
         QStringList xorglogs = logDir.entryList(filters, QDir::Files);
-        if (xorglogs.isEmpty())
+        if (xorglogs.isEmpty()) {
+            qWarning() << "No Xorg log files found";
             return false;
+        }
         xorglog = xorglogs.last();
     } else {
         xorglog = QString("/var/log/Xorg.%1.log").arg(QGuiApplication::primaryScreen()->name().split("-").last());
     }
-    qInfo() << "check " << xorglog;
+    qInfo() << "Checking Xorg log:" << xorglog;
+    
     QFile f(xorglog);
     if (!f.open(QFile::ReadOnly)) {
-        qWarning() << "can not open " << xorglog;
+        qWarning() << "Failed to open Xorg log:" << xorglog;
         return false;
     }
 

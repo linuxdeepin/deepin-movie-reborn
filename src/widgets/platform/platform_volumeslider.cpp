@@ -125,6 +125,7 @@ QString Platform_VolumeSlider::readSinkInputPath()
 
 void Platform_VolumeSlider::setMute(bool muted)
 {
+    qDebug() << "Setting mute state to:" << muted;
     QString sinkInputPath = readSinkInputPath();
 
     if (!sinkInputPath.isEmpty()) {
@@ -144,6 +145,7 @@ void Platform_VolumeSlider::setMute(bool muted)
 
 void Platform_VolumeSlider::updatePoint(QPoint point)
 {
+    qDebug() << "Updating slider position to:" << point;
     QRect main_rect = _mw->rect();
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
     m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
@@ -216,14 +218,13 @@ void Platform_VolumeSlider::delayedHide()
 }
 void Platform_VolumeSlider::changeVolume(int nVolume)
 {
-    if (nVolume <= 0) {
+    qDebug() << "Changing volume to:" << nVolume;
+    if (nVolume < 0) {
         nVolume = 0;
     } else if (nVolume > 200) {
         nVolume = 200;
     }
-
     m_nVolume = nVolume;
-
     m_slider->setValue(nVolume > 100 ? 100 : nVolume);  //音量实际能改变200,但是音量条最大支持到100
 
     //1.保证初始化音量(100)和配置文件中音量一致时，也能得到刷新
@@ -234,6 +235,7 @@ void Platform_VolumeSlider::changeVolume(int nVolume)
 }
 
 void Platform_VolumeSlider::calculationStep(int iAngleDelta){
+    qDebug() << "Calculating volume step with angle delta:" << iAngleDelta;
     m_bIsWheel = true;
 
     if ((m_iStep > 0 && iAngleDelta > 0) || (m_iStep < 0 && iAngleDelta < 0)) {
@@ -274,6 +276,7 @@ void Platform_VolumeSlider::volumeDown()
 
 void Platform_VolumeSlider::changeMuteState(bool bMute)
 {
+    qInfo() << "Changing mute state to:" << bMute;
     if (m_bIsMute == bMute || m_nVolume == 0) {
         return;
     }
@@ -286,6 +289,7 @@ void Platform_VolumeSlider::changeMuteState(bool bMute)
 
 void Platform_VolumeSlider::volumeChanged(int nVolume)
 {
+    qDebug() << "Volume changed to:" << nVolume;
     if (m_nVolume != nVolume) {
         m_nVolume = nVolume;
     }
@@ -337,6 +341,7 @@ int Platform_VolumeSlider::getVolume()
 
 void Platform_VolumeSlider::setThemeType(int type)
 {
+    qDebug() << "Setting theme type to:" << type;
     Q_UNUSED(type)
 }
 
@@ -396,10 +401,11 @@ bool Platform_VolumeSlider::eventFilter(QObject *obj, QEvent *e)
 {
     if (e->type() == QEvent::Wheel) {
         QWheelEvent *we = static_cast<QWheelEvent *>(e);
-        qInfo() << we->angleDelta() << we->modifiers() << we->buttons();
+        qDebug() << "Wheel event - Angle delta:" << we->angleDelta() << "Modifiers:" << we->modifiers() << "Buttons:" << we->buttons();
+        
         if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
             calculationStep(we->angleDelta().y());
-            if (we->angleDelta().y() > 0 ) {
+            if (we->angleDelta().y() > 0) {
                 volumeUp();
             } else {
                 volumeDown();
@@ -413,6 +419,7 @@ bool Platform_VolumeSlider::eventFilter(QObject *obj, QEvent *e)
 
 Platform_VolumeSlider::~Platform_VolumeSlider()
 {
+    qInfo() << "Destroying Platform_VolumeSlider";
 }
 
 }

@@ -889,6 +889,7 @@ Platform_ToolboxProxy::Platform_ToolboxProxy(QWidget *mainWindow, PlayerEngine *
       m_pMainWindow(static_cast<Platform_MainWindow *>(mainWindow)),
       m_pEngine(proxy)
 {
+    qDebug() << "Initializing Platform_ToolboxProxy";
     initMember();
 
     setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
@@ -907,6 +908,7 @@ Platform_ToolboxProxy::Platform_ToolboxProxy(QWidget *mainWindow, PlayerEngine *
             this, &Platform_ToolboxProxy::updatePlayState);
     connect(m_mircastWidget, &MircastWidget::updatePlayStatus, this, &Platform_ToolboxProxy::updatePlayState);
     connect(m_mircastWidget, &MircastWidget::updateTime, this, &Platform_ToolboxProxy::updateMircastTime, Qt::QueuedConnection);
+    qDebug() << "Platform_ToolboxProxy initialization completed";
 }
 void Platform_ToolboxProxy::finishLoadSlot(QSize size)
 {
@@ -1420,18 +1422,21 @@ void Platform_ToolboxProxy::initMember()
  */
 void Platform_ToolboxProxy::closeAnyPopup()
 {
+    qInfo() << "Closing all popup windows";
     if (m_pPreviewer->isVisible()) {
         m_pPreviewer->hide();
-        qInfo() << "hide previewer";
+        qInfo() << "Previewer hidden";
     }
 
     if (m_pPreviewTime->isVisible()) {
         m_pPreviewTime->hide();
+        qInfo() << "Preview time hidden";
     }
 
     if (m_pVolSlider->isVisible()) {
         m_pVolSlider->stopTimer();
         m_pVolSlider->hide();
+        qInfo() << "Volume slider hidden";
     }
 }
 /**
@@ -2070,10 +2075,15 @@ void Platform_ToolboxProxy::updateTimeVisible(bool visible)
 
 void Platform_ToolboxProxy::updateMovieProgress()
 {
-    if (m_bMousePree == true)
-        return ;
+    if (m_bMousePree == true) {
+        qDebug() << "Skipping progress update due to mouse press";
+        return;
+    }
+    
     auto d = m_pEngine->duration();
     auto e = m_pEngine->elapsed();
+    qDebug() << "Updating movie progress - Duration:" << d << "Elapsed:" << e;
+    
     if (d > m_pProgBar->maximum()) {
         d = m_pProgBar->maximum();
     }
@@ -2082,7 +2092,9 @@ void Platform_ToolboxProxy::updateMovieProgress()
     if (d != 0 && e != 0) {
         v = static_cast<int>(m_pProgBar->maximum() * e / d);
         v2 = static_cast<int>(m_pViewProgBar->getViewLength() * e / d + m_pViewProgBar->getStartPoint());
+        qDebug() << "Calculated progress values - v:" << v << "v2:" << v2;
     }
+    
     if (!m_pProgBar->signalsBlocked()) {
         m_pProgBar->blockSignals(true);
         m_pProgBar->setValue(v);
@@ -2483,6 +2495,7 @@ void Platform_ToolboxProxy::resizeEvent(QResizeEvent *event)
     if (event->oldSize().width() != event->size().width()) {
         if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
             if (m_bThumbnailmode) {  //如果进度条为胶片模式，重新加载缩略图并显示
+                qInfo() << "Updating thumbnail due to resize";
                 if(CompositingManager::get().platform() == Platform::X86) {
                     updateThumbnail();
                 }
@@ -2492,7 +2505,8 @@ void Platform_ToolboxProxy::resizeEvent(QResizeEvent *event)
         }
     }
     if (CompositingManager::get().platform() != Platform::Alpha) {
-        if (m_bAnimationFinash ==  false && m_pPaOpen != nullptr && m_pPaClose != nullptr) {
+        if (m_bAnimationFinash == false && m_pPaOpen != nullptr && m_pPaClose != nullptr) {
+            qDebug() << "Ending playlist animation due to resize";
             m_pPlaylist->endAnimation();
             m_pPaOpen->setDuration(0);
             m_pPaClose->setDuration(0);
@@ -2515,12 +2529,17 @@ bool Platform_ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
         if (ev->type() == QEvent::KeyPress && (m_pVolSlider->state() == Platform_VolumeSlider::Open)) {
             QKeyEvent *keyEvent = static_cast<QKeyEvent *>(ev);
             int nCurVolume = m_pVolSlider->getVolume();
+            qDebug() << "Volume key press - Current volume:" << nCurVolume;
             //如果音量条升起且上下键按下，以步长为5调整音量
             if (keyEvent->key() == Qt::Key_Up) {
-                m_pVolSlider->changeVolume(qMin(nCurVolume + 5, 200));
+                int newVolume = qMin(nCurVolume + 5, 200);
+                qDebug() << "Volume up - New volume:" << newVolume;
+                m_pVolSlider->changeVolume(newVolume);
                 return true;
             } else if (keyEvent->key() == Qt::Key_Down) {
-                m_pVolSlider->changeVolume(qMax(nCurVolume - 5, 0));
+                int newVolume = qMax(nCurVolume - 5, 0);
+                qDebug() << "Volume down - New volume:" << newVolume;
+                m_pVolSlider->changeVolume(newVolume);
                 return true;
             }
         }
@@ -2530,6 +2549,7 @@ bool Platform_ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
         if (obj == m_pListBtn) {
             QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(ev);
             if (ev->type() == QEvent::MouseButtonRelease && mouseEvent->button() == Qt::RightButton) {
+                qDebug() << "Right click on list button - Current state:" << m_pPlaylist->state();
                 if (m_pPlaylist->state() == Platform_PlaylistWidget::State::Opened && m_pListBtn->isChecked()) {
                     m_pListBtn->setChecked(!m_pListBtn->isChecked());
                 }
@@ -2743,14 +2763,17 @@ void Platform_ToolboxProxy::updateSliderPoint(QPoint &point)
  */
 Platform_ToolboxProxy::~Platform_ToolboxProxy()
 {
+    qDebug() << "Destroying Platform_ToolboxProxy";
     Platform_ThumbnailWorker::get().stop();
     delete m_pPreviewer;
     delete m_pPreviewTime;
 
     if (m_pWorker) {
+        qDebug() << "Stopping worker thread";
         m_pWorker->quit();
         m_pWorker->deleteLater();
     }
+    qDebug() << "Platform_ToolboxProxy destroyed";
 }
 
 Platform_viewProgBarLoad::Platform_viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, Platform_ToolboxProxy *parent)

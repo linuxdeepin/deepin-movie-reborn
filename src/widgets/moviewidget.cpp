@@ -9,6 +9,7 @@
 #include <QTimer>
 #include <QApplication>
 #include "compositing_manager.h"
+#include <QDebug>
 
 #include "moviewidget.h"
 
@@ -22,9 +23,11 @@ namespace dmr {
 MovieWidget::MovieWidget(QWidget *parent)
     : QGraphicsView(parent)
 {
+    qDebug() << "Initializing MovieWidget";
     initMember();
 
     if (!CompositingManager::get().composited()) {
+        qDebug() << "Compositing not enabled, creating native window";
         winId();
     }
 
@@ -36,9 +39,11 @@ MovieWidget::MovieWidget(QWidget *parent)
     m_pScene = new QGraphicsScene;
     m_pScene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
     this->setScene(m_pScene);
+    qDebug() << "Graphics scene initialized";
 
     m_pBgRender = new QSvgRenderer(QString(":/resources/icons/music_bg.svg"));
     m_pNoteRender = new QSvgRenderer(QString(":/resources/icons/music_note.svg"));
+    qDebug() << "SVG renderers created";
 
     m_pBgSvgItem = new QGraphicsSvgItem;
     m_pNoteSvgItem = new QGraphicsSvgItem;
@@ -49,6 +54,7 @@ MovieWidget::MovieWidget(QWidget *parent)
     m_pScene->setSceneRect(m_pBgSvgItem->boundingRect());   //要在设置位置之前，不然动画会跳动
     m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGLENGTH) / 2, (m_pScene->height() - DEFAULT_BGLENGTH) / 2);
     m_pNoteSvgItem->setPos((m_pScene->width() - m_pNoteSvgItem->boundingRect().width()) / 2, (m_pScene->height() -  m_pNoteSvgItem->boundingRect().width())  / 2);
+    qDebug() << "SVG items positioned - Background:" << m_pBgSvgItem->pos() << "Note:" << m_pNoteSvgItem->pos();
 
     m_pScene->addItem(m_pBgSvgItem);
     m_pScene->addItem(m_pNoteSvgItem);
@@ -56,16 +62,19 @@ MovieWidget::MovieWidget(QWidget *parent)
     m_pTimer = new QTimer();
     m_pTimer->setInterval(INTERVAL);
     connect(m_pTimer, &QTimer::timeout, this, &MovieWidget::updateView);
+    qDebug() << "Timer initialized with interval:" << INTERVAL << "ms";
 }
 
 MovieWidget::~MovieWidget()
 {
+    qDebug() << "Destroying MovieWidget";
     m_pTimer->deleteLater();
     m_pTimer = nullptr;
 }
 
 void MovieWidget::startPlaying()
 {
+    qDebug() << "Starting playback - Current state:" << m_state;
     if (m_state == PlayState::STATE_STOP) {
         m_nRotate = 0;
         show();
@@ -73,19 +82,24 @@ void MovieWidget::startPlaying()
 
     m_pTimer->start();
     m_state = PlayState::STATE_PLAYING;
+    qDebug() << "Playback started, timer running";
 }
 
 void MovieWidget::stopPlaying()
 {
+    qDebug() << "Stopping playback - Current state:" << m_state;
     m_pTimer->stop();
     m_state = PlayState::STATE_STOP;
     hide();
+    qDebug() << "Playback stopped, widget hidden";
 }
 
 void MovieWidget::pausePlaying()
 {
+    qDebug() << "Pausing playback - Current state:" << m_state;
     m_pTimer->stop();
     m_state = PlayState::STATE_PAUSE;
+    qDebug() << "Playback paused";
 }
 
 void MovieWidget::updateView()
@@ -96,6 +110,7 @@ void MovieWidget::updateView()
     int nHeight = 0;
 
     m_nRotate += ROTATE_ANGLE;
+    qDebug() << "Updating view - Rotation angle:" << m_nRotate;
 
     nWidth = rect().width();
     nHeight = rect().height();
@@ -109,9 +124,11 @@ void MovieWidget::updateView()
     if (1.0f * nHeight / nWidth < DEFAULT_RATION) {
         nWidth = static_cast<int>(nHeight / DEFAULT_RATION);
         fRatio = nWidth * 2.0 / rectDesktop.width();
+        qDebug() << "Scaling based on height - New width:" << nWidth << "Ratio:" << fRatio;
     } else {
         nHeight = static_cast<int>(nWidth * DEFAULT_RATION);
         fRatio = nHeight * 2.0 / rectDesktop.height();
+        qDebug() << "Scaling based on width - New height:" << nHeight << "Ratio:" << fRatio;
     }
 
     m_pBgSvgItem->setScale(fRatio);
@@ -124,10 +141,12 @@ void MovieWidget::updateView()
     m_nRotate += ROTATE_ANGLE;
     m_pNoteSvgItem->setRotation(m_nRotate);
     viewport()->update();
+    qDebug() << "View updated - New positions - Background:" << m_pBgSvgItem->pos() << "Note:" << m_pNoteSvgItem->pos() << "Rotation:" << m_nRotate;
 }
 
 void MovieWidget::initMember()
 {
+    qDebug() << "Initializing MovieWidget members";
     m_nRotate = 0;
     m_state = PlayState::STATE_STOP;
     m_pTimer = nullptr;

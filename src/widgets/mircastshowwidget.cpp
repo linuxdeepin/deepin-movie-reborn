@@ -17,6 +17,7 @@
 #include <QTextCursor>
 #include <QMouseEvent>
 #include <QApplication>
+#include <QDebug>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QDesktopWidget>
@@ -35,7 +36,9 @@
 MircastShowWidget::MircastShowWidget(QWidget *parent)
 : QGraphicsView(parent)
 {
+    qDebug() << "Initializing MircastShowWidget";
     if (!dmr::CompositingManager::get().composited()) {
+        qDebug() << "Compositing not enabled, getting window ID";
         winId();
     }
 
@@ -48,23 +51,27 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
     this->setScene(m_pScene);
 
     m_pBgRender = new QSvgRenderer(QString(":/resources/icons/mircast/default_Back.svg"));
+    qDebug() << "Loading background SVG renderer";
 
     m_pBgSvgItem = new QGraphicsSvgItem;
     m_pBgSvgItem->setSharedRenderer(m_pBgRender);
     m_pBgSvgItem->setCacheMode(QGraphicsItem::NoCache);
     m_pScene->setSceneRect(m_pBgSvgItem->boundingRect());   //要在设置位置之前，不然动画会跳动
     m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGWIDTH) / 2, (m_pScene->height() - DEFAULT_BGHEIGHT) / 2);
+    qDebug() << "Background SVG item positioned at:" << m_pBgSvgItem->pos();
 
     m_pProSvgItem = new QGraphicsPixmapItem;
     QPixmap pixmap(QString(":/resources/icons/mircast/prospect.png"));
     m_pProSvgItem->setPixmap(pixmap.scaled(376, 100));
     m_pProSvgItem->setPos(m_pBgSvgItem->pos().x() + X_OFFSET, m_pBgSvgItem->pos().y() + Y_OFFSET);
+    qDebug() << "Prospect item positioned at:" << m_pProSvgItem->pos();
 
     ExitButton *exitBtn = new ExitButton();
     exitBtn->setToolTip(tr("Exit Miracast"));
     exitBtn->move((m_pScene->width() - exitBtn->width()) / 2, (m_pScene->height() - exitBtn->height()) / 2);
     exitBtn->show();
     connect(exitBtn, &ExitButton::exitMircast, this, &MircastShowWidget::exitMircast);
+    qDebug() << "Exit button created and positioned";
 
     m_deviceName = new QGraphicsTextItem;
     m_deviceName->setDefaultTextColor(Qt::white);
@@ -75,6 +82,7 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
     cursor.mergeBlockFormat(format);
     m_deviceName->setTextCursor(cursor);
     m_deviceName->setPos(m_pBgSvgItem->pos().x(), m_pBgSvgItem->pos().y() - 20);
+    qDebug() << "Device name text item created and positioned";
 
     m_promptInformation = new QGraphicsTextItem;
     m_promptInformation->setDefaultTextColor(QColor(255, 255, 255, 153));
@@ -89,23 +97,26 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
     m_promptInformation->setFont(font);
     m_promptInformation->setTextCursor(infoCursor);
     m_promptInformation->setPos(m_pBgSvgItem->pos().x(), m_pBgSvgItem->pos().y() + DEFAULT_BGHEIGHT + 10);
+    qDebug() << "Prompt information text item created and positioned";
 
     m_pScene->addItem(m_pBgSvgItem);
     m_pScene->addItem(m_pProSvgItem);
     m_pScene->addItem(m_deviceName);
     m_pScene->addItem(m_promptInformation);
     m_pScene->addWidget(exitBtn);
+    qDebug() << "All items added to scene";
 }
 
 MircastShowWidget::~MircastShowWidget()
 {
-
+    qDebug() << "Destroying MircastShowWidget";
 }
 /**
  * @brief setDeviceName 设置投屏设备名称
  */
 void MircastShowWidget::setDeviceName(QString name)
 {
+    qDebug() << "Setting device name to:" << name;
     QString display = QString(tr("Display device"))+QString(":  %1").arg(customizeText(name));
     m_deviceName->setPlainText(display);
     QTextBlockFormat format;
@@ -117,6 +128,7 @@ void MircastShowWidget::setDeviceName(QString name)
 
 void MircastShowWidget::updateView()
 {
+    qDebug() << "Updating view";
     qreal fRatio = 1.0;
     QRect rectDesktop;
     int nWidth = 0;
@@ -129,14 +141,17 @@ void MircastShowWidget::updateView()
 #else
     rectDesktop = QGuiApplication::primaryScreen()->availableGeometry();
 #endif
+    qDebug() << "View dimensions - Width:" << nWidth << "Height:" << nHeight;
 
     //根据比例缩放背景
     if (1.0f * nHeight / nWidth < DEFAULT_RATION) {
         nWidth = static_cast<int>(nHeight / DEFAULT_RATION);
         fRatio = nWidth * 2.0 / rectDesktop.width();
+        qDebug() << "Adjusted width based on ratio:" << nWidth << "Ratio:" << fRatio;
     } else {
         nHeight = static_cast<int>(nWidth * DEFAULT_RATION);
         fRatio = nHeight * 2.0 / rectDesktop.height();
+        qDebug() << "Adjusted height based on ratio:" << nHeight << "Ratio:" << fRatio;
     }
 
     m_pBgSvgItem->setScale(fRatio);
@@ -149,6 +164,7 @@ void MircastShowWidget::updateView()
     m_promptInformation->setTextWidth(DEFAULT_BGWIDTH * fRatio);
     m_promptInformation->setPos(m_pBgSvgItem->pos().x(), (DEFAULT_BGHEIGHT + 10) * fRatio + m_pBgSvgItem->pos().y());
     viewport()->update();
+    qDebug() << "View updated with new positions and scales";
 }
 
 void MircastShowWidget::mouseMoveEvent(QMouseEvent *pEvent)
@@ -162,12 +178,15 @@ void MircastShowWidget::mouseMoveEvent(QMouseEvent *pEvent)
  */
 QString MircastShowWidget::customizeText(QString name)
 {
-    return name.length() > 20 ? name.left(20) + QString("...") : name;
+    QString result = name.length() > 20 ? name.left(20) + QString("...") : name;
+    qDebug() << "Customizing text - Original:" << name << "Result:" << result;
+    return result;
 }
 
 ExitButton::ExitButton(QWidget *parent)
 : QWidget(parent)
 {
+    qDebug() << "Initializing ExitButton";
     m_state = ButtonState::Normal;
     setFixedSize(62, 62);
     setAttribute(Qt::WA_TranslucentBackground, true);
@@ -205,6 +224,7 @@ void ExitButton::leaveEvent(QEvent *pEvent)
 void ExitButton::mousePressEvent(QMouseEvent *pEvent)
 {
     Q_UNUSED(pEvent);
+    qDebug() << "Exit button pressed - changing state to Press";
     m_state = Press;
     m_svgWidget->load(QString(":/resources/icons/mircast/icon-exit pressed.svg"));
     update();
@@ -213,6 +233,7 @@ void ExitButton::mousePressEvent(QMouseEvent *pEvent)
 void ExitButton::mouseReleaseEvent(QMouseEvent *pEvent)
 {
     Q_UNUSED(pEvent);
+    qDebug() << "Exit button released - emitting exitMircast signal";
     emit exitMircast();
     m_state = Normal;
     m_svgWidget->load(QString(":/resources/icons/mircast/icon-exit normal.svg"));

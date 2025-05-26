@@ -47,6 +47,7 @@ public:
 Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     : QFrame(parent), d_ptr(new TipPrivate(this))
 {
+    qDebug() << "Initializing Tip widget with text:" << text;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     DThemeManager::instance()->registerWidget(this);
 #endif
@@ -71,8 +72,10 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     iconLabel->setObjectName("TipIcon");
     iconLabel->setFixedSize(icon.size());
     if (icon.isNull()) {
+        qDebug() << "No icon provided for tip";
         iconLabel->hide();
     } else {
+        qDebug() << "Setting tip icon with size:" << icon.size();
         iconLabel->setPixmap(icon);
     }
 
@@ -96,12 +99,13 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     hide();
 
     bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
+    qDebug() << "Window manager blur support:" << bIsWM;
     connect(DWindowManagerHelper::instance(), &DWindowManagerHelper::hasBlurWindowChanged, this, &Tip::slotWMChanged);
 }
 
 Tip::~Tip()
 {
-
+    qDebug() << "Tip widget destroyed";
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)  
@@ -129,6 +133,7 @@ QBrush Tip::background() const
 void Tip::setText(const QString text)
 {
     Q_D(const Tip);
+    qDebug() << "Setting tip text:" << text;
     d->textLable->setText(text);
     m_strText = text;
     update();
@@ -167,6 +172,7 @@ void Tip::setBorderColor(QColor borderColor)
 void Tip::slotWMChanged()
 {
     bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
+    qDebug() << "Window manager blur support changed:" << bIsWM;
 }
 
 void Tip::pop(QPoint center)
@@ -251,7 +257,6 @@ void Tip::paintEvent(QPaintEvent *)
         painterPath.addRect(rect);
     }
     pt.drawPath(painterPath);
-
 }
 #endif
 
