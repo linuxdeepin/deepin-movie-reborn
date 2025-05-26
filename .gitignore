@@ -16,3 +16,5 @@ CMakeLists.txt.user
 #linglong building dir
 linglong
 build
+.vscode
+.cursor

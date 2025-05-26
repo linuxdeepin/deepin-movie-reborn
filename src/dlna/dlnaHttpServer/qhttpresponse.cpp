@@ -7,6 +7,7 @@
 
 #include <QDateTime>
 #include <QLocale>
+#include <QDebug>
 
 #include "qhttpserver.h"
 #include "qhttpconnection.h"
@@ -42,15 +43,13 @@ void QHttpResponse::setHeader(const QString &field, const QString &value)
 
 void QHttpResponse::writeHeader(const char *field, const QString &value)
 {
-    //qDebug() << "writeHeader" << field << value.toUtf8();
     if (!m_finished) {
         m_connection->write(field);
         m_connection->write(": ");
         m_connection->write(value.toUtf8());
         m_connection->write("\r\n");
     } else
-        qWarning()
-            << "QHttpResponse::writeHeader() Cannot write headers after response has finished.";
+        qWarning() << "QHttpResponse::writeHeader() Cannot write headers after response has finished.";
 }
 
 void QHttpResponse::writeHeaders()
@@ -62,48 +61,54 @@ void QHttpResponse::writeHeaders()
         QString value = m_headers[name];
         if (name.compare("connection", Qt::CaseInsensitive) == 0) {
             m_sentConnectionHeader = true;
-            if (value.compare("close", Qt::CaseInsensitive) == 0)
+            if (value.compare("close", Qt::CaseInsensitive) == 0) {
                 m_last = true;
-            else
+                qInfo() << "Connection will be closed after response";
+            } else {
                 m_keepAlive = true;
+                qInfo() << "Connection will be kept alive";
+            }
         } else if (name.compare("transfer-encoding", Qt::CaseInsensitive) == 0) {
             m_sentTransferEncodingHeader = true;
-            if (value.compare("chunked", Qt::CaseInsensitive) == 0)
+            if (value.compare("chunked", Qt::CaseInsensitive) == 0) {
                 m_useChunkedEncoding = true;
+                qInfo() << "Using chunked transfer encoding";
+            }
         } else if (name.compare("content-length", Qt::CaseInsensitive) == 0)
             m_sentContentLengthHeader = true;
         else if (name.compare("date", Qt::CaseInsensitive) == 0)
             m_sentDate = true;
 
-        /// @todo Expect case (??)
-
-        //qDebug() << "writeHeaders" << name.toLatin1() << value.toLatin1();
-        //writeHeader(name.toLatin1(), value.toLatin1());
         writeHeader(name.toLatin1(), value);
     }
 
     if (!m_sentConnectionHeader) {
         if (m_keepAlive && (m_sentContentLengthHeader || m_useChunkedEncoding)) {
             writeHeader("Connection", "keep-alive");
+            qDebug() << "Auto-set connection: keep-alive";
         } else {
             m_last = true;
             writeHeader("Connection", "close");
+            qDebug() << "Auto-set connection: close";
         }
     }
 
     if (!m_sentContentLengthHeader && !m_sentTransferEncodingHeader) {
-        if (m_useChunkedEncoding)
+        if (m_useChunkedEncoding) {
             writeHeader("Transfer-Encoding", "chunked");
-        else
+            qDebug() << "Auto-set transfer-encoding: chunked";
+        } else {
             m_last = true;
+            qDebug() << "No content length or transfer encoding specified, connection will be closed";
+        }
     }
 
-    // Sun, 06 Nov 1994 08:49:37 GMT - RFC 822. Use QLocale::c() so english is used for month and
-    // day.
-    if (!m_sentDate)
-        writeHeader("Date",
-                    QLocale::c().toString(QDateTime::currentDateTimeUtc(),
-                                          "ddd, dd MMM yyyy hh:mm:ss") + " GMT");
+    if (!m_sentDate) {
+        QString dateStr = QLocale::c().toString(QDateTime::currentDateTimeUtc(),
+                                          "ddd, dd MMM yyyy hh:mm:ss") + " GMT";
+        writeHeader("Date", dateStr);
+        qDebug() << "Auto-set date header:" << dateStr;
+    }
 }
 
 bool QHttpResponse::isFinished()
@@ -124,8 +129,7 @@ bool QHttpResponse::isWritable()
 void QHttpResponse::writeHead(int status)
 {
     if (m_finished) {
-        qWarning()
-            << "QHttpResponse::writeHead() Cannot write headers after response has finished.";
+        qWarning() << "QHttpResponse::writeHead() Cannot write headers after response has finished.";
         return;
     }
 
@@ -134,8 +138,10 @@ void QHttpResponse::writeHead(int status)
         return;
     }
 
-    m_connection->write(
-        QString("HTTP/1.1 %1 %2\r\n").arg(status).arg(STATUS_CODES[status]).toLatin1());
+    QString statusLine = QString("HTTP/1.1 %1 %2").arg(status).arg(STATUS_CODES[status]);
+    qDebug() << "Writing response headers:" << statusLine;
+    
+    m_connection->write(statusLine.toLatin1());
 
     writeHeaders();
 
@@ -181,19 +187,21 @@ void QHttpResponse::end(const QByteArray &data)
         return;
     }
 
-    if (data.size() > 0)
+    if (data.size() > 0) {
+        qDebug() << "Writing final response data:" << data.size() << "bytes";
         write(data);
+    }
+    
+    qDebug() << "Response finished";
     m_finished = true;
 
     Q_EMIT done();
-
-    /// @todo End connection and delete ourselves. Is this a still valid note?
     deleteLater();
 }
 
 void QHttpResponse::connectionClosed()
 {
-    qWarning() << "QHttpResponse::connectionClosed()";
+    qWarning() << "QHttpResponse::connectionClosed() Connection closed before response was finished";
     m_finished = true;
     Q_EMIT done();
     deleteLater();

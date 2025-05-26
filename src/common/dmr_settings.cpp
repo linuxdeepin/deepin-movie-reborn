@@ -19,58 +19,71 @@ Settings *Settings::m_pTheSettings = nullptr;
 Settings &Settings::get()
 {
     if (!m_pTheSettings) {
+        qDebug() << "Creating new Settings instance";
         m_pTheSettings = new Settings;
     }
-
     return *m_pTheSettings;
 }
 
 Settings::Settings()
     : QObject(nullptr)
 {
+    qDebug() << "Initializing Settings";
     m_sConfigPath = DStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     m_sConfigPath += "/config.conf";
-    qInfo() << "configPath" << m_sConfigPath;
+    qInfo() << "Loading settings from:" << m_sConfigPath;
+    
     QSettingBackend *pBackend = new QSettingBackend(m_sConfigPath);
     if(!CompositingManager::isMpvExists()) {
+        qDebug() << "Loading GStreamer settings configuration";
         m_pSettings = DSettings::fromJsonFile(":/resources/data/GstSettings.json");
     } else {
 #if !defined (__x86_64__)
-    m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
+        qDebug() << "Loading low effect settings for non-x86_64 platform";
+        m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
 #else
-        if (CompositingManager::get().composited())
+        if (CompositingManager::get().composited()) {
+            qDebug() << "Loading full settings for composited environment";
             m_pSettings = DSettings::fromJsonFile(":/resources/data/settings.json");
-        else
+        } else {
+            qDebug() << "Loading low effect settings for non-composited environment";
             m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
+        }
 #endif
     }
     m_pSettings->setBackend(pBackend);
 
     connect(m_pSettings, &DSettings::valueChanged,
     [ = ](const QString & key, const QVariant & value) {
+        qDebug() << "Settings value changed:" << key << "=" << value.toString();
+        
         if (key.startsWith("shortcuts."))
             emit shortcutsChanged(key, value);
         else if (key.startsWith("base.play.playmode"))
             emit defaultplaymodechanged(key, value);
         else if (key.startsWith("base.decode.select")) {
             //设置解码模式
+            qInfo() << "Decode mode changed to:" << value.toInt();
             emit setDecodeModel(key, value);
             if (value.toInt() == 3) {
                 auto list = m_pSettings->groups();
                 auto hwdecFamily = m_pSettings->option("base.decode.Decodemode");
             } else {
                 //刷新解码模式
+                qDebug() << "Refreshing decode mode";
                 emit refreshDecode();
                 //崩溃检测
                 crashCheck();
             }
         }
         else if (key.startsWith("base.decode.Effect")) {
+            qInfo() << "Effect mode changed to:" << value.toInt();
             auto effectFamily = m_pSettings->option("base.decode.Effect");
             int index = value.toInt();
             auto voFamily = m_pSettings->option("base.decode.Videoout");
             if (index  == 1) {
                 if (voFamily) {
+                    qDebug() << "Setting video output to OpenGL";
                     voFamily->setData("items", QStringList() << "OpenGL");
                     auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
                     if (decodeFamily)
@@ -83,16 +96,22 @@ Settings::Settings()
                         if (decodeFamily)
                             decodeFamily->setData("items", QStringList());
                     }
+                    qDebug() << "Setting video output options";
                     voFamily->setData("items", QStringList() << "" << "gpu" << "vaapi" << "vdpau" << "xv" << "x11");
                 }
             }
             emit baseChanged(key, value);
         }
         else if (key.startsWith("base.decode.Videoout")) {
-            if (value.toInt() < 0)
+            if (value.toInt() < 0) {
+                qWarning() << "Invalid video output value:" << value.toInt();
                 return;
+            }
+            qInfo() << "Video output changed to index:" << value.toInt();
             auto videoFamily = m_pSettings->option("base.decode.Videoout");
             QString vo = videoFamily.data()->data("items").toStringList().at(value.toInt());
+            qDebug() << "Selected video output:" << vo;
+            
             if (vo.contains("vaapi")) {
                 auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
                 if (decodeFamily)
@@ -122,7 +141,7 @@ Settings::Settings()
             emit subtitleChanged(key, value);
     });
 
-    qInfo() << "keys" << m_pSettings->keys();
+    qDebug() << "Available settings keys:" << m_pSettings->keys();
 
     QStringList playmodeDatabase;
     playmodeDatabase << tr("Order play")
@@ -131,30 +150,37 @@ Settings::Settings()
                      << tr("Single loop")
                      << tr("List loop");
     auto playmodeFamily = m_pSettings->option("base.play.playmode");
-    if (playmodeFamily)
+    if (playmodeFamily) {
+        qDebug() << "Setting play mode options";
         playmodeFamily->setData("items", playmodeDatabase);
+    }
 
     QStringList hwaccelDatabase;
     hwaccelDatabase << tr("Auto")
                     << tr("Open")
                     << tr("Close");
     auto hwaccelFamily = m_pSettings->option("base.play.hwaccel");
-    if (hwaccelFamily)
+    if (hwaccelFamily) {
+        qDebug() << "Setting hardware acceleration options";
         hwaccelFamily->setData("items", hwaccelDatabase);
+    }
 
     QFontDatabase fontDatabase;
     QPointer<DSettingsOption> fontFamliy = m_pSettings->option("subtitle.font.family");
     if(fontFamliy) {
+        qDebug() << "Setting font family options";
         fontFamliy->setData("items", fontDatabase.families());
     }
 
     QFileInfo fi("/dev/mwv206_0");      //景嘉微显卡默认不勾选预览
     QFileInfo jmfi("/dev/jmgpu");
     if ((fi.exists() || jmfi.exists()) && utils::check_wayland_env()) {
+        qInfo() << "Disabling mouse preview for JM GPU in Wayland environment";
         setInternalOption("mousepreview", false);
     }
 
     if (utils::check_wayland_env()) {
+        qDebug() << "Configuring settings for Wayland environment";
         auto voFamily = m_pSettings->option("base.decode.Videoout");
         if (voFamily)
             voFamily->setData("items", QStringList() << "OpenGL");
@@ -162,18 +188,21 @@ Settings::Settings()
         if (decodeFamily)
             decodeFamily->setData("items", QStringList() << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy" << "nvdec" << "nvdec-copy" << "rkmpp");
     } else {
+        qDebug() << "Configuring settings for X11 environment";
         QStringList hwdecList, voList;
         hwdecList << "vaapi" << "vaapi-copy" << "vdpau" << "vdpau-copy" << "nvdec" << "nvdec-copy" << "rkmpp";
         voList << "gpu" << "vaapi" << "vdpau" << "xv" << "x11";
         int effectIndex = m_pSettings->getOption("base.decode.Effect").toInt();
         auto hwdecFamily = m_pSettings->option("base.decode.Decodemode");
         if (effectIndex == 1) {
+            qDebug() << "Setting high effect mode options";
             auto voFamily = m_pSettings->option("base.decode.Videoout");
             if (voFamily)
                 voFamily->setData("items", QStringList() << "OpenGL");
             if (hwdecFamily)
                 hwdecFamily->setData("items", hwdecList);
         } else {
+            qDebug() << "Setting standard effect mode options";
             auto voFamily = m_pSettings->option("base.decode.Videoout");
             if (voFamily)
                 voFamily->setData("items", QStringList() << "" << "gpu" << "vaapi" << "vdpau" << "xv" << "x11");
@@ -181,6 +210,7 @@ Settings::Settings()
             if (voValue > 0) {
                 auto videoFamily = m_pSettings->option("base.decode.Videoout");
                 QString vo = videoFamily.data()->data("items").toStringList().at(voValue);
+                qDebug() << "Configuring decode options for video output:" << vo;
                 if (vo.contains("vaapi")) {
                     auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
                     if (decodeFamily)
@@ -201,6 +231,7 @@ Settings::Settings()
             }
         }
     }
+    qInfo() << "Settings initialization completed";
 }
 
 QString Settings::flag2key(Settings::Flag f)
@@ -309,12 +340,14 @@ QString Settings::screenshotNameSeqTemplate()
 
 void Settings::onSetCrash()
 {
+    qInfo() << "Resetting crash state";
     settings()->setOption(QString("set.start.crash"), 0);
     settings()->sync();
 }
 
 void Settings::setGeneralOption(const QString &sOpt, const QVariant &var)
 {
+    qDebug() << "Setting general option:" << sOpt << "=" << var.toString();
     settings()->setOption(QString("base.general.%1").arg(sOpt), var);
     settings()->sync();
 }
@@ -322,6 +355,7 @@ void Settings::setGeneralOption(const QString &sOpt, const QVariant &var)
 void Settings::crashCheck()
 {
     //重置崩溃检测状态位
+    qInfo() << "Setting crash check state";
     settings()->setOption(QString("set.start.crash"), 1);
     settings()->sync();
 }

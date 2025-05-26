@@ -206,6 +206,8 @@ void killOldMovie()
 
 int main(int argc, char *argv[])
 {
+    qInfo() << "Starting deepin-movie application";
+    
     // Task 326583 不参与合成器崩溃重连
     unsetenv("QT_WAYLAND_RECONNECT");
 
@@ -221,12 +223,14 @@ int main(int argc, char *argv[])
 #endif
 //#ifdef __aarch64__ //wayland平台支持影院播放
     if (dmr::utils::first_check_wayland_env()) {
+        qInfo() << "Running in Wayland environment";
         //qputenv("_d_disableDBusFileDialog", "true");
         setenv("PULSE_PROP_media.role", "video", 1);
 #ifndef __x86_64__
         QSurfaceFormat format;
         format.setRenderableType(QSurfaceFormat::OpenGLES);
         format.setDefaultFormat(format);
+        qDebug() << "Set OpenGLES as renderable type for non-x86_64 platform";
 #endif
     }
 //#endif
@@ -242,6 +246,7 @@ int main(int argc, char *argv[])
     QFileInfo jmfi("/dev/jmgpu");
     if (jmfi.exists()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+        qDebug() << "Set QT_XCB_GL_INTEGRATION to xcb_egl for JM GPU";
     }
     /**
       *This function dtk is obsolete and has no
@@ -277,6 +282,7 @@ int main(int argc, char *argv[])
     app->setOrganizationName("deepin");
     app->setApplicationName("deepin-movie");
     app->setApplicationVersion(DMR_VERSION);
+    qInfo() << "Application initialized with version:" << DMR_VERSION;
     app->setProductIcon(QIcon::fromTheme("deepin-movie"));
     app->setWindowIcon(QIcon::fromTheme("deepin-movie"));
     QString acknowledgementLink = "https://www.deepin.org/acknowledgments/deepin-movie";
@@ -315,10 +321,13 @@ int main(int argc, char *argv[])
 
     if (clm.debug()) {
         Dtk::Core::DLogManager::registerConsoleAppender();
+        qInfo() << "Debug mode enabled - console logging activated";
     }
     Dtk::Core::DLogManager::registerFileAppender();
+    qInfo() << "File logging initialized at:" << Dtk::Core::DLogManager::getlogFilePath();
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
+    qDebug() << "Singleton mode:" << (singleton ? "enabled" : "disabled");
     QString movieName = "";
     if (clm.isSet("functioncall")) {
         movieName = getFunctionMovieName();
@@ -326,18 +335,21 @@ int main(int argc, char *argv[])
 
     if (singleton && !runSingleInstance()) {
         if (clm.isSet("restart")) {
+            qInfo() << "Restart requested - waiting for old instance to terminate";
             sleep(2);
             if (!runSingleInstance()) {
+                qWarning() << "Failed to acquire single instance lock - killing old instance";
                 killOldMovie();
             }
         } else {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
             if (clm.isSet("functioncall")) {
                 if(!movieName.isEmpty()) {
+                    qInfo() << "Opening file from AI function call:" << movieName;
                     iface.asyncCall("openFile", movieName);
                 }
             }
-            qInfo() << "another deepin movie instance has started";
+            qInfo() << "Another instance detected - forwarding request";
             if (!toOpenFiles.isEmpty()) {
                 // QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
                 if (toOpenFiles.size() == 1) {
@@ -357,6 +369,7 @@ int main(int argc, char *argv[])
         }
     } else {
         if (clm.isSet("functioncall")) {
+            qInfo() << "Scheduling AI function call file open:" << movieName;
             QTimer::singleShot(2000, [=]() {
                 QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
                 if(!movieName.isEmpty()) {
@@ -380,13 +393,15 @@ int main(int argc, char *argv[])
 #endif
 
     if (CompositingManager::get().composited()) {
+        qInfo() << "Using composited window manager";
         dmr::MainWindow mw;
         Presenter *presenter = new Presenter(&mw);
         mw.setPresenter(presenter);
         if (CompositingManager::isPadSystem()) {
-            ///平板模式下全屏显示
+            qInfo() << "Running in tablet mode - maximizing window";
             mw.showMaximized();
         } else {
+            qDebug() << "Setting default window size: 850x600";
             mw.resize(850, 600);
             Dtk::Widget::moveToCenter(&mw);
             mw.show();
@@ -395,7 +410,9 @@ int main(int argc, char *argv[])
         mw.setOpenFiles(toOpenFiles);
 
         if (!QDBusConnection::sessionBus().isConnected()) {
-            qWarning() << "dbus disconnected";
+            qCritical() << "Failed to connect to D-Bus session bus";
+        } else {
+            qInfo() << "D-Bus service registered successfully";
         }
 
         ApplicationAdaptor adaptor(&mw);
@@ -408,6 +425,7 @@ int main(int argc, char *argv[])
 
         return ret;
     } else {
+        qInfo() << "Using non-composited window manager";
         dmr::Platform_MainWindow platform_mw;
         Presenter *presenter = new Presenter(&platform_mw);
         platform_mw.setPresenter(presenter);
@@ -423,7 +441,9 @@ int main(int argc, char *argv[])
         platform_mw.setOpenFiles(toOpenFiles);
 
         if (!QDBusConnection::sessionBus().isConnected()) {
-            qWarning() << "dbus disconnected";
+            qCritical() << "Failed to connect to D-Bus session bus";
+        } else {
+            qInfo() << "D-Bus service registered successfully";
         }
 
         Platform_ApplicationAdaptor adaptor(&platform_mw);

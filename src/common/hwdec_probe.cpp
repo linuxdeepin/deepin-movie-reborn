@@ -13,37 +13,39 @@ HwdecProbe HwdecProbe::m_ffmpegProbe;
 
 HwdecProbe::HwdecProbe():m_hwDeviceCtx(nullptr)
 {
+    qDebug() << "Initializing HwdecProbe";
 //    m_ffmpegProbe.initffmpegInterface();
 //    m_ffmpegProbe.getHwTypes();
 }
 
 HwdecProbe& HwdecProbe::get()
 {
-
-
     return m_ffmpegProbe;
 }
 
 bool HwdecProbe::isFileCanHwdec(const QUrl& url, QList<QString>& hwList)
 {
+    qInfo() << "Checking hardware decoding capability for:" << url.toString();
     hwList.clear();
     AVFormatContext *input_ctx = nullptr;
     int ret = 0;
 
     // open the input file
     if (m_avformatOpenInput(&input_ctx, url.toString().toStdString().c_str(), nullptr, nullptr) != 0) {// Cannot open input file
-
+        qWarning() << "Failed to open input file:" << url.toString();
         return false;
     }
 
     if (m_avformatFindStreamInfo(input_ctx, nullptr) < 0) { // Cannot find input stream information
+        qWarning() << "Failed to find input stream information for:" << url.toString();
         m_avformatCloseInput(&input_ctx);
         return false;
     }
 
+    qDebug() << "Found" << input_ctx->nb_streams << "streams in file";
     for (AVHWDeviceType type : m_hwTypeList) {
+        qDebug() << "Checking hardware type:" << m_avHwdeviceGetTypeName(type);
         for (size_t i = 0; i < input_ctx->nb_streams; i++) {
-
             AVStream *stream = input_ctx->streams[i];
             AVCodec *dec = m_avcodecFindDecoder(stream->codecpar->codec_id);
             RESULT_CONTINUE((nullptr == dec))
@@ -77,15 +79,18 @@ bool HwdecProbe::isFileCanHwdec(const QUrl& url, QList<QString>& hwList)
     input_ctx->nb_streams = 0;
     m_avformatCloseInput(&input_ctx);
 
-    if(nullptr != m_hwDeviceCtx)
+    if(nullptr != m_hwDeviceCtx) {
+        qDebug() << "Cleaning up hardware device context";
         m_avBufferUnref(&m_hwDeviceCtx);
+    }
 
+    qInfo() << "Hardware decoding check completed. Found" << hwList.size() << "compatible decoders";
     return hwList.size() > 0;
 }
 
-
 void HwdecProbe::initffmpegInterface()
 {
+    qDebug() << "Initializing FFmpeg interface";
     QLibrary avcodecLibrary(SysUtils::libPath("libavcodec.so"));
     QLibrary avformatLibrary(SysUtils::libPath("libavformat.so"));
     QLibrary avutilLibrary(SysUtils::libPath("libavutil.so"));
@@ -115,47 +120,58 @@ void HwdecProbe::initffmpegInterface()
     m_avcodecFreeContext = reinterpret_cast<ffmAvcodecFreeContext>(avcodecLibrary.resolve("avcodec_free_context"));
     m_avcodecClose = reinterpret_cast<ffmAvcodecClose>(avcodecLibrary.resolve("avcodec_close"));
     m_avBufferUnref = reinterpret_cast<ffmAvBufferUnref>(avutilLibrary.resolve("av_buffer_unref"));
+
+    qDebug() << "FFmpeg interface initialization completed";
 }
 
 void HwdecProbe::getHwTypes()
 {
+    qDebug() << "Getting available hardware decoder types";
     m_hwTypeList.clear();
     AVHWDeviceType type = AV_HWDEVICE_TYPE_NONE;
     // find hwdevies
     while ((type = m_avHwdeviceIterateTypes(type)) != AV_HWDEVICE_TYPE_NONE) {
         m_hwTypeList.append(type);
     }
-
+    
+    qDebug() << "Found" << m_hwTypeList.size() << "hardware decoder types";
 }
 
 int HwdecProbe::hwDecoderInit(AVCodecContext *ctx, const int type)
 {
+    qDebug() << "Initializing hardware decoder for type:" << m_avHwdeviceGetTypeName(static_cast<AVHWDeviceType>(type));
     int err = 0;
-    if(nullptr != m_hwDeviceCtx)
+    if(nullptr != m_hwDeviceCtx) {
+        qDebug() << "Cleaning up existing hardware device context";
         m_avBufferUnref(&m_hwDeviceCtx);
+    }
 
     if ((err = m_avHwdeviceCtxCreate(&m_hwDeviceCtx, static_cast<AVHWDeviceType>(type),
                                       nullptr, nullptr, 0)) < 0) {
-        fprintf(stderr, "Failed to create specified HW device.\n");
+        qWarning() << "Failed to create hardware device context for type:" << m_avHwdeviceGetTypeName(static_cast<AVHWDeviceType>(type));
         return err;
     }
     ctx->hw_device_ctx = m_avBufferRef(m_hwDeviceCtx);
+    qDebug() << "Hardware decoder initialized successfully";
 
     return err;
 }
 
 bool HwdecProbe::isTypeHaveHwdec(const AVCodec *pDec, AVHWDeviceType type)
 {
+    qDebug() << "Checking hardware decoder support for codec:" << pDec->name << "type:" << m_avHwdeviceGetTypeName(type);
     bool rs = true;
     //is have tmpType hwdec config
     for (int j = 0;; j++) {
         const AVCodecHWConfig *config = m_avcodecGetHwConfig(pDec, j);
         if (nullptr == config) {
+            qDebug() << "No more hardware configurations available for codec:" << pDec->name;
             rs = false;
             break;
         }
         if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
                 config->device_type == type) {
+            qDebug() << "Found compatible hardware configuration for codec:" << pDec->name;
             break;
         }
     }

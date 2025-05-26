@@ -44,17 +44,23 @@ const char kAtomNameWmSkipPager[] = "_NET_WM_STATE_SKIP_PAGER";
 
 xcb_atom_t Utility::internAtom(const char *name)
 {
-    if (!name || *name == 0)
+    if (!name || *name == 0) {
+        qWarning() << "Invalid atom name provided";
         return XCB_NONE;
+    }
 
+    qDebug() << "Interning X11 atom:" << name;
     xcb_intern_atom_cookie_t cookie = xcb_intern_atom(QX11Info::connection(), true, strlen(name), name);
     xcb_intern_atom_reply_t *reply = xcb_intern_atom_reply(QX11Info::connection(), cookie, 0);
 
-    if (!reply)
+    if (!reply) {
+        qWarning() << "Failed to intern atom:" << name;
         return XCB_NONE;
+    }
 
     xcb_atom_t atom = reply->atom;
     free(reply);
+    qDebug() << "Successfully interned atom:" << name << "with ID:" << atom;
 
     return atom;
 }
@@ -71,6 +77,8 @@ void Utility::cancelWindowMoveResize(quint32 WId)
 
 void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos)
 {
+    qDebug() << "Updating mouse point for window move, window:" << WId << "position:" << globalPos;
+    
     xcb_client_message_event_t xev;
 
     xev.response_type = XCB_CLIENT_MESSAGE;
@@ -117,12 +125,13 @@ void Utility::setRectangles(quint32 WId, const QRegion &region, bool onlyInput)
 void Utility::setRectangles(quint32 WId, const QVector<xcb_rectangle_t> &rectangles, bool onlyInput)
 {
     if (rectangles.isEmpty()) {
+        qDebug() << "Clearing shape for window:" << WId;
         xcb_shape_mask(QX11Info::connection(), XCB_SHAPE_SO_SET,
                        onlyInput ? XCB_SHAPE_SK_INPUT : XCB_SHAPE_SK_BOUNDING, WId, 0, 0, XCB_NONE);
-
         return;
     }
 
+    qDebug() << "Setting" << rectangles.size() << "rectangles for window:" << WId;
     xcb_shape_rectangles(QX11Info::connection(), XCB_SHAPE_SO_SET, onlyInput ? XCB_SHAPE_SK_INPUT : XCB_SHAPE_SK_BOUNDING,
                          XCB_CLIP_ORDERING_YX_BANDED, WId, 0, 0, rectangles.size(), rectangles.constData());
 }
@@ -153,13 +162,14 @@ void Utility::setRectangles(quint32 WId, const QVector<xcb_rectangle_t> &rectang
 
 void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalPos, Qt::MouseButton qbutton)
 {
+    qDebug() << "Sending move/resize message for window:" << WId << "action:" << action;
+    
     int xbtn = qbutton == Qt::LeftButton ? XCB_BUTTON_INDEX_1 :
                qbutton == Qt::RightButton ? XCB_BUTTON_INDEX_3 :
                XCB_BUTTON_INDEX_ANY;
 
     if (globalPos.isNull()) {
-        //QTBUG-76114
-        //globalPos = QCursor::pos();
+        qDebug() << "Querying pointer position for window:" << WId;
         xcb_generic_error_t** err = nullptr;
         xcb_query_pointer_reply_t* p = xcb_query_pointer_reply(QX11Info::connection(),
                                                               xcb_query_pointer(QX11Info::connection(),
@@ -167,6 +177,9 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
                                                               err);
         if (p && err == nullptr) {
             globalPos = QPoint(p->root_x, p->root_y);
+            qDebug() << "Got pointer position:" << globalPos;
+        } else {
+            qWarning() << "Failed to query pointer position";
         }
 
         if (p) {
@@ -197,17 +210,16 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
 QVector<xcb_rectangle_t> Utility::qregion2XcbRectangles(const QRegion &region)
 {
     QVector<xcb_rectangle_t> rectangles;
-
     rectangles.reserve(region.rectCount());
 
+    qDebug() << "Converting QRegion to XCB rectangles, count:" << region.rectCount();
+    
     for (const QRect &rect : region.rects()) {
         xcb_rectangle_t r;
-
         r.x = rect.x();
         r.y = rect.y();
         r.width = rect.width();
         r.height = rect.height();
-
         rectangles << r;
     }
 
@@ -250,12 +262,11 @@ bool Utility::setWindowCursor(quint32 WId, Utility::CornerEdge ce)
     Cursor cursor = XCreateFontCursor(display, CornerEdge2Xcb_cursor_t(ce));
 
     if (!cursor) {
-        qWarning() << "[ui]::setWindowCursor() call XCreateFontCursor() failed";
+        qWarning() << "Failed to create font cursor for window:" << WId;
         return false;
     }
 
     const int result = XDefineCursor(display, WId, cursor);
-
     XFlush(display);
 
     return result == Success;

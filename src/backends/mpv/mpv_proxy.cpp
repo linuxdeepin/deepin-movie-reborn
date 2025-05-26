@@ -146,6 +146,7 @@ void MpvProxy::setDecodeModel(const QVariant &value)
 
 void MpvProxy::initMpvFuns()
 {
+    qInfo() << "Initializing MPV functions";
     QLibrary mpvLibrary(SysUtils::libPath("libmpv.so"));
 
     m_waitEvent = reinterpret_cast<mpv_waitEvent>(mpvLibrary.resolve("mpv_wait_event"));
@@ -162,38 +163,48 @@ void MpvProxy::initMpvFuns()
     m_setWakeupCallback = reinterpret_cast<mpv_setWakeup_callback>(mpvLibrary.resolve("mpv_set_wakeup_callback"));
     m_initialize = reinterpret_cast<mpvinitialize>(mpvLibrary.resolve("mpv_initialize"));
     m_freeNodecontents = reinterpret_cast<mpv_freeNode_contents>(mpvLibrary.resolve("mpv_free_node_contents"));
+
+    qInfo() << "MPV functions initialized successfully";
 }
 
 void MpvProxy::initGpuInfoFuns()
 {
+    qInfo() << "Initializing GPU info functions";
     if(!SysUtils::libExist("libgpuinfo.so")) {
+        qWarning() << "libgpuinfo.so not found - GPU info functions will be unavailable";
         m_gpuInfo = NULL;
         return;
     }
     QLibrary mpvLibrary(SysUtils::libPath("libgpuinfo.so"));
     m_gpuInfo = reinterpret_cast<void *>(mpvLibrary.resolve("vdp_Iter_decoderInfo"));
+    qInfo() << "GPU info functions initialized successfully";
 }
 
 void MpvProxy::firstInit()
 {
+    qInfo() << "Performing first initialization of MPV proxy";
 #ifndef _LIBDMR_
 #ifdef __x86_64__
     //第一次运行deepin-movie，检测是否支持硬解
     QString procName = QCoreApplication::applicationFilePath();
     QProcess proc;
     proc.start(procName, QStringList() << "hwdec");
-    if (!proc.waitForFinished())
-              return;
+    if (!proc.waitForFinished()) {
+        qWarning() << "Hardware decode check process failed to finish";
+        return;
+    }
     //检测进程退出码
-    if(proc.exitCode() != QProcess::NormalExit)
-    {
+    if(proc.exitCode() != QProcess::NormalExit) {
+        qWarning() << "Hardware decode check process exited abnormally";
         CompositingManager::setCanHwdec(false);
     } else {//检测进程日志输出
         QByteArray result = proc.readAllStandardError();
-        qInfo() << "deepin-movie hwdec: " << result;
+        qInfo() << "Hardware decode check result:" << result;
         if(result.toLower().contains("not supported")) {
+            qInfo() << "Hardware decode not supported";
             CompositingManager::setCanHwdec(false);
         } else {
+            qInfo() << "Hardware decode supported";
             CompositingManager::setCanHwdec(true);
         }
     }
@@ -202,8 +213,10 @@ void MpvProxy::firstInit()
     initMpvFuns();
     initGpuInfoFuns();
     if (m_creat) {
+        qInfo() << "Creating MPV handle";
         m_handle = MpvHandle::fromRawHandle(mpv_init());
         if (CompositingManager::get().composited()) {
+            qInfo() << "Creating MPV GL widget";
             m_pMpvGLwidget = new MpvGLWidget(this, m_handle);
             connect(this, &MpvProxy::stateChanged, this, &MpvProxy::slotStateChanged);
 #ifdef __x86_64__
@@ -227,6 +240,7 @@ void MpvProxy::firstInit()
 
     m_bInited = true;
     initSetting();
+    qInfo() << "First initialization completed successfully";
 }
 
 void MpvProxy::initSetting()
@@ -711,6 +725,7 @@ mpv_handle *MpvProxy::mpv_init()
 
 void MpvProxy::setState(PlayState state)
 {
+    qInfo() << "Setting play state to:" << static_cast<int>(state);
     bool bRawFormat = false;
 
     if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
@@ -724,6 +739,7 @@ void MpvProxy::setState(PlayState state)
             m_pMpvGLwidget->setPlaying(state != PlayState::Stopped);
         }
         emit stateChanged();
+        qInfo() << "Play state changed to:" << static_cast<int>(state);
     }
 
     if (m_pMpvGLwidget) {
@@ -793,7 +809,7 @@ bool isSpecialHWHardware()
         }
 
         if (NotHWDev == s_DevType) {
-            // dmidecode | grep -i “String 4”中的值来区分主板类型,PWC30表示PanguW（也就是W525）
+            // dmidecode | grep -i "String 4"中的值来区分主板类型,PWC30表示PanguW（也就是W525）
             process.start("bash", {"-c", "dmidecode -t 11 | grep -i \"String 4\""});
             process.waitForFinished(100);
             info = process.readAll();
@@ -846,7 +862,7 @@ int MpvProxy::getDecodeProbeValue(const QString sDecodeName)
 void MpvProxy::handle_mpv_events()
 {
     if (utils::check_wayland_env() && CompositingManager::get().isTestFlag()) {
-        qInfo() << "not handle mpv events!";
+        qInfo() << "Skipping MPV event handling in test mode";
         return;
     }
     while (1) {
@@ -865,11 +881,12 @@ void MpvProxy::handle_mpv_events()
 
         case MPV_EVENT_COMMAND_REPLY:
             if (pEvent->error < 0) {
-                qInfo() << "command error";
+                qWarning() << "Command error:" << pEvent->error;
             }
 
             if (pEvent->reply_userdata == AsyncReplyTag::SEEK) {
                 m_bPendingSeek = false;
+                qInfo() << "Seek operation completed";
             }
             break;
 
@@ -931,9 +948,9 @@ void MpvProxy::handle_mpv_events()
 
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
-            qInfo() << QString("rotate metadata: dec %1, out %2")
-                    .arg(my_get_property(m_handle, "video-dec-params/rotate").toInt())
-                    .arg(my_get_property(m_handle, "video-params/rotate").toInt());
+            qInfo() << "File load complete - rotation metadata:"
+                    << "dec:" << my_get_property(m_handle, "video-dec-params/rotate").toInt()
+                    << "out:" << my_get_property(m_handle, "video-params/rotate").toInt();
             m_bLoadMedia = false;
             break;
         }
@@ -965,7 +982,7 @@ void MpvProxy::handle_mpv_events()
             break;
 
         default:
-            qInfo() << m_eventName(pEvent->event_id);
+            qInfo() << "Unhandled MPV event:" << m_eventName(pEvent->event_id);
             break;
         }
     }
@@ -1532,7 +1549,9 @@ void MpvProxy::initMember()
 
 void MpvProxy::play()
 {
+    qInfo() << "Starting playback";
     if(m_bLoadMedia) {
+        qInfo() << "Media already loading, scheduling retry in 5 seconds";
         QTimer::singleShot(5000, [=](){ //超时5s恢复状态，视频加载成功后也会重置状态，正常播放状态下不会进入此函数
             m_bLoadMedia = false;
         });
@@ -1546,6 +1565,7 @@ void MpvProxy::play()
     m_bLoadMedia = true;
 
     if (!m_bInited) {
+        qInfo() << "MPV not initialized, performing first initialization";
         firstInit();
     }
 
@@ -1553,17 +1573,22 @@ void MpvProxy::play()
     if (pEngine && pEngine->getplaylist()->size() > 0) {
         bRawFormat = pEngine->getplaylist()->currentInfo().mi.isRawFormat();
         bAudio =  pEngine->currFileIsAudio();
+        qInfo() << "Current file info - Raw format:" << bRawFormat << "Audio only:" << bAudio;
     }
 
     if (bAudio) {
+        qInfo() << "Setting video output to null for audio-only file";
         my_set_property(m_handle, "vo", "null");
     } else {
+        qInfo() << "Setting video output to:" << m_sInitVo;
         my_set_property(m_handle, "vo", m_sInitVo);
     }
 
     if (_file.isLocalFile()) {
+        qInfo() << "Loading local file:" << QFileInfo(_file.toLocalFile()).absoluteFilePath();
         listArgs << QFileInfo(_file.toLocalFile()).absoluteFilePath();
     } else {
+        qInfo() << "Loading remote file:" << _file.url();
         listArgs << _file.url();
     }
 #ifndef _LIBDMR_
@@ -1619,8 +1644,10 @@ void MpvProxy::play()
         iter++;
     }
 
+    qInfo() << "Executing play command with args:" << listArgs << "and options:" << listOpts;
     my_command(m_handle, listArgs);
     my_set_property(m_handle, "pause", m_bPauseOnStart);
+    qInfo() << "Play command executed successfully";
 
 #ifndef _LIBDMR_
     // by giving a period of time, movie will be loaded and auto-loaded subs are
@@ -1652,14 +1679,18 @@ void MpvProxy::play()
 
 void MpvProxy::pauseResume()
 {
-    if (_state == PlayState::Stopped)
+    if (_state == PlayState::Stopped) {
+        qInfo() << "Cannot pause/resume - player is stopped";
         return;
+    }
 
+    qInfo() << "Toggling pause state - current state:" << paused();
     my_set_property(m_handle, "pause", !paused());
 }
 
 void MpvProxy::stop()
 {
+    qInfo() << "Stopping playback";
     QList<QVariant> args = { "stop" };
     qInfo() << args;
     my_command(m_handle, args);
