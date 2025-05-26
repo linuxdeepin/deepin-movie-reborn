@@ -26,20 +26,16 @@ static bool isWayland = false;
 
 void ShowInFileManager(const QString &path)
 {
+    qDebug() << "ShowInFileManager called with path:" << path;
     if (path.isEmpty() || !QFile::exists(path)) {
+        qWarning() << "Invalid path or file does not exist:" << path;
         return;
     }
 
     QUrl url = QUrl::fromLocalFile(QFileInfo(path).dir().absolutePath());
-    //Note: The meaning of this code is unknown, use with caution
-    /*QUrlQuery query;
-    query.addQueryItem("selectUrl", QUrl::fromLocalFile(path).toString());
-    url.setQuery(query);*/
-
-    qInfo() << __func__ << url.toString();
+    qInfo() << "Opening file manager for URL:" << url.toString();
 
     // Try dde-file-manager
-
     if (url.isLocalFile()) {
         // Start dde-file-manager failed, try nautilus
         QDBusInterface iface("org.freedesktop.FileManager1",
@@ -49,14 +45,11 @@ void ShowInFileManager(const QString &path)
         if (iface.isValid()) {
             // Convert filepath to URI first.
             const QStringList uris = { QUrl::fromLocalFile(path).toString() };
-            qInfo() << "freedesktop.FileManager";
-            // StartupId is empty here.
+            qInfo() << "Using freedesktop.FileManager to show items:" << uris;
             QDBusPendingCall call = iface.asyncCall("ShowItems", uris, "");
             Q_UNUSED(call);
-        }
-        // Try to launch other file manager if nautilus is invalid
-        else {
-            qInfo() << "desktopService::openUrl";
+        } else {
+            qInfo() << "Using desktopService::openUrl as fallback";
             QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(path).dir().absolutePath()));
         }
     }
@@ -98,12 +91,14 @@ static int stringDistance(const QString &s1, const QString &s2)
 
 bool IsNamesSimilar(const QString &s1, const QString &s2)
 {
+    qDebug() << "Comparing names for similarity:" << s1 << "and" << s2;
     int dist = stringDistance(s1, s2);
     return (dist >= 0 && dist <= 4); //TODO: check ext.
 }
 
 QFileInfoList FindSimilarFiles(const QFileInfo &fi)
 {
+    qDebug() << "Finding similar files for:" << fi.fileName();
     QFileInfoList fil;
 
     QDirIterator it(fi.absolutePath());
@@ -115,9 +110,10 @@ QFileInfoList FindSimilarFiles(const QFileInfo &fi)
 
         if (IsNamesSimilar(fi.fileName(), it.fileInfo().fileName())) {
             fil.append(it.fileInfo());
+            qDebug() << "Found similar file:" << it.fileInfo().fileName();
         }
-
     }
+    qInfo() << "Found" << fil.size() << "similar files";
     return fil;
 }
 
@@ -175,14 +171,17 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
 
 bool first_check_wayland_env()
 {
+    qDebug() << "Checking Wayland environment";
     auto e = QProcessEnvironment::systemEnvironment();
     QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
     QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
     if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
         isWayland = true;
+        qInfo() << "Running in Wayland environment";
         return true;
     } else {
+        qInfo() << "Not running in Wayland environment";
         return false;
     }
 }
@@ -202,6 +201,7 @@ void set_wayland(bool _b)
 // hash the whole file takes amount of time, so just pick some areas to be hashed
 QString FastFileHash(const QFileInfo &fi)
 {
+    qDebug() << "Calculating fast hash for file:" << fi.fileName();
     auto sz = fi.size();
     QList<qint64> offsets = {
         4096,
@@ -210,10 +210,12 @@ QString FastFileHash(const QFileInfo &fi)
 
     QFile f(fi.absoluteFilePath());
     if (!f.open(QFile::ReadOnly)) {
+        qWarning() << "Failed to open file for hashing:" << fi.filePath();
         return QString();
     }
 
     if (fi.size() < 8192) {
+        qDebug() << "File size < 8192, calculating full hash";
         auto bytes = f.readAll();
         return QString(QCryptographicHash::hash(bytes, QCryptographicHash::Md5).toHex());
     }
@@ -222,7 +224,6 @@ QString FastFileHash(const QFileInfo &fi)
     std::for_each(offsets.begin(), offsets.end(), [&bytes, &f](qint64 v) {
         f.seek(v);
         bytes += f.read(4096);
-
     });
     f.close();
 
@@ -232,8 +233,10 @@ QString FastFileHash(const QFileInfo &fi)
 // hash the entire file (hope file is small)
 QString FullFileHash(const QFileInfo &fi)
 {
+    qDebug() << "Calculating full hash for file:" << fi.fileName();
     QFile f(fi.absoluteFilePath());
     if (!f.open(QFile::ReadOnly)) {
+        qWarning() << "Failed to open file for full hashing:" << fi.filePath();
         return QString();
     }
 
@@ -384,6 +387,7 @@ void UnInhibitPower(uint32_t cookie)
 
 void MoveToCenter(QWidget *w)
 {
+    qDebug() << "Moving widget to center";
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QDesktopWidget *dw = QApplication::desktop();
     QRect r = dw->availableGeometry(w);
@@ -396,10 +400,12 @@ void MoveToCenter(QWidget *w)
 #endif
 
     w->move(r.center() - w->rect().center());
+    qDebug() << "Widget moved to position:" << w->pos();
 }
 
 QString Time2str(qint64 seconds)
 {
+    qDebug() << "Converting time to string:" << seconds << "seconds";
     QTime d(0, 0, 0);
     if (seconds < DAYSECONDS) {
         d = d.addSecs(static_cast<int>(seconds));
@@ -409,6 +415,7 @@ QString Time2str(qint64 seconds)
         int add = static_cast<int>(seconds / DAYSECONDS) * 24;
         QString dayOut =  d.toString("hh:mm:ss");
         dayOut.replace(0, 2, QString::number(add + dayOut.left(2).toInt()));
+        qDebug() << "Time string with days:" << dayOut;
         return dayOut;
     }
 }
@@ -602,17 +609,20 @@ QString ElideText(const QString &text, const QSize &size,
 
 void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
 {
+    qDebug() << "Getting play properties from path:" << path;
     Q_UNUSED(path);
 #ifdef DTKCORE_CLASS_DConfigFile
     Dtk::Core::DConfig *dconfig = Dtk::Core::DConfig::create("org.deepin.movie","org.deepin.movie.minimode");
     if(dconfig && dconfig->isValid() && dconfig->keyList().contains("playConfigHandling")){
         QString compositedHandling = dconfig->value("playConfigHandling").toString();
+        qInfo() << "Found play config handling:" << compositedHandling;
         QStringList confList = compositedHandling.split(";", Qt::SkipEmptyParts);
         if (!confList.isEmpty()) {
             foreach (QString item, confList) {
                 QStringList confItem = item.split("=", Qt::SkipEmptyParts);
                 if (confItem.size() == 2) {
                     proMap->insert(confItem.first(), confItem.last());
+                    qDebug() << "Added config:" << confItem.first() << "=" << confItem.last();
                 }
             }
         }
@@ -632,15 +642,16 @@ void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
                     QString temp = list.back();
                     temp = temp.mid(0, temp.length() - 1);//去除/n
                     proMap->insert(list.first(), temp);
+                    qDebug() << "Added property:" << list.first() << "=" << temp;
                 } else {
-                    qWarning() << __func__ << QString("config line:%1 has error ").arg(index);
+                    qWarning() << "Invalid config line:" << index << t;
                     continue;
                 }
             }
         }
         file.close();
     } else {
-        qWarning() << __func__ << "file path error!!!!!";
+        qWarning() << "Invalid file path or permissions:" << path;
     }
 #endif
 }

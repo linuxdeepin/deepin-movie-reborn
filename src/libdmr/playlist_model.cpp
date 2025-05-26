@@ -448,6 +448,7 @@ void PlaylistModel::slotStateChanged()
 PlaylistModel::PlaylistModel(PlayerEngine *e)
     : _engine(e)
 {
+    qDebug() << "Initializing PlaylistModel";
     m_pdataMutex = new QMutex();
     m_ploadThread = nullptr;
     m_brunning = false;
@@ -469,8 +470,10 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
         int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
         _last = restore_pos;
+        qInfo() << "Restoring last position:" << restore_pos;
     }
 #endif
+    qDebug() << "PlaylistModel initialization completed";
 }
 
 
@@ -761,16 +764,18 @@ void PlaylistModel::stop()
 
 void PlaylistModel::tryPlayCurrent(bool next)
 {
-    qInfo() << __func__;
+    qInfo() << "Attempting to play current item";
     auto &pif = _infos[_current];
     if (pif.refresh()) {
-        qInfo() << pif.url.fileName() << "changed";
+        qInfo() << "File changed:" << pif.url.fileName();
     }
     emit itemInfoUpdated(_current);
     if (pif.valid) {
+        qDebug() << "Playing valid item:" << pif.url.fileName();
         _engine->requestPlay(_current);
         emit currentChanged();
     } else {
+        qWarning() << "Current item is invalid:" << pif.url.fileName();
         _current = -1;
         bool canPlay = false;
         //循环播放时，无效文件播放闪退
@@ -794,9 +799,12 @@ void PlaylistModel::tryPlayCurrent(bool next)
         }
 
         if (canPlay) {
+            qDebug() << "Found valid item to play";
             emit currentChanged();
             if (next) playNext(false);
             else playPrev(false);
+        } else {
+            qWarning() << "No valid items found to play";
         }
     }
 }
@@ -808,9 +816,12 @@ void PlaylistModel::clearLoad()
 
 void PlaylistModel::playNext(bool fromUser)
 {
-    if (count() == 0) return;
-    qInfo() << "playmode" << _playMode << "fromUser" << fromUser
-            << "last" << _last << "current" << _current;
+    if (count() == 0) {
+        qDebug() << "Playlist is empty, cannot play next";
+        return;
+    }
+    qInfo() << "Playing next - mode:" << _playMode << "fromUser:" << fromUser
+            << "last:" << _last << "current:" << _current;
 
     _userRequestingItem = true;
 
@@ -818,6 +829,7 @@ void PlaylistModel::playNext(bool fromUser)
     case SinglePlay:
         if (fromUser) {
             if (_last + 1 >= count()) {
+                qDebug() << "Reached end of playlist, resetting to beginning";
                 _last = -1;
             }
             _engine->waitLastEnd();
@@ -833,9 +845,9 @@ void PlaylistModel::playNext(bool fromUser)
                 _last = _last == -1 ? 0 : _last;
                 _current = _last;
                 tryPlayCurrent(true);
-
             } else {
                 if (_last + 1 >= count()) {
+                    qDebug() << "Reached end of playlist in single loop mode";
                     _last = -1;
                 }
                 _engine->waitLastEnd();
@@ -849,7 +861,7 @@ void PlaylistModel::playNext(bool fromUser)
                 _current = _last;
                 tryPlayCurrent(true);
             } else {
-                // replay current
+                qDebug() << "Replaying current item in single loop mode";
                 tryPlayCurrent(true);
             }
         }
@@ -857,11 +869,12 @@ void PlaylistModel::playNext(bool fromUser)
 
     case ShufflePlay: {
         if (_shufflePlayed >= _playOrder.size()) {
+            qDebug() << "Reshuffling playlist";
             _shufflePlayed = 0;
             reshuffle();
         }
         _shufflePlayed++;
-        qInfo() << "shuffle next " << _shufflePlayed - 1;
+        qInfo() << "Playing shuffled item" << _shufflePlayed - 1;
         _engine->waitLastEnd();
         _last = _current = _playOrder[_shufflePlayed - 1];
         tryPlayCurrent(true);
@@ -871,9 +884,11 @@ void PlaylistModel::playNext(bool fromUser)
     case OrderPlay:
         _last++;
         if (_last == count()) {
-            if (fromUser)
+            if (fromUser) {
+                qDebug() << "Reached end of playlist in order play mode, restarting from beginning";
                 _last = 0;
-            else {
+            } else {
+                qDebug() << "Reached end of playlist in order play mode";
                 _last--;
                 break;
             }
@@ -888,6 +903,7 @@ void PlaylistModel::playNext(bool fromUser)
         _last++;
         if (_last == count()) {
             _loopCount++;
+            qDebug() << "Completed playlist loop" << _loopCount;
             _last = 0;
         }
 
@@ -994,31 +1010,44 @@ static QDebug operator<<(QDebug s, const QFileInfoList &v)
 
 void PlaylistModel::appendSingle(const QUrl &url)
 {
-    qInfo() << __func__;
-    if (indexOf(url) >= 0) return;
+    qInfo() << "Appending single file:" << url.toString();
+    if (indexOf(url) >= 0) {
+        qDebug() << "File already exists in playlist, skipping";
+        return;
+    }
 
     if (url.isLocalFile()) {
         QFileInfo fi(url.toLocalFile());
-        if (!fi.exists()) return;
+        if (!fi.exists()) {
+            qWarning() << "File does not exist:" << url.toString();
+            return;
+        }
         auto pif = calculatePlayInfo(url, fi);
-        if (!pif.valid) return;
+        if (!pif.valid) {
+            qWarning() << "Invalid play info for file:" << url.toString();
+            return;
+        }
         _infos.append(pif);
+        qDebug() << "Added local file to playlist:" << fi.fileName();
 
 #ifndef _LIBDMR_
         if (Settings::get().isSet(Settings::AutoSearchSimilar)) {
             QFileInfoList fil = utils::FindSimilarFiles(fi);
-            qInfo() << "auto search similar files" << fil;
+            qInfo() << "Found" << fil.size() << "similar files";
             std::for_each(fil.begin(), fil.end(), [ = ](const QFileInfo & fi) {
                 auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
                 if (indexOf(url) < 0 && _engine->isPlayableFile(fi.absoluteFilePath())) {
                     auto playitem_info = calculatePlayInfo(url, fi);
-                    if (playitem_info.valid)
+                    if (playitem_info.valid) {
                         _infos.append(playitem_info);
+                        qDebug() << "Added similar file to playlist:" << fi.fileName();
+                    }
                 }
             });
         }
 #endif
     } else {
+        qDebug() << "Adding non-local file to playlist";
         auto pif = calculatePlayInfo(url, QFileInfo(), true);
         _infos.append(pif);
     }

@@ -667,7 +667,9 @@ private:
 Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     : QWidget(mw), _engine(mpv), _mw(static_cast<Platform_MainWindow *>(mw))
 {
+    qDebug() << "Initializing Platform_PlaylistWidget";
     bool composited = CompositingManager::get().composited();
+    qDebug() << "Composited mode:" << composited;
     setAttribute(Qt::WA_TranslucentBackground, false);
     this->setObjectName(PLAYLIST_WIDGET);
 
@@ -815,6 +817,7 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _playlist->setContentsMargins(0, 0, 0, 0);
 
     if (!composited) {
+        qDebug() << "Setting non-composited window flags";
         _playlist->setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
         _playlist->setAttribute(Qt::WA_NativeWindow);
     }
@@ -902,26 +905,30 @@ Platform_PlaylistWidget::~Platform_PlaylistWidget()
 
 void Platform_PlaylistWidget::updateSelectItem(const int key)
 {
+    qDebug() << "Updating selected item with key:" << key;
     auto curItem = _playlist->currentItem();
     auto curRow = _playlist->row(curItem);
-    qInfo() << "prevRow..." << curRow;
+    qDebug() << "Current row:" << curRow;
+    
     Platform_PlayItemWidget *prevItemWgt = nullptr;
     if (curItem) {
         prevItemWgt = reinterpret_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(curItem));
     }
 
     if (key == Qt::Key_Up) {
+        qDebug() << "Handling Key_Up";
         if (curRow == -1) {
             _index = curRow + 1;
         } else {
             _index = curRow - 1;
         }
         if (_index < 0) {
+            qDebug() << "Index out of bounds, returning";
             return;
         }
 
         _playlist->setCurrentRow(_index);
-        qInfo() << "Enter Key_Up..." << _index;
+        qDebug() << "New index after Key_Up:" << _index;
         auto curItemWgt = reinterpret_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
         if (prevItemWgt) {
             prevItemWgt->setBIsSelect(false);
@@ -931,12 +938,14 @@ void Platform_PlaylistWidget::updateSelectItem(const int key)
         }
 
     } else if (key == Qt::Key_Down) {
+        qDebug() << "Handling Key_Down";
         if (_index >= _playlist->count() - 1) {
+            qDebug() << "Already at last item, returning";
             return;
         }
         _index = curRow + 1;
         _playlist->setCurrentRow(_index);
-        qInfo() << "Enter Key_Down..." << _index;
+        qDebug() << "New index after Key_Down:" << _index;
         auto curItemWgt = reinterpret_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
         if (prevItemWgt) {
             prevItemWgt->setBIsSelect(false);
@@ -945,9 +954,12 @@ void Platform_PlaylistWidget::updateSelectItem(const int key)
             curItemWgt->setBIsSelect(true);
         }
     } else if (key == Qt::Key_Enter || key == Qt::Key_Return) {
+        qDebug() << "Handling Enter/Return key";
         if (m_pClearButton == focusWidget()) {   //focus在清空按钮上则清空列表
+            qDebug() << "Clear button focused, clearing playlist";
             _engine->clearPlaylist();
         } else {
+            qDebug() << "Playing selected item";
             slotDoubleClickedItem(prevItemWgt);  //Enter键播放
         }
     }
@@ -955,6 +967,7 @@ void Platform_PlaylistWidget::updateSelectItem(const int key)
 
 void Platform_PlaylistWidget::clear()
 {
+    qDebug() << "Clearing playlist";
     _playlist->clear();
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
@@ -963,15 +976,18 @@ void Platform_PlaylistWidget::clear()
 
 void Platform_PlaylistWidget::updateItemInfo(int id)
 {
+    qDebug() << "Updating item info for id:" << id;
     auto piw = dynamic_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(_playlist->item(id)));
-    if (piw == nullptr)     //update info thx
-        return ;
+    if (piw == nullptr) {
+        qWarning() << "Failed to get item widget for id:" << id;
+        return;
+    }
     piw->updateInfo(_engine->playlist().items()[id]);
 }
 
 void Platform_PlaylistWidget::updateItemStates()
 {
-    qInfo() << __func__ << _playlist->count() << "current = " << _engine->playlist().current();
+    qDebug() << "Updating item states, count:" << _playlist->count() << "current:" << _engine->playlist().current();
 
     for (int i = 0; i < _playlist->count(); i++) {
         auto piw = dynamic_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
@@ -979,16 +995,15 @@ void Platform_PlaylistWidget::updateItemStates()
         auto old = piw->state();
         piw->setState(ItemState::Normal);
         if (!piw->_pif.valid) {
+            qDebug() << "Item" << i << "is invalid";
             piw->setState(ItemState::Invalid);
         }
 
         if (i == _engine->playlist().current()) {
             if (piw->state() != ItemState::Playing) {
-                //scrollToItem只能更新scroll位置，不能同步列表项
-                //_playlist->scrollToItem(_playlist->item(i));
+                qDebug() << "Setting item" << i << "as playing";
                 _playlist->setCurrentRow(i);
                 piw->setState(ItemState::Playing);
-
             }
         }
     }
@@ -1209,12 +1224,13 @@ void Platform_PlaylistWidget::showEvent(QShowEvent *se)
 
 void Platform_PlaylistWidget::removeItem(int idx)
 {
-    qInfo() << "idx = " << idx;
+    qDebug() << "Removing item at index:" << idx;
     auto item_remove = this->_playlist->item(idx);
     if (item_remove) {
         QWidget *pItem = _playlist->itemWidget(item_remove);
         Platform_PlayItemWidget *pCurItem = dynamic_cast<Platform_PlayItemWidget *>(pItem);
         if (pCurItem == pSelectItemWgt) {
+            qDebug() << "Removing currently selected item";
             pSelectItemWgt = nullptr;            //如果删除的是原来选中的则置空
         }
         item_remove = this->_playlist->takeItem(idx);
@@ -1241,15 +1257,16 @@ void Platform_PlaylistWidget::removeItem(int idx)
 
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
+    qDebug() << "Updated playlist count:" << _playlist->count();
 }
 
 void Platform_PlaylistWidget::appendItems()
 {
-    qInfo() << __func__;
-
+    qDebug() << "Appending items to playlist";
     auto items = _engine->playlist().items();
     auto p = items.begin() + this->_playlist->count();
     while (p != items.end()) {
+        qDebug() << "Adding item at index:" << (p - items.begin());
         auto w = new Platform_PlayItemWidget(*p, this->_playlist, p - items.begin(), this);
 
         auto item = new QListWidgetItem;
@@ -1262,14 +1279,12 @@ void Platform_PlaylistWidget::appendItems()
         _closeMapper->setMapping(w, w);
         _activateMapper->setMapping(w, w);
         ++p;
-
     }
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
+    qDebug() << "Updated playlist count:" << _playlist->count();
     batchUpdateSizeHints();
     updateItemStates();
-//    _playlist->setStyleSheet(styleSheet());
-//    setStyleSheet(styleSheet());
 }
 
 void Platform_PlaylistWidget::slotShowSelectItem(QListWidgetItem *item)
@@ -1323,7 +1338,7 @@ void Platform_PlaylistWidget::resetFocusAttribute(bool &atr)
 
 void Platform_PlaylistWidget::loadPlaylist()
 {
-    qInfo() << __func__;
+    qDebug() << __func__;
     _playlist->clear();
 
 
@@ -1345,10 +1360,8 @@ void Platform_PlaylistWidget::loadPlaylist()
 
     batchUpdateSizeHints();
     updateItemStates();
-//    _playlist->setStyleSheet(styleSheet());
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
-//    setStyleSheet(styleSheet());
 }
 
 void Platform_PlaylistWidget::batchUpdateSizeHints()
@@ -1357,7 +1370,6 @@ void Platform_PlaylistWidget::batchUpdateSizeHints()
         for (int i = 0; i < this->_playlist->count(); i++) {
             auto item = this->_playlist->item(i);
             auto w = this->_playlist->itemWidget(item);
-            //auto t = w->size();
             item->setSizeHint(w->size());
         }
     }
@@ -1382,8 +1394,10 @@ bool Platform_PlaylistWidget::isFocusInPlaylist()
 
 void Platform_PlaylistWidget::togglePopup(bool isShortcut)
 {
+    qDebug() << "Toggling playlist popup, shortcut:" << isShortcut;
     if (paOpen != nullptr || paClose != nullptr) {
-        return ;
+        qDebug() << "Animation in progress, returning";
+        return;
     }
 /**
  * 此处在动画执行前设定好Platform_PlaylistWidget起始位置和终止位置
@@ -1399,6 +1413,7 @@ void Platform_PlaylistWidget::togglePopup(bool isShortcut)
     int toolbox_height = TOOLBOX_HEIGHT;
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        qDebug() << "Using compact mode toolbox height";
         toolbox_height = TOOLBOX_DSIZEMODE_HEIGHT;
     }
 #endif
@@ -1412,9 +1427,13 @@ void Platform_PlaylistWidget::togglePopup(bool isShortcut)
     shrunk.setHeight(0);
     shrunk.moveBottom(fixed.bottom());
 
-    if (_toggling) return;
+    if (_toggling) {
+        qDebug() << "Toggle in progress, returning";
+        return;
+    }
 
     if (_state == State::Opened) {
+        qDebug() << "Closing playlist";
         Q_ASSERT(isVisible());
 
         //Set this judgment to false when the playlist is collapsed
@@ -1428,6 +1447,7 @@ void Platform_PlaylistWidget::togglePopup(bool isShortcut)
         emit stateChange(isShortcut);
         setVisible(!isVisible());
     } else {
+        qDebug() << "Opening playlist";
         _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         setVisible(!isVisible());
         _toggling = false;  //条件编译误报(cppcheck)
@@ -1474,11 +1494,13 @@ bool Platform_PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
         if (event->type() == QEvent::KeyPress) {
             if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Up ||
                     static_cast<QKeyEvent *>(event)->key() == Qt::Key_Down) {
+                qDebug() << "Ignoring Up/Down keys on clear button";
                 return true;
             }
         }
         switch (event->type()) {
         case QEvent::FocusIn:
+            qDebug() << "Clear button focus in";
             ((Platform_ToolboxProxy *)_mw->toolbox())->setBtnFocusSign(true);
             break;
         case QEvent::FocusOut:
@@ -1494,10 +1516,12 @@ bool Platform_PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
             if (_playlist->count()) {
                 //The judgment here is to prevent the focus from shifting during mouse operation
                 if (!m_bButtonFocusOut) {
+                    qDebug() << "Ignoring focus in during mouse operation";
                     return true;
                 }
                 //焦点切换到播放列表，选中第一个条目
                 if (_playlist->currentRow() != 0) {
+                    qDebug() << "Setting focus to first item";
                     _playlist->setCurrentRow(0);
                     _index = 0;
                     m_bButtonFocusOut = false;
@@ -1509,6 +1533,7 @@ bool Platform_PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
             QKeyEvent *keyPressEv = static_cast<QKeyEvent *>(event);
             if (keyPressEv->key() == Qt::Key_Tab) {
                 //将焦点设置到清空按钮上，实现焦点循环
+                qDebug() << "Tab key pressed, moving focus to clear button";
                 m_pClearButton->setFocus();
                 return true;
             }

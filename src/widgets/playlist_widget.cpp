@@ -13,6 +13,7 @@
 #include "utils.h"
 #include "movieinfo_dialog.h"
 #include "tip.h"
+#include <QDebug>
 
 #include <DApplication>
 #include <dimagebutton.h>
@@ -667,7 +668,9 @@ private:
 PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     : QWidget(mw), _engine(mpv), _mw(static_cast<MainWindow *>(mw))
 {
+    qDebug() << "Initializing PlaylistWidget";
     bool composited = CompositingManager::get().composited();
+    qDebug() << "Compositing enabled:" << composited;
     setAttribute(Qt::WA_TranslucentBackground, false);
     this->setObjectName(PLAYLIST_WIDGET);
 
@@ -892,6 +895,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     });
 
     connect(_playlist->model(), &QAbstractItemModel::rowsMoved, this, &PlaylistWidget::slotRowsMoved);
+
+    qDebug() << "Playlist widget initialized with size:" << size();
 }
 
 PlaylistWidget::~PlaylistWidget()
@@ -900,9 +905,10 @@ PlaylistWidget::~PlaylistWidget()
 
 void PlaylistWidget::updateSelectItem(const int key)
 {
+    qDebug() << "Updating selected item with key:" << key;
     auto curItem = _playlist->currentItem();
     auto curRow = _playlist->row(curItem);
-    qInfo() << "prevRow..." << curRow;
+    qDebug() << "Current row:" << curRow;
     PlayItemWidget *prevItemWgt = nullptr;
     if (curItem) {
         prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(curItem));
@@ -919,7 +925,7 @@ void PlaylistWidget::updateSelectItem(const int key)
         }
 
         _playlist->setCurrentRow(_index);
-        qInfo() << "Enter Key_Up..." << _index;
+        qDebug() << "Enter Key_Up..." << _index;
         auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
         if (prevItemWgt) {
             prevItemWgt->setBIsSelect(false);
@@ -934,7 +940,7 @@ void PlaylistWidget::updateSelectItem(const int key)
         }
         _index = curRow + 1;
         _playlist->setCurrentRow(_index);
-        qInfo() << "Enter Key_Down..." << _index;
+        qDebug() << "Enter Key_Down..." << _index;
         auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
         if (prevItemWgt) {
             prevItemWgt->setBIsSelect(false);
@@ -953,40 +959,45 @@ void PlaylistWidget::updateSelectItem(const int key)
 
 void PlaylistWidget::clear()
 {
+    qDebug() << "Clearing playlist";
     _playlist->clear();
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
     _engine->getplaylist()->clearLoad();
+    qDebug() << "Playlist cleared, count:" << _playlist->count();
 }
 
 void PlaylistWidget::updateItemInfo(int id)
 {
+    qDebug() << "Updating item info for id:" << id;
     auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(id)));
-    if (piw == nullptr)     //update info thx
-        return ;
+    if (piw == nullptr) {
+        qWarning() << "Failed to get PlayItemWidget for id:" << id;
+        return;
+    }
     piw->updateInfo(_engine->playlist().items()[id]);
+    qDebug() << "Item info updated for:" << piw->_pif.mi.title;
 }
 
 void PlaylistWidget::updateItemStates()
 {
-    qInfo() << __func__ << _playlist->count() << "current = " << _engine->playlist().current();
+    qDebug() << "Updating item states - Total items:" << _playlist->count() 
+             << "Current item:" << _engine->playlist().current();
 
     for (int i = 0; i < _playlist->count(); i++) {
         auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
-
         auto old = piw->state();
         piw->setState(ItemState::Normal);
         if (!piw->_pif.valid) {
             piw->setState(ItemState::Invalid);
+            qDebug() << "Item" << i << "marked as invalid";
         }
 
         if (i == _engine->playlist().current()) {
             if (piw->state() != ItemState::Playing) {
-                //scrollToItem只能更新scroll位置，不能同步列表项
-                //_playlist->scrollToItem(_playlist->item(i));
                 _playlist->setCurrentRow(i);
                 piw->setState(ItemState::Playing);
-
+                qDebug() << "Item" << i << "set as playing";
             }
         }
     }
@@ -1016,7 +1027,7 @@ void PlaylistWidget::removeClickedItem(bool isShortcut)
     if (isShortcut && isVisible()) {
         for (int i = 0; i < _playlist->count(); i++) {
             PlayItemWidget * piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
-            qInfo() << piw->getBIsSelect();
+            qDebug() << piw->getBIsSelect();
             if (piw->getBIsSelect()) {
                 _engine->playlist().remove(i);
                 return;
@@ -1027,7 +1038,7 @@ void PlaylistWidget::removeClickedItem(bool isShortcut)
     if (!_clickedItem) return;
     PlayItemWidget * piw = dynamic_cast<PlayItemWidget *>(_clickedItem);
     if (piw) {
-        qInfo() << __func__;
+        qDebug() << __func__;
         for (int i = 0; i < _playlist->count(); i++) {
             if (_clickedItem == _playlist->itemWidget(_playlist->item(i))) {
                 _engine->playlist().remove(i);
@@ -1047,14 +1058,14 @@ void PlaylistWidget::slotCloseTimeTimeOut()
 
 void PlaylistWidget::slotCloseItem(QWidget *w)
 {
-    qInfo() << "item close clicked";
+    qDebug() << "item close clicked";
     _clickedItem = w;
     _mw->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
 }
 
 void PlaylistWidget::slotDoubleClickedItem(QWidget *w)
 {
-    qInfo() << "item double clicked";
+    qDebug() << "item double clicked";
     QList<QVariant> args;
     for (int i = 0; i < _playlist->count(); i++) {
         if (w == _playlist->itemWidget(_playlist->item(i))) {
@@ -1081,7 +1092,7 @@ void PlaylistWidget::slotRowsMoved()
                 break;
             }
         }
-        qInfo() << "swap " << _lastDragged.first << target;
+        qDebug() << "swap " << _lastDragged.first << target;
         if (target >= 0 && _lastDragged.first != target) {
             _engine->playlist().switchPosition(_lastDragged.first, target);
             _lastDragged = {-1, nullptr};
@@ -1092,7 +1103,7 @@ void PlaylistWidget::slotRowsMoved()
 /*void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
 {
     auto md = ev->mimeData();
-    qInfo() << md->formats();
+    qDebug() << md->formats();
     if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
         if (!_playlist->selectedItems().contains(_playlist->itemAt(ev->pos()))) {
             _playlist->setDropIndicatorShown(true);
@@ -1137,7 +1148,7 @@ void PlaylistWidget::slotRowsMoved()
             stream >> row >> col >> roleDataMap;
             auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(row)));
             _lastDragged = qMakePair(row, piw);
-            qInfo() << "drag to move " << row << piw->_pif.url;
+            qDebug() << "drag to move " << row << piw->_pif.url;
         }
 
         QWidget::dropEvent(ev);
@@ -1207,13 +1218,14 @@ void PlaylistWidget::showEvent(QShowEvent *se)
 
 void PlaylistWidget::removeItem(int idx)
 {
-    qInfo() << "idx = " << idx;
+    qDebug() << "Removing item at index:" << idx;
     auto item_remove = this->_playlist->item(idx);
     if (item_remove) {
         QWidget *pItem = _playlist->itemWidget(item_remove);
         PlayItemWidget *pCurItem = dynamic_cast<PlayItemWidget *>(pItem);
         if (pCurItem == pSelectItemWgt) {
             pSelectItemWgt = nullptr;            //如果删除的是原来选中的则置空
+            qDebug() << "Selected item removed";
         }
         item_remove = this->_playlist->takeItem(idx);
         delete item_remove;
@@ -1239,16 +1251,17 @@ void PlaylistWidget::removeItem(int idx)
 
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
+    qDebug() << "Item removed, new count:" << _playlist->count();
 }
 
 void PlaylistWidget::appendItems()
 {
-    qInfo() << __func__;
-
+    qDebug() << "Appending items to playlist";
     auto items = _engine->playlist().items();
     auto p = items.begin() + this->_playlist->count();
     while (p != items.end()) {
         auto w = new PlayItemWidget(*p, this->_playlist, p - items.begin(), this);
+        qDebug() << "Created new PlayItemWidget for:" << p->mi.title;
 
         auto item = new QListWidgetItem;
         item->setFlags(Qt::NoItemFlags);
@@ -1260,14 +1273,13 @@ void PlaylistWidget::appendItems()
         _closeMapper->setMapping(w, w);
         _activateMapper->setMapping(w, w);
         ++p;
-
     }
+
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
+    qDebug() << "Items appended, new count:" << _playlist->count();
     batchUpdateSizeHints();
     updateItemStates();
-//    _playlist->setStyleSheet(styleSheet());
-//    setStyleSheet(styleSheet());
 }
 
 void PlaylistWidget::slotShowSelectItem(QListWidgetItem *item)
@@ -1321,7 +1333,7 @@ void PlaylistWidget::resetFocusAttribute(bool &atr)
 
 void PlaylistWidget::loadPlaylist()
 {
-    qInfo() << __func__;
+    qDebug() << __func__;
     _playlist->clear();
 
 
@@ -1343,10 +1355,8 @@ void PlaylistWidget::loadPlaylist()
 
     batchUpdateSizeHints();
     updateItemStates();
-//    _playlist->setStyleSheet(styleSheet());
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
-//    setStyleSheet(styleSheet());
 }
 
 void PlaylistWidget::batchUpdateSizeHints()
@@ -1355,7 +1365,6 @@ void PlaylistWidget::batchUpdateSizeHints()
         for (int i = 0; i < this->_playlist->count(); i++) {
             auto item = this->_playlist->item(i);
             auto w = this->_playlist->itemWidget(item);
-            //auto t = w->size();
             item->setSizeHint(w->size());
         }
     }
@@ -1380,8 +1389,10 @@ bool PlaylistWidget::isFocusInPlaylist()
 
 void PlaylistWidget::togglePopup(bool isShortcut)
 {
+    qDebug() << "Toggling playlist popup, shortcut:" << isShortcut;
     if (paOpen != nullptr || paClose != nullptr) {
-        return ;
+        qDebug() << "Animation already in progress, ignoring toggle";
+        return;
     }
 
     QRect main_rect = _mw->rect();
@@ -1419,6 +1430,7 @@ void PlaylistWidget::togglePopup(bool isShortcut)
     if (_toggling) return;
 
     if (_state == State::Opened) {
+        qDebug() << "Closing playlist";
         Q_ASSERT(isVisible());
 
         //Set this judgment to false when the playlist is collapsed
@@ -1427,30 +1439,36 @@ void PlaylistWidget::togglePopup(bool isShortcut)
             //以除Esc以外的其它方式收起播放列表，焦点切换到主窗口，防止随机出现在其它控件上
             _mw->setFocus();
         }
+
 #ifdef __x86_64__
         paOpen = new QPropertyAnimation(this, "geometry");
         paOpen->setEasingCurve(QEasingCurve::Linear);
         paOpen->setDuration(POPUP_DURATION);
         paOpen->setStartValue(fixed);
-        paOpen->setEndValue(shrunk);;
+        paOpen->setEndValue(shrunk);
         _toggling = false;
         _state = State::Closed;
         emit stateChange(isShortcut);
         paOpen->start();    //down
-        connect(paOpen, &QPropertyAnimation::finished, [ = ]() {
+        qDebug() << "Started close animation";
+        connect(paOpen, &QPropertyAnimation::finished, [=]() {
             paOpen->deleteLater();
             paOpen = nullptr;
             setVisible(!isVisible());
+            qDebug() << "Close animation finished";
         });
 #else
         _toggling = false;
         _state = State::Closed;
         emit stateChange(isShortcut);
         setVisible(!isVisible());
+        qDebug() << "Playlist closed (no animation)";
 #endif
     } else {
+        qDebug() << "Opening playlist";
         _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         setVisible(!isVisible());
+
 #ifdef __x86_64__
         paClose = new QPropertyAnimation(this, "geometry");
         paClose->setEasingCurve(QEasingCurve::Linear);
@@ -1461,13 +1479,15 @@ void PlaylistWidget::togglePopup(bool isShortcut)
         _state = State::Opened;
         emit stateChange(isShortcut);
         paClose->start();   //up
-        connect(paClose, &QPropertyAnimation::finished, [ = ]() {
+        qDebug() << "Started open animation";
+        connect(paClose, &QPropertyAnimation::finished, [=]() {
             paClose->deleteLater();
             paClose = nullptr;
             _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
             if (_mw->toolbox()->getListBtnFocus()) {
                 m_pClearButton->setFocus();
             }
+            qDebug() << "Open animation finished";
         });
 #else
         _toggling = false;  //条件编译误报(cppcheck)
@@ -1475,6 +1495,7 @@ void PlaylistWidget::togglePopup(bool isShortcut)
         emit stateChange(isShortcut);
         setGeometry(fixed);
         _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+        qDebug() << "Playlist opened (no animation)";
 #endif
     }
 }

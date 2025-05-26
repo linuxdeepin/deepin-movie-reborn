@@ -31,6 +31,7 @@ class MovieConfigurationBackend: public QObject
 public:
     explicit MovieConfigurationBackend(MovieConfiguration *cfg): QObject(cfg)
     {
+        qDebug() << "Initializing MovieConfigurationBackend";
         auto db_dir = QString("%1/%2/%3")
                       .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
                       .arg(qApp->organizationName())
@@ -40,37 +41,44 @@ public:
         d.mkpath(db_dir);
 
         auto db_path = QString("%1/movies.db").arg(db_dir);
+        qDebug() << "Database path:" << db_path;
+        
         _db = QSqlDatabase::addDatabase("QSQLITE");
         _db.setDatabaseName(db_path);
         if(!_db.open()) {
-            qCritical() << "open the movies database error";
+            qCritical() << "Failed to open movies database:" << _db.lastError().text();
             return;
         }
+        qDebug() << "Database opened successfully";
 
         auto ts = _db.tables(QSql::Tables);
         if (!ts.contains("urls") || !ts.contains("infos")) {
+            qDebug() << "Creating database tables";
             QSqlQuery q(_db);
             if (!q.exec("create table if not exists urls (url TEXT primary key, "
                         "md5 TEXT, timestamp DATETIME)")) {
-                qCritical() << q.lastError();
+                qCritical() << "Failed to create urls table:" << q.lastError().text();
             }
 
             if (!q.exec("create table if not exists infos (url TEXT, "
                         "key TEXT, value BLOB, primary key (url, key))")) {
-                qCritical() << q.lastError();
+                qCritical() << "Failed to create infos table:" << q.lastError().text();
             }
+            qDebug() << "Database tables created";
         }
     }
 
     void deleteUrl(const QUrl &url)
     {
+        qDebug() << "Deleting URL:" << url.toString();
         if(_db.transaction()) {
             QSqlQuery q(_db);
             if(q.prepare("delete from infos where url = ?")) {
                 q.addBindValue(url);
                 if (!q.exec()) {
+                    qWarning() << "Failed to delete from infos table:" << q.lastError().text();
                     if(!_db.commit()) {
-                        qCritical() << _db.lastError();
+                        qCritical() << "Failed to commit transaction:" << _db.lastError().text();
                     }
                     return;
                 }
@@ -83,50 +91,58 @@ public:
                     CHECKED_EXEC(q_l);
                 }
             }
+            qDebug() << "URL deleted successfully";
         }
     }
 
     bool urlExists(const QUrl &url)
     {
+        qDebug() << "Checking if URL exists:" << url.toString();
         QSqlQuery q(_db);
         if(q.prepare("select url from urls where url = ? limit 1")) {
             q.addBindValue(url);
             CHECKED_EXEC(q);
         }
 
-        return q.first();
+        bool exists = q.first();
+        qDebug() << "URL exists:" << exists;
+        return exists;
     }
 
     void clear()
     {
+        qDebug() << "Clearing all database entries";
         if(_db.transaction()) {
             QSqlQuery q(_db);
             if (q.exec("delete from infos")) {
                 if (q.exec("delete from urls")) {
                     if(!_db.commit()) {
-                        qCritical() << _db.lastError();
+                        qCritical() << "Failed to commit clear transaction:" << _db.lastError().text();
                     }
+                    qDebug() << "Database cleared successfully";
                     return;
                 }
             }
 
             if(!_db.rollback()) {
-                qCritical() << _db.lastError();
+                qCritical() << "Failed to rollback clear transaction:" << _db.lastError().text();
             }
         }
     }
 
     void updateUrl(const QUrl &url, const QString &key, const QVariant &val)
     {
-        qInfo() << url << key << val;
+        qDebug() << "Updating URL:" << url.toString() << "Key:" << key << "Value:" << val.toString();
 
         if(_db.transaction()) {
             if (!urlExists(url)) {
                 QString md5;
                 if (url.isLocalFile()) {
                     md5 = utils::FastFileHash(QFileInfo(url.toLocalFile()));
+                    qDebug() << "Local file MD5:" << md5;
                 } else {
                     md5 = QString(QCryptographicHash::hash(url.toString().toUtf8(), QCryptographicHash::Md5).toHex());
+                    qDebug() << "Remote URL MD5:" << md5;
                 }
 
                 QSqlQuery q(_db);
@@ -135,8 +151,9 @@ public:
                     q.addBindValue(md5);
                     q.addBindValue(QDateTime::currentDateTimeUtc());
                     if (!q.exec()) {
+                        qWarning() << "Failed to insert URL:" << q.lastError().text();
                         if(!_db.rollback()) {
-                            qCritical() << _db.lastError();
+                            qCritical() << "Failed to rollback URL insert:" << _db.lastError().text();
                         }
                         return;
                     }
@@ -150,16 +167,20 @@ public:
                 q.addBindValue(val);
                 CHECKED_EXEC(q);
                 if(!_db.commit()) {
-                    qCritical() << _db.lastError();
+                    qCritical() << "Failed to commit update transaction:" << _db.lastError().text();
                 }
+                qDebug() << "URL updated successfully";
             }
         }
     }
 
     QVariant queryValueByUrlKey(const QUrl &url, const QString &key)
     {
-        if (!urlExists(url))
+        qDebug() << "Querying value for URL:" << url.toString() << "Key:" << key;
+        if (!urlExists(url)) {
+            qDebug() << "URL does not exist";
             return {};
+        }
 
         QSqlQuery q(_db);
         if(q.prepare("select value from infos where url = ? and key = ?")) {
@@ -172,13 +193,17 @@ public:
             }
         }
 
+        qDebug() << "No value found";
         return QVariant();
     }
 
     QMap<QString, QVariant> queryByUrl(const QUrl &url)
     {
-        if (!urlExists(url))
+        qDebug() << "Querying all values for URL:" << url.toString();
+        if (!urlExists(url)) {
+            qDebug() << "URL does not exist";
             return {};
+        }
 
         QSqlQuery q(_db);
         if(q.prepare("select key, value from infos where url = ?")) {
@@ -191,6 +216,7 @@ public:
             res.insert(q.value(0).toString(), q.value(1));
         }
 
+        qDebug() << "Found" << res.size() << "values";
         return res;
     }
 
@@ -202,6 +228,7 @@ private:
 
 MovieConfigurationBackend::~MovieConfigurationBackend()
 {
+    qDebug() << "Destroying MovieConfigurationBackend";
     _db.close();
     QSqlDatabase::removeDatabase(_db.connectionName());
 }
@@ -211,8 +238,8 @@ MovieConfiguration &MovieConfiguration::get()
     if (_instance == nullptr) {
         QMutexLocker lock(&_instLock);
         _instance = new MovieConfiguration;
+        qDebug() << "Created new MovieConfiguration instance";
     }
-
     return *_instance;
 }
 
@@ -350,10 +377,13 @@ static void _backend_test()
 
 void MovieConfiguration::init()
 {
+    qDebug() << "Initializing MovieConfiguration";
     _backend = new MovieConfigurationBackend(this);
 #ifdef SQL_TEST
+    qDebug() << "Running SQL tests";
     _backend_test();
 #endif
+    qDebug() << "MovieConfiguration initialized";
 }
 
 }

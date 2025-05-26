@@ -12,6 +12,7 @@ namespace dmr {
 VolumeButton::VolumeButton(QWidget *parent)
     : DIconButton(parent), m_nVolume(100), m_bMute(false)
 {
+    qDebug() << "Initializing VolumeButton";
     setIcon(QIcon::fromTheme("dcc_volume"));
     setIconSize(QSize(36, 36));
     installEventFilter(this);
@@ -32,6 +33,7 @@ VolumeButton::VolumeButton(QWidget *parent)
 
 void VolumeButton::hideTip()
 {
+    qDebug() << "Hiding volume button tooltip";
     if (m_showTime.isActive())
         m_showTime.stop();
     if (m_pToolTip->isVisible())
@@ -40,6 +42,7 @@ void VolumeButton::hideTip()
 
 void VolumeButton::setVolume(int nVolume)
 {
+    qDebug() << "Setting volume to:" << nVolume;
     m_nVolume = nVolume;
 
     changeStyle();
@@ -47,6 +50,7 @@ void VolumeButton::setVolume(int nVolume)
 
 void VolumeButton::setMute(bool bMute)
 {
+    qDebug() << "Setting mute state to:" << bMute;
     m_bMute = bMute;
 
     changeStyle();
@@ -54,6 +58,7 @@ void VolumeButton::setMute(bool bMute)
 
 void VolumeButton::setButtonEnable(bool bFlag)
 {
+    qDebug() << "Setting volume button enabled state to:" << bFlag;
     QIcon icon = QIcon::fromTheme("dcc_volumedisable");
     if (bFlag) {
         setEnabled(true);

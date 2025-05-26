@@ -30,6 +30,7 @@ static SubtitleProvider shooter;
 
 static QString hash_file(const QFileInfo &fi)
 {
+    qDebug() << "Calculating file hash for:" << fi.absoluteFilePath();
     auto sz = fi.size();
     QList<qint64> offsets = {
         4096,
@@ -42,6 +43,7 @@ static QString hash_file(const QFileInfo &fi)
 
     QFile f(fi.absoluteFilePath());
     if (!f.open(QFile::ReadOnly)) {
+        qWarning() << "Failed to open file for hashing:" << fi.absoluteFilePath();
         return QString();
     }
 
@@ -71,7 +73,7 @@ static QString hash_file(const QFileInfo &fi)
     });
     f.close();
 
-    qInfo() << mds.join(";");
+    qDebug() << "File hash calculated:" << mds.join(";");
     //Qt seems has a bug that ; will not be encoded as %3B in url query
     return mds.join("%3B");
 }
@@ -79,14 +81,15 @@ static QString hash_file(const QFileInfo &fi)
 OnlineSubtitle &OnlineSubtitle::get()
 {
     if (_instance == nullptr) {
+        qDebug() << "Creating new OnlineSubtitle instance";
         _instance = new OnlineSubtitle;
     }
-
     return *_instance;
 }
 
 OnlineSubtitle::OnlineSubtitle()
 {
+    qDebug() << "Initializing OnlineSubtitle";
     shooter.apiurl = "http://www.shooter.cn/api/subapi.php";
     shooter.reqfn = [](const QFileInfo & fi) {
         if (!fi.exists()) return "";
@@ -99,19 +102,23 @@ OnlineSubtitle::OnlineSubtitle()
                        .arg(qApp->applicationName());
     QDir d;
     d.mkpath(_defaultLocation);
+    qDebug() << "Subtitle storage location:" << _defaultLocation;
 
     _nam = new QNetworkAccessManager(this);
     connect(_nam, &QNetworkAccessManager::finished, this, &OnlineSubtitle::replyReceived);
+    qDebug() << "OnlineSubtitle initialization completed";
 }
 
 void OnlineSubtitle::subtitlesDownloadComplete()
 {
+    qDebug() << "Subtitle download completed";
     QList<QString> files;
     for (auto &sub : _subs) {
         if (!sub.local.isEmpty())
             files.append(sub.local); // filter out some index files (idx e.g.)
     }
 
+    qDebug() << "Downloaded subtitle files:" << files;
     emit subtitlesDownloadedFor(QUrl::fromLocalFile(_lastReqVideo.absoluteFilePath()), files, _lastReason);
     _subs.clear();
     _lastReqVideo = QFileInfo();
@@ -120,6 +127,7 @@ void OnlineSubtitle::subtitlesDownloadComplete()
 
 QString OnlineSubtitle::findAvailableName(const QString &tmpl, int id)
 {
+    qDebug() << "Finding available name for template:" << tmpl << "ID:" << id;
     QString name_tmpl = tmpl;
     int i = tmpl.lastIndexOf('.');
     if (i >= 0) {
@@ -132,35 +140,39 @@ QString OnlineSubtitle::findAvailableName(const QString &tmpl, int id)
         auto name = name_tmpl.arg(c);
         auto path = QString("%1/%2").arg(storeLocation()).arg(name);
         if (!QFile::exists(path)) {
+            qDebug() << "Found available name:" << path;
             return path;
         }
         c++;
     } while (c < (1 << 16));
+    qWarning() << "No available name found for template:" << tmpl;
     return tmpl;
 }
 
 void OnlineSubtitle::replyReceived(QNetworkReply *reply)
 {
-    //reply->deleteLater();
+    qDebug() << "Received network reply for type:" << reply->property("type").toString();
+    
     if (reply->error() != QNetworkReply::NoError) {
         if (reply->property("type") == "sub") {
             _pendingDownloads--;
             if (_pendingDownloads <= 0) {
                 _lastReason = FailReason::NetworkError;
+                qWarning() << "Network error occurred, marking download as failed";
                 subtitlesDownloadComplete();
             }
         }
-        qInfo() << reply->errorString();
+        qWarning() << "Network error:" << reply->errorString();
         reply->deleteLater();
         return;
     }
 
     if (reply->property("type") == "meta") {
         auto data = reply->readAll();
-        qInfo() << "data size " << data.size() << static_cast<int>(data[0]);
+        qDebug() << "Received metadata response, size:" << data.size();
         // fix bug 24817 by ZhuYuliang
         if ((0 == data.size()) || (((data.size() == 1) && (static_cast<int>(data[0]) == -1)) || (static_cast<int>(data[0]) == 255))) {
-            qInfo() << "no subtitle found";
+            qInfo() << "No subtitle found for the video";
             _lastReason = FailReason::NoSubFound;
             emit onlineSubtitleStateChanged(_lastReason);
             reply->deleteLater();
@@ -169,7 +181,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
 
         auto json = QJsonDocument::fromJson(data);
         if (json.isArray()) {
-            qInfo() << json;
+            qDebug() << "Processing subtitle metadata";
             _subs.clear();
 
             for (auto v : json.array()) {
@@ -185,6 +197,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
                         meta.ext = fi["Ext"].toString();
                         meta.link = fi["Link"].toString();
                         _subs.append(meta);
+                        qDebug() << "Found subtitle:" << meta.desc << "Extension:" << meta.ext;
                     }
                 }
             }
@@ -202,7 +215,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
         auto disposition = reply->header(QNetworkRequest::ContentDispositionHeader);
         if (disposition.isValid()) {
             //set name to disposition filename
-            qInfo() << disposition;
+            qDebug() << "Using Content-Disposition header for filename:" << disposition;
         } else if (reply->hasRawHeader("Content-Disposition")) {
             QByteArray name;
             auto bytes = reply->rawHeader("Content-Disposition");
@@ -221,11 +234,13 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
                 // Qt6 中使用 QStringDecoder 来解码字符串
                 name_tmpl = QStringDecoder(QStringDecoder::Utf8)(name);
 #endif
+                qDebug() << "Extracted filename from Content-Disposition:" << name_tmpl;
             }
         } else {
             int id = reply->property("id").toInt();
             name_tmpl = QString("%1.%2").arg(_lastReqVideo.completeBaseName())
                         .arg(_subs[id].ext);
+            qDebug() << "Generated filename from video name:" << name_tmpl;
         }
         reply->close();
 
@@ -235,6 +250,9 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
             QFile f(path);
             if (f.open(QFile::WriteOnly)) {
                 f.write(data);
+                qDebug() << "Saved subtitle to:" << path;
+            } else {
+                qWarning() << "Failed to save subtitle to:" << path;
             }
             f.flush();
         }
@@ -242,12 +260,13 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
         _pendingDownloads--;
         QString conflictPath;
         if (hasHashConflict(path, name_tmpl, conflictPath)) {
+            qInfo() << "Found duplicate subtitle, using existing file:" << conflictPath;
             _lastReason = FailReason::Duplicated;
             _subs[id].local = conflictPath;
             QFile::remove(path);
         } else {
             _subs[id].local = path;
-            qInfo() << "save to " << path;
+            qDebug() << "Subtitle saved successfully to:" << path;
         }
 
         if (_pendingDownloads <= 0) {
@@ -259,6 +278,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
 
 bool OnlineSubtitle::hasHashConflict(const QString &path, const QString &tmpl, QString &conflictPath)
 {
+    qDebug() << "Checking for hash conflicts for:" << path;
     QFileInfo fi(path);
     auto md5 = utils::FullFileHash(fi);
 
@@ -276,9 +296,10 @@ bool OnlineSubtitle::hasHashConflict(const QString &path, const QString &tmpl, Q
 #endif
         if (tmpl == s) {
             auto h = utils::FullFileHash(di.fileInfo());
-            qInfo() << "found " << di.fileName() << h;
+            qDebug() << "Comparing with existing file:" << di.fileName() << "Hash:" << h;
             if (h == md5) {
                 conflictPath = di.filePath();
+                qInfo() << "Found hash conflict with:" << conflictPath;
                 return true;
             }
         }
@@ -289,11 +310,11 @@ bool OnlineSubtitle::hasHashConflict(const QString &path, const QString &tmpl, Q
 
 void OnlineSubtitle::downloadSubtitles()
 {
+    qDebug() << "Starting subtitle download for" << _subs.size() << "files";
     _pendingDownloads = _subs.size();
 
     for (auto &sub : _subs) {
         QNetworkRequest req;
-        //QUrl url(sub.link.toUtf8());
         auto s = sub.link;
         s.replace("https://", "http://");
         QUrl url(s);
@@ -301,7 +322,7 @@ void OnlineSubtitle::downloadSubtitles()
         req.setUrl(url);
 
         auto *reply = _nam->get(req);
-        //qInfo() << __func__ << sub.link << url;
+        qDebug() << "Downloading subtitle from:" << url.toString();
         reply->setProperty("type", "sub");
         reply->setProperty("id", sub.id);
     }
@@ -314,6 +335,7 @@ QString OnlineSubtitle::storeLocation()
 
 void OnlineSubtitle::requestSubtitle(const QUrl &url)
 {
+    qDebug() << "Requesting subtitle for:" << url.toString();
     QFileInfo fi(url.toLocalFile());
     QString h = hash_file(fi);
     _lastReqVideo = fi;
@@ -323,22 +345,19 @@ void OnlineSubtitle::requestSubtitle(const QUrl &url)
 
     QUrlQuery q;
     q.addQueryItem("filehash", h);
-    //q.addQueryItem("pathinfo", fi.absoluteFilePath());
     q.addQueryItem("pathinfo", fi.fileName());
     q.addQueryItem("format", "json");
-    //q.addQueryItem("lang", "chn");
 
     QUrl params;
     params.setQuery(q);
     auto data = params.query(QUrl::FullyEncoded).toUtf8();
-
-    //qInfo() << req_url << params.query(QUrl::FullyEncoded);
 
     QNetworkRequest req;
     req.setUrl(shooter.apiurl);
     req.setHeader(QNetworkRequest::ContentLengthHeader, data.length());
     req.setRawHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
+    qDebug() << "Sending subtitle request to:" << shooter.apiurl;
     auto reply = _nam->post(req, data);
     reply->setProperty("type", "meta");
 }

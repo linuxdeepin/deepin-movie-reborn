@@ -984,8 +984,10 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
       m_pMainWindow(static_cast<MainWindow *>(mainWindow)),
       m_pEngine(proxy)
 {
+    qDebug() << "Initializing ToolboxProxy";
     initMember();
     if (utils::check_wayland_env()) {
+        qDebug() << "Wayland environment detected, disabling thumbnail mode";
         m_bThumbnailmode = false;
     }
 
@@ -1004,13 +1006,18 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
             this, &ToolboxProxy::updatePlayState);
     connect(m_mircastWidget, &MircastWidget::updatePlayStatus, this, &ToolboxProxy::updatePlayState);
     connect(m_mircastWidget, &MircastWidget::updateTime, this, &ToolboxProxy::updateMircastTime, Qt::QueuedConnection);
+    qDebug() << "ToolboxProxy initialized";
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
-    qInfo() << "thumbnail has finished";
+    qDebug() << "Thumbnail loading finished, size:" << size;
 
-    if (m_pmList.isEmpty()) return;
+    if (m_pmList.isEmpty()) {
+        qDebug() << "No thumbnails available";
+        return;
+    }
     if (!m_bThumbnailmode) {
+        qDebug() << "Thumbnail mode disabled";
         return;
     }
     m_pViewProgBar->setViewProgBar(m_pEngine, m_pmList, m_pmBlackList);
@@ -1019,6 +1026,7 @@ void ToolboxProxy::finishLoadSlot(QSize size)
         if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
             PlayItemInfo info = m_pEngine->playlist().currentInfo();
             if (!info.url.isLocalFile()) {
+                qDebug() << "Current file is not local, skipping thumbnail mode";
                 return;
             }
             m_pProgBar_Widget->setCurrentIndex(2);
@@ -1028,25 +1036,28 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 
 void ToolboxProxy::setthumbnailmode()
 {
+    qDebug() << "Setting thumbnail mode, engine state:" << m_pEngine->state();
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
+        qDebug() << "Engine is idle, skipping thumbnail mode";
         return;
     }
 
     if(CompositingManager::get().platform() == Platform::X86  && CompositingManager::isMpvExists()) {
         if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
+            qDebug() << "Enabling thumbnail mode";
             m_bThumbnailmode = true;
             updateThumbnail();
         } else {
+            qDebug() << "Disabling thumbnail mode";
             m_bThumbnailmode = false;
             updateMovieProgress();
             m_pProgBar_Widget->setCurrentIndex(1);   //恢复进度条模式 by zhuyuliang
         }
     } else {
-        //no thunbnail progress bar is loaded except amd plantform
+        qDebug() << "Platform not supported for thumbnail mode";
         m_bThumbnailmode = false;
         updateMovieProgress();
     }
-
 }
 
 void ToolboxProxy::setup()
@@ -1462,19 +1473,21 @@ void ToolboxProxy::setup()
 
 void ToolboxProxy::updateThumbnail()
 {
+    qDebug() << "Updating thumbnail";
     disconnect(m_pWorker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
 
     if (m_pEngine->currFileIsAudio()) {
+        qDebug() << "Current file is audio, skipping thumbnail update";
         return;
     }
 
-    qInfo() << "worker" << m_pWorker;
+    qDebug() << "Starting thumbnail worker";
     QTimer::singleShot(1000, this, &ToolboxProxy::slotUpdateThumbnailTimeOut);
-
 }
 
 void ToolboxProxy::updatePreviewTime(qint64 secs, const QPoint &pos)
 {
+    qDebug() << "Updating preview time:" << secs << "at position:" << pos;
     QTime time(0, 0, 0);
     QString strTime = time.addSecs(static_cast<int>(secs)).toString("hh:mm:ss");
     m_pPreviewTime->setTime(strTime);
@@ -1843,6 +1856,7 @@ void ToolboxProxy::slotVolumeButtonClicked()
 
 void ToolboxProxy::slotFileLoaded()
 {
+    qDebug() << "File loaded, updating progress bar";
     m_pProgBar->slider()->setRange(0, static_cast<int>(m_pEngine->duration()));
     m_pProgBar_Widget->setCurrentIndex(1);
     m_pPreviewer->setFixedSize(0, 0);
@@ -1850,6 +1864,7 @@ void ToolboxProxy::slotFileLoaded()
     //正在投屏时如果当前播放为音频直接播放下一首。
     if(m_pEngine->currFileIsAudio()&&m_mircastWidget->getMircastState() != MircastWidget::Idel) {
         //如果全是音频文件则退出投屏
+        qDebug() << "Audio file detected during mircast, handling next video";
         bool isAllAudio = true;
         QString sNextVideoName;
         int nNextIndex = -1;
@@ -1866,6 +1881,7 @@ void ToolboxProxy::slotFileLoaded()
             }
         }
         if(isAllAudio) {
+            qDebug() << "All files are audio, exiting mircast";
             m_pMainWindow->slotExitMircast();
             return;
         }
@@ -1880,6 +1896,7 @@ void ToolboxProxy::slotFileLoaded()
         }
         if(nIndex == -1) return;
         if(nIndex < nNextIndex && !sNextVideoName.isNull()) {
+            qDebug() << "Playing next video:" << sNextVideoName;
             m_pMainWindow->play({sNextVideoName});
         } else {
             bool isNext = true;
@@ -1887,16 +1904,20 @@ void ToolboxProxy::slotFileLoaded()
                 PlayItemInfo iteminfo = lstItemInfo.at(i);
                 if(iteminfo.mi.vCodecID != -1) {
                     isNext = false;
+                    qDebug() << "Playing video:" << iteminfo.mi.filePath;
                     m_pMainWindow->play({iteminfo.mi.filePath});
                     break;
                 }
             }
             if(m_pEngine->getplaylist()->playMode() == PlaylistModel::OrderPlay) {
-                if(isNext)
+                if(isNext) {
+                    qDebug() << "No more videos in order play mode, exiting mircast";
                     m_pMainWindow->slotExitMircast();
+                }
                 return;
             }
             if(isNext && !sNextVideoName.isNull()){
+                qDebug() << "Playing next video in playlist:" << sNextVideoName;
                 m_pMainWindow->play({sNextVideoName});
             }
         }
@@ -1907,12 +1928,15 @@ void ToolboxProxy::slotFileLoaded()
 
 void ToolboxProxy::slotElapsedChanged()
 {
-    if(m_mircastWidget->getMircastState() != MircastWidget::Idel)
+    if(m_mircastWidget->getMircastState() != MircastWidget::Idel) {
+        qDebug() << "Mircast active, skipping elapsed update";
         return;
+    }
     quint64 url = static_cast<quint64>(-1);
     if (m_pEngine->playlist().current() != -1) {
         url = static_cast<quint64>(m_pEngine->duration());
     }
+    qDebug() << "Updating elapsed time:" << m_pEngine->elapsed() << "of" << url;
     //TODO(xxxpengfei):此处代码同时更新全屏的时长并未判断全屏状态，请维护同事查看是否存在优化空间
     updateTimeInfo(static_cast<qint64>(url), m_pEngine->elapsed(), m_pTimeLabel, m_pTimeLabelend, true);
     updateTimeInfo(static_cast<qint64>(url), m_pEngine->elapsed(), m_pFullscreentimelable, m_pFullscreentimelableend, false);
@@ -2389,8 +2413,11 @@ void ToolboxProxy::slotUpdateMircast(int state, QString msg)
 
 void ToolboxProxy::updatePlayState()
 {
+    qDebug() << "Updating play state, mircast state:" << m_mircastWidget->getMircastState() 
+             << "engine state:" << m_pEngine->state();
     if (((m_mircastWidget->getMircastState() != MircastWidget::Idel) && (m_mircastWidget->getMircastPlayState() == MircastWidget::Play))
             || m_pEngine->state() == PlayerEngine::CoreState::Playing) {
+        qDebug() << "Setting play state to playing";
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             DPalette pa;
             pa = m_pPalyBox->palette();
@@ -2455,6 +2482,7 @@ void ToolboxProxy::updatePlayState()
             m_pPlayBtn->setToolTip(tr("Pause"));
         }
     } else {
+        qDebug() << "Setting play state to paused";
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             DPalette pa;
             pa = m_pPalyBox->palette();
@@ -2523,6 +2551,7 @@ void ToolboxProxy::updatePlayState()
     }
 
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
+        qDebug() << "Engine is idle, clearing time labels";
         m_pTimeLabel->setText("");
         m_pTimeLabelend->setText("");
 
@@ -2553,62 +2582,65 @@ void ToolboxProxy::updatePlayState()
  */
 void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos, QLabel *pTimeLabel, QLabel *pTimeLabelend, bool flag)
 {
+    qDebug() << "Updating time info - duration:" << duration << "position:" << pos << "flag:" << flag;
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
         pTimeLabel->setText("");
         pTimeLabelend->setText("");
-
     } else {
         //mpv returns a slightly different duration from movieinfo.duration
         //m_pTimeLabel->setText(QString("%2/%1").arg(utils::Time2str(duration))
         //.arg(utils::Time2str(pos)));
         if (1 == flag) {
-            pTimeLabel->setText(QString("%1")
-                                .arg(utils::Time2str(pos)));
-            pTimeLabelend->setText(QString("%1")
-                                   .arg(utils::Time2str(duration)));
+            pTimeLabel->setText(QString("%1").arg(utils::Time2str(pos)));
+            pTimeLabelend->setText(QString("%1").arg(utils::Time2str(duration)));
         } else {
-            pTimeLabel->setText(QString("%1 %2")
-                                .arg(utils::Time2str(pos)).arg("/"));
-            pTimeLabelend->setText(QString("%1")
-                                   .arg(utils::Time2str(duration)));
+            pTimeLabel->setText(QString("%1 %2").arg(utils::Time2str(pos)).arg("/"));
+            pTimeLabelend->setText(QString("%1").arg(utils::Time2str(duration)));
         }
-
-
     }
 }
 
 void ToolboxProxy::buttonClicked(QString id)
 {
-    //add by heyi
+    qDebug() << "Button clicked:" << id;
     static bool bFlags = true;
     if (bFlags) {
-//        m_pMainWindow->firstPlayInit();
         m_pMainWindow->repaint();
         bFlags = false;
     }
 
-    if (!isVisible()) return;
+    if (!isVisible()) {
+        qDebug() << "Toolbox not visible, ignoring button click";
+        return;
+    }
 
-    qInfo() << __func__ << id;
     if (id == "play") {
         if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
+            qDebug() << "Starting playback";
             m_pMainWindow->requestAction(ActionFactory::ActionKind::StartPlay);
         } else {
+            qDebug() << "Toggling pause";
             m_pMainWindow->requestAction(ActionFactory::ActionKind::TogglePause);
         }
     } else if (id == "fs") {
+        qDebug() << "Toggling fullscreen";
         m_pMainWindow->requestAction(ActionFactory::ActionKind::ToggleFullscreen);
     } else if (id == "vol") {
+        qDebug() << "Toggling mute";
         m_pMainWindow->requestAction(ActionFactory::ActionKind::ToggleMute);
     } else if (id == "prev" && m_bCanPlay) {  //如果影片未加载完成，则不播放上一曲
+        qDebug() << "Playing previous item";
         m_pMainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
     } else if (id == "next" && m_bCanPlay) {
+        qDebug() << "Playing next item";
         m_pMainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
     } else if (id == "list") {
+        qDebug() << "Toggling playlist";
         m_nClickTime = QDateTime::currentMSecsSinceEpoch();
         m_pMainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
         m_pListBtn->hideToolTip();
     } else if (id == "mircast") {
+        qDebug() << "Toggling mircast";
         m_mircastWidget->togglePopup();
         m_pMircastBtn->hideToolTip();
         m_pMircastBtn->setChecked(m_mircastWidget->isVisible());
@@ -2942,6 +2974,7 @@ bool ToolboxProxy::getVolSliderIsHided()
  */
 void ToolboxProxy::updateProgress(int nValue)
 {
+    qDebug() << "Updating progress:" << nValue;
     int nDuration = static_cast<int>(m_pEngine->duration());
 
     if (m_pProgBar_Widget->currentIndex() == 1) {              //进度条模式
@@ -2953,7 +2986,7 @@ void ToolboxProxy::updateProgress(int nValue)
         } else {
             if (m_processAdd < 1.0 && m_processAdd > -1.0) {
                 m_processAdd += (float)(nValue * nDuration) / m_pProgBar->width();
-                qInfo() << m_processAdd;
+                qDebug() << "Accumulating progress:" << m_processAdd;
                 return;
             }
             else {
@@ -2977,9 +3010,9 @@ void ToolboxProxy::updateProgress(int nValue)
  */
 void ToolboxProxy::updateSlider()
 {
+    qDebug() << "Updating slider position";
     if (m_pProgBar_Widget->currentIndex() == 1) {
         m_pEngine->seekAbsolute(m_pProgBar->value());
-
         m_pProgBar->blockSignals(false);
     } else {
         m_pEngine->seekAbsolute(m_pViewProgBar->getTimePos());
@@ -3016,6 +3049,7 @@ void ToolboxProxy::updateSliderPoint(QPoint &point)
  */
 ToolboxProxy::~ToolboxProxy()
 {
+    qDebug() << "Destroying ToolboxProxy";
     if(CompositingManager::isMpvExists()) {
         ThumbnailWorker::get().stop();
     }

@@ -16,6 +16,7 @@ namespace dmr {
     UrlDialog::UrlDialog(QWidget *parent)
         : DDialog(parent)
     {
+        qDebug() << "Initializing UrlDialog";
         addButtons(QStringList() << QApplication::translate("UrlDialog", "Cancel")
                    << QApplication::translate("UrlDialog", "OK"));
         setOnButtonClickedClose(false);
@@ -49,12 +50,15 @@ namespace dmr {
 
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        qDebug() << "Setting compact mode size for UrlDialog";
         setFixedSize(251, 150);
     } else {
+        qDebug() << "Setting normal mode size for UrlDialog";
         setFixedSize(380, 190);
     }
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        qDebug() << "Size mode changed to:" << (sizeMode == DGuiApplicationHelper::NormalMode ? "Normal" : "Compact");
         if (sizeMode == DGuiApplicationHelper::NormalMode) {
             setFixedSize(380, 190);
         } else {
@@ -65,9 +69,11 @@ namespace dmr {
 #endif
 
         connect(getButton(0), &QAbstractButton::clicked, this, [ = ] {
+            qDebug() << "Cancel button clicked";
             done(QDialog::Rejected);
         });
         connect(getButton(1), &QAbstractButton::clicked, this, [ = ] {
+            qDebug() << "OK button clicked with URL:" << m_lineEdit->text();
             done(QDialog::Accepted);
         });
         connect(m_lineEdit, &QLineEdit::textChanged, this, &UrlDialog::slotTextchanged);
@@ -76,17 +82,24 @@ namespace dmr {
     QUrl UrlDialog::url() const
     {
         auto u = QUrl(m_lineEdit->text(), QUrl::StrictMode);
-        if (u.isLocalFile() || u.scheme().isEmpty())
+        qDebug() << "Getting URL:" << m_lineEdit->text() << "isLocalFile:" << u.isLocalFile() << "scheme:" << u.scheme();
+        
+        if (u.isLocalFile() || u.scheme().isEmpty()) {
+            qDebug() << "Invalid URL - local file or empty scheme";
             return QUrl();
+        }
 
-        if (!Settings::get().iscommonPlayableProtocol(u.scheme()))
+        if (!Settings::get().iscommonPlayableProtocol(u.scheme())) {
+            qDebug() << "Invalid URL - unsupported protocol:" << u.scheme();
             return QUrl();
+        }
 
         return u;
     }
 
     void UrlDialog::showEvent(QShowEvent *se)
     {
+        qDebug() << "UrlDialog shown";
         m_lineEdit->setFocus();
 
         DDialog::showEvent(se);
@@ -94,6 +107,7 @@ namespace dmr {
 
     void UrlDialog::slotTextchanged()
     {
+        qDebug() << "URL text changed:" << m_lineEdit->text();
         if (m_lineEdit->text().isEmpty()) {
             getButton(1)->setEnabled(false);
         } else {
