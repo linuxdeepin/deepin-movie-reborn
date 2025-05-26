@@ -10,29 +10,44 @@
 
 SysUtils::SysUtils()
 {
-
+    qDebug() << "SysUtils instance created";
 }
 
 bool SysUtils::libExist(const QString &strlib)
 {
+    qDebug() << "Checking library existence:" << strlib;
+    
     // find all library paths by QLibrary
     QString libName;
     if (strlib.contains(".so"))
         libName = strlib.mid(0, strlib.indexOf(".so"));
     else
         libName = strlib;
+    
+    qDebug() << "Attempting to load library:" << libName;
     QLibrary lib(libName);
     bool bExist = lib.load();
     if (!bExist) {
         qWarning() << "Failed to load library:" << lib.errorString();
-        lib.setFileName(libPath(strlib));
+        QString fullPath = libPath(strlib);
+        qDebug() << "Trying alternative path:" << fullPath;
+        lib.setFileName(fullPath);
         bExist = lib.load();
+        if (bExist) {
+            qInfo() << "Successfully loaded library from alternative path:" << fullPath;
+        } else {
+            qWarning() << "Failed to load library from alternative path:" << fullPath << "-" << lib.errorString();
+        }
+    } else {
+        qInfo() << "Successfully loaded library:" << libName;
     }
     return bExist;
 }
 
 QString SysUtils::libPath(const QString &strlib)
 {
+    qDebug() << "Getting library path for:" << strlib;
+    
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QString path = QLibraryInfo::path(QLibraryInfo::LibrariesPath);
 #else   
@@ -40,14 +55,16 @@ QString SysUtils::libPath(const QString &strlib)
 #endif
 
     if (path.isEmpty()) {
-        qWarning() << "Failed to get library path";
+        qWarning() << "Failed to get library path from QLibraryInfo";
         return strlib;
     }
 
+    qDebug() << "Library search path:" << path;
+    
     // 直接使用完整路径创建 QDir
     QDir dir(QDir::cleanPath(path));
     if (!dir.exists() || !dir.isReadable()) {
-        qWarning() << "目录无法访问:" << path;
+        qWarning() << "Directory not accessible:" << path;
         // 尝试使用备选路径
         QStringList fallbackPaths = {
             "/usr/lib",
@@ -59,7 +76,7 @@ QString SysUtils::libPath(const QString &strlib)
             QDir fallbackDir(fbPath);
             if (fallbackDir.exists() && fallbackDir.isReadable()) {
                 dir = fallbackDir;
-                qWarning() << "使用备选路径:" << fbPath;
+                qInfo() << "Using fallback path:" << fbPath;
                 break;
             }
         }
@@ -70,12 +87,16 @@ QString SysUtils::libPath(const QString &strlib)
     
     if (!list.isEmpty()) {
         if (list.contains(strlib)) {
+            qDebug() << "Found exact library match:" << strlib;
             return strlib;
         }
         list.sort();
-        return list.last();
+        QString result = list.last();
+        qDebug() << "Found library variant:" << result;
+        return result;
     }
 
+    qWarning() << "No matching library found for:" << strlib;
     // Qt LibrariesPath 不包含，返回默认名称
     return strlib;
 }

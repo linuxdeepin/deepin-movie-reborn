@@ -22,12 +22,14 @@ DlnaContentServer::DlnaContentServer(QObject *parent, int nPort) : QObject(paren
     m_httpServer = NULL;
     m_pThread = new QThread;
     moveToThread(m_pThread);
-    qInfo() << "main thread:" << QThread::currentThreadId();
+    qDebug() << "Creating DLNA content server on port" << nPort;
     connect(m_pThread, &QThread::finished, this, &QObject::deleteLater);
     connect(m_pThread, &QThread::started, [=](){
         m_bStartHttpServer = initializeHttpServer(nPort);
         if(!m_bStartHttpServer) {
-            qInfo() << "http Server start failed!";
+            qWarning() << "HTTP server failed to start on port" << nPort;
+        } else {
+            qDebug() << "HTTP server started successfully on port" << nPort;
         }
     });
     m_pThread->start();
@@ -35,6 +37,7 @@ DlnaContentServer::DlnaContentServer(QObject *parent, int nPort) : QObject(paren
 
 DlnaContentServer::~DlnaContentServer()
 {
+    qDebug() << "Shutting down DLNA content server";
     if(m_pThread) {
         m_pThread->quit();
         m_pThread->wait();
@@ -48,7 +51,7 @@ DlnaContentServer::~DlnaContentServer()
  */
 bool DlnaContentServer::initializeHttpServer(int port)
 {
-    qInfo() << "Worker()" << "thread:" << QThread::currentThreadId();
+    qDebug() << "Initializing HTTP server on port" << port;
     bool bServer = false;
     if(!m_httpServer) {
         m_httpServer = new QHttpServer(parent());
@@ -56,6 +59,7 @@ bool DlnaContentServer::initializeHttpServer(int port)
                 &DlnaContentServer::requestHandler);
         bServer = m_httpServer->listen(QHostAddress::Any, port);
         if(!bServer) {
+            qWarning() << "Failed to start HTTP server on port" << port;
             m_httpServer->deleteLater();
             m_httpServer = NULL;
             return bServer;
@@ -63,6 +67,7 @@ bool DlnaContentServer::initializeHttpServer(int port)
         connect(this, &DlnaContentServer::contSeqWriteData, this,
                 &DlnaContentServer::seqWriteData, Qt::QueuedConnection);
         connect(this, &DlnaContentServer::closeServer, [=](){
+            qDebug() << "Closing HTTP server";
             m_httpServer->close();
             m_httpServer->deleteLater();
             m_httpServer = NULL;
@@ -77,8 +82,10 @@ bool DlnaContentServer::initializeHttpServer(int port)
  */
 void DlnaContentServer::requestHandler(QHttpRequest *req, QHttpResponse *resp)
 {
+    qDebug() << "Received request for file:" << m_sDlnaFileName;
     streamFile(m_sDlnaFileName, "", req, resp);
     connect(this, &DlnaContentServer::closeServer, [=](){
+        qDebug() << "Ending request due to server close";
         req->end();
     });
 }
@@ -92,15 +99,17 @@ void DlnaContentServer::requestHandler(QHttpRequest *req, QHttpResponse *resp)
 void DlnaContentServer::streamFile(const QString &path, const QString &mime,
                                      QHttpRequest *req, QHttpResponse *resp) {
     if(!req || !resp) return;
+    qDebug() << "Streaming file:" << path << "with mime type:" << mime;
+    
     auto file = std::make_shared<QFile>(path);
-
     if (!file->open(QFile::ReadOnly)) {
-        qWarning() << "Unable to open file:" << file->fileName();
+        qWarning() << "Failed to open file:" << path << "-" << file->errorString();
         sendEmptyResponse(resp, 500);
         return;
     }
 
     const auto &headers = req->headers();
+    qDebug() << "Request headers:" << headers;
 
     resp->setHeader("Content-Type", mime);
     resp->setHeader("Accept-Ranges", "bytes");
@@ -111,8 +120,10 @@ void DlnaContentServer::streamFile(const QString &path, const QString &mime,
                     dlnaContentFeaturesHeader(mime));
 
     if (headers.contains("range")) {
+        qDebug() << "Range request detected:" << headers.value("range");
         streamFileRange(file, req, resp);
     } else {
+        qDebug() << "Full file request";
         streamFileNoRange(file, req, resp);
     }
 }
@@ -129,10 +140,12 @@ void DlnaContentServer::streamFileRange(std::shared_ptr<QFile> file,
     const auto length = file->bytesAvailable();
     const auto range = Range::fromRange(req->headers().value("range"), length);
     if (!range) {
-        qWarning() << "Unable to read on invalid Range header";
+        qWarning() << "Invalid range request:" << req->headers().value("range");
         sendEmptyResponse(resp, 416);
+        return;
     }
 
+    qDebug() << "Streaming range:" << range->start << "-" << range->end << "of" << length << "bytes";
     resp->setHeader("Content-Length", QString::number(range->rangeLength()));
     resp->setHeader("Content-Range", "bytes " + QString::number(range->start) +
                                          "-" + QString::number(range->end) +
@@ -153,9 +166,9 @@ void DlnaContentServer::streamFileNoRange(std::shared_ptr<QFile> file,
                                             QHttpResponse *resp) {
     if(!req || !resp) return;
     const auto length = file->bytesAvailable();
+    qDebug() << "Streaming full file of" << length << "bytes";
 
     resp->setHeader("Content-Length", QString::number(length));
-
     resp->writeHead(200);
     seqWriteData(file, length, resp);
 }
@@ -200,7 +213,6 @@ std::optional<DlnaContentServer::Range> DlnaContentServer::Range::fromRange(
  */
 void DlnaContentServer::seqWriteData(std::shared_ptr<QFile> file, qint64 size,
                                        QHttpResponse *resp) {
-//    qInfo() << "Worker()" << "thread:" << QThread::currentThreadId();
     if(!resp) return;
     if (resp->isFinished()) {
         qWarning() << "Connection closed by server, so skiping data sending";
@@ -229,6 +241,7 @@ void DlnaContentServer::seqWriteData(std::shared_ptr<QFile> file, qint64 size,
         qDebug() << "All data sent, so ending connection";
     }
 
+    qDebug() << "File streaming completed";
     resp->end();
 }
 /**
@@ -239,27 +252,30 @@ void DlnaContentServer::seqWriteData(std::shared_ptr<QFile> file, qint64 size,
 QString DlnaContentServer::dlnaContentFeaturesHeader(const QString& mime, bool seek, bool flags)
 {
     QString pnFlags = dlnaOrgPnFlags(mime);
+    QString header;
     if (pnFlags.isEmpty()) {
         if (flags)
-            return QString("%1;%2;%3").arg(
+            header = QString("%1;%2;%3").arg(
                         seek ? dlnaOrgOpFlagsSeekBytes : dlnaOrgOpFlagsNoSeek,
                         dlnaOrgCiFlags,
                         seek ? dlnaOrgFlagsForFile() : dlnaOrgFlagsForStreaming());
         else
-            return QString("%1;%2").arg(seek ?
+            header = QString("%1;%2").arg(seek ?
                         dlnaOrgOpFlagsSeekBytes : dlnaOrgOpFlagsNoSeek,
                         dlnaOrgCiFlags);
     } else {
         if (flags)
-            return QString("%1;%2;%3;%4").arg(
+            header = QString("%1;%2;%3;%4").arg(
                         pnFlags, seek ? dlnaOrgOpFlagsSeekBytes : dlnaOrgOpFlagsNoSeek,
                         dlnaOrgCiFlags,
                         seek ? dlnaOrgFlagsForFile() : dlnaOrgFlagsForStreaming());
         else
-            return QString("%1;%2;%3").arg(
+            header = QString("%1;%2;%3").arg(
                         pnFlags, seek ? dlnaOrgOpFlagsSeekBytes : dlnaOrgOpFlagsNoSeek,
                         dlnaOrgCiFlags);
     }
+    qDebug() << "Generated DLNA content features header:" << header;
+    return header;
 }
 /**
  * @brief dlnaOrgFlagsForFile dlna文件传输协议
@@ -353,7 +369,7 @@ QString DlnaContentServer::dlnaOrgPnFlags(const QString &mime)
  */
 void DlnaContentServer::sendEmptyResponse(QHttpResponse *resp, int code) {
     if(!resp) return;
-    qDebug() << "sendEmptyResponse:" << resp << code;
+    qDebug() << "Sending empty response with code:" << code;
     resp->setHeader("Content-Length", "0");
     resp->writeHead(code);
     resp->end();

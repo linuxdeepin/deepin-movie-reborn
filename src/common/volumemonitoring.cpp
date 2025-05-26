@@ -29,36 +29,44 @@ VolumeMonitoring::VolumeMonitoring(QObject *parent)
     : QObject(parent), d_ptr(new VolumeMonitoringPrivate(this))
 {
     Q_D(VolumeMonitoring);
+    qDebug() << "Initializing VolumeMonitoring";
     _bOpened = false;
     connect(&d->timer, SIGNAL(timeout()), this, SLOT(timeoutSlot()));
 }
 
 VolumeMonitoring::~VolumeMonitoring()
 {
+    qDebug() << "Destroying VolumeMonitoring";
     stop();
 }
 
 void VolumeMonitoring::start()
 {
     Q_D(VolumeMonitoring);
+    qDebug() << "Starting volume monitoring timer";
     d->timer.start(1000);
 }
 
 void VolumeMonitoring::stop()
 {
     Q_D(VolumeMonitoring);
+    qDebug() << "Stopping volume monitoring timer";
     d->timer.stop();
 }
 
 void VolumeMonitoring::timeoutSlot()
 {
+    qDebug() << "Checking audio sink inputs";
     QVariant v = DBusUtils::redDBusProperty("org.deepin.dde.Audio1", "/org/deepin/dde/Audio1",
                                             "org.deepin.dde.Audio1", "SinkInputs");
 
-    if (!v.isValid())
+    if (!v.isValid()) {
+        qWarning() << "Failed to get sink inputs from DBus";
         return;
+    }
 
     QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
+    qDebug() << "Found" << allSinkInputsList.size() << "sink inputs";
 
     QString sinkInputPath;
     for (auto curPath : allSinkInputsList) {
@@ -66,20 +74,27 @@ void VolumeMonitoring::timeoutSlot()
                                                     "org.deepin.dde.Audio1.SinkInput", "Name");
 
         QString movieStr = QObject::tr("Movie");
-        if (!nameV.isValid() || (!nameV.toString().contains( movieStr, Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
+        if (!nameV.isValid() || (!nameV.toString().contains(movieStr, Qt::CaseInsensitive) && 
+            !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive))) {
             continue;
+        }
 
         sinkInputPath = curPath.path();
+        qDebug() << "Found matching sink input:" << sinkInputPath;
         break;
     }
-    if (sinkInputPath.isEmpty())
+
+    if (sinkInputPath.isEmpty()) {
+        qDebug() << "No matching sink input found";
         return;
+    }
 
     QDBusInterface ainterface("org.deepin.dde.Audio1", sinkInputPath,
                               "org.deepin.dde.Audio1.SinkInput",
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
-        return ;
+        qWarning() << "Failed to create DBus interface for sink input:" << sinkInputPath;
+        return;
     }
 
     //获取音量
@@ -92,19 +107,23 @@ void VolumeMonitoring::timeoutSlot()
 
     // int temp = volumeV.toDouble();
     int volume = static_cast<int>(volumeV.toDouble() * 100);
-//   int volume = (volumeV.toDouble() +  0.001) * 100;
+    qDebug() << "Current volume:" << volume << "mute:" << muteV.toBool();
 
     auto oldMute = Settings::get().internalOption("mute");
     auto oldVolume = Settings::get().internalOption("global_volume");
 
     //第一次从dbus里获取的音量可能和实际不匹配，若是第一进入就用实际音量 by zhuyuliang
     if (!_bOpened) {
+        qDebug() << "First time initialization, using stored values - volume:" << oldVolume.toInt() 
+                 << "mute:" << oldMute.toBool();
         Q_EMIT volumeChanged(oldVolume.toInt());
         Q_EMIT muteChanged(oldMute.toBool());
         _bOpened = true;
     } else {
-        if (volume != oldVolume)
+        if (volume != oldVolume) {
+            qDebug() << "Volume changed from" << oldVolume.toInt() << "to" << volume;
             Q_EMIT volumeChanged(volume);
-        Q_EMIT muteChanged(muteV.toBool());
+            Q_EMIT muteChanged(muteV.toBool());
+        }
     }
 }

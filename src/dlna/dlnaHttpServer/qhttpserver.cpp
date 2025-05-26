@@ -16,6 +16,7 @@ QHash<int, QString> STATUS_CODES;
 
 QHttpServer::QHttpServer(QObject *parent) : QObject(parent), m_tcpServer(0)
 {
+    qDebug() << "Initializing HTTP server";
 #define STATUS_CODE(num, reason) STATUS_CODES.insert(num, reason);
     // {{{
     STATUS_CODE(100, "Continue")
@@ -71,10 +72,12 @@ QHttpServer::QHttpServer(QObject *parent) : QObject(parent), m_tcpServer(0)
     STATUS_CODE(509, "Bandwidth Limit Exceeded")
     STATUS_CODE(510, "Not Extended") // RFC 2774
     // }}}
+    qDebug() << "HTTP status codes initialized";
 }
 
 QHttpServer::~QHttpServer()
 {
+    qDebug() << "HTTP server shutting down";
 }
 
 void QHttpServer::newConnection()
@@ -94,10 +97,13 @@ bool QHttpServer::listen(const QHostAddress &address, quint16 port)
     Q_ASSERT(!m_tcpServer);
     m_tcpServer = new QTcpServer(this);
 
+    qDebug() << "Attempting to listen on" << address.toString() << ":" << port;
     bool couldBindToPort = m_tcpServer->listen(address, port);
     if (couldBindToPort) {
+        qDebug() << "Successfully listening on" << address.toString() << ":" << port;
         connect(m_tcpServer, SIGNAL(newConnection()), this, SLOT(newConnection()));
     } else {
+        qWarning() << "Failed to listen on" << address.toString() << ":" << port << "-" << m_tcpServer->errorString();
         delete m_tcpServer;
         m_tcpServer = NULL;
     }
@@ -106,11 +112,14 @@ bool QHttpServer::listen(const QHostAddress &address, quint16 port)
 
 bool QHttpServer::listen(quint16 port)
 {
+    qDebug() << "Attempting to listen on all interfaces, port" << port;
     return listen(QHostAddress::Any, port);
 }
 
 void QHttpServer::close()
 {
-    if (m_tcpServer)
+    if (m_tcpServer) {
+        qDebug() << "Closing HTTP server";
         m_tcpServer->close();
+    }
 }

@@ -495,11 +495,13 @@ namespace dmr {
     //cppcheck误报
     void MpvGLWidget::initializeGL()
     {
+        qInfo() << "Initializing OpenGL context";
         QOpenGLFunctions *pGLFunction = QOpenGLContext::currentContext()->functions();
         float a = static_cast<float>(16.0 / 255.0);
 
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
             a = static_cast<float>(252.0 / 255.0);
+            qDebug() << "Using light theme color";
         }
         if(parent()->property("color").isValid()) {
             QColor clr = parent()->property("color").value<QColor>();
@@ -509,6 +511,7 @@ namespace dmr {
         }
 
         prepareSplashImages();
+        qDebug() << "Setting up OpenGL pipelines";
         setupIdlePipe();
         setupBlendPipe();
 
@@ -517,12 +520,14 @@ namespace dmr {
         connect(window()->windowHandle(), &QWindow::windowStateChanged, [=]() {
             QWidget* pTopWid = this->topLevelWidget();
             bool rounded = !pTopWid->isFullScreen() && !pTopWid->isMaximized();
+            qDebug() << "Window state changed - rounded corners:" << rounded;
             // 全屏和最大化下不裁剪圆角
             m_bDoRoundedClipping = rounded;
 
             //wayland
             if(utils::check_wayland_env()) {
                 rounded = true;
+                qDebug() << "Wayland environment detected - forcing rounded corners";
             }
             toggleRoundedClip(rounded);
         });
@@ -534,32 +539,28 @@ namespace dmr {
 #else
         mpv_opengl_init_params gl_init_params = { get_proc_address, nullptr };
 #endif
-        //int adv_control = 1;
+        qInfo() << "Initializing MPV OpenGL render context";
         mpv_render_param params[] = {
             {MPV_RENDER_PARAM_API_TYPE, const_cast<char*>(MPV_RENDER_API_TYPE_OPENGL)},
             {MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
-
-            /*
-                 *    which saves a copy per video frame ("vd-lavc-dr" option
-                 *    needs to be enabled, and the rendering backend as well as the
-                 *    underlying GPU API/driver needs to have support for it).
-                 **/
-            //{MPV_RENDER_PARAM_ADVANCED_CONTROL, &adv_control},
             {MPV_RENDER_PARAM_X11_DISPLAY, reinterpret_cast<void*>(QX11Info::display())},
             {MPV_RENDER_PARAM_INVALID, nullptr}
         };
 
         if(utils::check_wayland_env()){
-            //QPlatformNativeInterface* native = QGuiApplication::platformNativeInterface();
-            //struct wl_display * wl_dpy = (struct wl_display*) (native->nativeResourceForWindow("display",NULL));
+            qInfo() << "Configuring MPV for Wayland environment";
             params[2] = {MPV_RENDER_PARAM_WL_DISPLAY, nullptr};
         }
 
         //add by heyi
-        if(!m_renderCreat) return;
+        if(!m_renderCreat) {
+            qCritical() << "MPV render context creation function not found";
+            return;
+        }
         if (m_renderCreat(&m_pRenderCtx, m_handle, params) < 0) {
             std::runtime_error("can not init mpv gl");
         }
+        qInfo() << "MPV OpenGL render context initialized successfully";
 
         m_callback(m_pRenderCtx, gl_update_callback,
                    reinterpret_cast<void*>(this));
@@ -567,12 +568,17 @@ namespace dmr {
 
     void MpvGLWidget::updateMovieFbo()
     {
-        if (!m_bUseCustomFBO) return;
+        if (!m_bUseCustomFBO) {
+            qDebug() << "Custom FBO not enabled, skipping update";
+            return;
+        }
 
         auto desiredSize = size() * qApp->devicePixelRatio();
+        qDebug() << "Updating movie FBO with size:" << desiredSize;
 
         if (m_pFbo) {
             if (m_pFbo->size() == desiredSize) {
+                qDebug() << "FBO size unchanged, skipping recreation";
                 return;
             }
             m_pFbo->release();
@@ -587,9 +593,10 @@ namespace dmr {
         m_pFbo = new QOpenGLFramebufferObject(desiredSize, format);
         // 检查 FBO 是否创建成功
         if (!m_pFbo || !m_pFbo->isValid()) {
-            qWarning() << "Failed to create FBO with size:" << desiredSize;
+            qCritical() << "Failed to create FBO with size:" << desiredSize;
             return;
         }
+        qDebug() << "FBO created successfully";
     }
 
     void MpvGLWidget::updateCornerMasks()
@@ -832,24 +839,25 @@ namespace dmr {
     void MpvGLWidget::paintGL() 
     {
         QOpenGLFunctions *pGLFunction = QOpenGLContext::currentContext()->functions();
-            if (!pGLFunction) {
-        qWarning() << "Failed to get OpenGL functions";
-        return;
-    }
+        if (!pGLFunction) {
+            qCritical() << "Failed to get OpenGL functions in paintGL";
+            return;
+        }
     
-    // 检查纹理是否有效
-    if (m_pLightTex && !m_pLightTex->isCreated()) {
-        qWarning() << "Light texture not created";
-        return;
-    }
+        // 检查纹理是否有效
+        if (m_pLightTex && !m_pLightTex->isCreated()) {
+            qWarning() << "Light texture not created in paintGL";
+            return;
+        }
         
         if (m_bPlaying) {
-
+            qDebug() << "Rendering video frame";
             qreal dpr = qApp->devicePixelRatio();
             QSize scaled = size() * dpr;
             int nFlip = 1;
 
             if (!m_bUseCustomFBO) {
+                qDebug() << "Using default framebuffer for rendering";
                 mpv_opengl_fbo fbo {
                     static_cast<int>(defaultFramebufferObject()), scaled.width(), scaled.height(), 0
                 };
@@ -862,9 +870,7 @@ namespace dmr {
 
                 m_renderContexRender(m_pRenderCtx, params);
             } else {
-                //pGLFunction->glEnable(GL_BLEND);
-                //pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+                qDebug() << "Using custom FBO for rendering";
                 m_pFbo->bind();
 
                 mpv_opengl_fbo fbo {
@@ -974,6 +980,7 @@ namespace dmr {
             }
 #endif
         } else {
+            qDebug() << "Rendering idle state";
             pGLFunction->glEnable(GL_BLEND);
             pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             QColor color = QColor(37, 37, 37, 255);
@@ -1092,7 +1099,7 @@ namespace dmr {
 
     void MpvGLWidget::initMpvFuns()
     {
-        qInfo() << "MpvGLWidget开始initMpvFuns";
+        qInfo() << "Initializing MPV functions";
         QLibrary mpvLibrary(SysUtils::libPath("libmpv.so"));
         m_callback = reinterpret_cast<mpv_render_contextSet_update_callback>(mpvLibrary.resolve("mpv_render_context_set_update_callback"));
         m_context_report = reinterpret_cast<mpv_render_contextReport_swap>(mpvLibrary.resolve("mpv_render_context_report_swap"));

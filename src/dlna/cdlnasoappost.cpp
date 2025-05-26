@@ -15,6 +15,8 @@
 #include "getdlnaxmlvalue.h"
 #include <QEventLoop>
 #include <QTimer>
+#include <QDebug>
+
 static QString dlnaPlay(
         "<?xml version='1.0' encoding='utf-8'?>\r\n"
         "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n"
@@ -96,11 +98,13 @@ static QString dlnaSetNextAVTransportURI(
     );
 CDlnaSoapPost::CDlnaSoapPost(QObject *parent) : QObject(parent)
 {
+    qDebug() << "Initializing DLNA SOAP client";
     m_pNetWorkManager = new QNetworkAccessManager(this);
 }
 
 CDlnaSoapPost::~CDlnaSoapPost()
 {
+    qDebug() << "Cleaning up DLNA SOAP client";
     if(m_pNetWorkManager) {
         m_pNetWorkManager->deleteLater();
         m_pNetWorkManager = nullptr;
@@ -114,6 +118,7 @@ QString CDlnaSoapPost::getTimeStr(qint64 pos)
 {
     QTime time(0, 0, 0);
     QString strTime = time.addSecs(static_cast<int>(pos)).toString("hh:mm:ss");
+    qDebug() << "Converting position" << pos << "to time string:" << strTime;
     return strTime;
 }
 /**
@@ -129,7 +134,8 @@ void CDlnaSoapPost::SoapOperPost(DlnaOper oper,
 {
     QByteArray reqData;
     QString sOperName;
-    qDebug() <<"sLocalUrl: " << sLocalUrl;
+    qDebug() << "Preparing DLNA operation:" << oper << "URL:" << sLocalUrl;
+    
     if(oper == DLNA_SetAVTransportURI) {
         sOperName = "SetAVTransportURI";
         reqData = dlnaSetAVTransportURI.arg(sLocalUrl).toUtf8();
@@ -171,8 +177,9 @@ void CDlnaSoapPost::SoapOperPost(DlnaOper oper,
          qDebug() <<"reply:" << data;
          if(data.contains("SetAVTransportURIResponse")) {
             SoapOperPost(DLNA_Play, ControlURLPro, sHostUrl, sLocalUrl);
-         }
-         if(data.contains("GetPositionInfoResponse")) {
+        }
+        if(data.contains("GetPositionInfoResponse")) {
+            qDebug() << "Parsing GetPositionInfo response";
             GetDlnaXmlValue xmldata(data);
             DlnaPositionInfo posInfo;
             posInfo.nTrack  = xmldata.getValueByPath("s:Body/u:GetPositionInfoResponse/Track").toInt();
@@ -183,6 +190,12 @@ void CDlnaSoapPost::SoapOperPost(DlnaOper oper,
             posInfo.sAbsTime  = xmldata.getValueByPath("s:Body/u:GetPositionInfoResponse/AbsTime");
             posInfo.nRelCount  = xmldata.getValueByPath("s:Body/u:GetPositionInfoResponse/RelCount").toLongLong();
             posInfo.nAbsCount  = xmldata.getValueByPath("s:Body/u:GetPositionInfoResponse/AbsCount").toLongLong();
+            
+            qDebug() << "Position info - Track:" << posInfo.nTrack 
+                     << "Duration:" << posInfo.sTrackDuration
+                     << "RelTime:" << posInfo.sRelTime
+                     << "AbsTime:" << posInfo.sAbsTime;
+                     
             emit sigGetPostionInfo(posInfo);
          }
      });

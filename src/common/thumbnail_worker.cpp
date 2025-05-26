@@ -22,9 +22,11 @@ QWaitCondition ThumbnailWorker::m_cond;
 
 ThumbnailWorker::~ThumbnailWorker()
 {
+    qDebug() << "Destroying ThumbnailWorker instance";
     free(m_pCharTime);
     if (m_video_thumbnailer) {
         m_mvideo_thumbnailer_destroy(m_video_thumbnailer);
+        qDebug() << "Video thumbnailer destroyed";
     }
 }
 
@@ -43,10 +45,15 @@ ThumbnailWorker &ThumbnailWorker::get()
 bool ThumbnailWorker::isThumbGenerated(const QUrl &url, int secs)
 {
     QMutexLocker lock(&m_thumbLock);
-    if (!_cache.contains(url)) return false;
+    if (!_cache.contains(url)) {
+        qDebug() << "No thumbnail cache found for:" << url.toString();
+        return false;
+    }
 
     const auto &l = _cache[url];
-    return l.contains(secs);
+    bool exists = l.contains(secs);
+    qDebug() << "Thumbnail exists for" << url.toString() << "at" << secs << "seconds:" << exists;
+    return exists;
 }
 
 QPixmap ThumbnailWorker::getThumb(const QUrl &url, int secs)
@@ -68,19 +75,25 @@ void ThumbnailWorker::setPlayerEngine(PlayerEngine *pPlayerEngline)
 
 void ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 {
+    qDebug() << "Requesting thumbnail for:" << url.toString() << "at" << secs << "seconds";
     if(CompositingManager::get().platform() != Platform::Mips) {
         if (m_thumbLock.tryLock()) {
             _wq.push_front(qMakePair(url, secs));
             m_cond.wakeOne();
             m_thumbLock.unlock();
+            qDebug() << "Added thumbnail request to queue";
+        } else {
+            qWarning() << "Failed to acquire lock for thumbnail request";
         }
     } else {
+        qDebug() << "Running thumbnail generation in single thread mode";
         runSingle(qMakePair(url, secs));
     }
 }
 
 ThumbnailWorker::ThumbnailWorker()
 {
+    qDebug() << "Initializing ThumbnailWorker";
     initThumb();
     m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
 
@@ -90,6 +103,7 @@ ThumbnailWorker::ThumbnailWorker()
 
 void ThumbnailWorker::initThumb()
 {
+    qDebug() << "Initializing thumbnail library";
     QLibrary library(SysUtils::libPath("libffmpegthumbnailer.so"));
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
@@ -100,14 +114,21 @@ void ThumbnailWorker::initThumb()
     if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
             || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
             || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr) {
+        qCritical() << "Failed to resolve required thumbnail functions from library";
         return;
     }
 
     m_video_thumbnailer = m_mvideo_thumbnailer();
+    if (!m_video_thumbnailer) {
+        qCritical() << "Failed to create video thumbnailer instance";
+    } else {
+        qInfo() << "Successfully initialized thumbnail library";
+    }
 }
 
 QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
 {
+    qDebug() << "Generating thumbnail for:" << url.toString() << "at" << secs << "seconds";
     auto dpr = qApp->devicePixelRatio();
     QPixmap pm;
     pm.setDevicePixelRatio(dpr);
@@ -118,17 +139,20 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
 
     QTime d(0, 0, 0);
     d = d.addSecs(secs);
-    //memset(m_pChTime,0,strlen(m_pChTime));
     strcpy(m_pCharTime, d.toString("hh:mm:ss").toLatin1().data());
     m_video_thumbnailer->seek_time = m_pCharTime;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
+    
     try {
+        qDebug() << "Generating thumbnail for file:" << file;
         m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, file.toUtf8().data(),  m_image_data);
         auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
 
         pm = QPixmap::fromImage(img.scaled(thumbSize() * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         pm.setDevicePixelRatio(dpr);
+        qDebug() << "Successfully generated thumbnail, size:" << pm.size();
     } catch (const std::logic_error &e) {
+        qWarning() << "Failed to generate thumbnail:" << e.what();
     }
 
     m_mvideo_thumbnailer_destroy_image_data(m_image_data);
@@ -137,9 +161,9 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
     return pm;
 }
 
-//cppcheck 误报
 void ThumbnailWorker::run()
 {
+    qDebug() << "Starting thumbnail worker thread";
     setPriority(QThread::IdlePriority);
     while (
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -164,6 +188,7 @@ void ThumbnailWorker::run()
             if (!_wq.isEmpty()) {
                 w = _wq.takeFirst();
                 _wq.clear();
+                qDebug() << "Processing thumbnail request from queue";
             }
         }
 
@@ -179,7 +204,7 @@ void ThumbnailWorker::run()
             QMutexLocker lock(&m_thumbLock);
             //TODO: optimize: need a lru map
             if (_cacheSize > SIZE_THRESHOLD) {
-                qInfo() << "thumb cache size exceeds maximum, clean up";
+                qInfo() << "Thumbnail cache size exceeds maximum threshold, cleaning up cache";
                 _cache.clear();
                 _cacheSize = 0;
             }
@@ -194,19 +219,22 @@ void ThumbnailWorker::run()
 
             QTime d(0, 0, 0);
             d = d.addSecs(w.second);
-            qInfo() << "thumb for " << w.first << d.toString("hh:mm:ss");
+            qInfo() << "Generated thumbnail for" << w.first << "at" << d.toString("hh:mm:ss");
         }
 
         emit thumbGenerated(w.first, w.second);
     }
 
+    qDebug() << "Clearing thumbnail request queue";
     _wq.clear();
 }
 
 void ThumbnailWorker::runSingle(QPair<QUrl, int> w)
 {
+    qDebug() << "Running single thumbnail generation for:" << w.first.toString() << "at" << w.second << "seconds";
+    
     if (_cacheSize > SIZE_THRESHOLD) {
-        qInfo() << "thumb cache size exceeds maximum, clean up";
+        qInfo() << "Thumbnail cache size exceeds maximum threshold, cleaning up cache";
         _cache.clear();
         _cacheSize = 0;
     }
@@ -220,7 +248,7 @@ void ThumbnailWorker::runSingle(QPair<QUrl, int> w)
 
         QTime d(0, 0, 0);
         d = d.addSecs(w.second);
-        qInfo() << "thumb for " << w.first << d.toString("hh:mm:ss");
+        qInfo() << "Generated thumbnail for" << w.first << "at" << d.toString("hh:mm:ss");
     }
 
     emit thumbGenerated(w.first, w.second);
