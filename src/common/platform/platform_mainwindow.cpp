@@ -3495,6 +3495,27 @@ void Platform_MainWindow::slotVolumeChanged(int nVolume)
         m_pPresenter->slotvolumeChanged();
     }
 
+#if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
+    static bool firstInit = false;
+    if (!firstInit) {
+        QTimer::singleShot(50, [=](){
+            if (nVolume == 0) {
+                m_pCommHintWid->updateWithMessage(tr("Mute"));
+            } else {
+                m_pCommHintWid->updateWithMessage(tr("Volume: %1%").arg(nVolume));
+            }
+        });
+        firstInit = true;
+    } else {
+        if (nVolume == 0) {
+            m_pCommHintWid->updateWithMessage(tr("Mute"));
+        } else {
+            m_pCommHintWid->updateWithMessage(tr("Volume: %1%").arg(nVolume));
+        }
+    }
+    return;
+#endif
+
     if (nVolume == 0) {
         m_pCommHintWid->updateWithMessage(tr("Mute"));
     } else {
