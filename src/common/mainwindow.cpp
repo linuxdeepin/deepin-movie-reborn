@@ -1127,48 +1127,6 @@ MainWindow::MainWindow(QWidget *parent)
                                          SLOT(slotProperChanged(QString, QVariantMap, QStringList)));
     qInfo() << "session Path is :" << path;
     connect(dynamic_cast<MpvProxy *>(m_pEngine->getMpvProxy()),&MpvProxy::crashCheck,&Settings::get(),&Settings::crashCheck);
-    if(utils::check_wayland_env()) {
-        connect(qApp, &QGuiApplication::screenRemoved, this, [=](){
-            QRect geoRect = geometry();
-            QRect deskRect = QApplication::desktop()->availableGeometry(geoRect.topLeft());
-
-            if(!deskRect.intersects(geoRect)) {
-                m_pEngine->makeCurrent();
-                bool bMinState = isMinimized();
-                if(isMaximized()) {
-                    m_mwdRect = geoRect;
-                    m_bMaxByScreenRemoved = true;
-                } else {
-                    move(deskRect.x(), deskRect.y());
-                }
-                hide();
-                show();
-                if(bMinState) {
-                    showMinimized();
-                }
-            }
-        });
-        connect(qApp, &QGuiApplication::screenAdded, this, [=](){
-            QTimer::singleShot(1000, this, [&]() {
-                m_pEngine->makeCurrent();
-                bool bMinState = isMinimized();
-                if(m_bMaxByScreenRemoved) {
-                    if(isMaximized()) {
-                        if(m_mwdRect.isValid()) {
-                            setGeometry(m_mwdRect);
-                        }
-                    }
-                }
-                hide();
-                show();
-                if(bMinState) {
-                    showMinimized();
-                }
-                m_bMaxByScreenRemoved = false;
-            });
-
-        });
-    }
     //解码初始化
     decodeInit();
 }
@@ -3761,13 +3719,7 @@ void MainWindow::showEvent(QShowEvent *pEvent)
     if (m_pPlaylist) {
         m_pPlaylist->raise();
     }
-    //判断屏幕可用坐标与应用的geometry是否有交集，没有就设置到可用屏幕坐标中
-    QRect geoRect = geometry();
-    QRect deskRect = QApplication::desktop()->availableGeometry(geoRect.topLeft());
 
-    if(!deskRect.intersects(geoRect)) {
-        setGeometry(QRect(deskRect.x(), deskRect.y(), geoRect.width(), geoRect.height()));
-    }
     resumeToolsWindow();
 
     if (!qgetenv("FLATPAK_APPID").isEmpty()) {
