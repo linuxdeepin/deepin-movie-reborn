@@ -809,6 +809,7 @@ void PlayerEngine::play()
         qWarning() << "Cannot play: no backend or empty playlist";
         return;
     }
+    if (_playingRequest) return;
 
     if (state() == CoreState::Paused &&
             getBackendProperty("keep-open").toBool() &&
@@ -817,8 +818,7 @@ void PlayerEngine::play()
         stop();
         next();
     } else if (state() == CoreState::Idle) {
-        qDebug() << "Player is idle, playing next item";
-        next();
+        playByName(_playlist->currentInfo().url);
     }
     qDebug() << "Exiting PlayerEngine::play().";
 }
