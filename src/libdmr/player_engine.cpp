@@ -587,6 +587,7 @@ void PlayerEngine::makeCurrent()
 void PlayerEngine::play()
 {
     if (!_current || !_playlist->count()) return;
+    if (_playingRequest) return;
 
     if (state() == CoreState::Paused &&
             getBackendProperty("keep-open").toBool() &&
@@ -594,7 +595,7 @@ void PlayerEngine::play()
         stop();
         next();
     } else if (state() == CoreState::Idle) {
-        next();
+        playByName(_playlist->currentInfo().url);
     }
 }
 
