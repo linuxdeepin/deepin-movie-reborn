@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.5.15) unstable; urgency=medium
+
+  * chore: Update deepin-manual resources
+
+ -- dengzhongyuan <dengzhongyuan@uniontech.com>  Fri, 20 Jun 2025 10:33:22 +0800
+
 deepin-movie-reborn (6.5.14) unstable; urgency=medium
 
   * fix:  resolve AV1 video decoding freeze issue on SW64 architecture
