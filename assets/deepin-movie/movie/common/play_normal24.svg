@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ICON / Media / Play_Arrow</title>
+    <g id="组件" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="button-Play-Start" transform="translate(-6, -6)" fill="#000000" fill-rule="nonzero">
+            <g id="ICON-/-Media-/-Play_Arrow" transform="translate(12, 11)">
+                <path d="M2.9255463,0.410984823 C1.3098117,-0.575687931 0,0.276493293 0,2.30063101 L0,11.6997235 C0,13.730019 1.31512243,14.5727993 2.9255463,13.5893697 L10.7901898,8.7867063 C12.4059244,7.80003355 12.4006136,6.19707786 10.7901898,5.21364818 L2.9255463,0.410984823 Z" id="play"></path>
+            </g>
+        </g>
+    </g>
+</svg>
