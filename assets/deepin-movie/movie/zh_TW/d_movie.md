@@ -51,14 +51,19 @@
 | <img src="../common/last_normal.svg" class="inline" /> | 播放上一部影片 | <img src="../common/next_normal.svg" class="inline" /> | 播放下一部影片 |
 | <img src="../common/play_normal.svg" class="inline" /> | 開始播放影片      | <img src="../common/suspend_normal.svg" class="inline" /> | 暫停播放影片   |
 | <img src="../common/zoom_in_normal.svg" class="inline" /> | 全螢幕播放          | <img src="../common/zoom_out_normal.svg" class="inline" /> | 退出全螢幕       |
-| <img src="../common/volume_normal.svg" class="inline" /> | 調節音量 | <img src="../common/episodes_normal.svg" class="inline" />      | 呼出/隱藏播放列表         |
+| <img src="../common/volume_normal.svg" class="inline" /> | 調節音量 | <img src="../common/episodes_normal36.svg" class="inline" />   | 呼出/隱藏播放列表         |
+| <img src="../common/cast.svg" class="inline" /> | 投放畫面至其他裝置 |  |  |
 
 ## 操作介紹
+
+您可以在影院中進行影片添加、刪除、訊息查看等操作。
+
+> ![notes](../common/notes.svg) 說明：採用不同的解碼技術，其所支援的功能也會不同，請以實際介面為準。
 
 ### 添加影片
 
 您可以透過以下方式播放影片：
-- 當播放列表沒有檔案時，單擊 ![play](../common/play_normal.svg) 或 ![movie_24](../common/movie_24.svg) 按鈕，打開檔案管理器選擇影片檔案。
+- 當播放列表沒有檔案時，單擊 ![play](../common/play_normal24.svg)按鈕，打開檔案管理器選擇影片檔案。
 - 單擊滑鼠右鍵或從![menu](../common/icon_menu.svg)選擇 **開啟檔案**，開啟檔案管理器選擇影片檔案。
 - 單擊滑鼠右鍵或從![menu](../common/icon_menu.svg)選擇 **開啟資料夾**，資料夾中的影片檔案將全部顯示在播放列表中，並依次進行播放。
 - 單擊滑鼠右鍵，選擇 **開啟網址**，輸入影片檔案的網路地址，播放影片。
@@ -117,7 +122,7 @@
 >- 按下鍵盤上的 **Ctrl** + ![Left](../common/Left.svg) 鍵，影片減速播放。
 >- 按下鍵盤上的 ![R](../common/R.svg) 鍵，復原原速播放。
 
-![0|speed](fig/playback_speed.png)
+![0|speed](fig/playbackspeed.png)
 
 ### 調整畫面
 
@@ -164,6 +169,15 @@
 1. 在電影介面上，單擊滑鼠右鍵。
 2. 選擇 **影片資訊**，可以查看影片的影片資訊、編碼訊息、音軌訊息。
 
+### 影片投放
+
+1. 在電影介面，單擊 ![movie](../common/cast-24.svg )。
+
+2. 進入投放裝置選擇畫面，系統將自動搜尋與本裝置位於同一網路的可投放裝置。
+
+3. 在搜尋結果頁面中，單擊要投放的裝置名稱即可開始投放。
+
+4. 投放成功後，將會顯示投放畫面，單擊其中的結束投放按鈕即可停止投放。
 
 ## 列表管理
 

@@ -19,7 +19,7 @@
 
 ### 关闭影院
 - 在影院界面单击 ![close_icon](../common/close.svg)，退出影院。
-- 在任务栏右键单击 ![movie_24](../common/movie_24.svg)，选择 **关闭所有**，退出影院。
+- 在任务栏上右键单击 ![movie_24](../common/movie_24.svg)，选择 **关闭所有**，退出影院。
 - 在影院界面单击 ![icon_menu](../common/icon_menu.svg)，选择 **退出**，退出影院。
 
 ### 查看快捷键
@@ -43,7 +43,7 @@
 | 5    | 标题栏   | 显示正在播放的视频名称。                                     |
 | 6    | 主菜单  | 通过主菜单可添加影片、设置影片、切换窗口主题、查看帮助手册和版本信息等。                      |
 
-> ![notes](../common/notes.svg)说明 ：当鼠标置于进度条上时，默认显示预览窗口。若要关闭预览窗口，请在设置中取消勾选 **鼠标悬停进度条时显示预览**。
+> ![notes](../common/notes.svg) 说明 ：当鼠标置于进度条上时，默认显示预览窗口。如果要关闭预览窗口，可在设置中取消勾选 **鼠标悬停进度条时显示预览**。
 
 ### 工具栏介绍
 
@@ -52,16 +52,22 @@
 | <img src="../common/last_normal.svg">     | 播放上一个影片    | <img src="../common/next_normal.svg">    | 播放下一个影片 |
 | <img src="../common/play_normal.svg">     | 开始播放影片      | <img src="../common/suspend_normal.svg"> | 暂停播放影片   |
 | <img src="../common/zoom_in_normal.svg">  | 全屏播放          | <img src="../common/zoom_out_normal.svg"> |  退出全屏      |
-| <img src="../common/volume_normal.svg">  | 调节音量       |<img src="../common/episodes_normal.svg">|呼出/隐藏播放列表|
+| <img src="../common/volume_normal.svg">  | 调节音量       |<img src="../common/episodes_normal36.svg">|呼出/隐藏播放列表|
+| <img src="../common/cast.svg"> | 投屏到其他设备 |||
 
 
 
 ## 操作介绍
 
+您可以在影院中进行影片添加、删除、信息查看等操作。
+
+> ![notes](../common/notes.svg) 说明：采用不同的解码技术，其所支持的功能也会不同，请以实际界面为准。
+
+
 ### 添加影片
 
 您可以通过以下方式来添加影片：
-- 当播放列表没有文件时，单击 ![play](../common/play_normal.svg) 或 ![movie_24](../common/movie_24.svg) 按钮，打开文件管理器选择影片文件。
+- 当播放列表没有文件时，单击![play](../common/play_normal24.svg)按钮，打开文件管理器选择影片文件。
 - 单击鼠标右键或从 ![menu](../common/icon_menu.svg) 选择 **打开文件**，打开文件管理器选择影片文件。
 - 单击鼠标右键或从 ![menu](../common/icon_menu.svg) 选择 **打开文件夹**，文件夹中的影音文件将全部显示在播放列表中，并依次进行播放。
 - 单击鼠标右键，选择 **打开URL**，输入视频文件的网络地址，播放影片。
@@ -120,7 +126,7 @@
 > - 按下键盘上的 **Ctrl** + ![Left](../common/Left.svg) 键，视频减速播放。
 > - 按下键盘上的 ![R](../common/R.svg) 键，恢复原速播放。
 
-![0|speed](fig/playback_speed.png)
+![0|speed](fig/playbackspeed.png)
 
 ### 调整画面
 
@@ -170,6 +176,13 @@
 
 1. 在影院界面，单击鼠标右键。
 2. 选择 **影片信息**，查看影片信息、编码信息、音频流信息。
+
+### 视频投屏
+
+1. 在影院界面，单击![movie](../common/cast-24.svg )。
+2. 进入投屏设备选择界面，自动搜索与本设备处于同一网络的可投屏设备。
+3. 在搜索结果页，单击要投屏的设备名称将会发起投屏。
+4. 投屏成功后，将会显示投屏中界面，单击其中的退出投屏按钮可结束投屏。
 
 
 ## 列表管理

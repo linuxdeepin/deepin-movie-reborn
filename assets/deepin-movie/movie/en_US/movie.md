@@ -26,7 +26,7 @@ Movie is a video player with simple interface and smooth performance, which is c
 
 On the Movie interface, press **Ctrl + Shift + ?** to view shortcuts. Proficiency in shortcuts will greatly improve your efficiency.
 
-![1|shortcut](fig/shortcut.png)
+![1|shortcut](fig/hotkey.png)
 
 ## Main Interface
 
@@ -46,12 +46,13 @@ On the Movie interface, press **Ctrl + Shift + ?** to view shortcuts. Proficienc
 
 ### Icon Description
 
-| Icon                                                       | Name       | Icon                                                       | Name            |
-| ---------------------------------------------------------- | ---------- | ---------------------------------------------------------- | --------------- |
-| <img src="../common/last_normal.svg" class="inline" />     | Previous   | <img src="../common/next_normal.svg" class="inline" />     | Next            |
-| <img src="../common/play_normal.svg" class="inline" />     | Play       | <img src="../common/suspend_normal.svg" class="inline" />  | Pause           |
-| <img src="../common/zoom_in_normal.svg" class="inline" />    | Fullscreen | <img src="../common/zoom_out_normal.svg" class="inline" /> | Exit fullscreen |
-| <img src="../common/episodes_normal.svg" class="inline" /> | Playlist   | <img src="../common/volume_normal.svg" class="inline" />    | Volume          |
+| Icon                                                         | Name                  | Icon                                                       | Name            |
+| ------------------------------------------------------------ | --------------------- | ---------------------------------------------------------- | --------------- |
+| <img src="../common/last_normal.svg" class="inline" />       | Previous              | <img src="../common/next_normal.svg" class="inline" />     | Next            |
+| <img src="../common/play_normal.svg" class="inline" />       | Play                  | <img src="../common/suspend_normal.svg" class="inline" />  | Pause           |
+| <img src="../common/zoom_in_normal.svg" class="inline" />    | Fullscreen            | <img src="../common/zoom_out_normal.svg" class="inline" /> | Exit fullscreen |
+| <img src="../common/episodes_normal36.svg" class="inline" /> | Playlist              | <img src="../common/volume_normal.svg" class="inline" />   | Volume          |
+| <img src="../common/cast.svg" class="inline" />              | Cast to Other Devices |                                                            |                 |
 
 
 ## Basic Operations
@@ -63,7 +64,7 @@ You can add, delete, view the information of the film or perform other operation
 ### Play Films
 
 You can play films in the following ways:
-- When there are no files in the playlist, click ![play](../common/play_normal.svg)or ![movie_24](../common/movie_24.svg) and open the File Manager to select a film file.
+- When there are no files in the playlist, click ![play](../common/play_normal24.svg)and open the File Manager to select a film file.
 - On the Movie interface, right-click or click ![menu](../common/icon_menu.svg) to select **Open file** and open the File Manager to select a film file.
 - On the Movie interface, right-click or click ![menu](../common/icon_menu.svg) to select **Open folder**. All the audiovisual files in the folder are displayed in the playlist and will be played in turn. 
 - On the Movie interface, right-click, select **Open URL**, and paste the address to play the film.
@@ -96,7 +97,7 @@ Right-click on the Movie interface and you can:
 
 >![notes](../common/notes.svg) Notes: Double-click the window to switch between **Fullscreen** and **Normal Window**.
 
-![0|window](fig/window.png)
+![0|window](fig/fullscreen.png)
 
 ### Adjust Play Mode
 
@@ -108,7 +109,7 @@ Right-click on the Movie interface and you can:
  - Select **Single Loop** and the film will be played over and over again.
  - Select **List Loop** and the whole playlist will be played over and over again in the current order.
 
-![0|play_mode](fig/play_mode.png)
+![0|play_mode](fig/mode.png)
 
 ### Adjust Playback Speed
 
@@ -151,7 +152,7 @@ Right-click on the Movie interface and you can:
  - Select **Hide** to hide the current film subtitle.
  - Select **Encodings** to select an encoding for the film to solve the issue of garbled subtitles in some cases.
 
-![0|subtitle](fig/subtitle.png)
+![0|subtitle](fig/subtitles.png)
 
 ### Take Screenshots
 1. Right-click on the Movie interface.
@@ -160,12 +161,22 @@ Right-click on the Movie interface and you can:
  - Select **Burst Shooting** to take 15 screenshots of the film at different times to form a preview image of the storyline.
  - Select **Open screenshot folder** to view the screenshots.
 
-![0|screenshot](fig/screenshot.png)
+![0|screenshot](fig/capture.png)
 
 ### View Film Info
 
 1. Right-click on the Movie interface.
 2. Select **Film Info** and you can view the film info, codec info, and audio info of the film. 
+
+### Video Casting
+
+1. Click![movie](../common/cast-24.svg )on the Movie interface.
+
+2. The casting device selection screen will appear, automatically searching for castable devices on the same local network.
+
+3. On the search results page, click the target device name to start casting.
+
+4. When casting succeeds, the active casting screen will appear. Click the Stop Casting button to end the session.
 
 ## Playlist Management
 
@@ -178,7 +189,7 @@ You can enter the playlist to manage the existing video files.
 
 > ![tips](../common/tips.svg) Tips: On the Playlist interface, hover the mouse pointer over the video file and click ![close](../common/close.svg) to delete it.
 
-![list](fig/listmanage.png)
+![list](fig/list.png)
 
 ### Clear Playlist
 

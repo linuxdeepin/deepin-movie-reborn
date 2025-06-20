@@ -51,7 +51,8 @@
 | <img src="../common/last_normal.svg" class="inline" /> | 播放上一個影片    | <img src="../common/next_normal.svg" class="inline" /> | 播放下一個影片 |
 | <img src="../common/play_normal.svg" class="inline" /> | 開始播放影片      | <img src="../common/suspend_normal.svg" class="inline" /> | 暫停播放影片   |
 | <img src="../common/zoom_in_normal.svg" class="inline" /> | 全螢幕播放          | <img src="../common/zoom_out_normal.svg" class="inline" /> |  退出全螢幕      |
-| <img src="../common/volume_normal.svg" class="inline" /> | 調節音量       |<img src="../common/episodes_normal.svg" class="inline" />|呼出/隱藏播放列表|
+| <img src="../common/volume_normal.svg" class="inline" /> | 調節音量       |<img src="../common/episodes_normal36.svg" class="inline" />|呼出/隱藏播放列表|
+| <img src="../common/cast.svg" class="inline" /> | 投射畫面至其他裝置 |||
 
 
 ## 操作介绍
@@ -63,7 +64,7 @@
 ### 添加影片
 
 您可以通過以下方式來播放影片：
-- 當播放列表沒有文件時，單擊 ![play](../common/play_normal.svg) 或 ![movie_24](../common/movie_24.svg) 按鈕，打開文件管理器選擇影片文件。
+- 當播放列表沒有文件時，單擊 ![play](../common/play_normal24.svg)按鈕，打開文件管理器選擇影片文件。
 - 單擊鼠標右鍵或從 ![menu](../common/icon_menu.svg) 選擇 **開啓檔案**， 選擇影片文件。
 - 單擊鼠標右鍵或從 ![menu](../common/icon_menu.svg) 選擇 **開啓資料夾**，文件夾中的影音文件將全部顯示在播放列表中，並依次進行播放。
 - 單擊鼠標右鍵，選擇 **打開網址**，輸入影片文件的網絡地址，播放影片。
@@ -120,7 +121,7 @@
 > - 按下鍵盤上的 **Ctrl** + ![Left](../common/Left.svg) 鍵，影片減速播放。
 > - 按下鍵盤上的 ![R](../common/R.svg) 鍵，恢復原速播放。
 
-![0|speed](fig/playback.png)
+![0|speed](fig/playbackspeed.png)
 
 ### 調整影格
 1. 在電影界面，單擊鼠標右鍵。
@@ -166,6 +167,15 @@
 1. 在電影界面，單擊鼠標右鍵。
 2. 選擇 **影片訊息**，可以查看影片的詳細訊息。
 
+### 影片投射
+
+1. 在電影界面，單擊![movie](../common/cast-24.svg )。
+
+2. 進入投射裝置選擇介面，系統將自動搜尋與本裝置處於同一網絡的可投射裝置。
+
+3. 在搜尋結果頁面，單擊要投射的裝置名稱即可發起投射。
+
+4. 投射成功後，將會顯示投屏畫面，單擊其中的「退出投射」按鈕即可結束投射。
 
 ## 列表管理
 
