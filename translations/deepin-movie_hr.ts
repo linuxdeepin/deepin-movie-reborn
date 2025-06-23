@@ -6,18 +6,19 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="57"/>
         <source>Exit Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Izađi iz Miracasta</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="74"/>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektiranje...
+Nemoj izći iz aplikacije za filmove tokom procesa.</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="102"/>
         <source>Display device</source>
-        <translation type="unfinished"></translation>
+        <translation>Uređaj za prikaz</translation>
     </message>
 </context>
 <context>
@@ -25,59 +26,52 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="71"/>
         <source>Project to</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektiraj na</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="369"/>
         <source>Searching for devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>Traženje uređaja...</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="378"/>
         <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nijedan uređaj za prikaz Miracasta nije pronađen. Molimo vas da spojite uređaj i računalo na isti WLAN mrežu.</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="324"/>
-        <location filename="../src/common/mainwindow.cpp" line="328"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>U redu</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="340"/>
-        <location filename="../src/common/mainwindow.cpp" line="344"/>
         <source>Invalid folder</source>
         <translation>Neispravna mapa</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="360"/>
-        <location filename="../src/common/mainwindow.cpp" line="364"/>
         <source>Open folder</source>
         <translation>Otvori mapu</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2872"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2898"/>
-        <location filename="../src/common/mainwindow.cpp" line="2847"/>
-        <location filename="../src/common/mainwindow.cpp" line="2872"/>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Prilagođena metoda dekodiranja mora biti ponovno pokrenuta prije nego što postane učinkovita,
+želi li da je ponovno pokrenete?</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3261"/>
-        <location filename="../src/common/mainwindow.cpp" line="3268"/>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Mreža je odspojena</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
-        <location filename="../src/common/mainwindow.cpp" line="326"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemate dozvolu za rad u ovom folderu</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="10"/>
@@ -92,17 +86,17 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="12"/>
         <source>Show thumbnails in progress bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Prikaži minijature u traci napretka</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="13"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"></translation>
+        <translation>Prikaži predgled videa pri prelasku miša</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="14"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"></translation>
+        <translation>Otvori novi player za svaki datoteku koja se odvija</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="15"/>
@@ -117,7 +111,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="17"/>
         <source>Default play mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadani način odmora</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="18"/>
@@ -136,7 +130,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="21"/>
-        <location filename="../src/common/settings_translation.cpp" line="26"/>
         <source>Screenshot</source>
         <translation>Snimak zaslona</translation>
     </message>
@@ -162,7 +155,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="27"/>
-        <location filename="../src/common/settings_translation.cpp" line="28"/>
         <source>Subtitle</source>
         <translation>Podnapis</translation>
     </message>
@@ -204,12 +196,12 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="36"/>
         <source>Next frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Slijedeća okvir</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="37"/>
         <source>Previous frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Prošli okvir</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="38"/>
@@ -249,12 +241,12 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="45"/>
         <source>Reset speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponovi brzinu</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="46"/>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Izbrisi iz liste prijevoda</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="47"/>
@@ -264,52 +256,52 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="50"/>
         <source>Burst shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>Burst snimanje</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="55"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Veličina</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="60"/>
         <source>Decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Dekodiranje</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="61"/>
         <source>Auto select (Recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatski odabir (Preporučeno)</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="62"/>
         <source>Hardware decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Hardver dekodiranje</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="63"/>
         <source>Software decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Softver dekodiranje</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="64"/>
         <source>Customize</source>
-        <translation type="unfinished"></translation>
+        <translation>Prilagoditi</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="65"/>
         <source>Decode mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Način dekodiranja</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="66"/>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>Video izlaz</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="67"/>
         <source>Rendering engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor renderiranja</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="48"/>
@@ -324,7 +316,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="51"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekranska snimka filma</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="52"/>
@@ -344,41 +336,32 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="56"/>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Izađi iz načina punog zaslona/mini</translation>
     </message>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="582"/>
-        <location filename="../src/main.cpp" line="288"/>
-        <location filename="../src/main.cpp" line="360"/>
-        <location filename="../src/widgets/volumeslider.cpp" line="113"/>
-        <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="116"/>
-        <location filename="../src/common/volumemonitoring.cpp" line="68"/>
-        <location filename="../src/common/dmr_settings.cpp" line="285"/>
         <source>Movie</source>
-        <translation type="unfinished"></translation>
+        <translation>Филм</translation>
     </message>
     <message>
         <location filename="../src/main.cpp" line="289"/>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Филм је видео плејер са потпуним функцијама, подржава плејање локалних и стримованих медија у више формата видеа.</translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="186"/>
-        <location filename="../src/common/settings_translation.cpp" line="59"/>
         <source>Settings</source>
         <translation type="unfinished">Postavke</translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="189"/>
-        <location filename="../src/common/settings_translation.cpp" line="57"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Помоћ</translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="194"/>
-        <location filename="../src/common/settings_translation.cpp" line="58"/>
         <source>Display shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Прикажи кратке уpute</translation>
     </message>
 </context>
 <context>
@@ -391,7 +374,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/url_dialog.cpp" line="20"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>Уређено</translation>
     </message>
     <message>
         <location filename="../src/widgets/url_dialog.cpp" line="26"/>
@@ -403,74 +386,58 @@ and whether to restart it?</source>
     <name>dmr::ActionFactory</name>
     <message>
         <location filename="../src/common/actions.cpp" line="56"/>
-        <location filename="../src/common/actions.cpp" line="310"/>
-        <location filename="../src/common/actions.cpp" line="366"/>
         <source>Settings</source>
         <translation>Postavke</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="132"/>
-        <location filename="../src/common/actions.cpp" line="319"/>
         <source>Fullscreen</source>
         <translation>Cijeli zaslon</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="134"/>
-        <location filename="../src/common/actions.cpp" line="321"/>
         <source>Always on Top</source>
         <translation>Uvijek na vrhu</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="101"/>
-        <location filename="../src/common/actions.cpp" line="151"/>
-        <location filename="../src/common/actions.cpp" line="338"/>
         <source>0.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="102"/>
-        <location filename="../src/common/actions.cpp" line="152"/>
-        <location filename="../src/common/actions.cpp" line="339"/>
         <source>1.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.0x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="103"/>
-        <location filename="../src/common/actions.cpp" line="153"/>
-        <location filename="../src/common/actions.cpp" line="340"/>
         <source>1.2x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.2x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="104"/>
-        <location filename="../src/common/actions.cpp" line="154"/>
-        <location filename="../src/common/actions.cpp" line="341"/>
         <source>1.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.5x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="105"/>
-        <location filename="../src/common/actions.cpp" line="155"/>
-        <location filename="../src/common/actions.cpp" line="342"/>
         <source>2.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>2.0x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="89"/>
-        <location filename="../src/common/actions.cpp" line="176"/>
         <source>Next Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Следећа кадра</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="90"/>
-        <location filename="../src/common/actions.cpp" line="177"/>
         <source>Previous Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Претходна кадра</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="376"/>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Обриши списак</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="378"/>
@@ -479,106 +446,81 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="53"/>
-        <location filename="../src/common/actions.cpp" line="127"/>
-        <location filename="../src/common/actions.cpp" line="314"/>
         <source>Open file</source>
         <translation>Otvori datoteku</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="55"/>
-        <location filename="../src/common/actions.cpp" line="128"/>
-        <location filename="../src/common/actions.cpp" line="315"/>
         <source>Open folder</source>
         <translation>Otvori mapu</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="129"/>
-        <location filename="../src/common/actions.cpp" line="316"/>
         <source>Open URL</source>
         <translation>Otvori URL</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="130"/>
-        <location filename="../src/common/actions.cpp" line="317"/>
         <source>Open CD/DVD</source>
         <translation>Otvori CD/DVD</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="133"/>
-        <location filename="../src/common/actions.cpp" line="320"/>
         <source>Mini Mode</source>
         <translation>Mini način</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="66"/>
-        <location filename="../src/common/actions.cpp" line="138"/>
-        <location filename="../src/common/actions.cpp" line="325"/>
         <source>Play Mode</source>
         <translation>Način reprodukcije</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="68"/>
-        <location filename="../src/common/actions.cpp" line="140"/>
-        <location filename="../src/common/actions.cpp" line="327"/>
         <source>Order Play</source>
         <translation>Redoslijed izvođenja</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="69"/>
-        <location filename="../src/common/actions.cpp" line="141"/>
-        <location filename="../src/common/actions.cpp" line="328"/>
         <source>Shuffle Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Случајно плејање</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="70"/>
-        <location filename="../src/common/actions.cpp" line="142"/>
-        <location filename="../src/common/actions.cpp" line="329"/>
         <source>Single Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Само плејање</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="71"/>
-        <location filename="../src/common/actions.cpp" line="143"/>
-        <location filename="../src/common/actions.cpp" line="330"/>
         <source>Single Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Само петл</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="72"/>
-        <location filename="../src/common/actions.cpp" line="144"/>
-        <location filename="../src/common/actions.cpp" line="331"/>
         <source>List Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Списак петл</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="99"/>
-        <location filename="../src/common/actions.cpp" line="149"/>
-        <location filename="../src/common/actions.cpp" line="336"/>
         <source>Playback Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Брзина плејања</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="77"/>
-        <location filename="../src/common/actions.cpp" line="164"/>
         <source>Frame</source>
         <translation>Sličica</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="79"/>
-        <location filename="../src/common/actions.cpp" line="166"/>
         <source>Default</source>
         <translation>Uobičajeno</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="86"/>
-        <location filename="../src/common/actions.cpp" line="173"/>
         <source>Clockwise</source>
         <translation>U smjeru kazaljke na satu</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="87"/>
-        <location filename="../src/common/actions.cpp" line="174"/>
         <source>Counterclockwise</source>
         <translation>Suprotno od smjera kazaljke na satu</translation>
     </message>
@@ -609,7 +551,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="201"/>
-        <location filename="../src/common/actions.cpp" line="424"/>
         <source>Track</source>
         <translation>Zapis</translation>
     </message>
@@ -641,47 +582,42 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/actions.cpp" line="228"/>
         <source>Encodings</source>
-        <translation type="unfinished"></translation>
+        <translation>Кодирања</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="295"/>
-        <location filename="../src/common/actions.cpp" line="352"/>
         <source>Screenshot</source>
         <translation>Snimak zaslona</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="298"/>
-        <location filename="../src/common/actions.cpp" line="355"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Слика филма</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="299"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>Сликање бурстом</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="300"/>
-        <location filename="../src/common/actions.cpp" line="356"/>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Отвори фолдер са сликама</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="308"/>
-        <location filename="../src/common/actions.cpp" line="364"/>
         <source>Playlist</source>
         <translation>Popis izvođenja</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="309"/>
-        <location filename="../src/common/actions.cpp" line="365"/>
         <source>Film Info</source>
         <translation>Informacije o filmu</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="375"/>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Обриши из списка</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="377"/>
@@ -694,17 +630,17 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="44"/>
         <source>Duration: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Трајање: %1</translation>
     </message>
     <message>
         <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="49"/>
         <source>Resolution: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Резолуција: %1</translation>
     </message>
     <message>
         <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="54"/>
         <source>Size: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Величина: %1</translation>
     </message>
     <message>
         <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="77"/>
@@ -716,35 +652,29 @@ and whether to restart it?</source>
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load successfully</source>
         <translation>Uspješno učitano</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="2550"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load failed</source>
         <translation>Neuspjelo učitavanje</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1913"/>
-        <location filename="../src/common/mainwindow.cpp" line="1950"/>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Свих (*)</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2531"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <comment>All (*)</comment>
-        <translation type="unfinished"></translation>
+        <translation>Субтитл (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3480"/>
         <source>Buffering...</source>
-        <translation type="unfinished"></translation>
+        <translation>Памети...</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1877"/>
@@ -768,67 +698,53 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1869"/>
-        <location filename="../src/common/mainwindow.cpp" line="3608"/>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Парсинг није успео</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3503"/>
-        <location filename="../src/common/mainwindow.cpp" line="3528"/>
         <source>Mute</source>
         <translation type="unfinished">Utišaj</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3505"/>
-        <location filename="../src/common/mainwindow.cpp" line="3530"/>
         <source>Volume: %1%</source>
         <translation>Glasnoća: %1%</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2438"/>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Trajekt: %1</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2485"/>
-        <location filename="../src/common/mainwindow.cpp" line="2502"/>
         <source>Subtitle %1: %2s</source>
         <translation>Podnapis %1: %2s</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>delayed</source>
         <translation>odgođeno</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>advanced</source>
         <translation>napredno</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2284"/>
-        <location filename="../src/common/mainwindow.cpp" line="2292"/>
-        <location filename="../src/common/mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/mainwindow.cpp" line="2522"/>
-        <location filename="../src/common/mainwindow.cpp" line="4854"/>
         <source>Speed: %1x</source>
         <translation>Brzina: %1x</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1852"/>
-        <location filename="../src/common/mainwindow.cpp" line="3049"/>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne može se odigrati disk</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2480"/>
-        <location filename="../src/common/mainwindow.cpp" line="2497"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Nije moguće prilagoditi podnaslov</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2644"/>
@@ -838,105 +754,97 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2653"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Snimak filma</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2763"/>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzimanje snimaka, molimo pričekajte...</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2848"/>
-        <location filename="../src/common/mainwindow.cpp" line="2873"/>
         <source>Cancel</source>
         <translation type="unfinished">Otkaži</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2849"/>
-        <location filename="../src/common/mainwindow.cpp" line="2874"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponovno pokreni</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3054"/>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Čitanje DVD datoteka...</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3291"/>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>4K video možda se zakači</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3292"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>U redu</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3324"/>
-        <location filename="../src/common/mainwindow.cpp" line="4288"/>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Redosled odigravanja</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3327"/>
-        <location filename="../src/common/mainwindow.cpp" line="4291"/>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Slučajno odigravanje</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3330"/>
-        <location filename="../src/common/mainwindow.cpp" line="4294"/>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedinstveno odigravanje</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3333"/>
-        <location filename="../src/common/mainwindow.cpp" line="4297"/>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedinstvena petlja</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3336"/>
-        <location filename="../src/common/mainwindow.cpp" line="4300"/>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Spisak petlji</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3623"/>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Molimo upustite CD/DVD</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4955"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>Ova akcija nije podržana za ovaj video</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4990"/>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Povezivanje nije uspješno</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4997"/>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast je otklopljen</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4402"/>
-        <location filename="../src/common/mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Molimo iziđite iz pametnog docka</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4715"/>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD je izbačen</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4279"/>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>Molimo prvo učitajte video</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2654"/>
@@ -945,15 +853,13 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2675"/>
-        <location filename="../src/common/mainwindow.cpp" line="2803"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Snimak je sačuvan</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2679"/>
-        <location filename="../src/common/mainwindow.cpp" line="2807"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Nije uspješno sačuvan snimak</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4966"/>
@@ -963,24 +869,22 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3275"/>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Nema prilagođenih online podnaslova</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3548"/>
-        <location filename="../src/common/mainwindow.cpp" line="3599"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Nije moguće otvoriti datoteku ili strujanje</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3616"/>
-        <location filename="../src/common/mainwindow.cpp" line="3621"/>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevažeća datoteka</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3628"/>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nije pronađena video datoteka</translation>
     </message>
 </context>
 <context>
@@ -993,12 +897,12 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="295"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tip</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="296"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Veličina</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="302"/>
@@ -1008,104 +912,102 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="307"/>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacije o koderskom standardu</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="328"/>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID kodera videa</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="329"/>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Brzina kodiranja videa</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="275"/>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="288"/>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 kbps&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="276"/>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="289"/>
         <source>%1 bps</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 bps&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="330"/>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="278"/>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 fps&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="331"/>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>Proporcija</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="279"/>
         <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="332"/>
         <source>Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Razlučivost</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="337"/>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio informacije</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="358"/>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID kodera audio</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="359"/>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Brzina kodiranja audio</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="360"/>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio bit</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="291"/>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 bits&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="361"/>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanali</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="292"/>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 kanala&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="362"/>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrada uzorka</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="293"/>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1hz&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="297"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Trajanje</translation>
     </message>
 </context>
 <context>
@@ -1113,37 +1015,30 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1990"/>
         <source>Internal</source>
-        <translation type="unfinished"></translation>
+        <translation>Unutarnji</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_MainWindow</name>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load successfully</source>
         <translation type="unfinished">Uspješno učitano</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2566"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load failed</source>
         <translation type="unfinished">Neuspjelo učitavanje</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1915"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3059"/>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Nije moguće reproducirati disk</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1932"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3579"/>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Raspašivanje nije uspješno</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1940"/>
@@ -1152,18 +1047,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1968"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1997"/>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sve (*)</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2324"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2538"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4800"/>
         <source>Speed: %1x</source>
         <translation type="unfinished">Brzina: %1x</translation>
     </message>
@@ -1185,29 +1073,25 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2454"/>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Trajka: %1&apos;</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2496"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2513"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Nije moguće prilagoditi podnaslov</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2518"/>
         <source>Subtitle %1: %2s</source>
         <translation type="unfinished">Podnapis %1: %2s</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>delayed</source>
         <translation type="unfinished">odgođeno</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>advanced</source>
         <translation type="unfinished">napredno</translation>
     </message>
@@ -1215,7 +1099,9 @@ and whether to restart it?</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2547"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <comment>All (*)</comment>
-        <translation type="unfinished"></translation>
+        <translation>&gt;-
+ Podnaslov (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf
+ *.idx)</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2670"/>
@@ -1225,7 +1111,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2679"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Snimak filma</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2680"/>
@@ -1234,141 +1120,128 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2701"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2828"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Snimak je sačuvan</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2705"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2832"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Nije moguće sačuvati snimak</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2789"/>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzimam snimke, molim vas da čekate...</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
         <source>Cancel</source>
         <translation type="unfinished">Otkaži</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2874"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2900"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponovno pokreni</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3064"/>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Čita se datoteke DVD...</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3268"/>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Nema dostupnih online prevođenica</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3284"/>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>4K video može biti zapečaćen</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3285"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>U redu</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3326"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4292"/>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Redoslijed pretraživanja</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3329"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4295"/>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Slučajno pretraživanje</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4298"/>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedinstveno pretraživanje</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3335"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4301"/>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedinstvena petlja</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3338"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4304"/>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista petlja</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3476"/>
         <source>Buffering...</source>
-        <translation type="unfinished"></translation>
+        <translation>Buffering...</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3499"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3524"/>
         <source>Mute</source>
         <translation type="unfinished">Utišaj</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3526"/>
         <source>Volume: %1%</source>
         <translation type="unfinished">Glasnoća: %1%</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3570"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Nije moguće otvoriti datoteku ili tok</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3587"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3592"/>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevažeća datoteka</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3594"/>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Molim vas, upsertite CD/DVD</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3600"/>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nije pronađena video datoteka</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4283"/>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>Molim vas, preuzmite video pre nego što počnete</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4403"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Molim vas, izlazite iz smart dock</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4655"/>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD je izbačen</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4901"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>Ova radnja nije podržana za ovu video datoteku</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4912"/>
@@ -1378,23 +1251,20 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4936"/>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Povezivanje nije uspjelo</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4943"/>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast je odspojen</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_PlayItemWidget</name>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="163"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="257"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="323"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="507"/>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Datoteka ne postoji</translation>
     </message>
 </context>
 <context>
@@ -1407,15 +1277,12 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="705"/>
         <source>Empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Prazno</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="910"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1193"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1218"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1300"/>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 videa&apos;</translation>
     </message>
 </context>
 <context>
@@ -1437,21 +1304,18 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2135"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2572"/>
         <source>Fullscreen</source>
         <translation type="unfinished">Cijeli zaslon</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2589"/>
         <source>Playlist</source>
         <translation type="unfinished">Popis izvođenja</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2132"/>
@@ -1473,11 +1337,8 @@ and whether to restart it?</source>
     <name>dmr::PlayItemWidget</name>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="163"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="257"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="323"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="507"/>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Datoteka ne postoji</translation>
     </message>
 </context>
 <context>
@@ -1490,15 +1351,12 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="705"/>
         <source>Empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Prazno</translation>
     </message>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="910"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1193"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1218"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1300"/>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 videa&apos;</translation>
     </message>
 </context>
 <context>
@@ -1506,88 +1364,80 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="119"/>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Redoslijed pretraživanja</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="120"/>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Slučajno pretraživanje</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="121"/>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedan put</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="122"/>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedan petlja</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="123"/>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Spisak petlja</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="129"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatski</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="130"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Otvori</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="131"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Zatvori</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="294"/>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1/Film%2(%3).jpg&apos;</translation>
     </message>
 </context>
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2467"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2469"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2760"/>
         <source>Play</source>
         <translation>Reprodukcija</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2775"/>
         <source>Previous</source>
         <translation>Prijašnje</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2792"/>
         <source>Next</source>
         <translation>Slijedeće</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2825"/>
         <source>Playlist</source>
         <translation>Popis izvođenja</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2312"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2809"/>
         <source>Fullscreen</source>
         <translation>Cijeli zaslon</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2842"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvuk</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
@@ -1596,19 +1446,16 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2859"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2306"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2308"/>
         <source>Exit fullscreen</source>
         <translation>Izađi iz cijelog zaslona</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2402"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2404"/>
         <source>Pause</source>
         <translation>Pauziraj</translation>
     </message>
@@ -1618,7 +1465,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/toolbutton.cpp" line="19"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvuk</translation>
     </message>
 </context>
 </TS>

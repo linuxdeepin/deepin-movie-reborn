@@ -42,40 +42,32 @@ Please do not exit the Movie app during the process.</source>
     <name>QObject</name>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="324"/>
-        <location filename="../src/common/mainwindow.cpp" line="328"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="340"/>
-        <location filename="../src/common/mainwindow.cpp" line="344"/>
         <source>Invalid folder</source>
         <translation>ዋጋ የሌለው ፎልደር</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="360"/>
-        <location filename="../src/common/mainwindow.cpp" line="364"/>
         <source>Open folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2872"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2898"/>
-        <location filename="../src/common/mainwindow.cpp" line="2847"/>
-        <location filename="../src/common/mainwindow.cpp" line="2872"/>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3261"/>
-        <location filename="../src/common/mainwindow.cpp" line="3268"/>
         <source>Network disconnected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
-        <location filename="../src/common/mainwindow.cpp" line="326"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>እርስዎ ይህን ፎልደር ለ መጠቀም በቂ ፍቃድ የለዎትም </translation>
     </message>
@@ -136,7 +128,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="21"/>
-        <location filename="../src/common/settings_translation.cpp" line="26"/>
         <source>Screenshot</source>
         <translation>መመልከቻውን ፎቶ ማንሻ</translation>
     </message>
@@ -162,7 +153,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="27"/>
-        <location filename="../src/common/settings_translation.cpp" line="28"/>
         <source>Subtitle</source>
         <translation>ንዑስ አርእስት</translation>
     </message>
@@ -348,12 +338,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="582"/>
-        <location filename="../src/main.cpp" line="288"/>
-        <location filename="../src/main.cpp" line="360"/>
-        <location filename="../src/widgets/volumeslider.cpp" line="113"/>
-        <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="116"/>
-        <location filename="../src/common/volumemonitoring.cpp" line="68"/>
-        <location filename="../src/common/dmr_settings.cpp" line="285"/>
         <source>Movie</source>
         <translation type="unfinished"></translation>
     </message>
@@ -364,19 +348,16 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="186"/>
-        <location filename="../src/common/settings_translation.cpp" line="59"/>
         <source>Settings</source>
         <translation type="unfinished">ማሰናጃዎች</translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="189"/>
-        <location filename="../src/common/settings_translation.cpp" line="57"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="194"/>
-        <location filename="../src/common/settings_translation.cpp" line="58"/>
         <source>Display shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
@@ -403,67 +384,51 @@ and whether to restart it?</source>
     <name>dmr::ActionFactory</name>
     <message>
         <location filename="../src/common/actions.cpp" line="56"/>
-        <location filename="../src/common/actions.cpp" line="310"/>
-        <location filename="../src/common/actions.cpp" line="366"/>
         <source>Settings</source>
         <translation>ማሰናጃዎች</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="132"/>
-        <location filename="../src/common/actions.cpp" line="319"/>
         <source>Fullscreen</source>
         <translation>በሙሉ መመልከቻ ዘዴ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="134"/>
-        <location filename="../src/common/actions.cpp" line="321"/>
         <source>Always on Top</source>
         <translation>ሁል ጊዜ ከ ላይ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="101"/>
-        <location filename="../src/common/actions.cpp" line="151"/>
-        <location filename="../src/common/actions.cpp" line="338"/>
         <source>0.5x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="102"/>
-        <location filename="../src/common/actions.cpp" line="152"/>
-        <location filename="../src/common/actions.cpp" line="339"/>
         <source>1.0x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="103"/>
-        <location filename="../src/common/actions.cpp" line="153"/>
-        <location filename="../src/common/actions.cpp" line="340"/>
         <source>1.2x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="104"/>
-        <location filename="../src/common/actions.cpp" line="154"/>
-        <location filename="../src/common/actions.cpp" line="341"/>
         <source>1.5x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="105"/>
-        <location filename="../src/common/actions.cpp" line="155"/>
-        <location filename="../src/common/actions.cpp" line="342"/>
         <source>2.0x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="89"/>
-        <location filename="../src/common/actions.cpp" line="176"/>
         <source>Next Frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="90"/>
-        <location filename="../src/common/actions.cpp" line="177"/>
         <source>Previous Frame</source>
         <translation type="unfinished"></translation>
     </message>
@@ -479,106 +444,81 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="53"/>
-        <location filename="../src/common/actions.cpp" line="127"/>
-        <location filename="../src/common/actions.cpp" line="314"/>
         <source>Open file</source>
         <translation>ፋይል መክፈቻ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="55"/>
-        <location filename="../src/common/actions.cpp" line="128"/>
-        <location filename="../src/common/actions.cpp" line="315"/>
         <source>Open folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="129"/>
-        <location filename="../src/common/actions.cpp" line="316"/>
         <source>Open URL</source>
         <translation>URL መክፈቻ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="130"/>
-        <location filename="../src/common/actions.cpp" line="317"/>
         <source>Open CD/DVD</source>
         <translation>ሲዲ/ዲቪዲ መክፈቻ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="133"/>
-        <location filename="../src/common/actions.cpp" line="320"/>
         <source>Mini Mode</source>
         <translation>በ ትንሽ ዘዴ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="66"/>
-        <location filename="../src/common/actions.cpp" line="138"/>
-        <location filename="../src/common/actions.cpp" line="325"/>
         <source>Play Mode</source>
         <translation>ማጫወቻ ዘዴ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="68"/>
-        <location filename="../src/common/actions.cpp" line="140"/>
-        <location filename="../src/common/actions.cpp" line="327"/>
         <source>Order Play</source>
         <translation>በ ተራ ማጫወቻ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="69"/>
-        <location filename="../src/common/actions.cpp" line="141"/>
-        <location filename="../src/common/actions.cpp" line="328"/>
         <source>Shuffle Play</source>
         <translation>መበወዣ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="70"/>
-        <location filename="../src/common/actions.cpp" line="142"/>
-        <location filename="../src/common/actions.cpp" line="329"/>
         <source>Single Play</source>
         <translation>ነጠላ ማጫወቻ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="71"/>
-        <location filename="../src/common/actions.cpp" line="143"/>
-        <location filename="../src/common/actions.cpp" line="330"/>
         <source>Single Loop</source>
         <translation>ነጠላ ዙር</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="72"/>
-        <location filename="../src/common/actions.cpp" line="144"/>
-        <location filename="../src/common/actions.cpp" line="331"/>
         <source>List Loop</source>
         <translation>ዝርዝር ዙር</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="99"/>
-        <location filename="../src/common/actions.cpp" line="149"/>
-        <location filename="../src/common/actions.cpp" line="336"/>
         <source>Playback Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="77"/>
-        <location filename="../src/common/actions.cpp" line="164"/>
         <source>Frame</source>
         <translation>ክፈፍ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="79"/>
-        <location filename="../src/common/actions.cpp" line="166"/>
         <source>Default</source>
         <translation>ነባር</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="86"/>
-        <location filename="../src/common/actions.cpp" line="173"/>
         <source>Clockwise</source>
         <translation>ከ ግራ ወደ ቀኝ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="87"/>
-        <location filename="../src/common/actions.cpp" line="174"/>
         <source>Counterclockwise</source>
         <translation>ከ ቀኝ ወደ ግራ</translation>
     </message>
@@ -609,7 +549,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="201"/>
-        <location filename="../src/common/actions.cpp" line="424"/>
         <source>Track</source>
         <translation>ተረኛ</translation>
     </message>
@@ -645,13 +584,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="295"/>
-        <location filename="../src/common/actions.cpp" line="352"/>
         <source>Screenshot</source>
         <translation>መመልከቻውን ፎቶ ማንሻ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="298"/>
-        <location filename="../src/common/actions.cpp" line="355"/>
         <source>Film Screenshot</source>
         <translation>የ ፊልም መመልከቻ ፎቶ ማንሻ</translation>
     </message>
@@ -662,19 +599,16 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="300"/>
-        <location filename="../src/common/actions.cpp" line="356"/>
         <source>Open screenshot folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="308"/>
-        <location filename="../src/common/actions.cpp" line="364"/>
         <source>Playlist</source>
         <translation>የማጫወቻ ዝርዝር</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="309"/>
-        <location filename="../src/common/actions.cpp" line="365"/>
         <source>Film Info</source>
         <translation>የ ፊልም መረጃ</translation>
     </message>
@@ -716,22 +650,16 @@ and whether to restart it?</source>
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load successfully</source>
         <translation>ተሳክቶ ተጭኗል </translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="2550"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load failed</source>
         <translation>መጫን አልተቻለም</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1913"/>
-        <location filename="../src/common/mainwindow.cpp" line="1950"/>
         <source>All (*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -768,19 +696,16 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1869"/>
-        <location filename="../src/common/mainwindow.cpp" line="3608"/>
         <source>Parse failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3503"/>
-        <location filename="../src/common/mainwindow.cpp" line="3528"/>
         <source>Mute</source>
         <translation type="unfinished">መቀነሻ</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3505"/>
-        <location filename="../src/common/mainwindow.cpp" line="3530"/>
         <source>Volume: %1%</source>
         <translation>መጠን: %1</translation>
     </message>
@@ -791,42 +716,31 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2485"/>
-        <location filename="../src/common/mainwindow.cpp" line="2502"/>
         <source>Subtitle %1: %2s</source>
         <translation>ንዑስ አርእስት %1: %2s</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>delayed</source>
         <translation>ዘግይቷል</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>advanced</source>
         <translation>የረቀቀ</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2284"/>
-        <location filename="../src/common/mainwindow.cpp" line="2292"/>
-        <location filename="../src/common/mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/mainwindow.cpp" line="2522"/>
-        <location filename="../src/common/mainwindow.cpp" line="4854"/>
         <source>Speed: %1x</source>
         <translation>ፍጥነት: %1x</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1852"/>
-        <location filename="../src/common/mainwindow.cpp" line="3049"/>
         <source>Cannot play the disc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2480"/>
-        <location filename="../src/common/mainwindow.cpp" line="2497"/>
         <source>Unable to adjust the subtitle</source>
         <translation type="unfinished"></translation>
     </message>
@@ -847,13 +761,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2848"/>
-        <location filename="../src/common/mainwindow.cpp" line="2873"/>
         <source>Cancel</source>
         <translation type="unfinished">መሰረዣ</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2849"/>
-        <location filename="../src/common/mainwindow.cpp" line="2874"/>
         <source>Restart</source>
         <translation type="unfinished"></translation>
     </message>
@@ -874,31 +786,26 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3324"/>
-        <location filename="../src/common/mainwindow.cpp" line="4288"/>
         <source>Order play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3327"/>
-        <location filename="../src/common/mainwindow.cpp" line="4291"/>
         <source>Shuffle play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3330"/>
-        <location filename="../src/common/mainwindow.cpp" line="4294"/>
         <source>Single play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3333"/>
-        <location filename="../src/common/mainwindow.cpp" line="4297"/>
         <source>Single loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3336"/>
-        <location filename="../src/common/mainwindow.cpp" line="4300"/>
         <source>List loop</source>
         <translation type="unfinished"></translation>
     </message>
@@ -924,7 +831,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4402"/>
-        <location filename="../src/common/mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
         <translation type="unfinished"></translation>
     </message>
@@ -945,13 +851,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2675"/>
-        <location filename="../src/common/mainwindow.cpp" line="2803"/>
         <source>The screenshot is saved</source>
         <translation>የ መመልከቻው ፎቶ ተቀምጧል </translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2679"/>
-        <location filename="../src/common/mainwindow.cpp" line="2807"/>
         <source>Failed to save the screenshot</source>
         <translation type="unfinished"></translation>
     </message>
@@ -967,13 +871,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3548"/>
-        <location filename="../src/common/mainwindow.cpp" line="3599"/>
         <source>Cannot open file or stream</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3616"/>
-        <location filename="../src/common/mainwindow.cpp" line="3621"/>
         <source>Invalid file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1022,13 +924,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="275"/>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="288"/>
         <source>%1 kbps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="276"/>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="289"/>
         <source>%1 bps</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1070,42 +970,42 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="359"/>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>የድምር ዓይነት</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="360"/>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>ድምር ዓይነት</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="291"/>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 ዓይነት&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="361"/>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>ክაնაሎች</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="292"/>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 ዓይነት&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="362"/>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>ማድረግ</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="293"/>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1Hz&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="297"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>የክፍ夫 ጊዜ</translation>
     </message>
 </context>
 <context>
@@ -1113,57 +1013,43 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1990"/>
         <source>Internal</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1Hz&apos;</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_MainWindow</name>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load successfully</source>
         <translation type="unfinished">ተሳክቶ ተጭኗል </translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2566"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load failed</source>
         <translation type="unfinished">መጫን አልተቻለም</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1915"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3059"/>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>አገር</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1932"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3579"/>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>ዲስክ የሚይዝበት የለም</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1940"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>ማስተ ዓይነት ምን ምን የተሳሳተ</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1968"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1997"/>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>ክፍል ስለመክፈል</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2324"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2538"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4800"/>
         <source>Speed: %1x</source>
         <translation type="unfinished">ፍጥነት: %1x</translation>
     </message>
@@ -1185,29 +1071,25 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2454"/>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ሁሉ (*)</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2496"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2513"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;ትራክ: %1&apos;</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2518"/>
         <source>Subtitle %1: %2s</source>
         <translation type="unfinished">ንዑስ አርእስት %1: %2s</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>delayed</source>
         <translation type="unfinished">ዘግይቷል</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>advanced</source>
         <translation type="unfinished">የረቀቀ</translation>
     </message>
@@ -1215,7 +1097,7 @@ and whether to restart it?</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2547"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <comment>All (*)</comment>
-        <translation type="unfinished"></translation>
+        <translation> subtitles የመቀበል የለም</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2670"/>
@@ -1234,141 +1116,128 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2701"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2828"/>
         <source>The screenshot is saved</source>
         <translation type="unfinished">የ መመልከቻው ፎቶ ተቀምጧል </translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2705"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2832"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation> subtitles (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2789"/>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>ስክሪეን ስሌት ስለማስቀመጥ የለም</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
         <source>Cancel</source>
         <translation type="unfinished">መሰረዣ</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2874"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2900"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>ስክሪეን ስሌቶች ስለመውሰድ የሚገባ የምን ስለማስቀመጥ የምን የሚገባ...</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3064"/>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>መደጊያ</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3268"/>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>DVD ዓይነቶች ስለመክፈል...</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3284"/>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>በመስክረት የሚገኝ subtitles የለም</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3285"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>4K ዓይነት ምን ምን የሚገኝ</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3326"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4292"/>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>እሺ</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3329"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4295"/>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>ማድረግ የሚይዝበት</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4298"/>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>ማድረግ የሚይዝበት</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3335"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4301"/>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>ማድረግ የሚይዝበት</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3338"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4304"/>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>ማድረግ የሚነገበት</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3476"/>
         <source>Buffering...</source>
-        <translation type="unfinished"></translation>
+        <translation>ዝርዝር የሚነገበት</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3499"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3524"/>
         <source>Mute</source>
         <translation type="unfinished">መቀነሻ</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3526"/>
         <source>Volume: %1%</source>
         <translation type="unfinished">መጠን: %1</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3570"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>በመርሐ የሚገባ...</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3587"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3592"/>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილი არასწორია</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3594"/>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>გთხოვთ ჩაასვით CD/DVD</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3600"/>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>ვიდეო ფაილი არ არის მონაცემში</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4283"/>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>გთხოვთ ჯერ ჩაიტვირთოს ვიდეო</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4403"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>გთხოვთ დატოვოთ სმარტ დოკი</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4655"/>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD-ს გამოტარდა</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4901"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>ამ ვიდეოში ამ მოქმედებას არ არის მხარდაჭერილი</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4912"/>
@@ -1378,23 +1247,20 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4936"/>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>შეერთება ვერ მოხდა</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4943"/>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast-ის შეერთება გადაკუთვნილია</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_PlayItemWidget</name>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="163"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="257"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="323"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="507"/>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილი არ არსებობს</translation>
     </message>
 </context>
 <context>
@@ -1407,15 +1273,12 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="705"/>
         <source>Empty</source>
-        <translation type="unfinished"></translation>
+        <translation>ცარიერი</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="910"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1193"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1218"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1300"/>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 ვიდეოები&apos;</translation>
     </message>
 </context>
 <context>
@@ -1437,21 +1300,18 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2135"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2572"/>
         <source>Fullscreen</source>
         <translation type="unfinished">በሙሉ መመልከቻ ዘዴ</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2589"/>
         <source>Playlist</source>
         <translation type="unfinished">የማጫወቻ ዝርዝር</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2132"/>
@@ -1473,11 +1333,8 @@ and whether to restart it?</source>
     <name>dmr::PlayItemWidget</name>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="163"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="257"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="323"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="507"/>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილი არ არსებობს</translation>
     </message>
 </context>
 <context>
@@ -1490,15 +1347,12 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="705"/>
         <source>Empty</source>
-        <translation type="unfinished"></translation>
+        <translation>ცარიერი</translation>
     </message>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="910"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1193"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1218"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1300"/>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 ვიდეოები&apos;</translation>
     </message>
 </context>
 <context>
@@ -1506,88 +1360,80 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="119"/>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="120"/>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>სარიგი და ჩათვირთვა</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="121"/>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>შაფული ჩათვირთვა</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="122"/>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>ერთობლივი ჩათვირთვა</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="123"/>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>ერთობლივი დამტკიცება</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="129"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>სიადამტკიცება</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="130"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>ავტომატურა</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="131"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>გახსნა</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="294"/>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>დახურვა</translation>
     </message>
 </context>
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2467"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2469"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2760"/>
         <source>Play</source>
         <translation>ማጫወቻ</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2775"/>
         <source>Previous</source>
         <translation>ቀደም ያለው</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2792"/>
         <source>Next</source>
         <translation>ይቀጥሉ</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2825"/>
         <source>Playlist</source>
         <translation>የማጫወቻ ዝርዝር</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2312"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2809"/>
         <source>Fullscreen</source>
         <translation>በሙሉ መመልከቻ ዘዴ</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2842"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1/Movie%2(%3).jpg&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
@@ -1596,19 +1442,16 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2859"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>ხმა</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2306"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2308"/>
         <source>Exit fullscreen</source>
         <translation>ከ ሙሉ መመልከቻው ዘዴ መውጫ</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2402"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2404"/>
         <source>Pause</source>
         <translation>ማስቆሚያ</translation>
     </message>
@@ -1618,7 +1461,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/toolbutton.cpp" line="19"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
 </context>
 </TS>

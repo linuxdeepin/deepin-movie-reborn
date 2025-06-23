@@ -6,30 +6,31 @@
     <message>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"></translation>
+        <translation>প্রক্ষেপণ চলমান... 
+কোনও সময় মুভিস অ্যাপ থেকে বের হবেন না।</translation>
     </message>
     <message>
         <source>Display device</source>
-        <translation type="unfinished"></translation>
+        <translation>ডিসপ্লে ডিভাইস</translation>
     </message>
     <message>
         <source>Exit Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>মিরাকাস্ট থেকে বের হন</translation>
     </message>
 </context>
 <context>
     <name>MircastWidget</name>
     <message>
         <source>Project to</source>
-        <translation type="unfinished"></translation>
+        <translation>প্রক্ষেপণ করুন</translation>
     </message>
     <message>
         <source>Searching for devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>ডিভাইস খুঁজছে...</translation>
     </message>
     <message>
         <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"></translation>
+        <translation>কোনও মিরাকাস্ট ডিসপ্লে ডিভাইস খুঁজে পাওয়া যায়নি। অনুগ্রহ করে ডিভাইসটি এবং আপনার কম্পিউটারটি একই ওয়্যালান নেটওয়ার্কে সংযুক্ত করুন।</translation>
     </message>
 </context>
 <context>
@@ -44,7 +45,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>নেটওয়ার্ক ছিন্ন</translation>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
@@ -204,7 +205,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>ফুলস্ক্রিন/মিনি মোড থেকে বের হন</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -220,11 +221,11 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Display shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>ডিসপ্লে শর্টকাট</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>প্লেলিস্ট থেকে মুছুন</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -232,7 +233,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>বার্স শুটিং</translation>
     </message>
     <message>
         <source>Size</source>
@@ -240,15 +241,15 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>মুভিস একটি পূর্ণ ফিচার ভিডিও প্লেয়ার, বিভিন্ন ভিডিও ফরম্যাটে স্থানীয় এবং স্ট্রিমিং মিডিয়া প্লে করার জন্য সমর্থন করে।</translation>
     </message>
     <message>
         <source>Show thumbnails in progress bar</source>
-        <translation type="unfinished"></translation>
+        <translation>প্রগ্রেস বারে থামনিল দেখান</translation>
     </message>
     <message>
         <source>Default play mode</source>
-        <translation type="unfinished"></translation>
+        <translation>ডিফল্ট প্লে মোড</translation>
     </message>
     <message>
         <source>OK</source>
@@ -256,40 +257,42 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>ডিকোডিং</translation>
     </message>
     <message>
         <source>Auto select (Recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>স্বয়ংক্রিয় নির্বাচন (পরামর্শ করুন)</translation>
     </message>
     <message>
         <source>Hardware decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>হার্ডওয়্যার ডিকোডিং</translation>
     </message>
     <message>
         <source>Software decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>সফটওয়্যার ডিকোডিং</translation>
     </message>
     <message>
         <source>Customize</source>
-        <translation type="unfinished"></translation>
+        <translation>কাস্টমাইজ</translation>
     </message>
     <message>
         <source>Decode mode</source>
-        <translation type="unfinished"></translation>
+        <translation>ডিকোডিং মোড</translation>
     </message>
     <message>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>ভিডিও আউট</translation>
     </message>
     <message>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
-        <translation type="unfinished"></translation>
+        <translation>কাস্টম ডিকোডিং পদ্ধতিটি কাজে লাগানোর আগে পুনরায় চালু করতে হবে,
+
+এবং আপনি কি পুনরায় চালু করতে চান?</translation>
     </message>
     <message>
         <source>Rendering engine</source>
-        <translation type="unfinished"></translation>
+        <translation>রেন্ডারিং ইঞ্জিন</translation>
     </message>
 </context>
 <context>
@@ -323,7 +326,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>খালি প্লেলিস্ট</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -459,7 +462,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>প্লেলিস্ট থেকে মুছুন</translation>
     </message>
     <message>
         <source>Display in file manager</source>
@@ -467,39 +470,39 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>পরবর্তী ফ্রেম</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>পূর্ববর্তী ফ্রেম</translation>
     </message>
     <message>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>স্ক্রিনশট ফোল্ডার খুলুন</translation>
     </message>
     <message>
         <source>Playback Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>প্লেব্যাক গতি</translation>
     </message>
     <message>
         <source>0.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5x</translation>
     </message>
     <message>
         <source>1.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.0x</translation>
     </message>
     <message>
         <source>1.2x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.2x</translation>
     </message>
     <message>
         <source>1.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.5x</translation>
     </message>
     <message>
         <source>2.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>2.0x</translation>
     </message>
 </context>
 <context>
@@ -533,7 +536,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Buffering...</source>
-        <translation type="unfinished"></translation>
+        <translation>বাফারিং...</translation>
     </message>
     <message>
         <source>Open folder</source>
@@ -553,7 +556,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>প্যার্স ফেল</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -565,7 +568,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ট্র্যাক: %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -605,19 +608,19 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>মেচার অনলাইন সাবটাইটেল খুঁজে পাওয়া যায়নি</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>ফাইল বা স্ট্রিম খুলতে পারেনি</translation>
     </message>
     <message>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>অবৈধ ফাইল</translation>
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>ভিডিও ফাইল খুঁজে পাওয়া যায়নি</translation>
     </message>
     <message>
         <source>Film screenshot</source>
@@ -625,7 +628,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>ছবি তুলছি, অপেক্ষা করুন...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -633,63 +636,63 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>একটি সিডি/ডিভিডি প্রবেশ করান</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>ডিভিডি ফাইল পড়ছি...</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>4K ভিডিও আটকে থাকতে পারে</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>অর্ডার প্লে</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>শাফল প্লে</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>সিঙ্গেল প্লে</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>সিঙ্গেল লুপ</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>লিস্ট লুপ</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>সিডি/ডিভিডি বার করে দেওয়া হয়েছে</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>প্রথমে ভিডিও লোড করুন</translation>
     </message>
     <message>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>স্মার্ট ডক থেকে বাইরে যান</translation>
     </message>
     <message>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>ডিস্ক প্লে করতে পারেনি</translation>
     </message>
     <message>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>সাবটাইটেল সাজানো যায়নি</translation>
     </message>
     <message>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>এই ভিডিওতে কোনও ক্রিয়া সমর্থিত নয়</translation>
     </message>
     <message>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>সব (*), </translation>
     </message>
     <message>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
@@ -698,11 +701,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>সংযোগ ব্যর্থ</translation>
     </message>
     <message>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>মিরাকাস্ট ছিন্ন হয়েছে</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -710,7 +713,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>পুনরায় চালান</translation>
     </message>
 </context>
 <context>
@@ -744,11 +747,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>দূরত্ব</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>প্রকার</translation>
     </message>
     <message>
         <source>Size</source>
@@ -760,31 +763,31 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>কোডেক তথ্য</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>ভিডিও কোডেক আইডি</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>ভিডিও কোড রেট</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 kbps&apos;</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>এফপিএস</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 fps&apos;</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>প্রতিশত</translation>
     </message>
     <message>
         <source>%1</source>
@@ -792,50 +795,50 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>অডিও তথ্য</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>অডিও কোডেক আইডি</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>অডিও কোড রেট</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>অডিও ডিজিট</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 বিটস&apos;</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>ক্যানাল</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 ক্যানাল&apos;</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>স্যাম্পলিং</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1হ্জ&apos;</translation>
     </message>
     <message>
         <source>%1 bps</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 বিপিএস&apos;</translation>
     </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"></translation>
+        <translation>অভ্যন্তরীণ</translation>
     </message>
 </context>
 <context>
@@ -850,11 +853,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>ডিস্ক প্লে করা যাবে না</translation>
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>পার্স ফেল</translation>
     </message>
     <message>
         <source>Open folder</source>
@@ -862,7 +865,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>সব (*)</translation>
     </message>
     <message>
         <source>Speed: %1x</source>
@@ -882,11 +885,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;ট্র্যাক: %1&apos;</translation>
     </message>
     <message>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>সাবটাইটেল পরিবর্তন করা সম্ভব নয়</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -927,19 +930,19 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>স্ক্রিনশট নেওয়া হচ্ছে, অবারত অপেক্ষা করুন...</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>ডিভি ফাইল পড়া হচ্ছে...</translation>
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>কোনও মেলে না অনলাইন সাবটাইটেল</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>4K ভিডিও বাঁধা হতে পারে</translation>
     </message>
     <message>
         <source>OK</source>
@@ -947,27 +950,27 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>অর্ডার প্লে</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>বার বার প্লে করুন</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>একটি প্লে করুন</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>একটি লুপ করুন</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>তালিকা লুপ করুন</translation>
     </message>
     <message>
         <source>Buffering...</source>
-        <translation type="unfinished"></translation>
+        <translation>বাফারিং...</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -979,35 +982,35 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>ফাইল বা স্ট্রিম খুলতে পারেনি</translation>
     </message>
     <message>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>অবৈধ ফাইল</translation>
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>অনুগ্রহ করে একটি সিডি/ডিভি বসান</translation>
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>কোনো ভিডিও ফাইল পাওয়া যায়নি</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>প্রথমে ভিডিওটি লোড করুন</translation>
     </message>
     <message>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>অনুগ্রহ করে স্মার্ট ডক থেকে বের হন</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>সিডি/ডিভিটি বার করে দেওয়া হয়েছে</translation>
     </message>
     <message>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>এই ভিডিওতে এই ক্রিয়া সমর্থিত নয়</translation>
     </message>
     <message>
         <source>Invalid file: %1</source>
@@ -1015,11 +1018,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>যোগাযোগ বিফল</translation>
     </message>
     <message>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>মিরাকাস্ট ছাঁটা হয়েছে</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -1027,21 +1030,21 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>পুনরায় শুরু করুন</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>ফাইলটি অস্তিত্বহীন</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_PlaylistWidget</name>
     <message>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>প্লেলিস্ট</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -1049,7 +1052,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 ভিডিও&apos;</translation>
     </message>
 </context>
 <context>
@@ -1072,7 +1075,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>প্লেলিস্ট</translation>
     </message>
     <message>
         <source>Exit fullscreen</source>
@@ -1088,14 +1091,14 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>মিরাকাস্ট</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>ফাইলটি অস্তিত্বহীন</translation>
     </message>
 </context>
 <context>
@@ -1106,7 +1109,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 ভিডিও&apos;</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -1117,39 +1120,39 @@ and whether to restart it?</source>
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1/ফিল্ম%2(%3).jpg&apos;</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>ক্রমানুসারে প্লে</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>বার বার প্লে করুন</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>একটি প্লে করুন</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>একটি লুপ করুন</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>তালিকা লুপ করুন</translation>
     </message>
     <message>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>অটো</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>খুলুন</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>বন্ধ করুন</translation>
     </message>
 </context>
 <context>
@@ -1188,18 +1191,18 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>মিরাকাস্ট</translation>
     </message>
     <message>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>ভলিউম</translation>
     </message>
 </context>
 <context>
     <name>dmr::VolumeButton</name>
     <message>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>ভলিউম</translation>
     </message>
 </context>
 </TS>

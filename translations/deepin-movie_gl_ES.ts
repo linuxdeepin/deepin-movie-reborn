@@ -6,18 +6,19 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="57"/>
         <source>Exit Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>الخروج من Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="74"/>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"></translation>
+        <translation>الإسقاط...
+يرجى عدم الخروج من تطبيق الفيلم أثناء العملية.</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="102"/>
         <source>Display device</source>
-        <translation type="unfinished"></translation>
+        <translation>جهاز العرض</translation>
     </message>
 </context>
 <context>
@@ -25,29 +26,23 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="71"/>
         <source>Project to</source>
-        <translation type="unfinished"></translation>
+        <translation>إسقاط إلى</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="369"/>
         <source>Searching for devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>البحث عن الأجهزة...</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="378"/>
         <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"></translation>
+        <translation>لم يتم العثور على أي أجهزة عرض Miracast. يرجى ربط الجهاز وحاسوبك بنفس شبكة WLAN.</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="582"/>
-        <location filename="../src/main.cpp" line="288"/>
-        <location filename="../src/main.cpp" line="360"/>
-        <location filename="../src/widgets/volumeslider.cpp" line="113"/>
-        <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="116"/>
-        <location filename="../src/common/volumemonitoring.cpp" line="68"/>
-        <location filename="../src/common/dmr_settings.cpp" line="285"/>
         <source>Movie</source>
         <translation>Filme</translation>
     </message>
@@ -58,19 +53,16 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="186"/>
-        <location filename="../src/common/settings_translation.cpp" line="59"/>
         <source>Settings</source>
         <translation>Axustes</translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="189"/>
-        <location filename="../src/common/settings_translation.cpp" line="57"/>
         <source>Help</source>
         <translation>Axuda</translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="194"/>
-        <location filename="../src/common/settings_translation.cpp" line="58"/>
         <source>Display shortcuts</source>
         <translation>Amosar atallos</translation>
     </message>
@@ -131,7 +123,6 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="21"/>
-        <location filename="../src/common/settings_translation.cpp" line="26"/>
         <source>Screenshot</source>
         <translation>Captura de pantalla</translation>
     </message>
@@ -157,7 +148,6 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="27"/>
-        <location filename="../src/common/settings_translation.cpp" line="28"/>
         <source>Subtitle</source>
         <translation>Subtítulos</translation>
     </message>
@@ -304,79 +294,73 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="60"/>
         <source>Decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>فك الشفرة</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="61"/>
         <source>Auto select (Recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>الاختيار التلقائي (الموصى به)</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="62"/>
         <source>Hardware decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>فك الشفرة بال аппарат</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="63"/>
         <source>Software decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>فك الشفرة بال برنامج</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="64"/>
         <source>Customize</source>
-        <translation type="unfinished"></translation>
+        <translation>تعديل</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="65"/>
         <source>Decode mode</source>
-        <translation type="unfinished"></translation>
+        <translation>وضع فك الشفرة</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="66"/>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>الإخراج الفيديو</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="67"/>
         <source>Rendering engine</source>
-        <translation type="unfinished"></translation>
+        <translation>محرك العرض</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
-        <location filename="../src/common/mainwindow.cpp" line="326"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>Non ten permisos para acceder a este cartafol</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="324"/>
-        <location filename="../src/common/mainwindow.cpp" line="328"/>
         <source>OK</source>
         <translation>Aceptar</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="340"/>
-        <location filename="../src/common/mainwindow.cpp" line="344"/>
         <source>Invalid folder</source>
         <translation>O cartafol non é válido</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="360"/>
-        <location filename="../src/common/mainwindow.cpp" line="364"/>
         <source>Open folder</source>
         <translation>Abrir cartafol</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2872"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2898"/>
-        <location filename="../src/common/mainwindow.cpp" line="2847"/>
-        <location filename="../src/common/mainwindow.cpp" line="2872"/>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
-        <translation type="unfinished"></translation>
+        <translation>يجب إعادة تشغيل طريقة فك الشفرة المخصصة قبل أن تبدأ في العمل،
+
+هل ترغب بإعادة التشغيل؟</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3261"/>
-        <location filename="../src/common/mainwindow.cpp" line="3268"/>
         <source>Network disconnected</source>
         <translation>Rede desconectada</translation>
     </message>
@@ -403,172 +387,131 @@ and whether to restart it?</source>
     <name>dmr::ActionFactory</name>
     <message>
         <location filename="../src/common/actions.cpp" line="53"/>
-        <location filename="../src/common/actions.cpp" line="127"/>
-        <location filename="../src/common/actions.cpp" line="314"/>
         <source>Open file</source>
         <translation>Abrir ficheiro</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="55"/>
-        <location filename="../src/common/actions.cpp" line="128"/>
-        <location filename="../src/common/actions.cpp" line="315"/>
         <source>Open folder</source>
         <translation>Abrir cartafol</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="56"/>
-        <location filename="../src/common/actions.cpp" line="310"/>
-        <location filename="../src/common/actions.cpp" line="366"/>
         <source>Settings</source>
         <translation>Axustes</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="66"/>
-        <location filename="../src/common/actions.cpp" line="138"/>
-        <location filename="../src/common/actions.cpp" line="325"/>
         <source>Play Mode</source>
         <translation>Modo de reprodución</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="68"/>
-        <location filename="../src/common/actions.cpp" line="140"/>
-        <location filename="../src/common/actions.cpp" line="327"/>
         <source>Order Play</source>
         <translation>Orde de reprodución</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="69"/>
-        <location filename="../src/common/actions.cpp" line="141"/>
-        <location filename="../src/common/actions.cpp" line="328"/>
         <source>Shuffle Play</source>
         <translation>Reprodución ao chou</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="70"/>
-        <location filename="../src/common/actions.cpp" line="142"/>
-        <location filename="../src/common/actions.cpp" line="329"/>
         <source>Single Play</source>
         <translation>Reproducir unha vez</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="71"/>
-        <location filename="../src/common/actions.cpp" line="143"/>
-        <location filename="../src/common/actions.cpp" line="330"/>
         <source>Single Loop</source>
         <translation>Un só bucle</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="72"/>
-        <location filename="../src/common/actions.cpp" line="144"/>
-        <location filename="../src/common/actions.cpp" line="331"/>
         <source>List Loop</source>
         <translation>Lista en bucle</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="77"/>
-        <location filename="../src/common/actions.cpp" line="164"/>
         <source>Frame</source>
         <translation>Cadro</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="79"/>
-        <location filename="../src/common/actions.cpp" line="166"/>
         <source>Default</source>
         <translation>Predefinido</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="86"/>
-        <location filename="../src/common/actions.cpp" line="173"/>
         <source>Clockwise</source>
         <translation>Sentido do reloxo</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="87"/>
-        <location filename="../src/common/actions.cpp" line="174"/>
         <source>Counterclockwise</source>
         <translation>Conta atrás</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="89"/>
-        <location filename="../src/common/actions.cpp" line="176"/>
         <source>Next Frame</source>
         <translation>Seguinte cadro</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="90"/>
-        <location filename="../src/common/actions.cpp" line="177"/>
         <source>Previous Frame</source>
         <translation>Anterior cadro</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="99"/>
-        <location filename="../src/common/actions.cpp" line="149"/>
-        <location filename="../src/common/actions.cpp" line="336"/>
         <source>Playback Speed</source>
         <translation>Velocidade de reprodución</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="101"/>
-        <location filename="../src/common/actions.cpp" line="151"/>
-        <location filename="../src/common/actions.cpp" line="338"/>
         <source>0.5x</source>
         <translation>0.5x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="102"/>
-        <location filename="../src/common/actions.cpp" line="152"/>
-        <location filename="../src/common/actions.cpp" line="339"/>
         <source>1.0x</source>
         <translation>1.0x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="103"/>
-        <location filename="../src/common/actions.cpp" line="153"/>
-        <location filename="../src/common/actions.cpp" line="340"/>
         <source>1.2x</source>
         <translation>1.2x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="104"/>
-        <location filename="../src/common/actions.cpp" line="154"/>
-        <location filename="../src/common/actions.cpp" line="341"/>
         <source>1.5x</source>
         <translation>1.5x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="105"/>
-        <location filename="../src/common/actions.cpp" line="155"/>
-        <location filename="../src/common/actions.cpp" line="342"/>
         <source>2.0x</source>
         <translation>2.0x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="129"/>
-        <location filename="../src/common/actions.cpp" line="316"/>
         <source>Open URL</source>
         <translation>Abrir URL</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="130"/>
-        <location filename="../src/common/actions.cpp" line="317"/>
         <source>Open CD/DVD</source>
         <translation>Abrir CD/DVD</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="132"/>
-        <location filename="../src/common/actions.cpp" line="319"/>
         <source>Fullscreen</source>
         <translation>Pantalla completa</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="133"/>
-        <location filename="../src/common/actions.cpp" line="320"/>
         <source>Mini Mode</source>
         <translation>Modo reducido</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="134"/>
-        <location filename="../src/common/actions.cpp" line="321"/>
         <source>Always on Top</source>
         <translation>Sempre visíbel</translation>
     </message>
@@ -599,7 +542,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="201"/>
-        <location filename="../src/common/actions.cpp" line="424"/>
         <source>Track</source>
         <translation>Pista</translation>
     </message>
@@ -635,13 +577,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="295"/>
-        <location filename="../src/common/actions.cpp" line="352"/>
         <source>Screenshot</source>
         <translation>Captura de pantalla</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="298"/>
-        <location filename="../src/common/actions.cpp" line="355"/>
         <source>Film Screenshot</source>
         <translation>Captura do filme</translation>
     </message>
@@ -652,19 +592,16 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="300"/>
-        <location filename="../src/common/actions.cpp" line="356"/>
         <source>Open screenshot folder</source>
         <translation>Abrir o cartafol de captura de pantalla</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="308"/>
-        <location filename="../src/common/actions.cpp" line="364"/>
         <source>Playlist</source>
         <translation>Lista de reprodución</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="309"/>
-        <location filename="../src/common/actions.cpp" line="365"/>
         <source>Film Info</source>
         <translation>Información do filme</translation>
     </message>
@@ -716,28 +653,21 @@ and whether to restart it?</source>
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load successfully</source>
         <translation>Cargado/a con éxito</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="2550"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load failed</source>
         <translation>Produciuse un erro ao cargar</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1852"/>
-        <location filename="../src/common/mainwindow.cpp" line="3049"/>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>غير قادر على تشغيل القرص</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1869"/>
-        <location filename="../src/common/mainwindow.cpp" line="3608"/>
         <source>Parse failed</source>
         <translation>Fallou o analizador</translation>
     </message>
@@ -748,12 +678,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2284"/>
-        <location filename="../src/common/mainwindow.cpp" line="2292"/>
-        <location filename="../src/common/mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/mainwindow.cpp" line="2522"/>
-        <location filename="../src/common/mainwindow.cpp" line="4854"/>
         <source>Speed: %1x</source>
         <translation>Velocidade: %1x</translation>
     </message>
@@ -779,25 +703,21 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2480"/>
-        <location filename="../src/common/mainwindow.cpp" line="2497"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>غير قادر على تعديل الترجمة</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2485"/>
-        <location filename="../src/common/mainwindow.cpp" line="2502"/>
         <source>Subtitle %1: %2s</source>
         <translation>Subtítulos %1: %2s</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>delayed</source>
         <translation>atrasado</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>advanced</source>
         <translation>avanzado</translation>
     </message>
@@ -818,13 +738,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2675"/>
-        <location filename="../src/common/mainwindow.cpp" line="2803"/>
         <source>The screenshot is saved</source>
         <translation>A captura da pantalla foi gardada</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2679"/>
-        <location filename="../src/common/mainwindow.cpp" line="2807"/>
         <source>Failed to save the screenshot</source>
         <translation>Fallou ao gardar a captura de pantalla</translation>
     </message>
@@ -835,15 +753,13 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2848"/>
-        <location filename="../src/common/mainwindow.cpp" line="2873"/>
         <source>Cancel</source>
         <translation type="unfinished">Cancelar</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2849"/>
-        <location filename="../src/common/mainwindow.cpp" line="2874"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>إعادة التشغيل</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3054"/>
@@ -858,7 +774,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4997"/>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast غير متصل</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3275"/>
@@ -867,9 +783,8 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1913"/>
-        <location filename="../src/common/mainwindow.cpp" line="1950"/>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>الكل (*)</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3291"/>
@@ -883,31 +798,26 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3324"/>
-        <location filename="../src/common/mainwindow.cpp" line="4288"/>
         <source>Order play</source>
         <translation>Orde de reprodución</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3327"/>
-        <location filename="../src/common/mainwindow.cpp" line="4291"/>
         <source>Shuffle play</source>
         <translation>Reprodución aleatoria</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3330"/>
-        <location filename="../src/common/mainwindow.cpp" line="4294"/>
         <source>Single play</source>
         <translation>Reprodución única</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3333"/>
-        <location filename="../src/common/mainwindow.cpp" line="4297"/>
         <source>Single loop</source>
         <translation>Bucle único</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3336"/>
-        <location filename="../src/common/mainwindow.cpp" line="4300"/>
         <source>List loop</source>
         <translation>Lista en bucle</translation>
     </message>
@@ -918,35 +828,31 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3503"/>
-        <location filename="../src/common/mainwindow.cpp" line="3528"/>
         <source>Mute</source>
         <translation>Silenciar</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3505"/>
-        <location filename="../src/common/mainwindow.cpp" line="3530"/>
         <source>Volume: %1%</source>
         <translation>Volume: %1%</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3548"/>
-        <location filename="../src/common/mainwindow.cpp" line="3599"/>
         <source>Cannot open file or stream</source>
         <translation>Non se pode abrir ficheiro ou transmisión</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4955"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>الإجراء غير مدعوم في هذا الفيديو</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4990"/>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>فشل الاتصال</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3616"/>
-        <location filename="../src/common/mainwindow.cpp" line="3621"/>
         <source>Invalid file</source>
         <translation>O ficheiro non é válido</translation>
     </message>
@@ -973,9 +879,8 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4402"/>
-        <location filename="../src/common/mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>يرجى الخروج من dock الذكية</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4715"/>
@@ -1046,15 +951,13 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="275"/>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="288"/>
         <source>%1 kbps</source>
         <translation>%1 kbps</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="276"/>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="289"/>
         <source>%1 bps</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 بوص</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="330"/>
@@ -1139,28 +1042,21 @@ and whether to restart it?</source>
     <name>dmr::Platform_MainWindow</name>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load successfully</source>
         <translation>Cargado/a con éxito</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2566"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load failed</source>
         <translation>Produciuse un erro ao cargar</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1915"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3059"/>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>غير قادر على تشغيل القرص</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1932"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3579"/>
         <source>Parse failed</source>
         <translation>Fallou o analizador</translation>
     </message>
@@ -1171,18 +1067,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1968"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1997"/>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>الكل (*)</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2324"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2538"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4800"/>
         <source>Speed: %1x</source>
         <translation>Velocidade: %1x</translation>
     </message>
@@ -1208,25 +1097,21 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2496"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2513"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>غير قادر على تعديل الترجمة</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2518"/>
         <source>Subtitle %1: %2s</source>
         <translation>Subtítulos %1: %2s</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>delayed</source>
         <translation>atrasado</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>advanced</source>
         <translation>avanzado</translation>
     </message>
@@ -1253,13 +1138,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2701"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2828"/>
         <source>The screenshot is saved</source>
         <translation>A captura da pantalla foi gardada</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2705"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2832"/>
         <source>Failed to save the screenshot</source>
         <translation>Fallou ao gardar a captura de pantalla</translation>
     </message>
@@ -1270,15 +1153,13 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
         <source>Cancel</source>
         <translation type="unfinished">Cancelar</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2874"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2900"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>إعادة التشغيل</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3064"/>
@@ -1302,31 +1183,26 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3326"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4292"/>
         <source>Order play</source>
         <translation>Orde de reprodución</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3329"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4295"/>
         <source>Shuffle play</source>
         <translation>Reprodución aleatoria</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4298"/>
         <source>Single play</source>
         <translation>Reprodución única</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3335"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4301"/>
         <source>Single loop</source>
         <translation>Bucle único</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3338"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4304"/>
         <source>List loop</source>
         <translation>Lista en bucle</translation>
     </message>
@@ -1337,13 +1213,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3499"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3524"/>
         <source>Mute</source>
         <translation>Silenciar</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3526"/>
         <source>Volume: %1%</source>
         <translation>Volume: %1%</translation>
     </message>
@@ -1354,7 +1228,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3587"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3592"/>
         <source>Invalid file</source>
         <translation>O ficheiro non é válido</translation>
     </message>
@@ -1375,9 +1248,8 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4403"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>يرجى الخروج من dock الذكية</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4655"/>
@@ -1387,7 +1259,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4901"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>الإجراء غير مدعوم في هذا الفيديو</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4912"/>
@@ -1397,21 +1269,18 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4936"/>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>A conexión fallou</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4943"/>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast desconnectado</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_PlayItemWidget</name>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="163"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="257"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="323"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="507"/>
         <source>The file does not exist</source>
         <translation>O ficheiro non existe</translation>
     </message>
@@ -1430,9 +1299,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="910"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1193"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1218"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1300"/>
         <source>%1 videos</source>
         <translation>%1 vídeos</translation>
     </message>
@@ -1456,21 +1322,18 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2135"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2572"/>
         <source>Fullscreen</source>
         <translation>Pantalla completa</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2589"/>
         <source>Playlist</source>
         <translation>Lista de reprodución</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2132"/>
@@ -1492,9 +1355,6 @@ and whether to restart it?</source>
     <name>dmr::PlayItemWidget</name>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="163"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="257"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="323"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="507"/>
         <source>The file does not exist</source>
         <translation>O ficheiro non existe</translation>
     </message>
@@ -1513,9 +1373,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="910"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1193"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1218"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1300"/>
         <source>%1 videos</source>
         <translation>%1 vídeos</translation>
     </message>
@@ -1577,52 +1434,41 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2775"/>
         <source>Previous</source>
         <translation>Anterior</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2792"/>
         <source>Next</source>
         <translation>Seguinte</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2312"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2809"/>
         <source>Fullscreen</source>
         <translation>Pantalla completa</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2825"/>
         <source>Playlist</source>
         <translation>Lista de reprodución</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2859"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2306"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2308"/>
         <source>Exit fullscreen</source>
         <translation>Saír da pantalla completa</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2402"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2404"/>
         <source>Pause</source>
         <translation>Pausar</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2467"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2469"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2760"/>
         <source>Play</source>
         <translation>Reproducir</translation>
     </message>
