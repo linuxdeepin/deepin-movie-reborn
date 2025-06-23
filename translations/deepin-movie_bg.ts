@@ -6,30 +6,31 @@
     <message>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"></translation>
+        <translation>Проектиране... 
+Моля, не излизайте от приложението Movie по време на процеса.</translation>
     </message>
     <message>
         <source>Display device</source>
-        <translation type="unfinished"></translation>
+        <translation>Устройство за показване</translation>
     </message>
     <message>
         <source>Exit Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Изход от Miracast</translation>
     </message>
 </context>
 <context>
     <name>MircastWidget</name>
     <message>
         <source>Project to</source>
-        <translation type="unfinished"></translation>
+        <translation>Проектиране към</translation>
     </message>
     <message>
         <source>Searching for devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>Търсене на устройства...</translation>
     </message>
     <message>
         <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не са намерени устройства за показване на Miracast. Моля, свържете устройството и вашия компютър към същата WLAN мрежа.</translation>
     </message>
 </context>
 <context>
@@ -44,7 +45,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Мрежата е отключена</translation>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
@@ -204,7 +205,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Изход от режим fullscreen/mini</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -224,7 +225,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Премахнете от списъка с видеоклипове</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -232,7 +233,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>Бързо снимане</translation>
     </message>
     <message>
         <source>Size</source>
@@ -240,7 +241,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Movie е пълнофункционален видеоплеер, поддържащ изпълнение на локални и стрийминг медийни файлове в различни видео формати.</translation>
     </message>
     <message>
         <source>OK</source>
@@ -248,48 +249,50 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Show thumbnails in progress bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показване на миниатюри в прегледната лента</translation>
     </message>
     <message>
         <source>Default play mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартен режим за изпълнение</translation>
     </message>
     <message>
         <source>Decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Декодиране</translation>
     </message>
     <message>
         <source>Auto select (Recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматичен избор ( препоръчително )</translation>
     </message>
     <message>
         <source>Hardware decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Хардуерно декодиране</translation>
     </message>
     <message>
         <source>Software decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Меко декодиране</translation>
     </message>
     <message>
         <source>Customize</source>
-        <translation type="unfinished"></translation>
+        <translation>Персонализиране</translation>
     </message>
     <message>
         <source>Decode mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим на декодиране</translation>
     </message>
     <message>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>Видео изход</translation>
     </message>
     <message>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Персонализираната методика за декодиране трябва да се рестартира преди да влезе в сила,
+
+и дали да се рестартира?</translation>
     </message>
     <message>
         <source>Rendering engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Енджин за рендеринг</translation>
     </message>
 </context>
 <context>
@@ -323,7 +326,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Празен списък с видеоклипове</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -459,7 +462,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Следваща кадър</translation>
     </message>
     <message>
         <source>Display in file manager</source>
@@ -467,23 +470,23 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Предишна кадър</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Отворете папка с екранни снимки</translation>
     </message>
     <message>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Скорост на изпълнение</translation>
     </message>
     <message>
         <source>Playback Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5x</translation>
     </message>
     <message>
         <source>0.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.0x</translation>
     </message>
     <message>
         <source>1.0x</source>
@@ -491,15 +494,15 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>1.2x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.2x</translation>
     </message>
     <message>
         <source>1.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.5x</translation>
     </message>
     <message>
         <source>2.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>2.0x</translation>
     </message>
 </context>
 <context>
@@ -553,7 +556,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Парсване се провали</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -565,7 +568,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>След: %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -605,11 +608,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Няма съвпадащи онлайн субтитри</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се отвори файл или поток</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -617,7 +620,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>Не е намерен видеofile</translation>
     </message>
     <message>
         <source>Film screenshot</source>
@@ -625,7 +628,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Параване на снимки, моля изчакайте...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -633,63 +636,63 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Моля въведете CD/DVD</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Четене на DVD файлове...</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>4K видеото може да се забърка</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>Моля заредете видеото преди това</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Редовно изпълнение</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Смесено изпълнение</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Единично изпълнение</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Единичен цикъл</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Списък с цикъл</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD е изхвърлен</translation>
     </message>
     <message>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Моля излезете от интелигентния док</translation>
     </message>
     <message>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се изпълни дискът</translation>
     </message>
     <message>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се промени субтитъра</translation>
     </message>
     <message>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>Действието не е поддържано в това видео</translation>
     </message>
     <message>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Всички (*</translation>
     </message>
     <message>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
@@ -698,11 +701,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Свързването се провали</translation>
     </message>
     <message>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast разединен</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -710,7 +713,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Първо стартиране</translation>
     </message>
 </context>
 <context>
@@ -760,31 +763,31 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация за кодека</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Видео CodecID</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Видео CodeRate</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>Пропорция</translation>
     </message>
     <message>
         <source>%1</source>
@@ -792,50 +795,50 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>Аудио информация</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Аудио CodecID</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Аудио CodeRate</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>Аудио цифра</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 бити</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Канали</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 канала</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Самплиране</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Hz</translation>
     </message>
     <message>
         <source>%1 bps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bps</translation>
     </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"></translation>
+        <translation>Вътрешен</translation>
     </message>
 </context>
 <context>
@@ -850,11 +853,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се изпълни диска</translation>
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Парсингът се провали</translation>
     </message>
     <message>
         <source>Open folder</source>
@@ -862,7 +865,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Всички (*)</translation>
     </message>
     <message>
         <source>Speed: %1x</source>
@@ -882,11 +885,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>След: %1</translation>
     </message>
     <message>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се коригира субтитъра</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -927,19 +930,19 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Изтегляне на снимки, моля изчакайте...</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Четене на DVD файлове...</translation>
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Няма съвпадащи онлайн субтитри</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>4K видеото може да се забърка</translation>
     </message>
     <message>
         <source>OK</source>
@@ -947,23 +950,23 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Редовно изпълнение</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Смесено изпълнение</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Единичен изпълнител</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Единичен цикъл</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Списък с цикли</translation>
     </message>
     <message>
         <source>Buffering...</source>
@@ -979,7 +982,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се отвори файл или поток</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -987,27 +990,27 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Моля, въведете CD/DVD</translation>
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>Не е намерен видеofile</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>Моля, заредете видеото първо</translation>
     </message>
     <message>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Моля, излезете от smart dock</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD е изхвърлен</translation>
     </message>
     <message>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>Действието не е поддържано в това видео</translation>
     </message>
     <message>
         <source>Invalid file: %1</source>
@@ -1015,11 +1018,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Свързването е провалено</translation>
     </message>
     <message>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast е отключено</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -1027,21 +1030,21 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Пуснете отново</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Файълът не съществува</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_PlaylistWidget</name>
     <message>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Списък</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -1049,7 +1052,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 видеа&apos;</translation>
     </message>
 </context>
 <context>
@@ -1072,7 +1075,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Списък</translation>
     </message>
     <message>
         <source>Exit fullscreen</source>
@@ -1088,14 +1091,14 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Файълът не съществува</translation>
     </message>
 </context>
 <context>
@@ -1106,7 +1109,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 видеа&apos;</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -1117,39 +1120,39 @@ and whether to restart it?</source>
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1/Филм%2(%3).jpg&apos;</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Редовно изпълнение</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Смесено изпълнение</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Еднократно изпълнение</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Еднократно повторение</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Списъчно повторение</translation>
     </message>
     <message>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматично</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Отвори</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Затвори</translation>
     </message>
 </context>
 <context>
@@ -1188,18 +1191,18 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Глас</translation>
     </message>
 </context>
 <context>
     <name>dmr::VolumeButton</name>
     <message>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Глас</translation>
     </message>
 </context>
 </TS>

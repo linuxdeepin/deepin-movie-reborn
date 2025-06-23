@@ -6,18 +6,19 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="57"/>
         <source>Exit Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>மிராகேஸ்ட் விடு</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="74"/>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"></translation>
+        <translation>தொடர்ந்து பிரித்தலாம்...
+மிராகேஸ்ட் பொறுப்பு பெறும் போது படம் ஆப்பை விடுத்து விடகோஷ்டு.</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="102"/>
         <source>Display device</source>
-        <translation type="unfinished"></translation>
+        <translation>தொடர்புடைய தொடர்பு</translation>
     </message>
 </context>
 <context>
@@ -25,176 +26,167 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="71"/>
         <source>Project to</source>
-        <translation type="unfinished"></translation>
+        <translation>பிரித்தல் செய்யும்</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="369"/>
         <source>Searching for devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>அமைப்புகளை தேடுகிறது...</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="378"/>
         <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"></translation>
+        <translation>மிராகேஸ்ட் தொடர்புடைய அமைப்புகளை கண்டுபிடிக்க கூடாது. அமைப்பு மற்றும் உங்கள் கணினியை ஒரே WLAN தொடர்புடைய பிரிவினைக்கு இணைக்கவும்.</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="324"/>
-        <location filename="../src/common/mainwindow.cpp" line="328"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>சரி</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="340"/>
-        <location filename="../src/common/mainwindow.cpp" line="344"/>
         <source>Invalid folder</source>
-        <translation type="unfinished"></translation>
+        <translation>தவறான குறிப்பிட்ட தடை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="360"/>
-        <location filename="../src/common/mainwindow.cpp" line="364"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>தடை திறந்து</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2872"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2898"/>
-        <location filename="../src/common/mainwindow.cpp" line="2847"/>
-        <location filename="../src/common/mainwindow.cpp" line="2872"/>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
-        <translation type="unfinished"></translation>
+        <translation>தனிப்பயன் தொடர்புடைய தீர்வு முறையை செயல்படுத்த முன் மீண்டும் தொடங்க வேண்டும்,
+மீண்டும் தொடங்க வேண்டுமா?</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3261"/>
-        <location filename="../src/common/mainwindow.cpp" line="3268"/>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>அண்ணியின் தொடர்பு துண்டிக்கப்பட்டுள்ளது</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
-        <location filename="../src/common/mainwindow.cpp" line="326"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"></translation>
+        <translation>உங்கள் கையில் இந்த தடையை செயல்படுத்த அனுமதி இல்லை</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="10"/>
         <source>Auto add similar files to play</source>
-        <translation type="unfinished"></translation>
+        <translation>தொடர்புடைய பொறுப்பு பெறும் போது சம்பந்தமான கோப்புகளை தொடர்புடைய பொறுப்பு பெறும்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="11"/>
         <source>Clear playlist when exit</source>
-        <translation type="unfinished"></translation>
+        <translation>வெளியேறும்போது படித்தல் பட்டியலை சுத்தம் செய்யும்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="12"/>
         <source>Show thumbnails in progress bar</source>
-        <translation type="unfinished"></translation>
+        <translation>தொடர்புடைய பொறுப்பு பெறும் போது சிறிய படங்களை காட்டும்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="13"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"></translation>
+        <translation>மௌச் ஓவரில் படம் முன்னோட்டத்தை காட்டும்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="14"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"></translation>
+        <translation>மீண்டும் புதிய விரும்பிகளை ஒவ்வொரு கோப்பும் விரும்பியை தொடர்புடைய பொறுப்பு பெறும்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="15"/>
         <source>Pause when minimized</source>
-        <translation type="unfinished"></translation>
+        <translation>குறைக்கப்படும்போது நிறுத்தும்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="16"/>
         <source>Remember playback position</source>
-        <translation type="unfinished"></translation>
+        <translation>பிரித்தல் பொறுப்பு பெறும் போது முன்னோட்ட பொறுப்பு பெறும் இடத்தை நினைவில் கொள்ளும்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="17"/>
         <source>Default play mode</source>
-        <translation type="unfinished"></translation>
+        <translation>இடைவிடாமல் பொறுப்பு பெறும் முறை</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="18"/>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>வழி</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="19"/>
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>முக்கியமான</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="20"/>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation>தொடர்புடைய பொறுப்பு பெறும்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="21"/>
-        <location filename="../src/common/settings_translation.cpp" line="26"/>
         <source>Screenshot</source>
         <translation>திரைப்பிடிப்பு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="22"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>குறுக்கு வழிகள்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="23"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>கோப்பு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="24"/>
         <source>Frame/Sound</source>
-        <translation type="unfinished"></translation>
+        <translation>படம்/ஒலி</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="25"/>
         <source>Playback</source>
-        <translation type="unfinished"></translation>
+        <translation>தொடர்புடைய பொறுப்பு பெறும்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="27"/>
-        <location filename="../src/common/settings_translation.cpp" line="28"/>
         <source>Subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>அடிக்குறிப்பு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="29"/>
         <source>Font Style</source>
-        <translation type="unfinished"></translation>
+        <translation>எழுத்து முறை</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="30"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>முன் முறைகளை மீட்டரிக்க</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="31"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>உருவாக்க கோப்பை</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="32"/>
         <source>Open next</source>
-        <translation type="unfinished"></translation>
+        <translation>அடுத்ததை உருவாக்க</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="33"/>
         <source>Open previous</source>
-        <translation type="unfinished"></translation>
+        <translation>முன்னதை உருவாக்க</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="34"/>
         <source>Mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>மினிமோட்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="35"/>
@@ -204,12 +196,12 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="36"/>
         <source>Next frame</source>
-        <translation type="unfinished"></translation>
+        <translation>அடுத்த படத்தை</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="37"/>
         <source>Previous frame</source>
-        <translation type="unfinished"></translation>
+        <translation>முன்னத படத்தை</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="38"/>
@@ -224,161 +216,152 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="40"/>
         <source>Speed up</source>
-        <translation type="unfinished"></translation>
+        <translation>வேகமாக்கு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="41"/>
         <source>Speed down</source>
-        <translation type="unfinished"></translation>
+        <translation>வேகம் குறைக்கு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="42"/>
         <source>Fullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>பூர்த்தி திரை</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="43"/>
         <source>Pause/Play</source>
-        <translation type="unfinished"></translation>
+        <translation>நிறுத்து/தொடங்கு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="44"/>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>படிம பட்டியல்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="45"/>
         <source>Reset speed</source>
-        <translation type="unfinished"></translation>
+        <translation>வேகத்தை மீட்டர் செய்யு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="46"/>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>படிம பட்டியலிலிருந்து நீக்கு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="47"/>
         <source>Film info</source>
-        <translation type="unfinished"></translation>
+        <translation>படம் தகவல்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="50"/>
         <source>Burst shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>புற்று படமெடுத்தல்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="55"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>அளவு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="60"/>
         <source>Decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>கோடிங்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="61"/>
         <source>Auto select (Recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>தற்செயலாக தேர்வு செய்ய (அறிவுறுத்தப்படுகிறது)</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="62"/>
         <source>Hardware decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>கணினி உறுப்பு கோடிங்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="63"/>
         <source>Software decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>செயல்புரியும் கோடிங்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="64"/>
         <source>Customize</source>
-        <translation type="unfinished"></translation>
+        <translation>தனிப்பயனாக்கு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="65"/>
         <source>Decode mode</source>
-        <translation type="unfinished"></translation>
+        <translation>கோடிங் மோட்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="66"/>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>வீடியோ வெளியீடு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="67"/>
         <source>Rendering engine</source>
-        <translation type="unfinished"></translation>
+        <translation>வரைதல் இன்ஜின்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="48"/>
         <source>Rewind</source>
-        <translation type="unfinished"></translation>
+        <translation>விரைவாக திரும்பு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="49"/>
         <source>Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>முன்னேறு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="51"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>படம் கைபெட்டியின் படம்</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="52"/>
         <source>0.5s backward</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5 விந்தை திரும்பு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="53"/>
         <source>0.5s forward</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5 விந்தை முன்னேறு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="54"/>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>எழுத்துரு</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="56"/>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>மூடி முழுமையாக/சிறிய திரையின் மோடை விடு</translation>
     </message>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="582"/>
-        <location filename="../src/main.cpp" line="288"/>
-        <location filename="../src/main.cpp" line="360"/>
-        <location filename="../src/widgets/volumeslider.cpp" line="113"/>
-        <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="116"/>
-        <location filename="../src/common/volumemonitoring.cpp" line="68"/>
-        <location filename="../src/common/dmr_settings.cpp" line="285"/>
         <source>Movie</source>
-        <translation type="unfinished"></translation>
+        <translation>படம்</translation>
     </message>
     <message>
         <location filename="../src/main.cpp" line="289"/>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>படம் ஒரு முழுமையான வீடியோ ப்ளேயர் ஆகும், இது தொடர்புடைய மற்றும் ஸ்ட்ரீமிங் மீடியாவை பல வீடியோ வடிவங்களில் ப்ளே செய்ய ஆதரிக்கிறது.</translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="186"/>
-        <location filename="../src/common/settings_translation.cpp" line="59"/>
         <source>Settings</source>
         <translation type="unfinished">அமைவுகள்</translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="189"/>
-        <location filename="../src/common/settings_translation.cpp" line="57"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>விளக்கம்</translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="194"/>
-        <location filename="../src/common/settings_translation.cpp" line="58"/>
         <source>Display shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>குறியீடுகளை காட்டு</translation>
     </message>
 </context>
 <context>
@@ -391,196 +374,155 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/url_dialog.cpp" line="20"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>சரி</translation>
     </message>
     <message>
         <location filename="../src/widgets/url_dialog.cpp" line="26"/>
         <source>Please enter the URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>மீடியா இணையதளத்தை உள்ளிடவும்:</translation>
     </message>
 </context>
 <context>
     <name>dmr::ActionFactory</name>
     <message>
         <location filename="../src/common/actions.cpp" line="56"/>
-        <location filename="../src/common/actions.cpp" line="310"/>
-        <location filename="../src/common/actions.cpp" line="366"/>
         <source>Settings</source>
         <translation>அமைவுகள்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="132"/>
-        <location filename="../src/common/actions.cpp" line="319"/>
         <source>Fullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>முழுமையான திரை</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="134"/>
-        <location filename="../src/common/actions.cpp" line="321"/>
         <source>Always on Top</source>
-        <translation type="unfinished"></translation>
+        <translation>முழுமையான திரையில் மட்டும் மேல்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="101"/>
-        <location filename="../src/common/actions.cpp" line="151"/>
-        <location filename="../src/common/actions.cpp" line="338"/>
         <source>0.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="102"/>
-        <location filename="../src/common/actions.cpp" line="152"/>
-        <location filename="../src/common/actions.cpp" line="339"/>
         <source>1.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.0x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="103"/>
-        <location filename="../src/common/actions.cpp" line="153"/>
-        <location filename="../src/common/actions.cpp" line="340"/>
         <source>1.2x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.2x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="104"/>
-        <location filename="../src/common/actions.cpp" line="154"/>
-        <location filename="../src/common/actions.cpp" line="341"/>
         <source>1.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.5x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="105"/>
-        <location filename="../src/common/actions.cpp" line="155"/>
-        <location filename="../src/common/actions.cpp" line="342"/>
         <source>2.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>2.0x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="89"/>
-        <location filename="../src/common/actions.cpp" line="176"/>
         <source>Next Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>அடுத்த படத்தை</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="90"/>
-        <location filename="../src/common/actions.cpp" line="177"/>
         <source>Previous Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>முன்னாடி படத்தை</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="376"/>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>நிரப்பாத பட்டியல்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="378"/>
         <source>Film info</source>
-        <translation type="unfinished"></translation>
+        <translation>படத்தின் தகவல்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="53"/>
-        <location filename="../src/common/actions.cpp" line="127"/>
-        <location filename="../src/common/actions.cpp" line="314"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>பைலை திறந்து</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="55"/>
-        <location filename="../src/common/actions.cpp" line="128"/>
-        <location filename="../src/common/actions.cpp" line="315"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>மூலை திறந்து</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="129"/>
-        <location filename="../src/common/actions.cpp" line="316"/>
         <source>Open URL</source>
-        <translation type="unfinished"></translation>
+        <translation>URL திறந்து</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="130"/>
-        <location filename="../src/common/actions.cpp" line="317"/>
         <source>Open CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD திறந்து</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="133"/>
-        <location filename="../src/common/actions.cpp" line="320"/>
         <source>Mini Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>சிறிய திரை மோடு</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="66"/>
-        <location filename="../src/common/actions.cpp" line="138"/>
-        <location filename="../src/common/actions.cpp" line="325"/>
         <source>Play Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>ப்ளே மோடு</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="68"/>
-        <location filename="../src/common/actions.cpp" line="140"/>
-        <location filename="../src/common/actions.cpp" line="327"/>
         <source>Order Play</source>
-        <translation type="unfinished"></translation>
+        <translation>கோர்ட்டு ப்ளே</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="69"/>
-        <location filename="../src/common/actions.cpp" line="141"/>
-        <location filename="../src/common/actions.cpp" line="328"/>
         <source>Shuffle Play</source>
-        <translation type="unfinished"></translation>
+        <translation>ஷுஃபிள் ப்ளே</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="70"/>
-        <location filename="../src/common/actions.cpp" line="142"/>
-        <location filename="../src/common/actions.cpp" line="329"/>
         <source>Single Play</source>
-        <translation type="unfinished"></translation>
+        <translation>ஒரு படம் ப்ளே</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="71"/>
-        <location filename="../src/common/actions.cpp" line="143"/>
-        <location filename="../src/common/actions.cpp" line="330"/>
         <source>Single Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>ஒரு படம் மட்டும் வரிசை</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="72"/>
-        <location filename="../src/common/actions.cpp" line="144"/>
-        <location filename="../src/common/actions.cpp" line="331"/>
         <source>List Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>பட்டியல் வரிசை</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="99"/>
-        <location filename="../src/common/actions.cpp" line="149"/>
-        <location filename="../src/common/actions.cpp" line="336"/>
         <source>Playback Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>ப்ளேபேக் வேகம்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="77"/>
-        <location filename="../src/common/actions.cpp" line="164"/>
         <source>Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>நோக்கம்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="79"/>
-        <location filename="../src/common/actions.cpp" line="166"/>
         <source>Default</source>
         <translation>இயல்புநிலை</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="86"/>
-        <location filename="../src/common/actions.cpp" line="173"/>
         <source>Clockwise</source>
-        <translation type="unfinished"></translation>
+        <translation>மணி நேரம்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="87"/>
-        <location filename="../src/common/actions.cpp" line="174"/>
         <source>Counterclockwise</source>
-        <translation type="unfinished"></translation>
+        <translation>எதிர் மணி நேரம்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="187"/>
@@ -595,38 +537,37 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/actions.cpp" line="194"/>
         <source>Stereo</source>
-        <translation type="unfinished"></translation>
+        <translation>ஸ்டீரியோ</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="195"/>
         <source>Left channel</source>
-        <translation type="unfinished"></translation>
+        <translation>இடது கேனல்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="196"/>
         <source>Right channel</source>
-        <translation type="unfinished"></translation>
+        <translation>வலது கேனல்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="201"/>
-        <location filename="../src/common/actions.cpp" line="424"/>
         <source>Track</source>
-        <translation type="unfinished"></translation>
+        <translation>தொடர்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="214"/>
         <source>Subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>சப்பிளீட்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="216"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>கொண்டார்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="217"/>
         <source>Online Search</source>
-        <translation type="unfinished"></translation>
+        <translation>ஆன்லைன் தேடல்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="221"/>
@@ -636,57 +577,52 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/actions.cpp" line="225"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>குறைக்க</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="228"/>
         <source>Encodings</source>
-        <translation type="unfinished"></translation>
+        <translation>குறியீடுகள்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="295"/>
-        <location filename="../src/common/actions.cpp" line="352"/>
         <source>Screenshot</source>
         <translation>திரைப்பிடிப்பு</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="298"/>
-        <location filename="../src/common/actions.cpp" line="355"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>படம் புறக்கணிப்பு</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="299"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>புறக்கணிப்பு வெட்டி</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="300"/>
-        <location filename="../src/common/actions.cpp" line="356"/>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>புறக்கணிப்பு கேட்டல் திறந்து</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="308"/>
-        <location filename="../src/common/actions.cpp" line="364"/>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>ப்ளேலிஸ்ட்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="309"/>
-        <location filename="../src/common/actions.cpp" line="365"/>
         <source>Film Info</source>
-        <translation type="unfinished"></translation>
+        <translation>படம் தகவல்</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="375"/>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>ப்ளேலிஸ்ட் இருந்து நீக்கு</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="377"/>
         <source>Display in file manager</source>
-        <translation type="unfinished"></translation>
+        <translation>புரொக்கிராம் மேனேஜரில் காட்டு</translation>
     </message>
 </context>
 <context>
@@ -694,17 +630,17 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="44"/>
         <source>Duration: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>நீளம்: %1</translation>
     </message>
     <message>
         <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="49"/>
         <source>Resolution: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>தீர்க்கும் திறன்: %1</translation>
     </message>
     <message>
         <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="54"/>
         <source>Size: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>அளவு: %1</translation>
     </message>
     <message>
         <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="77"/>
@@ -716,271 +652,241 @@ and whether to restart it?</source>
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>கொண்டார் வெற்றிகரமாக</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="2550"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load failed</source>
-        <translation type="unfinished"></translation>
+        <translation>கொண்டார் தோல்வியடைந்தது</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3480"/>
         <source>Buffering...</source>
-        <translation type="unfinished"></translation>
+        <translation>புரோக்கிராம் செய்யப்படுகிறது...</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1877"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>கேட்டல் திறந்து</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2323"/>
         <source>Stereo</source>
-        <translation type="unfinished"></translation>
+        <translation>ஸ்டீரியோ</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2328"/>
         <source>Left channel</source>
-        <translation type="unfinished"></translation>
+        <translation>இடது கேனல்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2333"/>
         <source>Right channel</source>
-        <translation type="unfinished"></translation>
+        <translation>வலது கேனல்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1869"/>
-        <location filename="../src/common/mainwindow.cpp" line="3608"/>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>பேர்சிங் தோல்வியடைந்தது</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3503"/>
-        <location filename="../src/common/mainwindow.cpp" line="3528"/>
         <source>Mute</source>
         <translation type="unfinished">ஒலியடக்கு</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3505"/>
-        <location filename="../src/common/mainwindow.cpp" line="3530"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished"></translation>
+        <translation>அளவு: %1%</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2438"/>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>தரவு: %1</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2485"/>
-        <location filename="../src/common/mainwindow.cpp" line="2502"/>
         <source>Subtitle %1: %2s</source>
-        <translation type="unfinished"></translation>
+        <translation>அகராதி %1: %2s</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>delayed</source>
-        <translation type="unfinished"></translation>
+        <translation>தாமதமாக</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>முன்னேற்றம்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2284"/>
-        <location filename="../src/common/mainwindow.cpp" line="2292"/>
-        <location filename="../src/common/mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/mainwindow.cpp" line="2522"/>
-        <location filename="../src/common/mainwindow.cpp" line="4854"/>
         <source>Speed: %1x</source>
-        <translation type="unfinished"></translation>
+        <translation>வேகம்: %1x</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1852"/>
-        <location filename="../src/common/mainwindow.cpp" line="3049"/>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>டிஸ்கை பிளே செய்ய முடியவில்லை</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2480"/>
-        <location filename="../src/common/mainwindow.cpp" line="2497"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>அகராதியை மாற்ற முடியவில்லை</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2644"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>காண்க</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2653"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>படம் புறக்காட்சி</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2763"/>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>புறக்காட்சிகளை எடுக்கிறோம், காத்திருக்கவும்...</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2848"/>
-        <location filename="../src/common/mainwindow.cpp" line="2873"/>
         <source>Cancel</source>
         <translation type="unfinished">நிறுத்து</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2849"/>
-        <location filename="../src/common/mainwindow.cpp" line="2874"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>மீண்டும் தொடங்கவும்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3054"/>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>டிவி தகவல்களை படிக்கிறது...</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3291"/>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>4K படம் தாமதமாக இருக்கலாம்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3292"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>ஒப்புக்கொள்ள</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3324"/>
-        <location filename="../src/common/mainwindow.cpp" line="4288"/>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>கட்டுப்பாட்டு பிளே</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3327"/>
-        <location filename="../src/common/mainwindow.cpp" line="4291"/>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>கலக்கு பிளே</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3330"/>
-        <location filename="../src/common/mainwindow.cpp" line="4294"/>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>ஒரு பிளே</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3333"/>
-        <location filename="../src/common/mainwindow.cpp" line="4297"/>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>ஒரு வட்டம்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3336"/>
-        <location filename="../src/common/mainwindow.cpp" line="4300"/>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>பட்டியல் வட்டம்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3623"/>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>மீண்டும் CD/DVD ஐ பொருத்துங்கள்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4955"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>இந்த படத்தில் இந்த செயல் ஆதரிக்கப்படவில்லை</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4990"/>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>கட்டளை இணைப்பு வேறுபட்டது</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4997"/>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>மிராகாஸ்ட் இணைப்பு கைவிடப்பட்டது</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4402"/>
-        <location filename="../src/common/mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>மின் கீழ் கைவிடுங்கள்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4715"/>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD தூக்கி எடுக்கப்பட்டுள்ளது</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4279"/>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>முதலில் படத்தை பொருத்துங்கள்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1913"/>
-        <location filename="../src/common/mainwindow.cpp" line="1950"/>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>அனைத்து (*), </translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2531"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <comment>All (*)</comment>
-        <translation type="unfinished"></translation>
+        <translation>&gt;-
+ அகராதி (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf
+ *.idx)</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2654"/>
         <source>Saved to</source>
-        <translation type="unfinished"></translation>
+        <translation>சேமித்து வைக்கப்பட்டது</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2675"/>
-        <location filename="../src/common/mainwindow.cpp" line="2803"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"></translation>
+        <translation>நிலைத்துரும்பு படம் சேமிக்கப்பட்டது</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2679"/>
-        <location filename="../src/common/mainwindow.cpp" line="2807"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>நிலைத்துரும்பு படம் சேமிக்க வேண்டிய தோராக்கம்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4966"/>
         <source>Invalid file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>தவறான பைல்: %1</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3275"/>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>மேலோட்ட ஆன்லைன் கீழ் தொடர்கள் பொருத்தமானவை இல்லை</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3548"/>
-        <location filename="../src/common/mainwindow.cpp" line="3599"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>பைல் அல்லது ஸ்டிரிம் திறக்க முடியாது</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3616"/>
-        <location filename="../src/common/mainwindow.cpp" line="3621"/>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>தவறான பைல்</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3628"/>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>வீடியோ பைல் காணாது</translation>
     </message>
 </context>
 <context>
@@ -988,124 +894,122 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="243"/>
         <source>Film info</source>
-        <translation type="unfinished"></translation>
+        <translation>படம் தகவல்</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="295"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>வகை</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="296"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>அளவு</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="302"/>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>வழி</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="307"/>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>கோட்கள் தகவல்</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="328"/>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>வீடியோ கோட்கள் ID</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="329"/>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>வீடியோ கோட் வேகம்</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="275"/>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="288"/>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="276"/>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="289"/>
         <source>%1 bps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bps</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="330"/>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>பிபிஎஸ்</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="278"/>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="331"/>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>விகிதம்</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="279"/>
         <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="332"/>
         <source>Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>தெளிவு</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="337"/>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>ஆடியோ தகவல்</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="358"/>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>ஆடியோ கோட்கள் ID</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="359"/>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>ஆடியோ கோட் வேகம்</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="360"/>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>ஆடியோ பிட்</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="291"/>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bits</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="361"/>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>கேனல்கள்</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="292"/>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 channels</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="362"/>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>சேம்பிலிங்</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="293"/>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>%1hz</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="297"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>தொடர்வெளியம்</translation>
     </message>
 </context>
 <context>
@@ -1113,288 +1017,254 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1990"/>
         <source>Internal</source>
-        <translation type="unfinished"></translation>
+        <translation>முதன்மை</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_MainWindow</name>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>மறுத்து பெறப்பட்டது</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2566"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load failed</source>
-        <translation type="unfinished"></translation>
+        <translation>மறுத்து பெறவில்லை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1915"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3059"/>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>டிஸ்கை வெளியிட முடியவில்லை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1932"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3579"/>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>பிரித்தல் தோல்வியடைந்தது</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1940"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>மூடியை திறந்து</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1968"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1997"/>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>அனைத்து (*)</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2324"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2538"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4800"/>
         <source>Speed: %1x</source>
-        <translation type="unfinished"></translation>
+        <translation>வேகம்: %1x</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2339"/>
         <source>Stereo</source>
-        <translation type="unfinished"></translation>
+        <translation>ஸ்டீரியோ</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2344"/>
         <source>Left channel</source>
-        <translation type="unfinished"></translation>
+        <translation>இடது செல்லாக்கம்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2349"/>
         <source>Right channel</source>
-        <translation type="unfinished"></translation>
+        <translation>மேல்துப்பு செல்லாக்கம்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2454"/>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>தரவு: %1</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2496"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2513"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>சிறித்துப்பு மாற்ற முடியவில்லை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2518"/>
         <source>Subtitle %1: %2s</source>
-        <translation type="unfinished"></translation>
+        <translation>சிறித்துப்பு %1: %2s</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>delayed</source>
-        <translation type="unfinished"></translation>
+        <translation>தாமதமாக</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>முன்னேற்றம்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2547"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <comment>All (*)</comment>
-        <translation type="unfinished"></translation>
+        <translation>சிறித்துப்பு (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2670"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>பார்வை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2679"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>படத்தின் புற படம்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2680"/>
         <source>Saved to</source>
-        <translation type="unfinished"></translation>
+        <translation>மாற்று பெற்றது</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2701"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2828"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"></translation>
+        <translation>புற படம் மாற்று பெற்றுள்ளது</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2705"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2832"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>புற படம் மாற்று பெறவில்லை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2789"/>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>புற படங்களை பெறுகிறது, வேகமாக வாய்த்து...</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
         <source>Cancel</source>
         <translation type="unfinished">நிறுத்து</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2874"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2900"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>மீண்டும் தொடங்கவும்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3064"/>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>டிவிடி கோப்புகளை படித்து வருகிறது...</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3268"/>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>நெட்டில் தகுந்த சிறித்துப்பு இல்லை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3284"/>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>4K காட்சி சிறிது தாமதமாக இருக்கலாம்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3285"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>சரி</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3326"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4292"/>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>கட்டார் பாடல்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3329"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4295"/>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>நிலை மாற்று பாடல்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4298"/>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>ஒரு பாடல்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3335"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4301"/>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>ஒரு வரிசை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3338"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4304"/>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>பட்டியல் வரிசை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3476"/>
         <source>Buffering...</source>
-        <translation type="unfinished"></translation>
+        <translation>புufering...</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3499"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3524"/>
         <source>Mute</source>
         <translation type="unfinished">ஒலியடக்கு</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3526"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished"></translation>
+        <translation>அளவு: %1%</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3570"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>ஒரு பைல் அல்லது ஸ்டிரீமை திறக்க முடியவில்லை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3587"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3592"/>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>தவறான பைல்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3594"/>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>மீண்டும் CD/DVDஐ பிணைக்கவும்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3600"/>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>ஒரு வீடியோ பைலை கண்டுபிடிக்க முடியவில்லை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4283"/>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>முதலில் வீடியோவை பதிவேற்றவும்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4403"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>முதலில் smart dockஐ விடுவிக்கவும்</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4655"/>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD விடுவிக்கப்பட்டுள்ளது</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4901"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>இந்த வீடியோவில் இந்த செயல் ஆதரிக்கப்படவில்லை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4912"/>
         <source>Invalid file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>தவறான பைல்: %1</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4936"/>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>கனெக்ஷன் வெற்றியில்லை</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4943"/>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast பிடுங்கியுள்ளது</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_PlayItemWidget</name>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="163"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="257"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="323"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="507"/>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>பைல் இல்லை</translation>
     </message>
 </context>
 <context>
@@ -1402,20 +1272,17 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="679"/>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>பட்டியல்</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="705"/>
         <source>Empty</source>
-        <translation type="unfinished"></translation>
+        <translation>நிரம்பியிருக்கவில்லை</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="910"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1193"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1218"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1300"/>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 வீடியோக்கள்</translation>
     </message>
 </context>
 <context>
@@ -1437,26 +1304,23 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2135"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2572"/>
         <source>Fullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>ஃபுல்ஸ்கிரீன்</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2589"/>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>பட்டியல்</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2132"/>
         <source>Exit fullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>ஃபுல்ஸ்கிரீன் விடு</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2217"/>
@@ -1466,18 +1330,15 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2277"/>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation>துவக்கு</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="163"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="257"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="323"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="507"/>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>பைல் இல்லை</translation>
     </message>
 </context>
 <context>
@@ -1485,20 +1346,17 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="679"/>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>பட்டியல்</translation>
     </message>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="705"/>
         <source>Empty</source>
-        <translation type="unfinished"></translation>
+        <translation>நிரம்பியிருக்கவில்லை</translation>
     </message>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="910"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1193"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1218"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1300"/>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 வீடியோக்கள்</translation>
     </message>
 </context>
 <context>
@@ -1506,88 +1364,80 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="119"/>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>கோர்டு ப்ளே</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="120"/>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>சுட்டில் ப்ளே</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="121"/>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>சிங்கிள் ப்ளே</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="122"/>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>சிங்கிள் லூப்</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="123"/>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>லிஸ்ட் லூப்</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="129"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>நிலைநிறுத்து</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="130"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>திறந்து</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="131"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>மூடி</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="294"/>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1/படம்%2(%3).jpg&apos;</translation>
     </message>
 </context>
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2467"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2469"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2760"/>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation>ப்ளே</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2775"/>
         <source>Previous</source>
         <translation>முந்தைய</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2792"/>
         <source>Next</source>
         <translation>அடுத்து</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2825"/>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>ப்ளேலிஸ்ட்</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2312"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2809"/>
         <source>Fullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>ஃபுல்ஸ்கிரீன்</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2842"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>வாய்ப்பு</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
@@ -1596,19 +1446,16 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2859"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>மிராகாஸ்ட்</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2306"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2308"/>
         <source>Exit fullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>ஃபுல்ஸ்கிரீன் விடு</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2402"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2404"/>
         <source>Pause</source>
         <translation>இடைநிறுத்து</translation>
     </message>
@@ -1618,7 +1465,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/toolbutton.cpp" line="19"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>வாய்ப்பு</translation>
     </message>
 </context>
 </TS>

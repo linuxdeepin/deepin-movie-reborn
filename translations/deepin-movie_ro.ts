@@ -6,30 +6,31 @@
     <message>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"></translation>
+        <translation>Proiectarea... 
+Vă rugăm să nu părăsiți aplicația Movie în timpul procesului.</translation>
     </message>
     <message>
         <source>Display device</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispozitiv de afișare</translation>
     </message>
     <message>
         <source>Exit Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Ieșire din Miracast</translation>
     </message>
 </context>
 <context>
     <name>MircastWidget</name>
     <message>
         <source>Project to</source>
-        <translation type="unfinished"></translation>
+        <translation>Proiectați către</translation>
     </message>
     <message>
         <source>Searching for devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>Căutare dispozitive...</translation>
     </message>
     <message>
         <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-au găsit dispozitive Miracast de afișare. Vă rugăm să conectați dispozitivul și computerul la aceeași rețea WLAN.</translation>
     </message>
 </context>
 <context>
@@ -44,7 +45,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Rețea dezconectată</translation>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
@@ -204,7 +205,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Ieșire din modul fullscreen/mini</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -224,7 +225,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Șterge din playlist</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -232,7 +233,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>Fotografie rapidă</translation>
     </message>
     <message>
         <source>Size</source>
@@ -240,7 +241,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Movie este un player video complet, care susține jocul mediilor locale și streaming în mai multe formate video.</translation>
     </message>
     <message>
         <source>OK</source>
@@ -248,48 +249,49 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Show thumbnails in progress bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Arată miniature în bara de progres</translation>
     </message>
     <message>
         <source>Default play mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mod joc implicit</translation>
     </message>
     <message>
         <source>Decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Decodare</translation>
     </message>
     <message>
         <source>Auto select (Recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alegere automată (Recomandat)</translation>
     </message>
     <message>
         <source>Hardware decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Decodare hardware</translation>
     </message>
     <message>
         <source>Software decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Decodare software</translation>
     </message>
     <message>
         <source>Customize</source>
-        <translation type="unfinished"></translation>
+        <translation>Personalizați</translation>
     </message>
     <message>
         <source>Decode mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mod decodare</translation>
     </message>
     <message>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>Video out</translation>
     </message>
     <message>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Metoda de decodare personalizată trebuie reluată înainte de a putea avea efect,
+și dacă să o reluați?</translation>
     </message>
     <message>
         <source>Rendering engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor de renderizare</translation>
     </message>
 </context>
 <context>
@@ -323,7 +325,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Goți playlist</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -459,7 +461,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Șterge din playlist</translation>
     </message>
     <message>
         <source>Display in file manager</source>
@@ -467,39 +469,39 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Fereastră următoare</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Fereastră anterioară</translation>
     </message>
     <message>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Deschideți dosarul de ecran</translation>
     </message>
     <message>
         <source>Playback Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Viteză de redare</translation>
     </message>
     <message>
         <source>0.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5x</translation>
     </message>
     <message>
         <source>1.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.0x</translation>
     </message>
     <message>
         <source>1.2x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.2x</translation>
     </message>
     <message>
         <source>1.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.5x</translation>
     </message>
     <message>
         <source>2.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>2.0x</translation>
     </message>
 </context>
 <context>
@@ -553,7 +555,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Eșec analiză</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -565,7 +567,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Track: %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -605,11 +607,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu există subtitrări online corespunzătoare</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu se poate deschide fișierul sau fluxul</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -617,7 +619,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-a găsit un fișier video</translation>
     </message>
     <message>
         <source>Film screenshot</source>
@@ -625,7 +627,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Se ia ecranele de captură, vă rugăm așteptați...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -633,63 +635,63 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Vă rugăm să introduceți un CD/DVD</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Se citesc fișierele DVD...</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>Video-ul 4K poate fi blocat</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>Vă rugăm să încărcați mai întâi videoul</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Jocă în ordine</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Jocă în mod aleator</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Jocă în mod unic</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Bucătă unică</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Bucătă listă</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD-ul/DVD-ul a fost ejectat</translation>
     </message>
     <message>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Vă rugăm să ieșiți din smart dock</translation>
     </message>
     <message>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu se poate juca discul</translation>
     </message>
     <message>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu se poate ajusta subtitrărea</translation>
     </message>
     <message>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>Această acțiune nu este suportată în acest videoclip</translation>
     </message>
     <message>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toate (*</translation>
     </message>
     <message>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
@@ -698,11 +700,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Conexiunea a eșuat</translation>
     </message>
     <message>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast a fost dezconectat</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -710,7 +712,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Restart</translation>
     </message>
 </context>
 <context>
@@ -760,31 +762,31 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informații despre codificator</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID codificator video</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Rata codificatorului video</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>Proportie</translation>
     </message>
     <message>
         <source>%1</source>
@@ -792,50 +794,50 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informație audio</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID Codec audio</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Rata codificării audio</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>Cifra audio</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 biți</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Canale</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 canale</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Eșantionare</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Hz</translation>
     </message>
     <message>
         <source>%1 bps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bps</translation>
     </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"></translation>
+        <translation>Internal</translation>
     </message>
 </context>
 <context>
@@ -850,11 +852,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu se poate juca discul</translation>
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza a eșuat</translation>
     </message>
     <message>
         <source>Open folder</source>
@@ -862,7 +864,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toate (*)</translation>
     </message>
     <message>
         <source>Speed: %1x</source>
@@ -882,11 +884,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Track: %1</translation>
     </message>
     <message>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu se poate ajusta subtitlul</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -927,19 +929,19 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Se iau screenshot-urile, vă rugăm așteptați...</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Se citesc fișierele DVD...</translation>
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu există subtitluri online corespunzătoare</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>Video-ul 4K poate fi blocat</translation>
     </message>
     <message>
         <source>OK</source>
@@ -947,23 +949,23 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Jocă în ordine</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Jocă în mod aleator</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Jocă în mod unic</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Bucătă unică</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Listă de bucle</translation>
     </message>
     <message>
         <source>Buffering...</source>
@@ -979,7 +981,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu se poate deschide fișierul sau fluxul</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -987,27 +989,27 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Vă rugăm să introduceți un CD/DVD</translation>
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-a găsit fișier video</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>Vă rugăm să încărcați mai întâi videoclipul</translation>
     </message>
     <message>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Vă rugăm să ieșiți din smart dock</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD-ul/DVD-ul a fost ejectat</translation>
     </message>
     <message>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>Această acțiune nu este susținută în acest videoclip</translation>
     </message>
     <message>
         <source>Invalid file: %1</source>
@@ -1015,11 +1017,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Conexiunea a eșuat</translation>
     </message>
     <message>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast a fost dezconectat</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -1027,14 +1029,14 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Redemarcați</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișierul nu există</translation>
     </message>
 </context>
 <context>
@@ -1049,7 +1051,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 videoclipuri&apos;</translation>
     </message>
 </context>
 <context>
@@ -1088,14 +1090,14 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișierul nu există</translation>
     </message>
 </context>
 <context>
@@ -1106,7 +1108,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 videoclipuri&apos;</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -1117,39 +1119,39 @@ and whether to restart it?</source>
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1/Movie%2(%3).jpg&apos;</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Reproducere ordonată</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Reproducere aleatorie</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Reproducere unică</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Repetare unică</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Repetare listă</translation>
     </message>
     <message>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Automat</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Deschide</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Închide</translation>
     </message>
 </context>
 <context>
@@ -1188,18 +1190,18 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volum</translation>
     </message>
 </context>
 <context>
     <name>dmr::VolumeButton</name>
     <message>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volum</translation>
     </message>
 </context>
 </TS>

@@ -6,18 +6,19 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="57"/>
         <source>Exit Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Avslutt Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="74"/>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"></translation>
+        <translation>Projiserer... 
+Vennligst avslutt ikke Movie-appen under prosessen.</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="102"/>
         <source>Display device</source>
-        <translation type="unfinished"></translation>
+        <translation>Viseutstyr</translation>
     </message>
 </context>
 <context>
@@ -25,29 +26,23 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="71"/>
         <source>Project to</source>
-        <translation type="unfinished"></translation>
+        <translation>Projiser til</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="369"/>
         <source>Searching for devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>Søker etter enheter...</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="378"/>
         <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen Miracast-viseenheter ble funnet. Vennligst tilknytt enheten og datamaskinen til samme WLAN-nettverk.</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="582"/>
-        <location filename="../src/main.cpp" line="288"/>
-        <location filename="../src/main.cpp" line="360"/>
-        <location filename="../src/widgets/volumeslider.cpp" line="113"/>
-        <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="116"/>
-        <location filename="../src/common/volumemonitoring.cpp" line="68"/>
-        <location filename="../src/common/dmr_settings.cpp" line="285"/>
         <source>Movie</source>
         <translation>Film</translation>
     </message>
@@ -58,19 +53,16 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="186"/>
-        <location filename="../src/common/settings_translation.cpp" line="59"/>
         <source>Settings</source>
         <translation>Instillinger</translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="189"/>
-        <location filename="../src/common/settings_translation.cpp" line="57"/>
         <source>Help</source>
         <translation>Hjelp</translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="194"/>
-        <location filename="../src/common/settings_translation.cpp" line="58"/>
         <source>Display shortcuts</source>
         <translation>Vis hurtigtaster</translation>
     </message>
@@ -131,7 +123,6 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="21"/>
-        <location filename="../src/common/settings_translation.cpp" line="26"/>
         <source>Screenshot</source>
         <translation>Skjermskudd</translation>
     </message>
@@ -157,7 +148,6 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="27"/>
-        <location filename="../src/common/settings_translation.cpp" line="28"/>
         <source>Subtitle</source>
         <translation>Undertekst</translation>
     </message>
@@ -269,7 +259,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="50"/>
         <source>Burst shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>Burst-fotografi</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="51"/>
@@ -304,79 +294,72 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="60"/>
         <source>Decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Avkoding</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="61"/>
         <source>Auto select (Recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisk valg (Anbefalt)</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="62"/>
         <source>Hardware decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Hardvara-avkoding</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="63"/>
         <source>Software decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Programvara-avkoding</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="64"/>
         <source>Customize</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilpass</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="65"/>
         <source>Decode mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Avkodingstype</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="66"/>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>Video-ut</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="67"/>
         <source>Rendering engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Renderingsmotor</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="322"/>
-        <location filename="../src/common/mainwindow.cpp" line="326"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>Du har ikke tillatelse å bruke denne mappen</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="324"/>
-        <location filename="../src/common/mainwindow.cpp" line="328"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="340"/>
-        <location filename="../src/common/mainwindow.cpp" line="344"/>
         <source>Invalid folder</source>
         <translation>Ugyldig mappe</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="360"/>
-        <location filename="../src/common/mainwindow.cpp" line="364"/>
         <source>Open folder</source>
         <translation>Åpne mappe</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2872"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2898"/>
-        <location filename="../src/common/mainwindow.cpp" line="2847"/>
-        <location filename="../src/common/mainwindow.cpp" line="2872"/>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Den tilpassede avkodingsmetoden må restartes før den kan bli aktivert,
+og skal den restartes?</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3261"/>
-        <location filename="../src/common/mainwindow.cpp" line="3268"/>
         <source>Network disconnected</source>
         <translation>Nettverk koblet fra</translation>
     </message>
@@ -403,172 +386,131 @@ and whether to restart it?</source>
     <name>dmr::ActionFactory</name>
     <message>
         <location filename="../src/common/actions.cpp" line="53"/>
-        <location filename="../src/common/actions.cpp" line="127"/>
-        <location filename="../src/common/actions.cpp" line="314"/>
         <source>Open file</source>
         <translation>Åpne fil</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="55"/>
-        <location filename="../src/common/actions.cpp" line="128"/>
-        <location filename="../src/common/actions.cpp" line="315"/>
         <source>Open folder</source>
         <translation>Åpne mappe</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="56"/>
-        <location filename="../src/common/actions.cpp" line="310"/>
-        <location filename="../src/common/actions.cpp" line="366"/>
         <source>Settings</source>
         <translation>Instillinger</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="66"/>
-        <location filename="../src/common/actions.cpp" line="138"/>
-        <location filename="../src/common/actions.cpp" line="325"/>
         <source>Play Mode</source>
         <translation>Avspillingsmodus</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="68"/>
-        <location filename="../src/common/actions.cpp" line="140"/>
-        <location filename="../src/common/actions.cpp" line="327"/>
         <source>Order Play</source>
         <translation>Normal rekkefølge</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="69"/>
-        <location filename="../src/common/actions.cpp" line="141"/>
-        <location filename="../src/common/actions.cpp" line="328"/>
         <source>Shuffle Play</source>
         <translation>Tilfeldig rekkefølge</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="70"/>
-        <location filename="../src/common/actions.cpp" line="142"/>
-        <location filename="../src/common/actions.cpp" line="329"/>
         <source>Single Play</source>
         <translation>Enkel avspilling</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="71"/>
-        <location filename="../src/common/actions.cpp" line="143"/>
-        <location filename="../src/common/actions.cpp" line="330"/>
         <source>Single Loop</source>
         <translation>Gjenta en gang</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="72"/>
-        <location filename="../src/common/actions.cpp" line="144"/>
-        <location filename="../src/common/actions.cpp" line="331"/>
         <source>List Loop</source>
         <translation>Gjenta liste</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="77"/>
-        <location filename="../src/common/actions.cpp" line="164"/>
         <source>Frame</source>
         <translation>Ramme</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="79"/>
-        <location filename="../src/common/actions.cpp" line="166"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="86"/>
-        <location filename="../src/common/actions.cpp" line="173"/>
         <source>Clockwise</source>
         <translation>Klokkeretning</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="87"/>
-        <location filename="../src/common/actions.cpp" line="174"/>
         <source>Counterclockwise</source>
         <translation>Mot klokken</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="89"/>
-        <location filename="../src/common/actions.cpp" line="176"/>
         <source>Next Frame</source>
         <translation>Neste Ramme</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="90"/>
-        <location filename="../src/common/actions.cpp" line="177"/>
         <source>Previous Frame</source>
         <translation>Forrige Ramme</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="99"/>
-        <location filename="../src/common/actions.cpp" line="149"/>
-        <location filename="../src/common/actions.cpp" line="336"/>
         <source>Playback Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Spillhastighet</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="101"/>
-        <location filename="../src/common/actions.cpp" line="151"/>
-        <location filename="../src/common/actions.cpp" line="338"/>
         <source>0.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="102"/>
-        <location filename="../src/common/actions.cpp" line="152"/>
-        <location filename="../src/common/actions.cpp" line="339"/>
         <source>1.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.0x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="103"/>
-        <location filename="../src/common/actions.cpp" line="153"/>
-        <location filename="../src/common/actions.cpp" line="340"/>
         <source>1.2x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.2x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="104"/>
-        <location filename="../src/common/actions.cpp" line="154"/>
-        <location filename="../src/common/actions.cpp" line="341"/>
         <source>1.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.5x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="105"/>
-        <location filename="../src/common/actions.cpp" line="155"/>
-        <location filename="../src/common/actions.cpp" line="342"/>
         <source>2.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>2.0x</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="129"/>
-        <location filename="../src/common/actions.cpp" line="316"/>
         <source>Open URL</source>
         <translation>Åpne URL</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="130"/>
-        <location filename="../src/common/actions.cpp" line="317"/>
         <source>Open CD/DVD</source>
         <translation>Åpne CD/DVD</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="132"/>
-        <location filename="../src/common/actions.cpp" line="319"/>
         <source>Fullscreen</source>
         <translation>Fullskjerm</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="133"/>
-        <location filename="../src/common/actions.cpp" line="320"/>
         <source>Mini Mode</source>
         <translation>Minimodus</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="134"/>
-        <location filename="../src/common/actions.cpp" line="321"/>
         <source>Always on Top</source>
         <translation>Alltid øverst</translation>
     </message>
@@ -599,7 +541,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="201"/>
-        <location filename="../src/common/actions.cpp" line="424"/>
         <source>Track</source>
         <translation>Spor</translation>
     </message>
@@ -635,36 +576,31 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="295"/>
-        <location filename="../src/common/actions.cpp" line="352"/>
         <source>Screenshot</source>
         <translation>Skjermskudd</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="298"/>
-        <location filename="../src/common/actions.cpp" line="355"/>
         <source>Film Screenshot</source>
         <translation>Film skjermbilde</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="299"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>Burst-fotografi</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="300"/>
-        <location filename="../src/common/actions.cpp" line="356"/>
         <source>Open screenshot folder</source>
         <translation>Åpne skjermbilde mappen</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="308"/>
-        <location filename="../src/common/actions.cpp" line="364"/>
         <source>Playlist</source>
         <translation>Spilleliste</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="309"/>
-        <location filename="../src/common/actions.cpp" line="365"/>
         <source>Film Info</source>
         <translation>Film info</translation>
     </message>
@@ -716,28 +652,21 @@ and whether to restart it?</source>
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load successfully</source>
         <translation>Innlasting vellykket</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1013"/>
-        <location filename="../src/common/mainwindow.cpp" line="2547"/>
-        <location filename="../src/common/mainwindow.cpp" line="2550"/>
-        <location filename="../src/common/mainwindow.cpp" line="4670"/>
         <source>Load failed</source>
         <translation>Innlasting feilet</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1852"/>
-        <location filename="../src/common/mainwindow.cpp" line="3049"/>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke spille på disken</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1869"/>
-        <location filename="../src/common/mainwindow.cpp" line="3608"/>
         <source>Parse failed</source>
         <translation>Parsingen feilet</translation>
     </message>
@@ -748,12 +677,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2284"/>
-        <location filename="../src/common/mainwindow.cpp" line="2292"/>
-        <location filename="../src/common/mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/mainwindow.cpp" line="2522"/>
-        <location filename="../src/common/mainwindow.cpp" line="4854"/>
         <source>Speed: %1x</source>
         <translation>Hastighet: %1x</translation>
     </message>
@@ -779,25 +702,21 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2480"/>
-        <location filename="../src/common/mainwindow.cpp" line="2497"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke justere undertekst</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2485"/>
-        <location filename="../src/common/mainwindow.cpp" line="2502"/>
         <source>Subtitle %1: %2s</source>
         <translation>Tekst %1: %2s</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>delayed</source>
         <translation>forsinket</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2486"/>
-        <location filename="../src/common/mainwindow.cpp" line="2503"/>
         <source>advanced</source>
         <translation>avansert</translation>
     </message>
@@ -818,13 +737,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2675"/>
-        <location filename="../src/common/mainwindow.cpp" line="2803"/>
         <source>The screenshot is saved</source>
         <translation>Skjermbilde er lagret</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2679"/>
-        <location filename="../src/common/mainwindow.cpp" line="2807"/>
         <source>Failed to save the screenshot</source>
         <translation>Lagring av skjermbilde feilet</translation>
     </message>
@@ -835,15 +752,13 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2848"/>
-        <location filename="../src/common/mainwindow.cpp" line="2873"/>
         <source>Cancel</source>
         <translation type="unfinished">Avbryt</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2849"/>
-        <location filename="../src/common/mainwindow.cpp" line="2874"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Gjenstart</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3054"/>
@@ -858,7 +773,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4997"/>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast-kobling avbrutt</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3275"/>
@@ -867,9 +782,8 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1913"/>
-        <location filename="../src/common/mainwindow.cpp" line="1950"/>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle (*),</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3291"/>
@@ -883,31 +797,26 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3324"/>
-        <location filename="../src/common/mainwindow.cpp" line="4288"/>
         <source>Order play</source>
         <translation>Ordne avspilling</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3327"/>
-        <location filename="../src/common/mainwindow.cpp" line="4291"/>
         <source>Shuffle play</source>
         <translation>Tilfeldig rekkefølge</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3330"/>
-        <location filename="../src/common/mainwindow.cpp" line="4294"/>
         <source>Single play</source>
         <translation>Enkel avspilling</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3333"/>
-        <location filename="../src/common/mainwindow.cpp" line="4297"/>
         <source>Single loop</source>
         <translation>Gjenta en gang</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3336"/>
-        <location filename="../src/common/mainwindow.cpp" line="4300"/>
         <source>List loop</source>
         <translation>Gjenta liste</translation>
     </message>
@@ -918,35 +827,31 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3503"/>
-        <location filename="../src/common/mainwindow.cpp" line="3528"/>
         <source>Mute</source>
         <translation>Demp</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3505"/>
-        <location filename="../src/common/mainwindow.cpp" line="3530"/>
         <source>Volume: %1%</source>
         <translation>Volume: %1%</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3548"/>
-        <location filename="../src/common/mainwindow.cpp" line="3599"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke åpne fil eller strøm</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4955"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>Den handlingen støttes ikke i denne videoen</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4990"/>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Forbundet feilet</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3616"/>
-        <location filename="../src/common/mainwindow.cpp" line="3621"/>
         <source>Invalid file</source>
         <translation>Ugyldig fil</translation>
     </message>
@@ -973,14 +878,13 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4402"/>
-        <location filename="../src/common/mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Vennligst avslutt smart dock</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4715"/>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD har blitt fjernet</translation>
     </message>
 </context>
 <context>
@@ -1032,44 +936,42 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="307"/>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodeteinfo</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="328"/>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Video CodecID</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="329"/>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Video CodeRate</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="275"/>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="288"/>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 kbps&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="276"/>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="289"/>
         <source>%1 bps</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 bps&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="330"/>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="278"/>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 fps&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="331"/>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>Proporsjon</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="279"/>
@@ -1084,47 +986,47 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="337"/>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>Lydinfo</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="358"/>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio CodecID</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="359"/>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio CodeRate</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="360"/>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>Lydbit</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="291"/>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 bits&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="361"/>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanaler</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="292"/>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 kanaler&apos;</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="362"/>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Sampling</translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="293"/>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1hz&apos;</translation>
     </message>
 </context>
 <context>
@@ -1132,35 +1034,28 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1990"/>
         <source>Internal</source>
-        <translation type="unfinished"></translation>
+        <translation>Internt</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_MainWindow</name>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load successfully</source>
         <translation type="unfinished">Innlasting vellykket</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1037"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2566"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4610"/>
         <source>Load failed</source>
         <translation type="unfinished">Innlasting feilet</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1915"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3059"/>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke spille på disken</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1932"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3579"/>
         <source>Parse failed</source>
         <translation type="unfinished">Parsingen feilet</translation>
     </message>
@@ -1171,18 +1066,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1968"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="1997"/>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle (*)</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2300"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2308"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2316"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2324"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2538"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4800"/>
         <source>Speed: %1x</source>
         <translation type="unfinished">Hastighet: %1x</translation>
     </message>
@@ -1208,25 +1096,21 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2496"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2513"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke justere undertekst</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2518"/>
         <source>Subtitle %1: %2s</source>
         <translation type="unfinished">Tekst %1: %2s</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>delayed</source>
         <translation type="unfinished">forsinket</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2502"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2519"/>
         <source>advanced</source>
         <translation type="unfinished">avansert</translation>
     </message>
@@ -1253,13 +1137,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2701"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2828"/>
         <source>The screenshot is saved</source>
         <translation type="unfinished">Skjermbilde er lagret</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2705"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2832"/>
         <source>Failed to save the screenshot</source>
         <translation type="unfinished">Lagring av skjermbilde feilet</translation>
     </message>
@@ -1270,15 +1152,13 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2873"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2899"/>
         <source>Cancel</source>
         <translation type="unfinished">Avbryt</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2874"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2900"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Start på nytt</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3064"/>
@@ -1302,31 +1182,26 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3326"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4292"/>
         <source>Order play</source>
         <translation type="unfinished">Ordne avspilling</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3329"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4295"/>
         <source>Shuffle play</source>
         <translation type="unfinished">Tilfeldig rekkefølge</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3332"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4298"/>
         <source>Single play</source>
         <translation type="unfinished">Enkel avspilling</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3335"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4301"/>
         <source>Single loop</source>
         <translation type="unfinished">Gjenta en gang</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3338"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4304"/>
         <source>List loop</source>
         <translation type="unfinished">Gjenta liste</translation>
     </message>
@@ -1337,24 +1212,21 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3499"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3524"/>
         <source>Mute</source>
         <translation type="unfinished">Demp</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3501"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3526"/>
         <source>Volume: %1%</source>
         <translation type="unfinished">Volume: %1%</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3570"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke åpne fil eller strøm</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3587"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3592"/>
         <source>Invalid file</source>
         <translation type="unfinished">Ugyldig fil</translation>
     </message>
@@ -1375,19 +1247,18 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4403"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4412"/>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Vennligst avslutt smart dock</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4655"/>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD har blitt fjernet</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4901"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>Denne handlingen er ikke støttet i denne videoen</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4912"/>
@@ -1397,23 +1268,20 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4936"/>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Forbundet feilet</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4943"/>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast er avsluttet</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_PlayItemWidget</name>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="163"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="257"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="323"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="507"/>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen eksisterer ikke</translation>
     </message>
 </context>
 <context>
@@ -1430,9 +1298,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="910"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1193"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1218"/>
-        <location filename="../src/widgets/platform/platform_playlist_widget.cpp" line="1300"/>
         <source>%1 videos</source>
         <translation type="unfinished">%1 videoer</translation>
     </message>
@@ -1456,21 +1321,18 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2135"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2572"/>
         <source>Fullscreen</source>
         <translation type="unfinished">Fullskjerm</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2589"/>
         <source>Playlist</source>
         <translation type="unfinished">Spilleliste</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1190"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2132"/>
@@ -1492,11 +1354,8 @@ and whether to restart it?</source>
     <name>dmr::PlayItemWidget</name>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="163"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="257"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="323"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="507"/>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen eksisterer ikke</translation>
     </message>
 </context>
 <context>
@@ -1513,9 +1372,6 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="910"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1193"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1218"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1300"/>
         <source>%1 videos</source>
         <translation>%1 videoer</translation>
     </message>
@@ -1565,7 +1421,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="294"/>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1/Movie%2(%3).jpg&apos;</translation>
     </message>
 </context>
 <context>
@@ -1577,59 +1433,48 @@ and whether to restart it?</source>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2775"/>
         <source>Previous</source>
         <translation>Forrige </translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1313"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2792"/>
         <source>Next</source>
         <translation>Neste</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2312"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2809"/>
         <source>Fullscreen</source>
         <translation>Fullskjerm</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2825"/>
         <source>Playlist</source>
         <translation>Spilleliste</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1314"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2859"/>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2306"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2308"/>
         <source>Exit fullscreen</source>
         <translation>Lukk fullskjerm</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2402"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2404"/>
         <source>Pause</source>
         <translation>Pause</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2467"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2469"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2760"/>
         <source>Play</source>
         <translation>Spill av</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2842"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volum</translation>
     </message>
 </context>
 <context>
@@ -1637,7 +1482,7 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/toolbutton.cpp" line="19"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volum</translation>
     </message>
 </context>
 </TS>

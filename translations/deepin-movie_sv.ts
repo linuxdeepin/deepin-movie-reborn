@@ -6,30 +6,31 @@
     <message>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"></translation>
+        <translation>Projicerar...
+Vänligen avsluta inte Movie-appen under processen.</translation>
     </message>
     <message>
         <source>Display device</source>
-        <translation type="unfinished"></translation>
+        <translation>Visningsenheter</translation>
     </message>
     <message>
         <source>Exit Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Avsluta Miracast</translation>
     </message>
 </context>
 <context>
     <name>MircastWidget</name>
     <message>
         <source>Project to</source>
-        <translation type="unfinished"></translation>
+        <translation>Projicera till</translation>
     </message>
     <message>
         <source>Searching for devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>Söker efter enheter...</translation>
     </message>
     <message>
         <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga Miracast visningsenheter hittades. Anslut enheten och din dator till samma WLAN-nätverk.</translation>
     </message>
 </context>
 <context>
@@ -44,7 +45,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nätverket är avslutat</translation>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
@@ -204,7 +205,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Avsluta fullskär/minimiläge</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -224,7 +225,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort från spellista</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -232,7 +233,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>Burstfotografi</translation>
     </message>
     <message>
         <source>Size</source>
@@ -240,7 +241,7 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Movie är ett fullständigt funktionsrikt videospelare, som stöder spelning av lokala och strömmande medier i flera videoformater.</translation>
     </message>
     <message>
         <source>OK</source>
@@ -248,48 +249,49 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>Show thumbnails in progress bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa miniatyrbilder i statusfältet</translation>
     </message>
     <message>
         <source>Default play mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardspelmodus</translation>
     </message>
     <message>
         <source>Decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Avkodning</translation>
     </message>
     <message>
         <source>Auto select (Recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisk val (Rekommenderat)</translation>
     </message>
     <message>
         <source>Hardware decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Hårdvaruavkodning</translation>
     </message>
     <message>
         <source>Software decoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Programvaruavkodning</translation>
     </message>
     <message>
         <source>Customize</source>
-        <translation type="unfinished"></translation>
+        <translation>Anpassa</translation>
     </message>
     <message>
         <source>Decode mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Avkodningsläge</translation>
     </message>
     <message>
         <source>Video out</source>
-        <translation type="unfinished"></translation>
+        <translation>Videoutgång</translation>
     </message>
     <message>
         <source>The custom decoding method needs to be restarted before it can take effect,
 and whether to restart it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Den anpassade avkodningsmetoden måste startas om för att kunna börja verka,
+och vill du starta om den?</translation>
     </message>
     <message>
         <source>Rendering engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Renderingsmotor</translation>
     </message>
 </context>
 <context>
@@ -323,7 +325,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Töm spellista</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -459,7 +461,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort från spellista</translation>
     </message>
     <message>
         <source>Display in file manager</source>
@@ -467,39 +469,39 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Nästa bild</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Föregående bild</translation>
     </message>
     <message>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna mapp för skärmsnitt</translation>
     </message>
     <message>
         <source>Playback Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Spelpåfylle</translation>
     </message>
     <message>
         <source>0.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>0,5x</translation>
     </message>
     <message>
         <source>1.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>1,0x</translation>
     </message>
     <message>
         <source>1.2x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.2x</translation>
     </message>
     <message>
         <source>1.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.5x</translation>
     </message>
     <message>
         <source>2.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>2.0x</translation>
     </message>
 </context>
 <context>
@@ -553,7 +555,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Parse misslyckades</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -565,7 +567,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Spår: %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -605,11 +607,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga matchande online undertexter hittades</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte öppna fil eller ström</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -617,7 +619,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen videofil hittades</translation>
     </message>
     <message>
         <source>Film screenshot</source>
@@ -625,7 +627,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tar skärmbild, vänligen vänta...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -633,63 +635,63 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Vänligen sätt in en CD/DVD</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Läser DVD-filer...</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>4K-video kan vara faststängd</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>Ladda videon först</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordinarie spelsätt</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Slumpmässigt spelsätt</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkel spelsätt</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkel loop</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista loop</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD har tagits ut</translation>
     </message>
     <message>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Vänligen lämna smart dock</translation>
     </message>
     <message>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte spela skivan</translation>
     </message>
     <message>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte justera underteksten</translation>
     </message>
     <message>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>Det här åtgärden stöds inte i denna video</translation>
     </message>
     <message>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alla (*)</translation>
     </message>
     <message>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
@@ -698,11 +700,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Anslutning misslyckades</translation>
     </message>
     <message>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast kopplad från</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -710,7 +712,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Starta om</translation>
     </message>
 </context>
 <context>
@@ -760,31 +762,31 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodexinfo</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Video-kodex-ID</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Video-kodexhastighet</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>Proportion</translation>
     </message>
     <message>
         <source>%1</source>
@@ -792,50 +794,50 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>Ljudinformation</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Ljudkod-ID</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Ljudkodhastighet</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>Ljudbit</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bits</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanal</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kanaler</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Samplingsfrekvens</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Hz</translation>
     </message>
     <message>
         <source>%1 bps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bps</translation>
     </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"></translation>
+        <translation>Inbyggd</translation>
     </message>
 </context>
 <context>
@@ -850,11 +852,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte spela disken</translation>
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Parstning misslyckades</translation>
     </message>
     <message>
         <source>Open folder</source>
@@ -862,7 +864,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>All (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alla (*)</translation>
     </message>
     <message>
         <source>Speed: %1x</source>
@@ -882,11 +884,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Spår: %1</translation>
     </message>
     <message>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte justera undertexten</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -927,19 +929,19 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tar skärmbilder, vänligen vänta...</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Läser DVD-filer...</translation>
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga matchande online-undertexter</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>4K-video kan vara blockad</translation>
     </message>
     <message>
         <source>OK</source>
@@ -947,23 +949,23 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordinär spelande</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Slumpmässigt spelande</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkel spelande</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkel loop</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista loop</translation>
     </message>
     <message>
         <source>Buffering...</source>
@@ -979,7 +981,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte öppna fil eller ström</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -987,27 +989,27 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Vill du lägga in en CD/DVD</translation>
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen videofil hittades</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>Ladda videon först</translation>
     </message>
     <message>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Gå ut ur smart dock</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD har tagits ut</translation>
     </message>
     <message>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"></translation>
+        <translation>Detta åtgärd stöds inte i denna video</translation>
     </message>
     <message>
         <source>Invalid file: %1</source>
@@ -1015,11 +1017,11 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Anslutning misslyckades</translation>
     </message>
     <message>
         <source>Miracast disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast kopplad från</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -1027,14 +1029,14 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Starta om</translation>
     </message>
 </context>
 <context>
     <name>dmr::Platform_PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Filn finns inte</translation>
     </message>
 </context>
 <context>
@@ -1049,7 +1051,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 videor&apos;</translation>
     </message>
 </context>
 <context>
@@ -1088,14 +1090,14 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Filn finns inte</translation>
     </message>
 </context>
 <context>
@@ -1106,7 +1108,7 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1 videor&apos;</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -1117,39 +1119,39 @@ and whether to restart it?</source>
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1/Movie%2(%3).jpg&apos;</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Spela i ordning</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Slumpa speln</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkel speln</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkel loop</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista loop</translation>
     </message>
     <message>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisk</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Stäng</translation>
     </message>
 </context>
 <context>
@@ -1188,18 +1190,18 @@ and whether to restart it?</source>
     </message>
     <message>
         <source>Miracast</source>
-        <translation type="unfinished"></translation>
+        <translation>Miracast</translation>
     </message>
     <message>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volym</translation>
     </message>
 </context>
 <context>
     <name>dmr::VolumeButton</name>
     <message>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volym</translation>
     </message>
 </context>
 </TS>
