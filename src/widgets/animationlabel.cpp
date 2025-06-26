@@ -33,6 +33,7 @@ AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow)
     setAttribute(Qt::WA_TransparentForMouseEvents);
 
     resize(200, 200);
+    qDebug() << "Exiting AnimationLabel constructor.";
 }
 
 /**
@@ -41,12 +42,21 @@ AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow)
 void AnimationLabel::pauseAnimation()
 {
     qDebug() << "Starting pause animation";
-    if (m_pPauseAnimationGroup && m_pPauseAnimationGroup->state() == QAbstractAnimation::Running)
+    if (m_pPauseAnimationGroup && m_pPauseAnimationGroup->state() == QAbstractAnimation::Running) {
         m_pPauseAnimationGroup->stop();
+        qDebug() << "Pause animation group was running, stopped.";
+    } else {
+        qDebug() << "Pause animation group not running or null.";
+    }
     m_pPlayAnimationGroup->start();
+    qDebug() << "Play animation group started.";
     if(!isVisible()) {
         show();
+        qDebug() << "AnimationLabel was not visible, showed it.";
+    } else {
+        qDebug() << "AnimationLabel already visible.";
     }
+    qDebug() << "Exiting pauseAnimation().";
 }
 
 /**
@@ -55,18 +65,28 @@ void AnimationLabel::pauseAnimation()
 void AnimationLabel::playAnimation()
 {
     qDebug() << "Starting play animation";
-    if (m_pPlayAnimationGroup && m_pPlayAnimationGroup->state() == QAbstractAnimation::Running)
+    if (m_pPlayAnimationGroup && m_pPlayAnimationGroup->state() == QAbstractAnimation::Running) {
         m_pPlayAnimationGroup->stop();
+        qDebug() << "Play animation group was running, stopped.";
+    } else {
+        qDebug() << "Play animation group not running or null.";
+    }
     m_pPauseAnimationGroup->start();
+    qDebug() << "Pause animation group started.";
     if(!isVisible()) {
         show();
+        qDebug() << "AnimationLabel was not visible, showed it.";
+    } else {
+        qDebug() << "AnimationLabel already visible.";
     }
+    qDebug() << "Exiting playAnimation().";
 }
 
 void AnimationLabel::setWM(bool isWM)
 {
     qDebug() << "Setting WM mode to:" << isWM;
     m_bIsWM = isWM;
+    qDebug() << "Exiting setWM().";
 }
 
 /**
@@ -80,6 +100,8 @@ void AnimationLabel::initMember(QWidget *pMainwindow)
     initPauseAnimation();
     m_pMainWindow = pMainwindow;
     m_sFileName = "";
+
+    qDebug() << "Exiting initMember().";
 }
 
 /**
@@ -111,6 +133,8 @@ void AnimationLabel::initPauseAnimation()
     m_pPauseAnimationGroup->addAnimation(m_pPauseShowAnimation);
     m_pPauseAnimationGroup->addPause(DELAY_TIME);
     m_pPauseAnimationGroup->addAnimation(m_pPauseHideAnimation);
+
+    qDebug() << "Exiting initPauseAnimation().";
 }
 
 /**
@@ -142,6 +166,8 @@ void AnimationLabel::initPlayAnimation()
     m_pPlayAnimationGroup->addAnimation(m_pPlayShowAnimation);
     m_pPlayAnimationGroup->addPause(DELAY_TIME);
     m_pPlayAnimationGroup->addAnimation(m_pPlayHideAnimation);
+
+    qDebug() << "Exiting initPlayAnimation().";
 }
 
 /**
@@ -152,17 +178,24 @@ void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
 {
     qDebug() << "Play animation frame changed to:" << value.toInt();
 #if defined (__aarch64__) || defined (__mips__)
+    qDebug() << "Compiling for __aarch64__ or __mips__.";
     if (m_bIsWM || utils::check_wayland_env()) {
         m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
+        qDebug() << "WM mode or Wayland environment detected, using stop path.";
     } else {
         m_sFileName = QString(":/resources/icons/stop_new/%1.png").arg(value.toInt());
+        qDebug() << "WM mode or Wayland environment not detected, using stop_new path.";
     }
 
 #else
+    qDebug() << "Compiling for other architectures.";
     m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
+    qDebug() << "Using stop path for other architectures.";
 #endif
     m_pixmap = QPixmap(m_sFileName);
     update();
+
+    qDebug() << "Exiting onPlayAnimationChanged().";
 }
 
 /**
@@ -173,26 +206,38 @@ void AnimationLabel::onPauseAnimationChanged(const QVariant &value)
 {
     qDebug() << "Pause animation frame changed to:" << value.toInt();
 #if defined (__aarch64__) || defined (__mips__)
+    qDebug() << "Compiling for __aarch64__ or __mips__.";
     if (m_bIsWM || utils::check_wayland_env()) {
         m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
+        qDebug() << "WM mode or Wayland environment detected, using start path.";
     } else {
         m_sFileName = QString(":/resources/icons/start_new/%1.png").arg(value.toInt());
+        qDebug() << "WM mode or Wayland environment not detected, using start_new path.";
     }
 
 #else
+    qDebug() << "Compiling for other architectures.";
     m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
+    qDebug() << "Using start path for other architectures.";
 #endif
     m_pixmap = QPixmap(m_sFileName);
     update();
+
+    qDebug() << "Exiting onPauseAnimationChanged().";
 }
 
 void AnimationLabel::onHideAnimation()
 {
     qDebug() << "Hiding animation";
     hide();
+    qDebug() << "Animation hidden.";
     if(m_pMainWindow) {
         m_pMainWindow->update();
+        qDebug() << "Main window updated.";
+    } else {
+        qDebug() << "Main window pointer is null.";
     }
+    qDebug() << "Exiting onHideAnimation().";
 }
 
 /**

@@ -37,12 +37,14 @@ static QString ElideText(const QString &text, const QSize &size,
                          QTextOption::WrapMode wordWrap, const QFont &font,
                          Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
 {
+    qDebug() << "Entering ElideText() with text:" << text << ", size:" << size;
     QTextLayout textLayout(text);
     QString str;
     QFontMetrics fontMetrics(font);
 
     textLayout.setFont(font);
     const_cast<QTextOption *>(&textLayout.textOption())->setWrapMode(wordWrap);
+    qDebug() << "TextLayout font and wrap mode set.";
 
     textLayout.beginLayout();
     QTextLine line = textLayout.createLine();
@@ -52,25 +54,34 @@ static QString ElideText(const QString &text, const QSize &size,
     if (fontMetrics.boundingRect(text).width() <= line.width()) {
         tmp_str = text.mid(line.textStart(), line.textLength());
         str = tmp_str;
+        qDebug() << "Text fits on one line. Result:" << str;
     } else {
         int height = 0;
+        qDebug() << "Text does not fit on one line. Entering multi-line processing.";
         while (line.isValid()) {
             line.setLineWidth(size.width());
             tmp_str = text.mid(line.textStart(), line.textLength());
 
-            if (tmp_str.indexOf('\n'))
+            if (tmp_str.indexOf('\n')) {
                 height += lineHeight;
+                qDebug() << "Newline found, height incremented to:" << height;
+            }
 
             str += tmp_str;
             line = textLayout.createLine();
 
-            if (line.isValid())
+            if (line.isValid()) {
                 str.append("\n");
+                qDebug() << "Appended newline. Current string:" << str;
+            }
         }
+        qDebug() << "Multi-line processing complete. Final string before endLayout:" << str;
     }
 
     textLayout.endLayout();
+    qDebug() << "TextLayout ended.";
 
+    qDebug() << "Exiting ElideText() with result:" << str;
     return str;
 }
 
@@ -85,7 +96,10 @@ public:
      * @brief ToolTipEvent 构造函数
      * @param parent 父窗口
      */
-    explicit ToolTipEvent(QObject *parent): QObject(parent) {}
+    explicit ToolTipEvent(QObject *parent): QObject(parent) {
+        qDebug() << "Entering ToolTipEvent constructor with parent:" << parent;
+        qDebug() << "Exiting ToolTipEvent constructor.";
+    }
 
 protected:
     /**
@@ -96,8 +110,10 @@ protected:
      */
     bool eventFilter(QObject *obj, QEvent *event)
     {
+        qDebug() << "Entering ToolTipEvent::eventFilter()";
         switch (event->type()) {
         case QEvent::ToolTip: {
+            qDebug() << "Event type: ToolTip.";
             QHelpEvent *he = static_cast<QHelpEvent *>(event);
             auto tip = obj->property("HintWidget").value<Tip *>();
             auto btn = tip->property("for").value<QWidget *>();
@@ -106,29 +122,40 @@ protected:
             tip->raise();
             tip->adjustSize();
             QPoint pos = he->globalPos() + QPoint{0, 0};
+            qDebug() << "ToolTip adjusted and positioned. Initial global pos:" << he->globalPos();
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            qDebug() << "Compiling for Qt5, getting desktop width.";
             int nDesktopWidth = qApp->desktop()->availableGeometry(btn).width();
 #else
+            qDebug() << "Compiling for Qt6, getting primary screen width.";
             int nDesktopWidth = QGuiApplication::primaryScreen()->availableGeometry().width();
 #endif
+            qDebug() << "Desktop width:" << nDesktopWidth;
             if (pos.x() + tip->width() > nDesktopWidth) {
                 pos.rx() = nDesktopWidth - tip->width();
+                qDebug() << "ToolTip too wide, adjusted X position:" << pos.x();
             }
             pos.ry() = pos.y() - tip->height();
             tip->move(pos);
+            qDebug() << "ToolTip moved to:" << pos;
+            qDebug() << "Returning true for ToolTip event.";
             return true;
         }
 
         case QEvent::Leave: {
+            qDebug() << "Event type: Leave.";
             auto parent = obj->property("HintWidget").value<Tip *>();
             parent->hide();
             event->ignore();
+            qDebug() << "ToolTip hidden, event ignored.";
             break;
         }
         default:
+            qDebug() << "Event type: Default/unhandled.";
             break;
         }
 
+        qDebug() << "Exiting ToolTipEvent::eventFilter(). Calling base eventFilter.";
         return QObject::eventFilter(obj, event);
     }
 };
@@ -143,7 +170,10 @@ public:
      * @brief CloseButton 构造函数
      * @param parent 父窗口
      */
-    explicit CloseButton(QWidget *parent) {}
+    explicit CloseButton(QWidget *parent) : DPushButton(parent) {
+        qDebug() << "Entering CloseButton constructor with parent:" << parent;
+        qDebug() << "Exiting CloseButton constructor.";
+    }
 protected:
     /**
      * @brief paintEvent 重载绘制事件函数
@@ -151,15 +181,20 @@ protected:
      */
     void paintEvent(QPaintEvent *pPaintEvent) override
     {
+        qDebug() << "Entering CloseButton::paintEvent() with event:" << pPaintEvent;
         QPainter painter(this);
         QRect rect = this->rect();
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             painter.drawPixmap(rect, QPixmap(INFO_CLOSE_LIGHT));
+            qDebug() << "Theme is LightType, drawing INFO_CLOSE_LIGHT.";
         } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
             painter.drawPixmap(rect, QPixmap(INFO_CLOSE_DARK));
+            qDebug() << "Theme is DarkType, drawing INFO_CLOSE_DARK.";
         } else {
             painter.drawPixmap(rect, QPixmap(INFO_CLOSE_LIGHT));
+            qDebug() << "Theme is neither LightType nor DarkType, drawing INFO_CLOSE_LIGHT as default.";
         }
+        qDebug() << "Exiting CloseButton::paintEvent().";
     }
 };
 
@@ -171,17 +206,22 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 {
     qDebug() << "Initializing MovieInfoDialog";
     initMember();
+    qDebug() << "initMember() called.";
     if(utils::check_wayland_env()){
         qDebug() << "Wayland environment detected, setting window flags";
         setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+    } else {
+        qDebug() << "Wayland environment not detected.";
     }
 
     this->setObjectName(MOVIE_INFO_DIALOG);
     this->setAccessibleName(MOVIE_INFO_DIALOG);
     m_titleList.clear();
+    qDebug() << "Dialog object and accessible names set, title list cleared.";
 
     DWidget *content = new DWidget();
     addContent(content);
+    qDebug() << "Content widget created and added.";
 
     const MovieInfo &strMovieInfo = pif.mi;
     qDebug() << "Loading movie info for:" << strMovieInfo.filePath;
@@ -190,10 +230,12 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     pMainLayout->setContentsMargins(0, 0, 0, 0);
     pMainLayout->setSpacing(0);
     content->setLayout(pMainLayout);
+    qDebug() << "Main layout initialized for content widget.";
 
     PosterFrame *pPosterFrame = new PosterFrame(this);
     pPosterFrame->setWindowOpacity(1);
     pPosterFrame->setFixedHeight(128);
+    qDebug() << "PosterFrame initialized.";
 
     qreal pixelRatio = qApp->devicePixelRatio();
     QPixmap cover;
@@ -207,6 +249,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
         auto img = pif.thumbnail.scaledToWidth(sz.width(), Qt::SmoothTransformation);
         cover = img.copy(0, (img.height() - sz.height()) / 2, sz.width(), sz.height());
         cover.setDevicePixelRatio(pixelRatio);
+        qDebug() << "Thumbnail loaded and scaled.";
     }
     cover = utils::MakeRoundedPixmap(cover, 8, 8);
     pPosterFrame->setPixmap(cover);
@@ -214,6 +257,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     pMainLayout->addWidget(pPosterFrame);
     pMainLayout->setAlignment(pPosterFrame, Qt::AlignHCenter);
     pMainLayout->addSpacing(9);
+    qDebug() << "PosterFrame configured and added to layout.";
 
     m_pFileNameLbl->setMinimumWidth(260);
     DFontSizeManager::instance()->bind(m_pFileNameLbl, DFontSizeManager::T8);
@@ -224,17 +268,21 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     pMainLayout->addWidget(m_pFileNameLbl);
     pMainLayout->setAlignment(m_pFileNameLbl, Qt::AlignHCenter);
     pMainLayout->addSpacing(50);
+    qDebug() << "File name label configured.";
 
     QList<DLabel *> tipLst;
     tipLst.clear();
+    qDebug() << "Tip list cleared.";
 
     m_pScrollArea->setObjectName(MOVIE_INFO_SCROLL_AREA);
     m_pScrollArea->setAccessibleName(MOVIE_INFO_SCROLL_AREA);
     m_pScrollArea->viewport()->setObjectName(SCROLL_AREA_VIEWPORT);
     QPalette palette = m_pScrollArea->viewport()->palette();
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    qDebug() << "Compiling for Qt5, setting palette background to NoBrush.";
     palette.setBrush(QPalette::Background, Qt::NoBrush);
 #else
+    qDebug() << "Compiling for Qt6, setting palette window to NoBrush.";
     palette.setBrush(QPalette::Window, Qt::NoBrush);
 #endif
     m_pScrollArea->viewport()->setPalette(palette);

@@ -26,11 +26,15 @@ QHttpResponse::QHttpResponse(QHttpConnection *connection)
       m_useChunkedEncoding(false),
       m_finished(false)
 {
-   connect(m_connection, SIGNAL(allBytesWritten()), this, SIGNAL(allBytesWritten()));
+    qDebug() << "Entering QHttpResponse constructor. Connection:" << connection;
+    connect(m_connection, SIGNAL(allBytesWritten()), this, SIGNAL(allBytesWritten()));
+    qDebug() << "Exiting QHttpResponse constructor.";
 }
 
 QHttpResponse::~QHttpResponse()
 {
+    qDebug() << "Entering QHttpResponse destructor.";
+    qDebug() << "Exiting QHttpResponse destructor.";
 }
 
 void QHttpResponse::setHeader(const QString &field, const QString &value)

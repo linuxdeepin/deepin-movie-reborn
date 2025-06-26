@@ -9,18 +9,25 @@
 
 ThreadPool::ThreadPool(QObject *parent) : QObject(parent)
 {
+    qDebug() << "Entering ThreadPool constructor.";
+    qDebug() << "Exiting ThreadPool constructor.";
 }
 
 ThreadPool::~ThreadPool()
 {
+    qDebug() << "Entering ThreadPool destructor.";
     quitAll();
+    qDebug() << "Exiting ThreadPool destructor. quitAll() called.";
 }
 
 QThread *ThreadPool::newThread()
 {
+    qDebug() << "Entering ThreadPool::newThread().";
     auto thread = new QThread;
 //    qInfo() << "add <<<<<<<" << thread;
     m_pool.push_back(thread);
+
+    qDebug() << "Exiting ThreadPool::newThread(). Returning new thread.";
     return thread;
 }
 

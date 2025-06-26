@@ -26,8 +26,9 @@ static bool isWayland = false;
 
 void ShowInFileManager(const QString &path)
 {
-    qDebug() << "ShowInFileManager called with path:" << path;
+    qDebug() << "Entering ShowInFileManager() with path:" << path;
     if (path.isEmpty() || !QFile::exists(path)) {
+        qDebug() << "Path is empty or file does not exist:" << path << ", returning.";
         qWarning() << "Invalid path or file does not exist:" << path;
         return;
     }
@@ -37,22 +38,29 @@ void ShowInFileManager(const QString &path)
 
     // Try dde-file-manager
     if (url.isLocalFile()) {
+        qDebug() << "URL is a local file.";
         // Start dde-file-manager failed, try nautilus
         QDBusInterface iface("org.freedesktop.FileManager1",
                              "/org/freedesktop/FileManager1",
                              "org.freedesktop.FileManager1",
                              QDBusConnection::sessionBus());
         if (iface.isValid()) {
+            qDebug() << "DBus interface is valid, calling ShowItems.";
             // Convert filepath to URI first.
             const QStringList uris = { QUrl::fromLocalFile(path).toString() };
             qInfo() << "Using freedesktop.FileManager to show items:" << uris;
             QDBusPendingCall call = iface.asyncCall("ShowItems", uris, "");
             Q_UNUSED(call);
         } else {
+            qDebug() << "DBus interface is invalid, using QDesktopServices::openUrl as fallback.";
             qInfo() << "Using desktopService::openUrl as fallback";
             QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(path).dir().absolutePath()));
         }
+    } else {
+        qDebug() << "URL is not a local file, directly opening URL.";
+        QDesktopServices::openUrl(url);
     }
+    qDebug() << "Exiting ShowInFileManager().";
 }
 
 static int min(int v1, int v2, int v3)
@@ -62,6 +70,7 @@ static int min(int v1, int v2, int v3)
 
 static int stringDistance(const QString &s1, const QString &s2)
 {
+    qDebug() << "Entering stringDistance() with s1:" << s1 << ", s2:" << s2;
     int n = s1.size(), m = s2.size();
     if (!n || !m) return max(n, m);
 
@@ -75,8 +84,10 @@ static int stringDistance(const QString &s1, const QString &s2)
         int pred = i + 1;
         for (int j = 0; j < n; j++) {
             if (s1[j] == s2[i]) {
+                qDebug() << "Characters match at s1[" << j << "] and s2[" << i << "].";
                 curr = dp[static_cast<vector<int>::size_type>(j)];
             } else {
+                qDebug() << "Characters do not match, calculating cost.";
                 curr = min(dp[static_cast<vector<int>::size_type>(j)], dp[static_cast<vector<int>::size_type>(j + 1)], pred) + 1;
             }
             dp[static_cast<vector<int>::size_type>(j)] = pred;
@@ -86,6 +97,7 @@ static int stringDistance(const QString &s1, const QString &s2)
         dp[static_cast<vector<int>::size_type>(n)] = pred;
     }
 
+    qDebug() << "Exiting stringDistance() with result:" << curr;
     return curr;
 }
 
@@ -105,6 +117,7 @@ QFileInfoList FindSimilarFiles(const QFileInfo &fi)
     while (it.hasNext()) {
         it.next();
         if (!it.fileInfo().isFile()) {
+            qDebug() << "Skipping non-file entry:" << it.fileInfo().fileName();
             continue;
         }
 
@@ -119,7 +132,9 @@ QFileInfoList FindSimilarFiles(const QFileInfo &fi)
 
 bool CompareNames(const QString &fileName1, const QString &fileName2)
 {
+    qDebug() << "Entering CompareNames() with fileName1:" << fileName1 << ", fileName2:" << fileName2;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    qDebug() << "Compiling for Qt5.";
     static QRegExp rd("\\d+");
     int pos = 0;
     
@@ -129,19 +144,29 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
 
         auto pos2 = rd.indexIn(fileName2, pos);
         if (pos == pos2) {
+            qDebug() << "Qt5: Positions match at" << pos << ", comparing IDs.";
             auto id2 = fileName2.midRef(pos, rd.matchedLength());
             if (id1 != id2) {
+                qDebug() << "Qt5: IDs differ, performing integer or locale-aware comparison.";
                 bool ok1, ok2;
                 bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
-                if (ok1 && ok2) return v;
+                if (ok1 && ok2) {
+                    qDebug() << "Qt5: Integer comparison successful, returning:" << v;
+                    return v;
+                }
+                qDebug() << "Qt5: Falling back to locale-aware comparison.";
                 return id1.localeAwareCompare(id2) < 0;
             }
+        } else {
+            qDebug() << "Qt5: Positions do not match for fileName2.";
         }
         pos += inc;
     }
+    qDebug() << "Qt5: No more matches found, returning locale-aware comparison for full filenames.";
     return fileName1.localeAwareCompare(fileName2) < 0;
 
 #else
+    qDebug() << "Compiling for Qt6.";
     static QRegularExpression rd("\\d+");
     QRegularExpressionMatchIterator i = rd.globalMatch(fileName1);
     int pos = 0;
@@ -155,16 +180,25 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
         auto match2 = rd.match(fileName2, pos);
         auto pos2 = match2.capturedStart();
         if (pos == pos2) {
+            qDebug() << "Qt6: Positions match at" << pos << ", comparing IDs.";
             auto id2 = fileName2.mid(pos2, match2.capturedLength());
             if (id1 != id2) {
+                qDebug() << "Qt6: IDs differ, performing integer or locale-aware comparison.";
                 bool ok1, ok2;
                 bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
-                if (ok1 && ok2) return v;
+                if (ok1 && ok2) {
+                    qDebug() << "Qt6: Integer comparison successful, returning:" << v;
+                    return v;
+                }
+                qDebug() << "Qt6: Falling back to locale-aware comparison.";
                 return id1.localeAwareCompare(id2) < 0;
             }
+        } else {
+            qDebug() << "Qt6: Positions do not match for fileName2.";
         }
         pos += inc;
     }
+    qDebug() << "Qt6: No more matches found, returning locale-aware comparison for full filenames.";
     return fileName1.localeAwareCompare(fileName2) < 0;
 #endif
 }
@@ -247,15 +281,18 @@ QString FullFileHash(const QFileInfo &fi)
 
 QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
 {
+    qDebug() << "Entering MakeRoundedPixmap(pm, rx, ry, rotation) with rotation:" << rotation;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QMatrix matrix;
     matrix.rotate(rotation);
     pm = pm.transformed(matrix, Qt::SmoothTransformation);
+    qDebug() << "Transformed pixmap using QMatrix for Qt5.";
 #else
     // QMatrix类被移除了，需要使用QTransform来代替
     QTransform transform;
     transform.rotate(rotation);
     pm = pm.transformed(transform, Qt::SmoothTransformation);
+    qDebug() << "Transformed pixmap using QTransform for Qt6.";
 #endif
 
     auto dpr = pm.devicePixelRatio();
@@ -280,11 +317,13 @@ QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
 
     p.drawPixmap(scaled_rect.toRect(), pm);
 
+    qDebug() << "Exiting MakeRoundedPixmap(pm, rx, ry, rotation).";
     return dest;
 }
 
 QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
 {
+    qDebug() << "Entering MakeRoundedPixmap(sz, pm, rx, ry, time) with size:" << sz << ", time:" << time;
     int nX = 0;
     int nY = 0;
     auto dpr = pm.devicePixelRatio();
@@ -321,6 +360,7 @@ QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
                           (static_cast<int>(dest.height() / dpr)) - 5 - bounding.height()});
 
     {
+        qDebug() << "Drawing text for MakeRoundedPixmap(sz, pm, rx, ry, time) - block 1.";
         QPainterPath pp;
         pp.addText(bounding.bottomLeft() + QPoint{0, 1}, ft, tm_str);
         QPen pen(QColor(0, 0, 0, 50));
@@ -331,22 +371,26 @@ QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
     }
 
     {
+        qDebug() << "Drawing text for MakeRoundedPixmap(sz, pm, rx, ry, time) - block 2.";
         QPainterPath pp;
         pp.addText(bounding.bottomLeft(), ft, tm_str);
         p.fillPath(pp, QColor(Qt::white));
     }
 
+    qDebug() << "Exiting MakeRoundedPixmap(sz, pm, rx, ry, time).";
     return dest;
 }
 
 uint32_t InhibitStandby()
 {
+    qDebug() << "Entering InhibitStandby().";
     QDBusInterface iface("org.freedesktop.ScreenSaver",
                          "/org/freedesktop/ScreenSaver",
                          "org.freedesktop.ScreenSaver");
     QDBusReply<uint32_t> reply = iface.call("Inhibit", "deepin-movie", "playing in fullscreen");
 
     if (reply.isValid()) {
+        qDebug() << "InhibitStandby() successful, returning cookie:" << reply.value();
         return reply.value();
     }
 
@@ -356,20 +400,24 @@ uint32_t InhibitStandby()
 
 void UnInhibitStandby(uint32_t cookie)
 {
+    qDebug() << "Entering UnInhibitStandby() with cookie:" << cookie;
     QDBusInterface iface("org.freedesktop.ScreenSaver",
                          "/org/freedesktop/ScreenSaver",
                          "org.freedesktop.ScreenSaver");
     iface.call("UnInhibit", cookie);
+    qDebug() << "Exiting UnInhibitStandby().";
 }
 
 uint32_t InhibitPower()
 {
+    qDebug() << "Entering InhibitPower().";
     QDBusInterface iface("org.freedesktop.PowerManagement",
                          "/org/freedesktop/PowerManagement",
                          "org.freedesktop.PowerManagement");
     QDBusReply<uint32_t> reply = iface.call("Inhibit", "deepin-movie", "playing in fullscreen");
 
     if (reply.isValid()) {
+        qDebug() << "InhibitPower() successful, returning cookie:" << reply.value();
         return reply.value();
     }
 
@@ -379,10 +427,12 @@ uint32_t InhibitPower()
 
 void UnInhibitPower(uint32_t cookie)
 {
+    qDebug() << "Entering UnInhibitPower() with cookie:" << cookie;
     QDBusInterface iface("org.freedesktop.PowerManagement",
                          "/org/freedesktop/PowerManagement",
                          "org.freedesktop.PowerManagement");
     iface.call("UnInhibit", cookie);
+    qDebug() << "Exiting UnInhibitPower().";
 }
 
 void MoveToCenter(QWidget *w)
@@ -391,12 +441,17 @@ void MoveToCenter(QWidget *w)
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QDesktopWidget *dw = QApplication::desktop();
     QRect r = dw->availableGeometry(w);
+    qDebug() << "Using QDesktopWidget for Qt5. Available geometry:" << r;
 #else
     QScreen *screen = QGuiApplication::primaryScreen();
     if (w && w->screen()) {
         screen = w->screen();
+        qDebug() << "Using widget's screen for Qt6.";
+    } else {
+        qDebug() << "Using primary screen for Qt6.";
     }
     QRect r = screen->availableGeometry();
+    qDebug() << "Using QScreen for Qt6. Available geometry:" << r;
 #endif
 
     w->move(r.center() - w->rect().center());
@@ -422,6 +477,7 @@ QString Time2str(qint64 seconds)
 
 QString videoIndex2str(int index)
 {
+    qDebug() << "Entering videoIndex2str() with index:" << index;
     QStringList videoList = {"none", "mpeg1video", "mpeg2video", "h261", "h263", "rv10", "rv20",
                              "mjpeg", "mjpegb", "ljpeg", "sp5x", "jpegls", "mpeg4", "rawvideo", "msmpeg4v1",
                              "msmpeg4v2", "msmpeg4v3", "wmv1", "wmv2", "h263p", "h263i", "flv1", "svq1",
@@ -474,11 +530,13 @@ QString videoIndex2str(int index)
     codecMap.insert(77824, "ra_144");
     codecMap.insert(77825, "ra_288");
     QString aa = codecMap[index];
+    qDebug() << "Exiting videoIndex2str() with result:" << aa;
     return aa;
 }
 
 QString audioIndex2str(int index)
 {
+    qDebug() << "Entering audioIndex2str() with index:" << index;
     QStringList audioList = {"mp2", "mp3", "aac", "ac3", "dts", "vorbis", "dvaudio", "wmav1", "wmav2", "mace3", "mace6",
                              "vmdaudio", "flac", "mp3adu", "mp3on4", "shorten", "alac", "westwood_snd1", "gsm", "qdm2",
                              "cook", "truespeech", "tta", "smackaudio", "qcelp", "wavpack", "dsicinaudio", "imc",
@@ -496,6 +554,7 @@ QString audioIndex2str(int index)
         codecMap.insert(i + 86016, audioList[i]);
     }
     QString aa = codecMap[index];
+    qDebug() << "Exiting audioIndex2str() with result:" << aa;
     return aa;
 }
 
@@ -521,47 +580,64 @@ QString audioIndex2str(int index)
 //cppcheck 单元测试在用
 bool ValidateScreenshotPath(const QString &path)
 {
+    qDebug() << "Entering ValidateScreenshotPath() with path:" << path;
     auto name = path.trimmed();
-    if (name.isEmpty()) return false;
+    qDebug() << "Trimmed path:" << name;
+    if (name.isEmpty()) {
+        qDebug() << "Path is empty, returning false.";
+        return false;
+    }
 
     if (name.size() && name[0] == '~') {
         name.replace(0, 1, QDir::homePath());
+        qDebug() << "Replaced ~ with home path. New path:" << name;
     }
 
     QFileInfo fi(name);
     if (fi.exists()) {
+        qDebug() << "File/path exists.";
         if (!fi.isDir()) {
+            qDebug() << "Path is not a directory, returning false.";
             return false;
         }
 
         if (!fi.isReadable() || !fi.isWritable()) {
+            qDebug() << "Path is not readable or writable, returning false.";
             return false;
         }
+    } else {
+        qDebug() << "File/path does not exist.";
     }
 
+    qDebug() << "Exiting ValidateScreenshotPath() with true.";
     return true;
 }
 
 QImage LoadHiDPIImage(const QString &filename)
 {
+    qDebug() << "Entering LoadHiDPIImage() with filename:" << filename;
     QImageReader reader(filename);
     reader.setScaledSize(reader.size() * qApp->devicePixelRatio());
     auto img =  reader.read();
     img.setDevicePixelRatio(qApp->devicePixelRatio());
+    qDebug() << "Exiting LoadHiDPIImage(). Image size:" << img.size() << ", device pixel ratio:" << img.devicePixelRatio();
     return img;
 }
 
 QPixmap LoadHiDPIPixmap(const QString &filename)
 {
-    return QPixmap::fromImage(LoadHiDPIImage(filename));
+    qDebug() << "Entering LoadHiDPIPixmap() with filename:" << filename;
+    QPixmap pixmap = QPixmap::fromImage(LoadHiDPIImage(filename));
+    qDebug() << "Exiting LoadHiDPIPixmap(). Pixmap size:" << pixmap.size();
+    return pixmap;
 }
 
 QString ElideText(const QString &text, const QSize &size,
                   QTextOption::WrapMode wordWrap, const QFont &font,
                   Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
 {
-    int height = 0;
-
+    qDebug() << "Entering ElideText() with text:" << text << ", size:" << size << ", wordWrap:" << wordWrap << ", font:" << font.family() << ", mode:" << mode;
+    qDebug() << "lineHeight:" << lineHeight << ", lastLineWidth:" << lastLineWidth;
     QTextLayout textLayout(text);
     QString str;
     QFontMetrics fontMetrics(font);
@@ -574,6 +650,7 @@ QString ElideText(const QString &text, const QSize &size,
     QTextLine line = textLayout.createLine();
 
     while (line.isValid()) {
+        int height = 0;
         height += lineHeight;
 
         if (height + lineHeight >= size.height()) {
@@ -604,6 +681,7 @@ QString ElideText(const QString &text, const QSize &size,
         str = fontMetrics.elidedText(str, mode, lastLineWidth);
     }
 
+    qDebug() << "Exiting ElideText() with result:" << str;
     return str;
 }
 

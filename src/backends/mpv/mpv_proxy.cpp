@@ -102,46 +102,67 @@ typedef unsigned int (*gpu_decoderInfo)(decoder_profile index, VDP_Decoder_t *re
 
 static void mpv_callback(void *d)
 {
+    qDebug() << "DEBUG: Entering mpv_callback.";
     MpvProxy *pMpv = static_cast<MpvProxy *>(d);
     QMetaObject::invokeMethod(pMpv, "has_mpv_events", Qt::QueuedConnection);
+    qDebug() << "DEBUG: Exiting mpv_callback.";
 }
 
 MpvProxy::MpvProxy(QWidget *parent)
     : Backend(parent)
 {
+    qDebug() << "Entering MpvProxy constructor.";
     initMember();
 
     m_pParentWidget = parent;
 
     if (!CompositingManager::get().composited()) {
+        qDebug() << "Compositing manager not composited. Setting window flags for native window.";
         setWindowFlags(Qt::FramelessWindowHint);
         setAttribute(Qt::WA_NativeWindow);
         winId();
+    } else {
+        qDebug() << "DEBUG: Compositing manager is composited. No special window flags set."; // Add log for else branch
     }
 #ifdef _LIBDMR_
+    qDebug() << "_LIBDMR_ defined. Performing firstInit.";
     firstInit();
     m_bInited = true;
+#else
+    qDebug() << "DEBUG: _LIBDMR_ not defined. Skipping firstInit."; // Add log for else branch
 #endif
 
 #if defined (__mips__) || defined (__aarch64__)
+    qDebug() << "MIPS or AARCH64 detected. Setting WA_TransparentForMouseEvents.";
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
 #endif
+    qDebug() << "Exiting MpvProxy constructor.";
 }
 
 MpvProxy::~MpvProxy()
 {
+    qDebug() << "DEBUG: Entering MpvProxy destructor.";
     disconnect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events);
+    qDebug() << "DEBUG: Disconnected has_mpv_events signal.";
     m_bConnectStateChange = false;
     disconnect(window()->windowHandle(), &QWindow::windowStateChanged, nullptr, nullptr);
+    qDebug() << "DEBUG: Disconnected windowStateChanged signal.";
     if (CompositingManager::get().composited()) {
+        qDebug() << "DEBUG: Compositing manager composited. Disconnecting stateChanged and deleting MpvGLwidget.";
         disconnect(this, &MpvProxy::stateChanged, nullptr, nullptr);
         delete m_pMpvGLwidget;
+        m_pMpvGLwidget = nullptr;
+    } else {
+        qDebug() << "DEBUG: Compositing manager not composited. Skipping MpvGLwidget deletion.";
     }
+    qDebug() << "DEBUG: Exiting MpvProxy destructor.";
 }
 
 void MpvProxy::setDecodeModel(const QVariant &value)
 {
+    qDebug() << "DEBUG: Entering MpvProxy::setDecodeModel. Value:" << value;
     m_decodeMode = static_cast<DecodeMode>(value.toInt());
+    qDebug() << "DEBUG: Exiting MpvProxy::setDecodeModel. Decode mode set to:" << static_cast<int>(m_decodeMode);
 }
 
 void MpvProxy::initMpvFuns()
@@ -163,6 +184,7 @@ void MpvProxy::initMpvFuns()
     m_setWakeupCallback = reinterpret_cast<mpv_setWakeup_callback>(mpvLibrary.resolve("mpv_set_wakeup_callback"));
     m_initialize = reinterpret_cast<mpvinitialize>(mpvLibrary.resolve("mpv_initialize"));
     m_freeNodecontents = reinterpret_cast<mpv_freeNode_contents>(mpvLibrary.resolve("mpv_free_node_contents"));
+    qDebug() << "DEBUG: MPV function pointers resolved."; // Log after resolving function pointers
 
     qInfo() << "MPV functions initialized successfully";
 }
@@ -173,6 +195,7 @@ void MpvProxy::initGpuInfoFuns()
     if(!SysUtils::libExist("libgpuinfo.so")) {
         qWarning() << "libgpuinfo.so not found - GPU info functions will be unavailable";
         m_gpuInfo = NULL;
+        qDebug() << "DEBUG: Exiting MpvProxy::initGpuInfoFuns due to missing libgpuinfo.so."; // Add exit log
         return;
     }
     QLibrary mpvLibrary(SysUtils::libPath("libgpuinfo.so"));
@@ -185,6 +208,7 @@ void MpvProxy::firstInit()
     qInfo() << "Performing first initialization of MPV proxy";
 #ifndef _LIBDMR_
 #ifdef __x86_64__
+    qDebug() << "DEBUG: Running hardware decode check for x86_64."; // Log for hwdec check
     //第一次运行deepin-movie，检测是否支持硬解
     QString procName = QCoreApplication::applicationFilePath();
     QProcess proc;
@@ -197,18 +221,25 @@ void MpvProxy::firstInit()
     if(proc.exitCode() != QProcess::NormalExit) {
         qWarning() << "Hardware decode check process exited abnormally";
         CompositingManager::setCanHwdec(false);
+        qDebug() << "DEBUG: CompositingManager::setCanHwdec set to false due to abnormal exit."; // Log state change
     } else {//检测进程日志输出
         QByteArray result = proc.readAllStandardError();
         qInfo() << "Hardware decode check result:" << result;
         if(result.toLower().contains("not supported")) {
             qInfo() << "Hardware decode not supported";
             CompositingManager::setCanHwdec(false);
+            qDebug() << "DEBUG: CompositingManager::setCanHwdec set to false."; // Log state change
         } else {
             qInfo() << "Hardware decode supported";
             CompositingManager::setCanHwdec(true);
+            qDebug() << "DEBUG: CompositingManager::setCanHwdec set to true."; // Log state change
         }
     }
+#else
+    qDebug() << "DEBUG: Hardware decode check skipped for non-x86_64 platform."; // Log for skipped check
 #endif
+#else
+    qDebug() << "DEBUG: _LIBDMR_ defined, skipping hardware decode check."; // Log for _LIBDMR_ case
 #endif
     initMpvFuns();
     initGpuInfoFuns();
@@ -221,21 +252,32 @@ void MpvProxy::firstInit()
             connect(this, &MpvProxy::stateChanged, this, &MpvProxy::slotStateChanged);
 #ifdef __x86_64__
             connect(this, &MpvProxy::elapsedChanged, [ this ]() {
+                qDebug() << "DEBUG: Elapsed time changed, updating movie progress."; // Add log for lambda
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                 m_pMpvGLwidget->updateMovieProgress(duration(), elapsed());
 #endif
                 m_pMpvGLwidget->update();
             });
+#else
+            qDebug() << "DEBUG: Skipping elapsedChanged connection for non-x86_64."; // Log for skipped connection
 #endif
 #if defined(USE_DXCB)
+            qDebug() << "DEBUG: USE_DXCB defined. Toggling rounded clip to false."; // Log for DXCB
             m_pMpvGLwidget->toggleRoundedClip(false);
+#else
+            qDebug() << "DEBUG: USE_DXCB not defined. Skipping toggleRoundedClip."; // Log for non-DXCB
 #endif
             QHBoxLayout *pLayout = new QHBoxLayout(this);
             pLayout->setContentsMargins(0, 0, 0, 0);
             pLayout->addWidget(m_pMpvGLwidget);
             setLayout(pLayout);
             m_pMpvGLwidget->show();
+            qDebug() << "DEBUG: MPV GL widget layout configured and shown."; // Log after showing widget
+        } else {
+            qDebug() << "DEBUG: Compositing manager not composited. Skipping MPV GL widget creation."; // Add log for else branch
         }
+    } else {
+        qCritical() << "CRITICAL: Failed to create MPV handle. Initialization aborted."; // Add critical log if m_creat is null
     }
 
     m_bInited = true;
@@ -245,92 +287,131 @@ void MpvProxy::firstInit()
 
 void MpvProxy::initSetting()
 {
+    qDebug() << "DEBUG: Entering MpvProxy::initSetting.";
     QMapIterator<QString, QVariant> mapItor(m_mapWaitSet);
     while (mapItor.hasNext()) {
         mapItor.next();
         my_set_property(m_handle, mapItor.key(), mapItor.value());
+        qDebug() << "DEBUG: Setting property from m_mapWaitSet:" << mapItor.key() << "=" << mapItor.value();
     }
+    qDebug() << "DEBUG: Finished setting properties from m_mapWaitSet.";
 
     QVectorIterator<QVariant> vecItor(m_vecWaitCommand);
     while (vecItor.hasNext()) {
         my_command(m_handle, vecItor.peekNext());
         vecItor.next();
     }
+    qDebug() << "DEBUG: Finished executing commands from m_vecWaitCommand.";
+    qDebug() << "DEBUG: Exiting MpvProxy::initSetting.";
 }
 
 void MpvProxy::updateRoundClip(bool roundClip)
 {
+    qDebug() << "DEBUG: Entering MpvProxy::updateRoundClip. Round clip:" << roundClip;
 #ifdef __x86_64__
     m_pMpvGLwidget->toggleRoundedClip(roundClip);
+    qDebug() << "DEBUG: Toggled rounded clip for MpvGLWidget on x86_64.";
+#else
+    qDebug() << "DEBUG: Skipping rounded clip toggle for non-x86_64 platform.";
 #endif
+    qDebug() << "DEBUG: Exiting MpvProxy::updateRoundClip.";
 }
 
 mpv_handle *MpvProxy::mpv_init()
 {
+    qDebug() << "DEBUG: Entering MpvProxy::mpv_init()";
     mpv_handle *pHandle =  static_cast<mpv_handle *>(m_creat());
+    if (!pHandle) {
+        qCritical() << "CRITICAL: Failed to create mpv handle.";
+        return nullptr;
+    }
+    qDebug() << "DEBUG: MPV handle created successfully.";
     bool composited = CompositingManager::get().composited();
+    qDebug() << "DEBUG: MPV handle created. Composited state:" << composited;
 
     switch (_debugLevel) {
     case DebugLevel::Info:
         m_requestLogMessage(pHandle, "info");
+        qDebug() << "DEBUG: MPV log level set to info.";
         break;
 
     case DebugLevel::Debug:
     case DebugLevel::Verbose:
         my_set_property(pHandle, "terminal", "yes");
+        qDebug() << "DEBUG: MPV terminal output enabled.";
         if (_debugLevel == DebugLevel::Verbose) {
             my_set_property(pHandle, "msg-level", "all=status");
             m_requestLogMessage(pHandle, "info");
+            qDebug() << "DEBUG: MPV log level set to verbose (all=status).";
 
         } else {
             my_set_property(pHandle, "msg-level", "all=v");
             m_requestLogMessage(pHandle, "v");
+            qDebug() << "DEBUG: MPV log level set to debug (all=v).";
         }
+        break;
+    default:
+        qDebug() << "DEBUG: Unknown debug level. No specific MPV log level set.";
         break;
     }
 
 #ifdef _LIBDMR_
     if (composited) {
+        qDebug() << "DEBUG: _LIBDMR_ defined and composited. Setting gpu-hwdec-interop based on QT_XCB_GL_INTERGRATION.";
         auto interop = QString::fromUtf8("vaapi-glx");
         if (!qEnvironmentVariableIsEmpty("QT_XCB_GL_INTERGRATION")) {
             auto gl_int = qgetenv("QT_XCB_GL_INTERGRATION");
             if (gl_int == "xcb_egl") {
                 interop = "vaapi-egl";
+                qDebug() << "DEBUG: QT_XCB_GL_INTERGRATION set to xcb_egl, interop: vaapi-egl.";
             } else if (gl_int == "xcb_glx") {
                 interop = "vaapi-glx";
+                qDebug() << "DEBUG: QT_XCB_GL_INTERGRATION set to xcb_glx, interop: vaapi-glx.";
             } else {
                 interop = "auto";
+                qDebug() << "DEBUG: QT_XCB_GL_INTERGRATION set to unknown value, interop: auto.";
             }
+        } else {
+            qDebug() << "DEBUG: QT_XCB_GL_INTERGRATION environment variable is empty. Defaulting to vaapi-glx.";
         }
         my_set_property(pHandle, "gpu-hwdec-interop", interop.toUtf8().constData());
         qInfo() << "set gpu-hwdec-interop = " << interop;
     }
     my_set_property(pHandle, "hwdec", "auto");
+    qDebug() << "DEBUG: hwdec set to auto for _LIBDMR_.";
 
 #else
     if (composited) {
+        qDebug() << "DEBUG: _LIBDMR_ not defined and composited. Setting gpu-hwdec-interop based on settings.";
         auto disable = Settings::get().disableInterop();
+        qDebug() << "DEBUG: Interop disabled setting:" << disable;
         auto forced = Settings::get().forcedInterop();
+        qDebug() << "DEBUG: Forced interop setting:" << forced;
 
         auto interop = QString::fromUtf8("auto");
         switch (CompositingManager::get().interopKind()) {
         case OpenGLInteropKind::INTEROP_AUTO:
             interop = QString::fromUtf8("auto");
+            qDebug() << "DEBUG: Interop kind: INTEROP_AUTO.";
             break;
 
         case OpenGLInteropKind::INTEROP_VAAPI_EGL:
             interop = QString::fromUtf8("vaapi-egl");
+            qDebug() << "DEBUG: Interop kind: INTEROP_VAAPI_EGL.";
             break;
 
         case OpenGLInteropKind::INTEROP_VAAPI_GLX:
             interop = QString::fromUtf8("vaapi-glx");
+            qDebug() << "DEBUG: Interop kind: INTEROP_VAAPI_GLX.";
             break;
 
         case OpenGLInteropKind::INTEROP_VDPAU_GLX:
             interop = QString::fromUtf8("vdpau-glx");
+            qDebug() << "DEBUG: Interop kind: INTEROP_VDPAU_GLX.";
             break;
 
         default:
+            qDebug() << "DEBUG: Unknown interop kind.";
             break;
 
         }
@@ -339,6 +420,9 @@ mpv_handle *MpvProxy::mpv_init()
             QStringList valids {"vaapi-egl", "vaapi-glx", "vdpau-glx", "auto"};
             if (valids.contains(forced)) {
                 interop = forced;
+                qDebug() << "DEBUG: Forced interop value:" << forced;
+            } else {
+                qWarning() << "WARNING: Invalid forced interop value:" << forced << ". Falling back to detected interop.";
             }
         }
 
@@ -355,15 +439,19 @@ mpv_handle *MpvProxy::mpv_init()
 #ifdef __aarch64__
     if (CompositingManager::get().isOnlySoftDecode()) {
         my_set_property(pHandle, "hwdec", "no");
+        qDebug() << "DEBUG: AARCH64: Only soft decode enabled, hwdec set to no.";
     } else {
         my_set_property(pHandle, "hwdec", "auto");
+        qDebug() << "DEBUG: AARCH64: Soft decode not forced, hwdec set to auto.";
     }
     qInfo() << "modify HWDEC auto";
 #endif
 
     my_set_property(pHandle, "panscan", 1.0);
+    qDebug() << "DEBUG: panscan set to 1.0.";
 
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
+        qDebug() << "DEBUG: Decode mode set to SOFTWARE. Setting hwdec to no.";
         my_set_property(pHandle, "hwdec", "no");
 #if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
         if (!CompositingManager::get().hascard()) {
@@ -372,8 +460,11 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "vo", "x11");
             m_sInitVo = "x11";
         }
+#else
+        qDebug() << "DEBUG: Not Loongarch, skipping specific video sync settings.";
 #endif
     } else if (DecodeMode::AUTO == m_decodeMode) { //2.设置自动
+        qDebug() << "DEBUG: Decode mode set to AUTO. Checking for special hardware.";
         //2.1特殊硬件
         //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         QFileInfo fi("/dev/mwv206_0");
@@ -386,40 +477,54 @@ mpv_handle *MpvProxy::mpv_init()
         if (cpuInfo.open(QIODevice::ReadOnly | QIODevice::Text)) {
             isVirtualMachine = cpuInfo.readAll().contains("hypervisor");
             cpuInfo.close();
+            qDebug() << "DEBUG: CPU info checked. Is virtual machine:" << isVirtualMachine;
+        } else {
+            qWarning() << "WARNING: Failed to open /proc/cpuinfo.";
         }
+
         if (fi.exists() || jmfi.exists()) { //2.1.1景嘉微
+            qDebug() << "DEBUG: Jingjiawei GPU detected. Checking driver existence.";
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
             if(sdir.exists() && fi.exists()) {
                 my_set_property(pHandle, "hwdec", "vdpau");
                 my_set_property(pHandle, "vo", "vdpau");
                 m_sInitVo = "vdpau";
+                qDebug() << "DEBUG: Jingjiawei (mwv206) driver found. hwdec: vdpau, vo: vdpau.";
             }else if (jmfi.exists() && jmdir.exists()) {
                 my_set_property(pHandle, "hwdec", "vaapi");
                 my_set_property(pHandle, "vo", "vaapi");
                 m_sInitVo = "vaapi";
-            }else {
+                qDebug() << "DEBUG: Jingjiawei (mwv207) driver found. hwdec: vaapi, vo: vaapi.";
+            } else {
+                qWarning() << "WARNING: Jingjiawei driver not found. Setting hwdec to auto.";
                 my_set_property(pHandle, "hwdec", "auto");
                 my_set_property(pHandle, "vo", "vdpau,xv,x11");
                 m_sInitVo = "vdpau,xv,x11";
             }
         } else if (QFile::exists("/dev/csmcore")) { //2.1.2中船重工
+            qDebug() << "DEBUG: CSMCORE detected. Setting vo to xv,x11 and hwdec to auto.";
             my_set_property(pHandle, "vo", "xv,x11");
             my_set_property(pHandle, "hwdec", "auto");
             if (utils::check_wayland_env()) {
+                qDebug() << "DEBUG: Wayland environment detected. Setting wid for CSMCORE.";
                 my_set_property(pHandle, "wid", m_pParentWidget->winId());
             }
             m_sInitVo = "xv,x11";
         }  else if (X100GPU.exists() && X100VPU.exists()) {
+            qDebug() << "DEBUG: X100 GPU and VPU detected. Setting hwdec to ftomx-copy and vo to gpu.";
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
             m_sInitVo = "gpu";
         } else if (CompositingManager::get().isOnlySoftDecode()) {//2.1.3 鲲鹏920 || 曙光+英伟达 || 浪潮
+            qDebug() << "DEBUG: Only soft decode enabled. Setting hwdec to no.";
             my_set_property(pHandle, "hwdec", "no");
         } else if (isVirtualMachine) {
+            qDebug() << "DEBUG: Virtual machine detected. Setting vo to x11.";
             my_set_property(m_handle, "vo", "x11");
             m_sInitVo = "x11";
         } else { //2.2非特殊硬件
+            qDebug() << "DEBUG: No special hardware detected. Setting hwdec to auto.";
             my_set_property(pHandle, "hwdec", "auto");
         }
 
@@ -438,23 +543,30 @@ mpv_handle *MpvProxy::mpv_init()
         }
         if (!fi.exists() && !jmfi.exists() && !mtfi.exists()) {
             if(CompositingManager::get().property("directRendering").toBool()) {
+                qDebug() << "DEBUG: Loongarch: Direct rendering enabled. Setting vo to gpu,x11.";
                 my_set_property(pHandle, "vo", "gpu,x11");
                 m_sInitVo = "gpu,x11";
             } else {
+                qDebug() << "DEBUG: Loongarch: Direct rendering disabled. Setting vo to x11.";
                 my_set_property(pHandle, "vo", "x11");
                 m_sInitVo = "x11";
             }
+        } else {
+            qDebug() << "DEBUG: Loongarch: Specific hardware detected, skipping direct rendering check.";
         }
 #elif defined (__sw_64__)
+        qDebug() << "DEBUG: SW_64 defined. Modifying video output.";
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
         my_set_property(pHandle, "vo", "gpu,x11");
         m_sInitVo = "gpu,x11";
 #elif defined (__aarch64__)
         if (!fi.exists() && !jmfi.exists()) { //2.1.1景嘉微
+            qDebug() << "DEBUG: AARCH64: No Jingjiawei GPU detected. Setting vo to x11,gpu,xv.";
             my_set_property(pHandle, "vo", "x11,gpu,xv");
             m_sInitVo = "x11,gpu,xv";
         }
         if (CompositingManager::get().isSpecialControls()) {
+            qDebug() << "DEBUG: AARCH64: Special controls detected. Setting hwdec to vaapi and vo to vaapi.";
             my_set_property(pHandle, "hwdec", "vaapi");
             my_set_property(pHandle, "vo", "vaapi");
             m_sInitVo = "vaapi";
@@ -472,6 +584,7 @@ mpv_handle *MpvProxy::mpv_init()
         }
         //TODO(xxxxpengfei)：暂未处理intel集显情况
         if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
+            qDebug() << "DEBUG: ZXIntgraphics detected and no Jingjiawei driver. Checking apt policy.";
             QProcess process;
             QStringList options;
             options << "-c" << QString("apt policy cx4-linux-graphics-driver-dri | sed -n \'2p\'");
@@ -484,18 +597,23 @@ mpv_handle *MpvProxy::mpv_init()
                 QString comStr = process.readAllStandardOutput();
                 comStr = comStr.right(3).left(2);
                 int version = comStr.toInt();
+                qDebug() << "DEBUG: apt policy output version:" << version;
                 if (version >= 10) {
                     my_set_property(pHandle, "vo", "vaapi");
                     my_set_property(pHandle, "hwdec", "vaapi");
                     m_sInitVo = "vaapi";
+                    qDebug() << "DEBUG: Version >= 10. Setting vo to vaapi and hwdec to vaapi.";
                 } else {
                     my_set_property(pHandle, "vo", "gpu");
                     m_sInitVo = "gpu";
+                    qDebug() << "DEBUG: Version < 10. Setting vo to gpu.";
                 }
             } else {
+                qWarning() << "WARNING: apt policy process returned error:" << error;
                 my_set_property(pHandle, "vo", "x11,xv");
                 my_set_property(pHandle, "hwdec", "vaapi");
                 m_sInitVo = "x11,xv";
+                qDebug() << "DEBUG: Error in apt policy. Setting vo to x11,xv and hwdec to vaapi.";
             }
         }
 #endif
@@ -505,12 +623,14 @@ mpv_handle *MpvProxy::mpv_init()
         }
 
         if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
+            qDebug() << "DEBUG: Ljmcore driver detected. Setting vo to vaapi and hwdec to vaapi.";
             my_set_property(pHandle, "vo", "vaapi");
             my_set_property(pHandle, "hwdec", "vaapi");
             m_sInitVo = "vaapi";
         }
 
         if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+            qDebug() << "DEBUG: Ctyun clink registry detected. Setting hwdec to no, vo to x11, video-sync to desync, and profile to sw-fast.";
             my_set_property(pHandle, "hwdec", "no");
             my_set_property(pHandle, "vo", "x11");
             my_set_property(pHandle, "video-sync", "desync");
@@ -520,38 +640,47 @@ mpv_handle *MpvProxy::mpv_init()
 
         QDir innodir("/sys/bus/platform/drivers/inno-codec");
         if ( innodir.exists()) {
+            qDebug() << "DEBUG: Inno-codec driver detected. Setting vo to gpu,x11.";
             my_set_property(pHandle, "vo", "gpu,x11");
             m_sInitVo = "gpu,x11";
         }
     } else { //3.设置硬解
+        qDebug() << "DEBUG: Decode mode set to HARDWARE. Checking specific hardware.";
         QFileInfo fi("/dev/mwv206_0");
         QFileInfo jmfi("/dev/jmgpu");
         QFileInfo X100GPU("/dev/x100gpu");
         QFileInfo X100VPU("/dev/vxd0");
         if (fi.exists() || jmfi.exists()) { //2.1.1景嘉微
+            qDebug() << "DEBUG: Jingjiawei GPU detected. Checking driver existence.";
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
             if(sdir.exists() && fi.exists()) {
                 my_set_property(pHandle, "hwdec", "vdpau");
                 my_set_property(pHandle, "vo", "vdpau");
                 m_sInitVo = "vdpau";
+                qDebug() << "DEBUG: Jingjiawei (mwv206) driver found. hwdec: vdpau, vo: vdpau.";
             }else if (jmfi.exists() && jmdir.exists()) {
                 my_set_property(pHandle, "hwdec", "vaapi");
                 my_set_property(pHandle, "vo", "vaapi");
                 m_sInitVo = "vaapi";
+                qDebug() << "DEBUG: Jingjiawei (mwv207) driver found. hwdec: vaapi, vo: vaapi.";
             } else {
+                qWarning() << "WARNING: Jingjiawei driver not found. Setting hwdec to auto.";
                 my_set_property(pHandle, "hwdec", "auto");
                 my_set_property(pHandle, "vo", "vdpau,xv,x11");
                 m_sInitVo = "vdpau,xv,x11";
             }
         } else if (X100GPU.exists() && X100VPU.exists()) {
+            qDebug() << "DEBUG: X100 GPU and VPU detected. Setting hwdec to ftomx-copy and vo to gpu.";
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
         } else {
+            qDebug() << "DEBUG: No special GPU detected. Setting hwdec to auto.";
             my_set_property(pHandle, "hwdec", "auto");
         }
 
 #if defined (__sw_64__)
+        qDebug() << "DEBUG: SW_64 defined. Modifying video output.";
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
         my_set_property(pHandle, "vo", "gpu,x11");
         m_sInitVo = "gpu,x11";
@@ -562,15 +691,20 @@ mpv_handle *MpvProxy::mpv_init()
         }
         if (!fi.exists() && !jmfi.exists()) {
             if(CompositingManager::get().property("directRendering").toBool()) {
+                qDebug() << "DEBUG: Loongarch: Direct rendering enabled. Setting vo to gpu,x11.";
                 my_set_property(pHandle, "vo", "gpu,x11");
                 m_sInitVo = "gpu,x11";
             } else {
+                qDebug() << "DEBUG: Loongarch: Direct rendering disabled. Setting vo to x11.";
                 my_set_property(pHandle, "vo", "x11");
                 m_sInitVo = "x11";
             }
+        } else {
+            qDebug() << "DEBUG: Loongarch: Specific hardware detected, skipping direct rendering check.";
         }
 #endif
         if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
+            qDebug() << "DEBUG: Ctyun clink registry detected. Setting hwdec to no and vo to x11.";
             my_set_property(pHandle, "hwdec", "no");
             my_set_property(pHandle, "vo", "x11");
             my_set_property(pHandle, "video-sync", "desync");
@@ -580,16 +714,19 @@ mpv_handle *MpvProxy::mpv_init()
 
         QDir innodir("/sys/bus/platform/drivers/inno-codec");
         if ( innodir.exists()) {
+            qDebug() << "DEBUG: Inno-codec driver detected. Setting vo to gpu,x11.";
             my_set_property(pHandle, "vo", "gpu,x11");
             m_sInitVo = "gpu,x11";
         }
         if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
+            qDebug() << "DEBUG: Ljmcore driver detected. Setting vo to vaapi and hwdec to vaapi.";
             my_set_property(pHandle, "vo", "vaapi");
             my_set_property(pHandle, "hwdec", "vaapi");
             m_sInitVo = "vaapi";
         }
 
         if (CompositingManager::get().isSpecialControls()) {
+            qDebug() << "DEBUG: Special controls detected. Setting hwdec to vaapi and vo to vaapi.";
             my_set_property(pHandle, "hwdec", "vaapi");
             my_set_property(pHandle, "vo", "vaapi");
             m_sInitVo = "vaapi";
@@ -609,14 +746,17 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(pHandle, "vd-lavc-dr", "no");
         my_set_property(pHandle, "gpu-sw", "on");
         m_sInitVo = "libmpv";
+        qDebug() << "DEBUG: Not MIPS, composited. Setting vo to libmpv, vd-lavc-dr to no, gpu-sw to on.";
 #endif
     } else {
         my_set_property(pHandle, "wid", m_pParentWidget->winId());
+        qDebug() << "DEBUG: Not composited. Setting wid to parent widget's winId.";
     }
 
 
     if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default")) {
         my_set_property(pHandle, "update-on-pause", "yes");
+        qDebug() << "DEBUG: Ctyun clink registry detected. Setting update-on-pause to yes.";
     }
 
     qInfo() << __func__ << "vo:" << my_get_property(pHandle, "vo").toString();
@@ -625,6 +765,7 @@ mpv_handle *MpvProxy::mpv_init()
     QString strMovie = QObject::tr("Movie");
     //设置音量名称
     my_set_property(pHandle, "audio-client-name", strMovie);
+    qDebug() << "DEBUG: Audio client name set to:" << strMovie;
     //my_set_property(pHandle, "keepaspect-window", "no");
     //设置视频固定帧率，暂时无效
     //my_set_property(pHandle, "correct-pts", false);
@@ -640,11 +781,17 @@ mpv_handle *MpvProxy::mpv_init()
     my_set_property(pHandle, "sub-border-size", 0);
     my_set_property(pHandle, "screenshot-template", "deepin-movie-shot%n");
     my_set_property(pHandle, "screenshot-directory", "/tmp");
+    qDebug() << "DEBUG: Basic MPV properties set.";
 
 #ifndef _LIBDMR_
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
         my_set_property(pHandle, "save-position-on-quit", true);
+        qDebug() << "DEBUG: Resume from last position enabled.";
+    } else {
+        qDebug() << "DEBUG: Resume from last position disabled.";
     }
+#else
+    qDebug() << "DEBUG: _LIBDMR_ defined, skipping resume from last position setting.";
 #endif
 
     //only to get notification without data
@@ -656,25 +803,32 @@ mpv_handle *MpvProxy::mpv_init()
     m_observeProperty(pHandle, 0, "aid", MPV_FORMAT_NODE);
     m_observeProperty(pHandle, 0, "dwidth", MPV_FORMAT_NODE);
     m_observeProperty(pHandle, 0, "dheight", MPV_FORMAT_NODE);
+    qDebug() << "DEBUG: MPV properties observed (time-pos, pause, mute, volume, sid, aid, dwidth, dheight).";
 
     // because of vpu, we need to implement playlist w/o mpv
     //m_observeProperty(pHandle, 0, "playlist-pos", MPV_FORMAT_NONE);
     //m_observeProperty(pHandle, 0, "playlist-count", MPV_FORMAT_NONE);
     m_observeProperty(pHandle, 0, "core-idle", MPV_FORMAT_NODE);
     m_observeProperty(pHandle, 0, "paused-for-cache", MPV_FORMAT_NODE);
+    qDebug() << "DEBUG: MPV properties observed (core-idle, paused-for-cache).";
 
     m_setWakeupCallback(pHandle, mpv_callback, this);
     connect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events,
             Qt::DirectConnection);
+    qDebug() << "DEBUG: MPV wakeup callback set and has_mpv_events connected.";
     if (m_initialize(pHandle) < 0) {
+        qCritical() << "CRITICAL: MPV initialization failed.";
         std::runtime_error("mpv init failed");
     }
+    qDebug() << "DEBUG: MPV initialization successful. Loading profile.";
 
     //load profile
     auto ol = CompositingManager::get().getBestProfile();
+    qDebug() << "DEBUG: Loading best profile. Profile size:" << ol.size();
     auto p = ol.begin();
     while (p != ol.end()) {
         if (!p->first.startsWith("#")) {
+            qDebug() << "DEBUG: Applying profile property:" << p->first << "=" << p->second;
 #if !defined (__mips__ ) && !defined(__aarch64__) && !defined(__sw_64__)
 #ifdef MWV206_0
             QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
@@ -687,39 +841,56 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, p->first.toUtf8().constData(), p->second.toUtf8().constData());
             qInfo() << "apply" << p->first << "=" << p->second;
 #endif
+#else
+            qDebug() << "DEBUG: Skipping profile application for specific architectures.";
 #endif
         } else {
             qInfo() << "ignore(commented out)" << p->first << "=" << p->second;
         }
         ++p;
     }
+    qDebug() << "DEBUG: Finished applying best profile.";
 
     //设置hwdec和vo配置
     CompositingManager::get().getMpvConfig(m_pConfig);
+    qDebug() << "DEBUG: MPV config retrieved for hwdec and vo settings.";
 #ifndef _LIBDMR_
     if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == 3) {
+        qDebug() << "DEBUG: Custom decode settings enabled.";
         int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
         auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
         QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
         decodeMode = decodeMode.isEmpty() ? "auto" : decodeMode;
         m_pConfig->insert("hwdec", decodeMode);
+        qDebug() << "DEBUG: hwdec set to:" << decodeMode;
 
         if (!CompositingManager::get().composited()) {
+            qDebug() << "DEBUG: Not composited, setting vo from custom decode settings.";
             int voIndex = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();
             auto voOpt = Settings::get().settings()->option("base.decode.Videoout");
             QString voMode = voOpt.data()->data("items").toStringList()[voIndex];
             voMode = voMode.isEmpty() ? "auto" : voMode;
             m_pConfig->insert("vo", voMode);
+            qDebug() << "DEBUG: vo set to:" << voMode;
+        } else {
+            qDebug() << "DEBUG: Composited, skipping vo setting from custom decode settings.";
         }
+    } else {
+        qDebug() << "DEBUG: Custom decode settings disabled.";
     }
+#else
+    qDebug() << "DEBUG: _LIBDMR_ defined, skipping custom decode settings.";
 #endif
     QMap<QString, QString>::iterator iter = m_pConfig->begin();
     qInfo() << __func__ << "First set mpv propertys!!";
     while (iter != m_pConfig->end()) {
         my_set_property(pHandle, iter.key(), iter.value());
+        qDebug() << "DEBUG: Setting mpv property from config:" << iter.key() << "=\"" << iter.value() << "\";";
         iter++;
     }
+    qDebug() << "DEBUG: Finished setting mpv properties from config.";
 
+    qDebug() << "DEBUG: Exiting MpvProxy::mpv_init() with handle:" << pHandle;
     return pHandle;
 }
 
@@ -1450,6 +1621,7 @@ void MpvProxy::refreshDecode()
                 my_set_property(m_handle, "hwdec", "auto");
             }
         } else if (X100GPU.exists() && X100VPU.exists()) {
+            qDebug() << "DEBUG: X100 GPU/VPU detected (harddec mode). Setting hwdec to ftomx-copy, vo to gpu.";
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
         }
@@ -1478,12 +1650,12 @@ void MpvProxy::refreshDecode()
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
 #ifndef _LIBDMR_
-        if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == 3) {
-            int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
-            auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
-            QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
-            decodeMode = decodeMode.isEmpty() ? "auto" : decodeMode;
-            m_pConfig->insert("hwdec", decodeMode);
+    if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == 3) {
+        int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
+        auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
+        QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
+        decodeMode = decodeMode.isEmpty() ? "auto" : decodeMode;
+        m_pConfig->insert("hwdec", decodeMode);
 
             if (!CompositingManager::get().composited()) {
                 int voIndex = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();
@@ -1550,30 +1722,38 @@ void MpvProxy::initMember()
 void MpvProxy::play()
 {
     qInfo() << "Starting playback";
+    
     if(m_bLoadMedia) {
         qInfo() << "Media already loading, scheduling retry in 5 seconds";
         QTimer::singleShot(5000, [=](){ //超时5s恢复状态，视频加载成功后也会重置状态，正常播放状态下不会进入此函数
+            qDebug() << "Media loading timeout reached, resetting loading state";
             m_bLoadMedia = false;
         });
+        qDebug() << "Exiting MpvProxy::play() - media already loading";
         return;
     }
+    
     bool bRawFormat = false;
     QList<QVariant> listArgs = { "loadfile" };
     QStringList listOpts = { };
     PlayerEngine* pEngine = nullptr;
     bool bAudio = false;
     m_bLoadMedia = true;
+    qDebug() << "Set loading flag to prevent concurrent loading";
 
     if (!m_bInited) {
         qInfo() << "MPV not initialized, performing first initialization";
         firstInit();
+        qDebug() << "MPV initialization completed";
     }
 
     pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
     if (pEngine && pEngine->getplaylist()->size() > 0) {
         bRawFormat = pEngine->getplaylist()->currentInfo().mi.isRawFormat();
-        bAudio =  pEngine->currFileIsAudio();
+        bAudio = pEngine->currFileIsAudio();
         qInfo() << "Current file info - Raw format:" << bRawFormat << "Audio only:" << bAudio;
+    } else {
+        qDebug() << "No playlist items or player engine not available";
     }
 
     if (bAudio) {
@@ -1679,6 +1859,8 @@ void MpvProxy::play()
 
 void MpvProxy::pauseResume()
 {
+    qDebug() << "Entering MpvProxy::pauseResume()";
+
     if (_state == PlayState::Stopped) {
         qInfo() << "Cannot pause/resume - player is stopped";
         return;
@@ -1686,14 +1868,19 @@ void MpvProxy::pauseResume()
 
     qInfo() << "Toggling pause state - current state:" << paused();
     my_set_property(m_handle, "pause", !paused());
+    qDebug() << "Exiting MpvProxy::pauseResume()";
 }
 
 void MpvProxy::stop()
 {
+    qDebug() << "Entering MpvProxy::stop()";
     qInfo() << "Stopping playback";
+    
     QList<QVariant> args = { "stop" };
     qInfo() << args;
     my_command(m_handle, args);
+    
+    qDebug() << "Exiting MpvProxy::stop()";
 }
 
 QImage MpvProxy::takeScreenshot()
@@ -1703,18 +1890,24 @@ QImage MpvProxy::takeScreenshot()
 
 void MpvProxy::burstScreenshot()
 {
+    qDebug() << "Entering MpvProxy::burstScreenshot()";
+
     if (m_bInBurstShotting) {
         qWarning() << "already in burst screenshotting mode";
         return;
     }
 
-    if (state() == PlayState::Stopped)
+    if (state() == PlayState::Stopped) {
+        qDebug() << "Exiting MpvProxy::burstScreenshot() - player stopped";
         return;
+    }
 
     //my_command(m_handle, QList<QVariant> {"revert-seek", "mark"});
     m_posBeforeBurst = my_get_property(m_handle, "time-pos");
+    qDebug() << "Saved position before burst:" << m_posBeforeBurst.toDouble();
 
     int nDuration = static_cast<int>(duration() / 15);
+    qDebug() << "Calculating burst points with duration segment:" << nDuration;
 
     std::random_device rd;
     std::mt19937 g(rd());
@@ -1726,15 +1919,22 @@ void MpvProxy::burstScreenshot()
     m_nBurstStart = 0;
 
     if (duration() < 35) {
+        qWarning() << "Video too short for burst screenshot (duration:" << duration() << ")";
         emit notifyScreenshot(QImage(), 0);
         stopBurstScreenshot();
+        qDebug() << "Exiting MpvProxy::burstScreenshot() - video too short";
         return;
     }
     qInfo() << "burst span " << m_nBurstStart;
 
-    if (!paused()) pauseResume();
+    if (!paused()) {
+        qDebug() << "Pausing playback for burst screenshot";
+        pauseResume();
+    }
+
     m_bInBurstShotting = true;
     QTimer::singleShot(0, this, &MpvProxy::stepBurstScreenshot);
+    qDebug() << "Exiting MpvProxy::burstScreenshot() - scheduled first screenshot";
 }
 
 qint64 MpvProxy::nextBurstShootPoint()
@@ -1829,31 +2029,41 @@ QVariant MpvProxy::my_get_property_variant(mpv_handle *pHandle, const QString &s
 
 QVariant MpvProxy::my_command(mpv_handle *pHandle, const QVariant &args)
 {
+    qDebug() << "Entering MpvProxy::my_command()";
     if (!m_bInited) {
         m_vecWaitCommand.append(args);
+        qDebug() << "m_vecWaitCommand" << m_vecWaitCommand;
         return QVariant();
     }
 
     node_builder node(args);
     mpv_node res;
     int nErr = m_commandNode(pHandle, node.node(), &res);
-    if (nErr < 0)
+    if (nErr < 0) {
+        qDebug() << "error" << nErr;
         return QVariant::fromValue(ErrorReturn(nErr));
+    }
     auto variant = node_to_variant(&res);
     m_freeNodecontents(&res);
+    qDebug() << "Exiting MpvProxy::my_command()";
     return variant;
 }
 
 QImage MpvProxy::takeOneScreenshot()
 {
+    qDebug() << "Entering MpvProxy::takeOneScreenshot()";
     bool bNeedRotate = false;
     QString strVO = getProperty("current-vo").toString();  // the image by screenshot wont rotate when vo=vdpau
 
     if(strVO.compare("vdpau", Qt::CaseInsensitive) == 0) {
+        qDebug() << "strVO is vdpau";
         bNeedRotate = true;
     }
 
-    if (state() == PlayState::Stopped) return QImage();
+    if (state() == PlayState::Stopped) {
+        qDebug() << "player is stopped, exiting";
+        return QImage();
+    }
 
     QList<QVariant> args = {"screenshot-raw"};
     node_builder node(args);
@@ -1875,24 +2085,30 @@ QImage MpvProxy::takeOneScreenshot()
         auto key = QString::fromUtf8(pNodeList->keys[n]);
         if (key == "w") {
             w = static_cast<int>(pNodeList->values[n].u.int64);
+            qDebug() << "w" << w;
         } else if (key == "h") {
             h = static_cast<int>(pNodeList->values[n].u.int64);
+            qDebug() << "h" << h;
         } else if (key == "stride") {
             stride = static_cast<int>(pNodeList->values[n].u.int64);
+            qDebug() << "stride" << stride;
         } else if (key == "format") {
             auto format = QString::fromUtf8(pNodeList->values[n].u.string);
             qInfo() << "format" << format;
         } else if (key == "data") {
             pData = static_cast<uchar *>(pNodeList->values[n].u.ba->data);
+            qDebug() << "pData" << pData;
         }
     }
 
     if (pData) {
+        qDebug() << "pData is not null";
         //alpha should be ignored
         auto img = QImage(static_cast<const uchar *>(pData), w, h, stride, QImage::Format_RGB32);
         img.bits();
         int rotationdegree = videoRotation();
-        if (rotationdegree && (CompositingManager::get().composited() || bNeedRotate)) {      //只有opengl窗口需要自己旋转
+        if (rotationdegree && (CompositingManager::get().composited() || bNeedRotate)) {
+            qDebug() << "rotationdegree" << rotationdegree;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             QMatrix matrix;
             matrix.rotate(rotationdegree);
@@ -1904,23 +2120,31 @@ QImage MpvProxy::takeOneScreenshot()
 #endif
         }
         m_freeNodecontents(&res);
+        qDebug() << "Exiting MpvProxy::takeOneScreenshot()";
         return img;
     }
 
     m_freeNodecontents(&res);
-    qInfo() << "failed";
+
+    qDebug() << "failed! Exiting MpvProxy::takeOneScreenshot()";
     return QImage();
 }
 
 void MpvProxy::stepBurstScreenshot()
 {
+    qDebug() << "Entering MpvProxy::stepBurstScreenshot()";
+
     if (!m_bInBurstShotting) {
+        qDebug() << "Burst screenshot mode not active, exiting";
         return;
     }
 
     auto pos = nextBurstShootPoint();
+    qDebug() << "Seeking to position" << pos << "for burst screenshot";
     my_command(m_handle, QList<QVariant> {"seek", pos, "absolute"});
+
 //    int tries = 10;
+    qDebug() << "Waiting for seek to complete";
     while (true) {
         mpv_event *pEvent = m_waitEvent(m_handle, 0.005);
         if (pEvent->event_id == MPV_EVENT_NONE)
@@ -1937,67 +2161,119 @@ void MpvProxy::stepBurstScreenshot()
         }
     }
 
+    qDebug() << "Taking screenshot at position" << elapsed();
     QImage img = takeOneScreenshot();
     if (img.isNull()) {
+        qWarning() << "Failed to take screenshot at position" << elapsed();
         emit notifyScreenshot(img, elapsed());
         stopBurstScreenshot();
+        qDebug() << "Exiting MpvProxy::stepBurstScreenshot() - screenshot failed";
         return;
     }
+
     emit notifyScreenshot(img, elapsed());
     QTimer::singleShot(0, this, &MpvProxy::stepBurstScreenshot);
+    qDebug() << "Exiting MpvProxy::stepBurstScreenshot()";
 }
 
 void MpvProxy::stopBurstScreenshot()
 {
+    qDebug() << "Entering MpvProxy::stopBurstScreenshot()";
+
     m_bInBurstShotting = false;
+    qDebug() << "Burst screenshot mode deactivated";
+
     //my_command(m_handle, QList<QVariant> {"revert-seek", "mark"});
+    qDebug() << "Restoring position to" << m_posBeforeBurst.toDouble();
     my_set_property(m_handle, "time-pos", m_posBeforeBurst);
+
+    qDebug() << "Exiting MpvProxy::stopBurstScreenshot()";
 }
 
 void MpvProxy::seekForward(int nSecs)
 {
-    if (state() == PlayState::Stopped) return;
+    qDebug() << "Entering MpvProxy::seekForward() - seconds:" << nSecs;
 
-    if (m_bPendingSeek) return;
+    if (state() == PlayState::Stopped) {
+        qDebug() << "Cannot seek forward - player is stopped";
+        return;
+    }
+
+    if (m_bPendingSeek) {
+        qDebug() << "Cannot seek forward - another seek operation is pending";
+        return;
+    }
+
     QList<QVariant> listArgs = { "seek", QVariant(nSecs), "relative+exact" };
     qInfo() << listArgs;
     my_command_async(m_handle, listArgs, AsyncReplyTag::SEEK);
     m_bPendingSeek = true;
+
+    qDebug() << "Exiting MpvProxy::seekForward() - seek operation started";
 }
 
 void MpvProxy::seekBackward(int nSecs)
 {
-    if (state() == PlayState::Stopped) return;
+    qDebug() << "Entering MpvProxy::seekBackward() - seconds:" << nSecs;
 
-    if (m_bPendingSeek) return;
-    if (nSecs > 0)
+    if (state() == PlayState::Stopped) {
+        qDebug() << "Cannot seek backward - player is stopped";
+        return;
+    }
+
+    if (m_bPendingSeek) {
+        qDebug() << "Cannot seek backward - another seek operation is pending";
+        return;
+    }
+
+    if (nSecs > 0) {
+        qDebug() << "Adjusting positive seek value to negative";
         nSecs = -nSecs;
+    }
+
     QList<QVariant> listArgs = { "seek", QVariant(nSecs), "relative+exact" };
     qInfo() << listArgs;
     my_command_async(m_handle, listArgs, AsyncReplyTag::SEEK);
     m_bPendingSeek = true;
+
+    qDebug() << "Exiting MpvProxy::seekBackward() - seek operation started";
 }
 
 void MpvProxy::seekAbsolute(int nPos)
 {
-    if (state() == PlayState::Stopped) return;
+    qDebug() << "Entering MpvProxy::seekAbsolute() - position:" << nPos;
 
-    if (m_bPendingSeek) return;
+    if (state() == PlayState::Stopped) {
+        qDebug() << "Cannot seek to absolute position - player is stopped";
+        return;
+    }
+
+    if (m_bPendingSeek) {
+        qDebug() << "Cannot seek to absolute position - another seek operation is pending";
+        return;
+    }
+
     QList<QVariant> listArgs = { "seek", QVariant(nPos), "absolute" };
     qInfo() << listArgs;
     //command(m_handle, args);
     m_bPendingSeek = true;
     my_command_async(m_handle, listArgs, AsyncReplyTag::SEEK);
+
+    qDebug() << "Exiting MpvProxy::seekAbsolute() - seek operation started";
 }
 
 QSize MpvProxy::videoSize() const
 {
-    if (state() == PlayState::Stopped) return QSize(-1, -1);
+    if (state() == PlayState::Stopped) {
+        return QSize(-1, -1);
+    }
+
     QSize size = QSize(my_get_property(m_handle, "dwidth").toInt(),
                        my_get_property(m_handle, "dheight").toInt());
 
     auto r = my_get_property(m_handle, "video-out-params/rotate").toInt();
     if (r == 90 || r == 270) {
+        qDebug() << "Video is rotated" << r << "degrees, transposing size";
         size.transpose();
     }
 
@@ -2014,30 +2290,45 @@ qint64 MpvProxy::duration() const
     }
 
     if (bRawFormat) {     // 因为格式众多时长输出不同，这里做统一处理不显示时长
+        qDebug() << "Raw format detected, returning duration 0";
         return 0;
     } else {
-        return my_get_property(m_handle, "duration").value<qint64>();
+        qint64 duration = my_get_property(m_handle, "duration").value<qint64>();
+        qDebug() << "Returning duration" << duration;
+        return duration;
     }
 }
 
 
 qint64 MpvProxy::elapsed() const
 {
-    if (state() == PlayState::Stopped) return 0;
-    return  my_get_property(m_handle, "time-pos").value<qint64>();
+    qDebug() << "Entering MpvProxy::elapsed()";
+    if (state() == PlayState::Stopped) {
+        qDebug() << "Player is stopped, returning 0";
+        return 0;
+    }
 
+    qint64 elapsed = my_get_property(m_handle, "time-pos").value<qint64>();
+    qDebug() << "Returning elapsed time" << elapsed;
+    return elapsed;
 }
 
 void MpvProxy::updatePlayingMovieInfo()
 {
+    qDebug() << "Entering MpvProxy::updatePlayingMovieInfo()";
+
     m_movieInfo.subs.clear();
     m_movieInfo.audios.clear();
+    qDebug() << "Cleared existing subtitle and audio track information";
 
     QList<QVariant> listInfo = my_get_property(m_handle, "track-list").toList();
+    qDebug() << "Retrieved" << listInfo.size() << "tracks from MPV";
+
     auto p = listInfo.begin();
     while (p != listInfo.end()) {
         const auto &t = p->toMap();
         if (t["type"] == "audio") {
+            qDebug() << "Processing audio track with ID:" << t["id"].toInt();
             AudioInfo audioInfo;
             audioInfo["type"] = t["type"];
             audioInfo["id"] = t["id"];
@@ -2048,15 +2339,20 @@ void MpvProxy::updatePlayingMovieInfo()
             audioInfo["title"] = t["title"];
 
             if (t["title"].toString().size() == 0) {
-                if (t["lang"].isValid() && t["lang"].toString().size() && t["lang"].toString() != "und")
+                qDebug() << "Audio track has no title, determining appropriate title";
+                if (t["lang"].isValid() && t["lang"].toString().size() && t["lang"].toString() != "und") {
+                    qDebug() << "Using language code as title";
                     audioInfo["title"] = t["lang"];
-                else if (!t["external"].toBool())
+                } else if (!t["external"].toBool()) {
+                    qDebug() << "Using [internal] as title";
                     audioInfo["title"] = "[internal]";
+                }
             }
 
 
             m_movieInfo.audios.append(audioInfo);
         } else if (t["type"] == "sub") {
+            qDebug() << "Processing subtitle track with ID:" << t["id"].toInt();
             SubtitleInfo titleInfo;
             titleInfo["type"] = t["type"];
             titleInfo["id"] = t["id"];
@@ -2066,10 +2362,14 @@ void MpvProxy::updatePlayingMovieInfo()
             titleInfo["selected"] = t["selected"];
             titleInfo["title"] = t["title"];
             if (t["title"].toString().size() == 0) {
-                if (t["lang"].isValid() && t["lang"].toString().size() && t["lang"].toString() != "und")
+                qDebug() << "Subtitle track has no title, determining appropriate title";
+                if (t["lang"].isValid() && t["lang"].toString().size() && t["lang"].toString() != "und") {
+                    qDebug() << "Using language code as subtitle title";
                     titleInfo["title"] = t["lang"];
-                else if (!t["external"].toBool())
+                } else if (!t["external"].toBool()) {
+                    qDebug() << "Using [internal] as subtitle title";
                     titleInfo["title"] = tr("Internal");
+                }
             }
             m_movieInfo.subs.append(titleInfo);
         }
@@ -2082,7 +2382,10 @@ void MpvProxy::updatePlayingMovieInfo()
 
 void MpvProxy::nextFrame()
 {
-    if (state() == PlayState::Stopped) return;
+    if (state() == PlayState::Stopped) {
+        qDebug() << "Cannot step frame - player is stopped";
+        return;
+    }
 
     QList<QVariant> listArgs = { "frame-step"};
     my_command(m_handle, listArgs);
@@ -2090,7 +2393,10 @@ void MpvProxy::nextFrame()
 
 void MpvProxy::previousFrame()
 {
-    if (state() == PlayState::Stopped) return;
+    if (state() == PlayState::Stopped) {
+        qDebug() << "Cannot step frame backward - player is stopped";
+        return;
+    }
 
     QList<QVariant> listArgs = { "frame-back-step"};
     my_command(m_handle, listArgs);
@@ -2098,46 +2404,62 @@ void MpvProxy::previousFrame()
 
 void MpvProxy::changehwaccelMode(hwaccelMode hwaccelMode)
 {
+    qDebug() << "Entering MpvProxy::changehwaccelMode()";
     switch (hwaccelMode) {
     case hwaccelAuto:
+        qDebug() << "Setting hwaccel to auto";
         m_bHwaccelAuto = true;
         break;
     case hwaccelOpen:
+        qDebug() << "Setting hwaccel to open";
         m_bHwaccelAuto = false;
         my_set_property(m_handle, "hwdec", "auto");
         break;
     case hwaccelClose:
+        qDebug() << "Setting hwaccel to off";
         m_bHwaccelAuto = false;
         my_set_property(m_handle, "hwdec", "off");
         break;
     }
+    qDebug() << "Exiting MpvProxy::changehwaccelMode()";
 }
 
 void MpvProxy::makeCurrent()
 {
+    qDebug() << "Entering MpvProxy::makeCurrent()";
     m_pMpvGLwidget->makeCurrent();
 }
 
 QVariant MpvProxy::getProperty(const QString &sName)
 {
+    qDebug() << "Entering MpvProxy::getProperty()";
     return my_get_property(m_handle, sName.toUtf8().data());
 }
 
 void MpvProxy::setProperty(const QString &sName, const QVariant &val)
 {
+    qDebug() << "Entering MpvProxy::setProperty()";
     if (sName == "pause-on-start") {
+        qDebug() << "Setting pause-on-start to" << val.toBool();
         m_bPauseOnStart = val.toBool();
     } else if (sName == "video-zoom") {
+        qDebug() << "Setting video-zoom to" << val.toDouble();
         my_set_property(m_handle, sName, val.toDouble());
     }  else if (sName == "color") {
+        qDebug() << "Setting color to" << val.toString();
         QObject::setProperty("color", val);
     } else if (sName == "dmrhwdec-switch") {
+        qDebug() << "Setting dmrhwdec-switch to" << val.toBool();
         QObject::setProperty("dmrhwdec-switch", val);
     } else {
+        qDebug() << "Setting" << sName << "to" << val.toString();
         my_set_property(m_handle, sName.toUtf8().data(), val);
-        if (sName == "vo")
+        if (sName == "vo") {
+            qDebug() << "Setting vo to" << val.toString();
             m_sInitVo = val.toString();
+        }
     }
+    qDebug() << "Exiting MpvProxy::setProperty()";
 }
 
 } // end of namespace dmr

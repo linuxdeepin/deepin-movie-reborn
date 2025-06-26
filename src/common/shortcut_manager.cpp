@@ -16,13 +16,22 @@ static ShortcutManager *_shortcutManager = nullptr;
 
 ShortcutManager &ShortcutManager::get()
 {
+    qDebug() << "Entering ShortcutManager::get().";
     if (!_shortcutManager) {
+        qDebug() << "_shortcutManager is null, creating new ShortcutManager instance.";
         _shortcutManager = new ShortcutManager();
+    } else {
+        qDebug() << "_shortcutManager already exists.";
     }
+    qDebug() << "Exiting ShortcutManager::get().";
     return *_shortcutManager;
 }
 ShortcutManager::~ShortcutManager()
 {
+    qDebug() << "Entering ShortcutManager destructor.";
+    // No explicit cleanup for _shortcutManager as it's a static pointer managed by the application lifecycle.
+    // If it were heap-allocated and needed explicit deletion, it would be done here.
+    qDebug() << "Exiting ShortcutManager destructor.";
 }
 ShortcutManager::ShortcutManager()
     : QObject(nullptr), _keyToAction({
@@ -59,6 +68,7 @@ ShortcutManager::ShortcutManager()
     {"previous_frame", ActionFactory::ActionKind::PreviousFrame},
 })
 {
+    qDebug() << "Entering ShortcutManager constructor.";
     connect(&Settings::get(), &Settings::shortcutsChanged, [ = ](QString sk, const QVariant & val) {
         if (sk.endsWith(".enable")) {
             auto grp_key = sk.left(sk.lastIndexOf('.'));
@@ -78,9 +88,11 @@ ShortcutManager::ShortcutManager()
         qInfo() << "update binding" << sk << QKeySequence(val.toStringList().at(0));
         QString strKey = QKeySequence(val.toStringList().at(0)).toString();
         if (strKey.contains("Return")) {
+            qInfo() << "Return key found in" << sk;
             strKey = QString("%1Return").arg(strKey.remove("Return"));
             _map[strKey] = _keyToAction[sk];
             if (QString("Return") == strKey) {
+                qInfo() << "Removing Enter key from map.";
                 _map.remove(QString("Enter"));
             }
             qInfo() << val << QKeySequence(strKey) << strKey;
@@ -97,16 +109,19 @@ ShortcutManager::ShortcutManager()
         }
         emit bindingsChanged();
     });
+    qDebug() << "ShortcutManager constructor finished.";
 }
 
 void ShortcutManager::buildBindings()
 {
+    qInfo() << "Building shortcuts from settings.";
     buildBindingsFromSettings();
     emit bindingsChanged();
 }
 
 void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 {
+    qInfo() << "Toggling shortcuts";
     auto sub = grp->childOptions();
     std::for_each(sub.begin(), sub.end(), [ = ](OptionPtr opt) {
         if (opt->viewType() != "shortcut") return;
@@ -136,6 +151,7 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 
 void ShortcutManager::buildBindingsFromSettings()
 {
+    qInfo() << "Building shortcuts from settings.";
     _map.clear();
     
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -158,6 +174,7 @@ void ShortcutManager::buildBindingsFromSettings()
 
         toggleGroupShortcuts(grp, true);
     });
+    qInfo() << "Shortcuts building finished.";
 }
 
 QString ShortcutManager::toJson()

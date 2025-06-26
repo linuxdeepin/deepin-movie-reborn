@@ -17,13 +17,17 @@ static QMutex mutex;
 
 DBusUtils::DBusUtils()
 {
-
+    qDebug() << "Entering DBusUtils constructor.";
+    // Constructor body is empty, no specific initialization to log
+    qDebug() << "Exiting DBusUtils constructor.";
 }
 
 QVariant DBusUtils::redDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
 {
+    qDebug() << "Entering DBusUtils::redDBusProperty. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Property:" << pPropert;
     // 创建QDBusInterface接口
     mutex.lock();
+    qDebug() << "Mutex locked in redDBusProperty.";
 
     QDBusInterface ainterface(sService, sPath,
                               sInterface,
@@ -33,15 +37,19 @@ QVariant DBusUtils::redDBusProperty(const QString &sService, const QString &sPat
         //qInfo() << " QDBusInterface ainterface isValid" << path << propert;
         QVariant v(0) ;
         mutex.unlock();
+        qDebug() << "Mutex unlocked. Exiting redDBusProperty with invalid interface.";
         return  v;
     }
     //调用远程的value方法
+    qDebug() << "Attempting to get property:" << pPropert;
     QVariant v = ainterface.property(pPropert);
     mutex.unlock();
+    qDebug() << "Mutex unlocked. Exiting DBusUtils::redDBusProperty. Returned value:" << v;
     return  v;
 }
 QVariant DBusUtils::redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
+    qDebug() << "Entering DBusUtils::redDBusMethod. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Method:" << pMethod;
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,
                               sInterface,
@@ -52,6 +60,7 @@ QVariant DBusUtils::redDBusMethod(const QString &sService, const QString &sPath,
         return  v;
     }
     //调用远程的value方法
+    qDebug() << "Attempting to call method:" << pMethod;
     QDBusReply<QDBusVariant> reply = ainterface.call(pMethod);
     if (reply.isValid()) {
 //        return reply.value();

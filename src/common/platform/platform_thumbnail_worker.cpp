@@ -27,7 +27,10 @@ Platform_ThumbnailWorker::~Platform_ThumbnailWorker()
     if (m_video_thumbnailer) {
         qDebug() << "Destroying video thumbnailer";
         m_mvideo_thumbnailer_destroy(m_video_thumbnailer);
+    } else {
+        qDebug() << "Video thumbnailer is null, no need to destroy.";
     }
+    qDebug() << "Exiting Platform_ThumbnailWorker destructor.";
 }
 
 Platform_ThumbnailWorker &Platform_ThumbnailWorker::get()
@@ -48,15 +51,23 @@ Platform_ThumbnailWorker &Platform_ThumbnailWorker::get()
 
 bool Platform_ThumbnailWorker::isThumbGenerated(const QUrl &url, int secs)
 {
+    qDebug() << "Entering Platform_ThumbnailWorker::isThumbGenerated. URL:" << url << ", Seconds:" << secs;
     QMutexLocker lock(&m_thumbLock);
-    if (!_cache.contains(url)) return false;
+    if (!_cache.contains(url)) {
+        qDebug() << "Cache does not contain URL. Returning false.";
+        return false;
+    }
 
     const auto &l = _cache[url];
-    return l.contains(secs);
+    bool result = l.contains(secs);
+    qDebug() << "Cache contains URL. Checking if seconds is present. Result:" << result;
+    qDebug() << "Exiting Platform_ThumbnailWorker::isThumbGenerated.";
+    return result;
 }
 
 QPixmap Platform_ThumbnailWorker::getThumb(const QUrl &url, int secs)
 {
+    qDebug() << "Entering Platform_ThumbnailWorker::getThumb. URL:" << url << ", Seconds:" << secs;
     QMutexLocker lock(&m_thumbLock);
     QPixmap pm;
 
@@ -66,19 +77,22 @@ QPixmap Platform_ThumbnailWorker::getThumb(const QUrl &url, int secs)
     } else {
         qDebug() << "No cached thumbnail found for" << url << "at" << secs << "seconds";
     }
-
+    qDebug() << "Exiting Platform_ThumbnailWorker::getThumb.";
     return pm;
 }
 
 void Platform_ThumbnailWorker::setPlayerEngine(PlayerEngine *pPlayerEngline)
 {
+    qDebug() << "Entering Platform_ThumbnailWorker::setPlayerEngine. PlayerEngine pointer:" << pPlayerEngline;
     _engine = pPlayerEngline;
+    qDebug() << "Exiting Platform_ThumbnailWorker::setPlayerEngine. Engine set.";
 }
 
 void Platform_ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 {
     qDebug() << "Requesting thumbnail for" << url << "at" << secs << "seconds";
     if(CompositingManager::get().platform() != Platform::Mips) {
+        qDebug() << "Platform is not MIPS. Attempting to add thumbnail request to queue.";
         if (m_thumbLock.tryLock()) {
             _wq.push_front(qMakePair(url, secs));
             m_cond.wakeOne();
@@ -91,6 +105,7 @@ void Platform_ThumbnailWorker::requestThumb(const QUrl &url, int secs)
         qDebug() << "Running thumbnail generation synchronously on MIPS platform";
         runSingle(qMakePair(url, secs));
     }
+    qDebug() << "Exiting Platform_ThumbnailWorker::requestThumb.";
 }
 
 Platform_ThumbnailWorker::Platform_ThumbnailWorker()

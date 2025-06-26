@@ -40,15 +40,19 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
     if (!dmr::CompositingManager::get().composited()) {
         qDebug() << "Compositing not enabled, getting window ID";
         winId();
+    } else {
+        qDebug() << "Compositing enabled.";
     }
 
     setAlignment(Qt::AlignCenter);
     setFrameShape(QFrame::Shape::NoFrame);
     setMouseTracking(true);
+    qDebug() << "GraphicsView properties set.";
 
     m_pScene = new QGraphicsScene;
     m_pScene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
     this->setScene(m_pScene);
+    qDebug() << "GraphicsScene initialized.";
 
     m_pBgRender = new QSvgRenderer(QString(":/resources/icons/mircast/default_Back.svg"));
     qDebug() << "Loading background SVG renderer";
@@ -105,6 +109,7 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
     m_pScene->addItem(m_promptInformation);
     m_pScene->addWidget(exitBtn);
     qDebug() << "All items added to scene";
+    qDebug() << "Exiting MircastShowWidget constructor.";
 }
 
 MircastShowWidget::~MircastShowWidget()
@@ -113,6 +118,7 @@ MircastShowWidget::~MircastShowWidget()
 }
 /**
  * @brief setDeviceName 设置投屏设备名称
+ * @param name 设备名
  */
 void MircastShowWidget::setDeviceName(QString name)
 {
@@ -124,6 +130,8 @@ void MircastShowWidget::setDeviceName(QString name)
     QTextCursor cursor = m_deviceName->textCursor();
     cursor.mergeBlockFormat(format);
     m_deviceName->setTextCursor(cursor);
+    qDebug() << "Device name set and formatted.";
+    qDebug() << "Exiting MircastShowWidget::setDeviceName().";
 }
 
 void MircastShowWidget::updateView()
@@ -137,8 +145,10 @@ void MircastShowWidget::updateView()
     nWidth = rect().width();
     nHeight = rect().height();
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    qDebug() << "Qt version < 6.0.0, using QDesktopWidget for available geometry.";
     rectDesktop = qApp->desktop()->availableGeometry(this);
 #else
+    qDebug() << "Qt version >= 6.0.0, using QGuiApplication::primaryScreen for available geometry.";
     rectDesktop = QGuiApplication::primaryScreen()->availableGeometry();
 #endif
     qDebug() << "View dimensions - Width:" << nWidth << "Height:" << nHeight;
@@ -156,6 +166,7 @@ void MircastShowWidget::updateView()
 
     m_pBgSvgItem->setScale(fRatio);
     m_pProSvgItem->setScale(fRatio);
+    qDebug() << "SVG items scaled with ratio:" << fRatio;
 
     m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGWIDTH * fRatio) / 2, (m_pScene->height() - DEFAULT_BGHEIGHT * fRatio) / 2);
     m_pProSvgItem->setPos(m_pBgSvgItem->pos().x() + (X_OFFSET * fRatio), m_pBgSvgItem->pos().y() + (Y_OFFSET * fRatio));
@@ -165,12 +176,15 @@ void MircastShowWidget::updateView()
     m_promptInformation->setPos(m_pBgSvgItem->pos().x(), (DEFAULT_BGHEIGHT + 10) * fRatio + m_pBgSvgItem->pos().y());
     viewport()->update();
     qDebug() << "View updated with new positions and scales";
+    qDebug() << "Exiting MircastShowWidget::updateView().";
 }
 
 void MircastShowWidget::mouseMoveEvent(QMouseEvent *pEvent)
 {
+    qDebug() << "Entering MircastShowWidget::mouseMoveEvent().";
     pEvent->ignore();
     QGraphicsView::mouseMoveEvent(pEvent);
+    qDebug() << "Exiting MircastShowWidget::mouseMoveEvent().";
 }
 /**
  * @brief customizeText 设置投屏设备显示名称
@@ -178,8 +192,10 @@ void MircastShowWidget::mouseMoveEvent(QMouseEvent *pEvent)
  */
 QString MircastShowWidget::customizeText(QString name)
 {
+    qDebug() << "Entering MircastShowWidget::customizeText() with name:" << name;
     QString result = name.length() > 20 ? name.left(20) + QString("...") : name;
     qDebug() << "Customizing text - Original:" << name << "Result:" << result;
+    qDebug() << "Exiting MircastShowWidget::customizeText() with result:" << result;
     return result;
 }
 
@@ -190,54 +206,72 @@ ExitButton::ExitButton(QWidget *parent)
     m_state = ButtonState::Normal;
     setFixedSize(62, 62);
     setAttribute(Qt::WA_TranslucentBackground, true);
+    qDebug() << "ExitButton initialized with normal state, fixed size, and translucent background.";
 
     m_svgWidget = new QSvgWidget(this);
     m_svgWidget->setFixedSize(32, 32);
     m_svgWidget->load(QString(":/resources/icons/mircast/icon-exit normal.svg"));
     m_svgWidget->move((rect().width() - m_svgWidget->width()) / 2, (rect().height() - m_svgWidget->height()) / 2);
     m_svgWidget->show();
+    qDebug() << "SVG widget initialized and positioned.";
+    qDebug() << "Exiting ExitButton constructor.";
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void ExitButton::enterEvent(QEvent *pEvent)
 {
+    qDebug() << "Entering ExitButton::enterEvent() (Qt5) with event:" << pEvent;
     Q_UNUSED(pEvent);
     m_state = Hover;
     update();
+    qDebug() << "Button state set to Hover and updated.";
+    qDebug() << "Exiting ExitButton::enterEvent() (Qt5).";
 }
 #else
 void ExitButton::enterEvent(QEnterEvent *pEvent)
 {
+    qDebug() << "Entering ExitButton::enterEvent() (Qt6) with event:" << pEvent;
     Q_UNUSED(pEvent);
     m_state = Hover;
     update();
+    qDebug() << "Button state set to Hover and updated.";
+    qDebug() << "Exiting ExitButton::enterEvent() (Qt6).";
 }
 #endif
 
 void ExitButton::leaveEvent(QEvent *pEvent)
 {
+    qDebug() << "Entering ExitButton::leaveEvent() with event:" << pEvent;
     Q_UNUSED(pEvent);
     m_state = Normal;
     update();
+    qDebug() << "Button state set to Normal and updated.";
+    qDebug() << "Exiting ExitButton::leaveEvent().";
 }
 
 void ExitButton::mousePressEvent(QMouseEvent *pEvent)
 {
+    qDebug() << "Entering ExitButton::mousePressEvent() with event:" << pEvent;
     Q_UNUSED(pEvent);
     qDebug() << "Exit button pressed - changing state to Press";
     m_state = Press;
     m_svgWidget->load(QString(":/resources/icons/mircast/icon-exit pressed.svg"));
     update();
+    qDebug() << "Button state set to Press, SVG loaded, and updated.";
+    qDebug() << "Exiting ExitButton::mousePressEvent().";
 }
 
 void ExitButton::mouseReleaseEvent(QMouseEvent *pEvent)
 {
+    qDebug() << "Entering ExitButton::mouseReleaseEvent() with event:" << pEvent;
     Q_UNUSED(pEvent);
     qDebug() << "Exit button released - emitting exitMircast signal";
     emit exitMircast();
     m_state = Normal;
     m_svgWidget->load(QString(":/resources/icons/mircast/icon-exit normal.svg"));
     update();
+    qDebug() << "exitMircast signal emitted, state set to Normal, SVG loaded, and updated.";
+    qDebug() << "Exiting ExitButton::mouseReleaseEvent().";
 }
 
 void ExitButton::paintEvent(QPaintEvent *pEvent)
