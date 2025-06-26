@@ -51,6 +51,7 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     m_ControlURLPro = "";
     m_URLAddrPro = "";
     m_sLocalUrl = "";
+    qDebug() << "MircastWidget members initialized.";
 
     m_searchTime.setSingleShot(true);
     connect(&m_searchTime, &QTimer::timeout, this, &MircastWidget::slotSearchTimeout);
@@ -62,14 +63,17 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     mainLayout->setSpacing(0);
     setLayout(mainLayout);
     setContentsMargins(0, 0, 0, 0);
+    qDebug() << "Main layout initialized.";
 
     QWidget *topWdiget = new QWidget(this);
     topWdiget->setFixedHeight(40);
     mainLayout->addWidget(topWdiget);
+    qDebug() << "Top widget created.";
 
     QHBoxLayout *topLayout = new QHBoxLayout;
     topLayout->setContentsMargins(20, 8, 20, 0);
     topWdiget->setLayout(topLayout);
+    qDebug() << "Top layout initialized.";
 
     DLabel *projet = new DLabel(topWdiget);
     projet->setText(tr("Project to"));
@@ -85,6 +89,7 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     spliter->setPalette(QPalette(QColor(0, 0, 0, 13)));
     spliter->setFixedSize(MIRCASTWIDTH, 2);
     mainLayout->addWidget(spliter);
+    qDebug() << "Spliter initialized.";
 
     m_hintWidget = new QWidget(this);
     mainLayout->addWidget(m_hintWidget);
@@ -116,30 +121,43 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     mainLayout->addWidget(m_mircastArea);
     m_mircastArea->hide();
     connect(m_listWidget, &ListWidget::connectDevice, this, &MircastWidget::slotConnectDevice);
+    qDebug() << "List widget and miracast area initialized.";
 
 #ifdef DTKWIDGET_CLASS_DSizeMode
+    qDebug() << "DTKWIDGET_CLASS_DSizeMode defined.";
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        qDebug() << "CompactMode detected. Adjusting refresh button and top widget sizes.";
         m_refreshBtn->setFixedSize(16, 16);
         topWdiget->setFixedHeight(26);
         topLayout->setContentsMargins(20, 4, 20, 0);
+    } else {
+        qDebug() << "NormalMode detected.";
     }
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        qDebug() << "Size mode changed signal received. New sizeMode:" << sizeMode;
         if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            qDebug() << "Switching to NormalMode. Adjusting refresh button size.";
             m_refreshBtn->setFixedSize(24, 24);
         } else {
+            qDebug() << "Switching to CompactMode. Adjusting refresh button size.";
             m_refreshBtn->setFixedSize(16, 16);
         }
     });
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, topWdiget, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        qDebug() << "Size mode changed signal received for top widget. New sizeMode:" << sizeMode;
         if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            qDebug() << "Switching top widget to NormalMode.";
             topWdiget->setFixedHeight(40);
             topWdiget->layout()->setContentsMargins(20, 8, 20, 0);
         } else {
+            qDebug() << "Switching top widget to CompactMode.";
             topWdiget->setFixedHeight(26);
             topWdiget->layout()->setContentsMargins(20, 4, 20, 0);
         }
     });
+#else
+    qDebug() << "DTKWIDGET_CLASS_DSizeMode not defined.";
 #endif
 
     mainLayout->addStretch();
@@ -151,14 +169,20 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
  */
 MircastWidget::MircastState MircastWidget::getMircastState()
 {
-    return m_mircastState;
+    qDebug() << "Entering getMircastState().";
+    MircastState state = m_mircastState;
+    qDebug() << "Exiting getMircastState() with state:" << state;
+    return state;
 }
 /**
  * @brief getMircastPlayState 获取投屏播放状态
  */
 MircastWidget::MircastPlayState MircastWidget::getMircastPlayState()
 {
-    return m_nPlayStatus;
+    qDebug() << "Entering getMircastPlayState().";
+    MircastPlayState state = m_nPlayStatus;
+    qDebug() << "Exiting getMircastPlayState() with state:" << state;
+    return state;
 }
 /**
  * @brief playNext 开始投屏
@@ -167,6 +191,7 @@ void MircastWidget::playNext()
 {
     qDebug() << "Playing next - Current state:" << m_mircastState;
     if (m_mircastState != MircastState::Idel) {
+        qDebug() << "MircastState is not Idel.";
         m_mircastTimeOut.stop();
         m_attempts = 0;
         m_connectTimeout = 0;
@@ -176,6 +201,7 @@ void MircastWidget::playNext()
         startDlnaTp();
         qDebug() << "Started DLNA transport";
     }
+    qDebug() << "Exiting playNext().";
 }
 /**
  * @brief seekMircast 投屏seek
@@ -187,12 +213,16 @@ void MircastWidget::seekMircast(int nSec)
     if(m_mircastState != MircastWidget::Screening) return;
     int nSeek = m_nCurAbsTime + nSec;
     if(nSeek < 0) {
+        qDebug() << "Calculated seek time is less than 0, seeking to 0.";
         slotSeekMircast(0);
     } else if(nSeek > m_nCurDuration) {
+        qDebug() << "Calculated seek time is greater than current duration, seeking to duration.";
         slotSeekMircast(m_nCurDuration);
     } else {
+        qDebug() << "Seeking to calculated time:" << nSeek;
         slotSeekMircast(nSeek);
     }
+    qDebug() << "Exiting seekMircast().";
 }
 /**
  * @brief togglePopup 工具栏投屏窗口显示与隐藏
@@ -202,38 +232,51 @@ void MircastWidget::togglePopup()
     qDebug() << "Toggling popup - Current visibility:" << isVisible() << "Is toggling:" << m_bIsToggling;
     if (m_bIsToggling) return;
     if (isVisible()) {
+        qDebug() << "Widget is visible, hiding.";
         hide();
     } else {
+        qDebug() << "Widget is hidden, showing.";
         m_bIsToggling = true;
         show();
         raise();
         m_refreshBtn->refershStart();
         m_bIsToggling = false;
+        qDebug() << "Widget shown, raised, refresh started, toggling flag reset.";
     }
+    qDebug() << "Exiting togglePopup().";
 }
 /**
  * @brief slotRefreshBtnClicked 投屏窗口刷新按钮
  */
 void MircastWidget::slotRefreshBtnClicked()
 {
+    qDebug() << "Entering slotRefreshBtnClicked().";
     qDebug() << "Refresh button clicked";
     initializeHttpServer();
     searchDevices();
     update();
+    qDebug() << "HTTP server initialized, devices searched, and widget updated.";
+    qDebug() << "Exiting slotRefreshBtnClicked().";
 }
 /**
  * @brief slotSearchTimeout 投屏设备搜索超时
  */
 void MircastWidget::slotSearchTimeout()
 {
+    qDebug() << "Entering slotSearchTimeout().";
     qInfo() << "Search timeout - Device list empty:" << m_devicesList.isEmpty();
-    if (m_devicesList.isEmpty())
+    if (m_devicesList.isEmpty()) {
         updateMircastState(SearchState::NoDevices);
-    else
+        qDebug() << "Device list is empty, updating state to NoDevices.";
+    } else {
         updateMircastState(SearchState::ListExhibit);
+        qDebug() << "Device list is not empty, updating state to ListExhibit.";
+    }
 
     m_refreshBtn->refershTimeout();
     update();
+    qDebug() << "Refresh button timeout and widget updated.";
+    qDebug() << "Exiting slotSearchTimeout().";
 }
 /**
  * @brief slotMircastTimeout 投屏连接超时
@@ -243,7 +286,9 @@ void MircastWidget::slotMircastTimeout()
     qDebug() << "Miracast timeout - Current timeout count:" << m_connectTimeout;
     m_pDlnaSoapPost->SoapOperPost(DLNA_GetPositionInfo, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
     m_connectTimeout++;
+    qDebug() << "SoapOperPost called, connectTimeout incremented to:" << m_connectTimeout;
     if (m_connectTimeout >= MAXMIRCAST) {
+        qDebug() << "Max Miracast attempts reached. Stopping timeout timer.";
         m_mircastTimeOut.stop();
         if (m_mircastState == MircastState::Screening)
             emit mircastState(MIRCAST_DISCONNECTIONED);
@@ -356,8 +401,10 @@ void MircastWidget::slotConnectDevice(ItemWidget *item)
 {
     qDebug() << "Connecting to device:" << item->getDevice().name;
     QString newURLAddrPro = item->property(urlAddrPro).toString();
-    if (newURLAddrPro == m_URLAddrPro && m_mircastState == MircastState::Screening)
+    if (newURLAddrPro == m_URLAddrPro && m_mircastState == MircastState::Screening) {
+        qDebug() << "Already connected to this device and screening, returning.";
         return;
+    }
     PlayerEngine *engine =static_cast<PlayerEngine *>(m_pEngine);
     if (engine->state() == PlayerEngine::CoreState::Idle) {
         qDebug() << "Engine is idle, cannot connect";
@@ -369,18 +416,23 @@ void MircastWidget::slotConnectDevice(ItemWidget *item)
     item->setState(ItemWidget::Loading);
     stopDlnaTP();
     startDlnaTp(item);
+    qDebug() << "Connection initiated for device.";
+    qDebug() << "Exiting slotConnectDevice().";
 }
 /**
  * @brief searchDevices 刷新查找设备
  */
 void MircastWidget::searchDevices()
 {
+    qDebug() << "Entering searchDevices().";
     qInfo() << "Starting device search";
     m_devicesList.clear();
     m_listWidget->clear();
     m_searchTime.start(REFRESHTIME);
     m_search->SsdpSearch();
     updateMircastState(SearchState::Searching);
+    qDebug() << "Device search initiated.";
+    qDebug() << "Exiting searchDevices().";
 }
 /**
  * @brief updateMircastState 更新投屏窗口状态
@@ -423,10 +475,15 @@ ItemWidget * MircastWidget::createListeItem(MiracastDevice device, const QByteAr
  */
 void MircastWidget::slotReadyRead()
 {
+    qDebug() << "Entering slotReadyRead().";
     QNetworkReply *reply = (QNetworkReply *)sender();
-    if(!reply) return;
+    if(!reply) {
+        qDebug() << "Reply is null, returning.";
+        return;
+    }
     if(reply->error() != QNetworkReply::NoError) {
         qInfo() << "Error:" << QString::number(reply->error());
+        qDebug() << "Network reply error, returning.";
         return;
     }
     QByteArray data = reply->readAll().replace("\r\n", "").replace("\\", "");
@@ -438,22 +495,30 @@ void MircastWidget::slotReadyRead()
     MiracastDevice device;
     device.name = sName;
     device.uuid = uuidList.last();
+    qDebug() << "Parsed device name:" << sName << ", UUID:" << device.uuid;
     foreach (MiracastDevice mirDevice, m_devicesList) {
-        if (device.uuid == mirDevice.uuid)
+        if (device.uuid == mirDevice.uuid) {
+            qDebug() << "Device with same UUID already exists, returning.";
             return;
+        }
     }
     m_devicesList.append(device);
     createListeItem(device, data, reply);
     updateMircastState(SearchState::ListExhibit);
+    qDebug() << "Device added to list and state updated.";
+    qDebug() << "Exiting slotReadyRead().";
 }
 /**
  * @brief slotExitMircast 退出投屏
  */
 void MircastWidget::slotExitMircast()
 {
+    qDebug() << "Entering slotExitMircast().";
     qInfo() << "Exiting Miracast - Current state:" << m_mircastState;
-    if (m_mircastState == Idel)
+    if (m_mircastState == Idel) {
+        qDebug() << "MircastState is already Idel, returning.";
         return;
+    }
     m_mircastState = Idel;
     m_connectDevice.deviceState = Idel;
     m_mircastTimeOut.stop();
@@ -463,6 +528,8 @@ void MircastWidget::slotExitMircast()
     m_URLAddrPro.clear();
     emit mircastState(1, "normal");
     //    emit closeServer();
+    qDebug() << "Miracast exited and state reset.";
+    qDebug() << "Exiting slotExitMircast().";
 }
 /**
  * @brief slotSeekMircast 跳转投屏进度
@@ -511,6 +578,7 @@ void MircastWidget::initializeHttpServer(int port)
         m_dlnaContentServer->setBaseUrl(QString("http://%1:%2/").arg(sLocalIp, QString::number(port)));
         qDebug() << "Base URL set to:" << m_dlnaContentServer->getBaseUrl();
     }
+    qDebug() << "Exiting initializeHttpServer().";
 }
 /**
  * @brief startDlnaTp 初始化http Sever
@@ -626,6 +694,7 @@ void MircastWidget::getPosInfoDlnaTp()
 RefreButtonWidget::RefreButtonWidget(QWidget *parent)
     : QWidget(parent)
 {
+    qDebug() << "Entering RefreButtonWidget constructor.";
     setFixedSize(24, 24);
 
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
@@ -641,55 +710,77 @@ RefreButtonWidget::RefreButtonWidget(QWidget *parent)
     m_refreBtn->setFixedSize(size());
     m_refreBtn->hide();
     mainLayout->addWidget(m_refreBtn);
+    qDebug() << "Spinner and refresh button initialized.";
 
 #ifdef DTKWIDGET_CLASS_DSizeMode
+    qDebug() << "DTKWIDGET_CLASS_DSizeMode defined for RefreButtonWidget.";
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        qDebug() << "CompactMode detected. Adjusting spinner and refresh button sizes.";
         m_spinner->setFixedSize(16, 16);
         m_refreBtn->setFixedSize(16, 16);
         m_refreBtn->setPixmap(QIcon::fromTheme("dcc_update").pixmap(QSize(16, 16)));
+    } else {
+        qDebug() << "NormalMode detected.";
     }
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        qDebug() << "Size mode changed signal received for RefreButtonWidget. New sizeMode:" << sizeMode;
         if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            qDebug() << "Switching to NormalMode. Adjusting spinner and refresh button sizes.";
             m_spinner->setFixedSize(24, 24);
             m_refreBtn->setFixedSize(24, 24);
             m_refreBtn->setPixmap(QIcon::fromTheme("dcc_update").pixmap(QSize(24, 24)));
         } else {
+            qDebug() << "Switching to CompactMode. Adjusting spinner and refresh button sizes.";
             m_spinner->setFixedSize(16, 16);
             m_refreBtn->setFixedSize(16, 16);
             m_refreBtn->setPixmap(QIcon::fromTheme("dcc_update").pixmap(QSize(16, 16)));
         }
     });
+#else
+    qDebug() << "DTKWIDGET_CLASS_DSizeMode not defined for RefreButtonWidget.";
 #endif
-
+    qDebug() << "Exiting RefreButtonWidget constructor.";
 }
 
 void RefreButtonWidget::refershTimeout()
 {
+    qDebug() << "Entering refershTimeout().";
     m_spinner->stop();
     m_spinner->hide();
     m_refreBtn->show();
+    qDebug() << "Spinner stopped/hidden, refresh button shown.";
+    qDebug() << "Exiting refershTimeout().";
 }
 
 void RefreButtonWidget::refershStart()
 {
+    qDebug() << "Entering refershStart().";
     m_spinner->start();
     m_spinner->show();
     m_refreBtn->hide();
 
     emit buttonClicked();
+    qDebug() << "Spinner started/shown, refresh button hidden, buttonClicked emitted.";
+    qDebug() << "Exiting refershStart().";
 }
 
 void RefreButtonWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 {
-    if (m_spinner->isVisible())
+    qDebug() << "Entering RefreButtonWidget::mouseReleaseEvent() with event:" << pEvent;
+    if (m_spinner->isVisible()) {
+        qDebug() << "Spinner is visible, returning.";
         return;
+    }
     refershStart();
+    qDebug() << "RefershStart called.";
+    qDebug() << "Exiting RefreButtonWidget::mouseReleaseEvent().";
 }
 
 ListWidget::ListWidget(QWidget *parent)
     :QWidget (parent)
 {
+    qDebug() << "Entering ListWidget constructor.";
     setContentsMargins(0, 0, 0, 0);
     setFixedWidth(MIRCASTWIDTH);
     QVBoxLayout *listLayout = new QVBoxLayout(this);
@@ -698,55 +789,80 @@ ListWidget::ListWidget(QWidget *parent)
     listLayout->setSpacing(0);
     m_currentWidget = nullptr;
     m_lastSelectedWidget = nullptr;
+    qDebug() << "ListWidget initialized.";
+    qDebug() << "Exiting ListWidget constructor.";
 }
 
 int ListWidget::count()
 {
-    return m_items.size();
+    qDebug() << "Entering ListWidget::count().";
+    int size = m_items.size();
+    qDebug() << "Exiting ListWidget::count() with size:" << size;
+    return size;
 }
 
 void ListWidget::clear()
 {
+    qDebug() << "Entering ListWidget::clear().";
     m_currentWidget = nullptr;
     m_lastSelectedWidget = nullptr;
     foreach (ItemWidget *item, m_items) {
+        qDebug() << "Removing item from list:" << item;
         m_items.removeOne(item);
         disconnect(item, &ItemWidget::selected, this, &ListWidget::slotSelectItem);
         item->deleteLater();
         item = nullptr;
     }
+    qDebug() << "List cleared.";
+    qDebug() << "Exiting ListWidget::clear().";
 }
 
 ItemWidget* ListWidget::createListeItem(MiracastDevice device, const QByteArray &data, const QNetworkReply *reply)
 {
+    qDebug() << "Entering ListWidget::createListeItem()";
     ItemWidget *itemWidget = new ItemWidget(device, data, reply);
     connect(itemWidget, &ItemWidget::selected, this, &ListWidget::slotSelectItem);
     connect(itemWidget, &ItemWidget::connecting, this, &ListWidget::slotsConnectingDevice);
     m_items.append(itemWidget);
     layout()->addWidget(itemWidget);
     resize(MIRCASTWIDTH, count() * 34);
+    qDebug() << "Item widget created, connected, added to list and layout, and resized.";
 #ifdef DTKWIDGET_CLASS_DSizeMode
+    qDebug() << "DTKWIDGET_CLASS_DSizeMode defined for ListWidget::createListeItem.";
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        qDebug() << "CompactMode detected. Resizing for compact mode.";
         resize(MIRCASTWIDTH, count() * 25);
     }
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        qDebug() << "Size mode changed signal received for ListWidget. New sizeMode:" << sizeMode;
         if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            qDebug() << "Switching to NormalMode. Resizing for normal mode.";
             resize(MIRCASTWIDTH, count() * 34);
         } else {
+            qDebug() << "Switching to CompactMode. Resizing for compact mode.";
             resize(MIRCASTWIDTH, count() * 25);
         }
         update();
+        qDebug() << "ListWidget resized and updated.";
     });
+#else
+    qDebug() << "DTKWIDGET_CLASS_DSizeMode not defined for ListWidget::createListeItem.";
 #endif
+    qDebug() << "Exiting ListWidget::createListeItem() with itemWidget:" << itemWidget;
     return itemWidget;
 }
 
 int ListWidget::currentItemIndex()
 {
-    if (!m_currentWidget)
+    qDebug() << "Entering ListWidget::currentItemIndex().";
+    if (!m_currentWidget) {
+        qDebug() << "No current widget, returning -1.";
         return -1;
-    return m_items.indexOf(m_currentWidget);
+    }
+    int index = m_items.indexOf(m_currentWidget);
+    qDebug() << "Exiting ListWidget::currentItemIndex() with index:" << index;
+    return index;
 }
 
 ItemWidget *ListWidget::currentItemWidget()
@@ -756,55 +872,78 @@ ItemWidget *ListWidget::currentItemWidget()
 
 QList<ItemWidget*> ListWidget::selectedItemWidget()
 {
+    qDebug() << "Entering ListWidget::selectedItemWidget().";
     QList<ItemWidget*> itemList;
     foreach (ItemWidget *item, m_items) {
-        if (item->state() != ItemWidget::Normal)
+        if (item->state() != ItemWidget::Normal) {
             itemList.append(item);
+            qDebug() << "Found selected item:" << item;
+        }
     }
+    qDebug() << "Exiting ListWidget::selectedItemWidget() with count:" << itemList.count();
     return itemList;
 }
 
 void ListWidget::setItemWidgetStatus(QList<ItemWidget *> lstItem, ItemWidget::ConnectState nState)
 {
+    qDebug() << "Entering ListWidget::setItemWidgetStatus() with state:" << nState << "for" << lstItem.count() << "items.";
     foreach (ItemWidget *item, lstItem) {
         item->setState(nState);
+        qDebug() << "Set item state to:" << nState << "for item:" << item;
     }
+    qDebug() << "Exiting ListWidget::setItemWidgetStatus().";
 }
 
 void ListWidget::slotSelectItem()
 {
+    qDebug() << "Entering ListWidget::slotSelectItem().";
     ItemWidget *senderItem = (ItemWidget*)sender();
     if (senderItem) {
+        qDebug() << "Sender item is valid:" << senderItem;
         m_currentWidget = senderItem;
         foreach (ItemWidget *item, m_items) {
-            if (item != senderItem)
+            if (item != senderItem) {
                 item->clearSelect();
+                qDebug() << "Cleared selection for item:" << item;
+            }
         }
         update();
+        qDebug() << "ListWidget updated.";
+    } else {
+        qDebug() << "Sender item is null.";
     }
+    qDebug() << "Exiting ListWidget::slotSelectItem().";
 }
 
 void ListWidget::slotsConnectingDevice()
 {
+    qDebug() << "Entering ListWidget::slotsConnectingDevice().";
     ItemWidget *connectItem = (ItemWidget*)sender();
-    if (!connectItem)
+    if (!connectItem) {
+        qDebug() << "Connect item is null, returning.";
         return;
+    }
     if (m_lastSelectedWidget) {
         m_lastSelectedWidget->setState(ItemWidget::Normal);
+        qDebug() << "Last selected widget state set to Normal.";
     }
     m_lastSelectedWidget = connectItem;
     emit connectDevice(connectItem);
+    qDebug() << "Connect device signal emitted.";
+    qDebug() << "Exiting ListWidget::slotsConnectingDevice().";
 }
 
 ItemWidget::ItemWidget(MiracastDevice device, const QByteArray &data, const QNetworkReply *reply, QWidget *parent)
     :m_device(device), m_data(data), QWidget (parent)
 {
+    qDebug() << "Entering ItemWidget constructor";
     m_selected = false;
     m_hover = false;
     m_rotate = 0.0;
     m_normalLoadIcon = QIcon(":/resources/icons/mircast/spinner.svg");
     m_selectLoadIcon = QIcon(":/resources/icons/mircast/spinner_White.svg");
     connect(&m_rotateTime, &QTimer::timeout, [=](){
+        qDebug() << "Rotate timer timeout. Incrementing rotate value.";
         m_rotate += ROTATE_VALUE;
     });
     setToolTip(m_device.name);
@@ -814,30 +953,46 @@ ItemWidget::ItemWidget(MiracastDevice device, const QByteArray &data, const QNet
     GetDlnaXmlValue dlnaxml(m_data);
     QString sName = dlnaxml.getValueByPath("device/friendlyName");
     QString urlAddrProValue = "";
-    if(reply)
+    if(reply) {
         urlAddrProValue = reply->property(urlAddrPro).toString();
+        qDebug() << "Reply is valid, URL address property value:" << urlAddrProValue;
+    } else {
+        qDebug() << "Reply is null.";
+    }
     setProperty(urlAddrPro, urlAddrProValue);
     QString strControlURL = dlnaxml.getValueByPathValue("device/serviceList", "serviceType=urn:schemas-upnp-org:service:AVTransport:1", "controlURL");
     if(!strControlURL.startsWith("/")) {
         setProperty(controlURLPro, urlAddrProValue + "/" +strControlURL);
+        qDebug() << "Control URL does not start with '/', concatenating with '/'. Final:" << urlAddrProValue + "/" +strControlURL;
     } else {
         setProperty(controlURLPro, urlAddrProValue +strControlURL);
+        qDebug() << "Control URL starts with '/', concatenating directly. Final:" << urlAddrProValue +strControlURL;
     }
     setProperty(friendlyNamePro, sName);
+    qDebug() << "ItemWidget properties set.";
 #ifdef DTKWIDGET_CLASS_DSizeMode
+    qDebug() << "DTKWIDGET_CLASS_DSizeMode defined for ItemWidget.";
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        qDebug() << "CompactMode detected. Resizing ItemWidget for compact mode.";
         setFixedSize(MIRCASTWIDTH, 25);
     }
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
+        qDebug() << "Size mode changed signal received for ItemWidget. New sizeMode:" << sizeMode;
         if (sizeMode == DGuiApplicationHelper::NormalMode) {
+            qDebug() << "Switching to NormalMode. Resizing ItemWidget for normal mode.";
             setFixedSize(MIRCASTWIDTH, 34);
         } else {
+            qDebug() << "Switching to CompactMode. Resizing ItemWidget for compact mode.";
             setFixedSize(MIRCASTWIDTH, 25);
         }
         update();
+        qDebug() << "ItemWidget resized and updated.";
     });
+#else
+    qDebug() << "DTKWIDGET_CLASS_DSizeMode not defined for ItemWidget.";
 #endif
+    qDebug() << "Exiting ItemWidget constructor.";
 }
 
 void ItemWidget::clearSelect()
@@ -847,9 +1002,11 @@ void ItemWidget::clearSelect()
 
 void ItemWidget::setState(ItemWidget::ConnectState state)
 {
+    qDebug() << "Entering ItemWidget::setState() with state:" << state;
     m_state = state;
     if (m_state == Loading) {
-            m_rotateTime.start(40);
+        qDebug() << "State is Loading, starting rotate timer.";
+        m_rotateTime.start(40);
     } else {
         if(m_rotateTime.isActive())
             m_rotateTime.stop();
@@ -869,11 +1026,13 @@ MiracastDevice ItemWidget::getDevice()
 
 void ItemWidget::mousePressEvent(QMouseEvent *pEvent)
 {
+    qDebug() << "Entering ItemWidget::mousePressEvent() with event:" << pEvent;
     Q_UNUSED(pEvent);
 
     m_selected = true;
     m_hover = false;
     emit selected();
+    qDebug() << "Selected set to true, selected signal emitted.";
     update();
 }
 
@@ -967,6 +1126,7 @@ void ItemWidget::leaveEvent(QEvent *event)
 
 void ItemWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    qDebug() << "Entering ItemWidget::mouseDoubleClickEvent() with event:" << event;
     Q_UNUSED(event);
 
     emit connecting();
@@ -976,15 +1136,19 @@ void ItemWidget::mouseDoubleClickEvent(QMouseEvent *event)
  */
 QString ItemWidget::convertDisplay()
 {
+    qDebug() << "Entering ItemWidget::convertDisplay(). Original name:" << m_device.name;
     QFontMetrics fm = fontMetrics();
     double textWidth;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    qDebug() << "Compiling for Qt5, using fm.width().";
     textWidth = fm.width(m_device.name);
 #else
+    qDebug() << "Compiling for Qt6, using fm.horizontalAdvance().";
     textWidth = fm.horizontalAdvance(m_device.name);
 #endif
 
     if (textWidth > TEXT_WIDTH) {
+        qDebug() << "Text width ( " << textWidth << ") is greater than TEXT_WIDTH ( " << TEXT_WIDTH << "). Truncating.";
         QString displayName;
         for (int i = 0; i < m_device.name.size(); i++) {
             displayName += m_device.name.at(i);
@@ -995,11 +1159,15 @@ QString ItemWidget::convertDisplay()
 #endif
                 displayName.chop(1);
                 displayName += "...";
+                qDebug() << "Truncated display name:" << displayName;
                 break;
             }
         }
+        qDebug() << "Exiting ItemWidget::convertDisplay() with truncated name:" << displayName;
         return displayName;
     } else {
+        qDebug() << "Text width is within limits, returning original name:" << m_device.name;
+        qDebug() << "Exiting ItemWidget::convertDisplay() with original name.";
         return m_device.name;
     }
 }

@@ -100,6 +100,7 @@ CDlnaSoapPost::CDlnaSoapPost(QObject *parent) : QObject(parent)
 {
     qDebug() << "Initializing DLNA SOAP client";
     m_pNetWorkManager = new QNetworkAccessManager(this);
+    qDebug() << "Exiting CDlnaSoapPost constructor.";
 }
 
 CDlnaSoapPost::~CDlnaSoapPost()
@@ -108,7 +109,11 @@ CDlnaSoapPost::~CDlnaSoapPost()
     if(m_pNetWorkManager) {
         m_pNetWorkManager->deleteLater();
         m_pNetWorkManager = nullptr;
+        qDebug() << "QNetworkAccessManager deleted and set to nullptr.";
+    } else {
+        qDebug() << "QNetworkAccessManager is already nullptr, no cleanup needed.";
     }
+    qDebug() << "Exiting CDlnaSoapPost destructor.";
 }
 /**
  * @brief getTimeStr 时间转换
@@ -137,26 +142,32 @@ void CDlnaSoapPost::SoapOperPost(DlnaOper oper,
     qDebug() << "Preparing DLNA operation:" << oper << "URL:" << sLocalUrl;
     
     if(oper == DLNA_SetAVTransportURI) {
+        qDebug() << "DLNA_SetAVTransportURI";
         sOperName = "SetAVTransportURI";
         reqData = dlnaSetAVTransportURI.arg(sLocalUrl).toUtf8();
     }
     else if(oper == DLNA_Stop) {
+        qDebug() << "DLNA_Stop";
         sOperName = "Stop";
         reqData = dlnaStop.toUtf8();
     }
     else if(oper == DLNA_Pause) {
+        qDebug() << "DLNA_Pause";
         sOperName = "Pause";
         reqData = dlnaPause.toUtf8();
     }
     else if(oper == DLNA_Play) {
+        qDebug() << "DLNA_Play";
         sOperName = "Play";
         reqData = dlnaPlay.toUtf8();
     }
     else if(oper == DLNA_Seek) {
+        qDebug() << "DLNA_Seek";
         sOperName = "Seek";
         reqData = dlnaSeek.arg(getTimeStr(nSeek)).toUtf8();
     }
     else if(oper == DLNA_GetPositionInfo) {
+        qDebug() << "DLNA_GetPositionInfo";
         sOperName = "GetPositionInfo";
         reqData = dlnaGetPositionInfo.toUtf8();
     }

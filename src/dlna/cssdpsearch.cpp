@@ -21,6 +21,7 @@ CSSDPSearch::CSSDPSearch(QObject *parent) : QObject(parent)
     m_HostAddr = QHostAddress("239.255.255.250");
     m_udpSocket = new QUdpSocket(this);
     m_udpSocket->bind(QHostAddress::Any, 56123, QUdpSocket::ShareAddress);
+    qDebug() << "UDP socket bound to port 56123 with ShareAddress option.";
     connect(m_udpSocket, SIGNAL(readyRead()), this, SLOT(readMsg()));
     connect(this, SIGNAL(updataAvAddr(QByteArray)), this, SLOT(showDlnaCastAddr(QByteArray)));
     qDebug() << "SSDP search initialized on port 56123";
@@ -32,11 +33,14 @@ CSSDPSearch::~CSSDPSearch()
     if(m_networkManager) {
         m_networkManager->deleteLater();
         m_networkManager = NULL;
+        qDebug() << "QNetworkAccessManager deleted and set to NULL.";
     }
     if(m_udpSocket) {
         m_udpSocket->deleteLater();
         m_udpSocket = NULL;
+        qDebug() << "QUdpSocket deleted and set to NULL.";
     }
+    qDebug() << "Exiting CSSDPSearch destructor.";
 }
 /**
  * @brief readMsg 读取设备的单播消息

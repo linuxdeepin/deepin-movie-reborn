@@ -17,6 +17,7 @@ namespace dmr {
 Platform_MovieProgressIndicator::Platform_MovieProgressIndicator(QWidget *parent)
     : QFrame(parent)
 {
+    qDebug() << "Entering Platform_MovieProgressIndicator constructor";
     initMember();
 
     QFont font;
@@ -33,6 +34,7 @@ Platform_MovieProgressIndicator::Platform_MovieProgressIndicator(QWidget *parent
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setWindowFlags(Qt::FramelessWindowHint);
     setWindowFlags(this->windowFlags() | Qt::ToolTip);
+    qDebug() << "Exiting Platform_MovieProgressIndicator constructor";
 }
 /**
  * @brief paintEvent 重载绘制事件函数
@@ -40,6 +42,7 @@ Platform_MovieProgressIndicator::Platform_MovieProgressIndicator(QWidget *parent
  */
 void Platform_MovieProgressIndicator::paintEvent(QPaintEvent *pPaintEvent)
 {
+    // qDebug() << "Entering Platform_MovieProgressIndicator paintEvent";
     QString sTimeText = QTime::currentTime().toString("hh:mm");
     QPainter painter(this);
     painter.setFont(font());
@@ -68,6 +71,7 @@ void Platform_MovieProgressIndicator::paintEvent(QPaintEvent *pPaintEvent)
  */
 void Platform_MovieProgressIndicator::initMember()
 {
+    qDebug() << "Entering Platform_MovieProgressIndicator initMember";
     m_nElapsed = 0;
     m_pert = 0;
     m_fixedSize = QSize(0, 0);
@@ -79,10 +83,14 @@ void Platform_MovieProgressIndicator::initMember()
  */
 void Platform_MovieProgressIndicator::updateMovieProgress(qint64 duration, qint64 pos)
 {
+    qDebug() << "Entering Platform_MovieProgressIndicator updateMovieProgress";
     m_nElapsed = pos;
-    if (duration != 0)
+    if (duration != 0) {
+        qDebug() << "duration != 0";
         m_pert = static_cast<qreal>(((float)pos) / duration);
+    }
     update();
+    qDebug() << "Exiting Platform_MovieProgressIndicator updateMovieProgress";
 }
 
 }

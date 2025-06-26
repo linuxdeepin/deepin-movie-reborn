@@ -22,12 +22,14 @@ DGUI_USE_NAMESPACE
 VideoBoxButton::VideoBoxButton(const QString &text, QWidget *parent)
     : DButtonBoxButton(text, parent)
 {
+    qDebug() << "VideoBoxButton constructor";
 }
 
 VideoBoxButton::VideoBoxButton(const QString &text, const QString &normalPic, const QString &hoverPic,
                                const QString &pressPic, const QString &checkedPic, QWidget *parent)
     : DButtonBoxButton(text, parent)
 {
+    qDebug() << "VideoBoxButton constructor with params";
     defaultPicPath.normalPicPath = normalPic;
     defaultPicPath.hoverPicPath = hoverPic;
     defaultPicPath.pressPicPath = pressPic;
@@ -43,6 +45,7 @@ VideoBoxButton::VideoBoxButton(const QString &text, const QString &normalPic, co
 
     this->setIconSize(QSize(36, 36));
     this->setIcon(icon);
+    qDebug() << "VideoBoxButton constructor with params end";
 }
 
 // cppcheck修改
@@ -97,17 +100,20 @@ VideoBoxButton::VideoBoxButton(const QString &text, const QString &normalPic, co
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void VideoBoxButton::enterEvent(QEvent *event)
 {
+    qDebug() << "VideoBoxButton enterEvent";
     DButtonBoxButton::enterEvent(event);
 }
 #else
 void VideoBoxButton::enterEvent(QEnterEvent *event)
 {
+    qDebug() << "VideoBoxButton enterEvent";
     DButtonBoxButton::enterEvent(event);
 }
 #endif
 
 void VideoBoxButton::leaveEvent(QEvent *event)
 {
+    qDebug() << "VideoBoxButton leaveEvent";
 //    status = 0;
 //    QString curPicPath = defaultPicPath.normalPicPath;
 //    if (propertyPicPaths.first.isEmpty() || !propertyPicPaths.second.contains(property(propertyPicPaths.first.toStdString().data()))) {
@@ -160,10 +166,12 @@ void VideoBoxButton::leaveEvent(QEvent *event)
 
 void VideoBoxButton::mousePressEvent(QMouseEvent *event)
 {
+    qDebug() << "VideoBoxButton mousePressEvent";
     status = 2;
     QString curPicPath = defaultPicPath.normalPicPath;
     if (propertyPicPaths.first.isEmpty() || 
         !MAP_CONTAINS(propertyPicPaths.second, property(propertyPicPaths.first.toStdString().data()))) {
+        qDebug() << "VideoBoxButton mousePressEvent 1";
         QString curPropertyPicPathStr;
         if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
             curPropertyPicPathStr = defaultPicPath.checkedPicPath;
@@ -179,6 +187,7 @@ void VideoBoxButton::mousePressEvent(QMouseEvent *event)
             curPicPath = curPropertyPicPathStr;
         }
     } else {
+        qDebug() << "VideoBoxButton mousePressEvent 2";
         QVariant value = property(propertyPicPaths.first.toStdString().data());
         VideoPicPathInfo curPropertyPicPath = propertyPicPaths.second[value];
         QString curPropertyPicPathStr;
@@ -209,10 +218,12 @@ void VideoBoxButton::mousePressEvent(QMouseEvent *event)
 
 void VideoBoxButton::mouseReleaseEvent(QMouseEvent *event)
 {
+    qDebug() << "VideoBoxButton mouseReleaseEvent";
     status = 0;
     QString curPicPath = defaultPicPath.normalPicPath;
     if (propertyPicPaths.first.isEmpty() || 
         !MAP_CONTAINS(propertyPicPaths.second, property(propertyPicPaths.first.toStdString().data()))) {
+        qDebug() << "VideoBoxButton mouseReleaseEvent 1";
         QString curPropertyPicPathStr;
         if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
             curPropertyPicPathStr = defaultPicPath.checkedPicPath;
@@ -228,6 +239,7 @@ void VideoBoxButton::mouseReleaseEvent(QMouseEvent *event)
             curPicPath = curPropertyPicPathStr;
         }
     } else {
+        qDebug() << "VideoBoxButton mouseReleaseEvent 2";
         QVariant value = property(propertyPicPaths.first.toStdString().data());
         VideoPicPathInfo curPropertyPicPath = propertyPicPaths.second[value];
         QString curPropertyPicPathStr;

@@ -23,8 +23,10 @@ QHttpConnection::QHttpConnection(QTcpSocket *socket, QObject *parent)
       m_transmitLen(0),
       m_transmitPos(0)
 {
+    qDebug() << "Entering QHttpConnection constructor. Socket descriptor:" << socket->socketDescriptor();
     m_parser = (http_parser *)malloc(sizeof(http_parser));
     http_parser_init(m_parser, HTTP_REQUEST);
+    qDebug() << "http_parser initialized for HTTP_REQUEST.";
 
     m_parserSettings = new http_parser_settings();
     m_parserSettings->on_message_begin = MessageBegin;
@@ -34,31 +36,48 @@ QHttpConnection::QHttpConnection(QTcpSocket *socket, QObject *parent)
     m_parserSettings->on_headers_complete = HeadersComplete;
     m_parserSettings->on_body = Body;
     m_parserSettings->on_message_complete = MessageComplete;
+    qDebug() << "http_parser_settings initialized with callbacks.";
 
     m_parser->data = this;
+    qDebug() << "Parser data set to this connection instance.";
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(parseRequest()));
     connect(socket, SIGNAL(disconnected()), this, SLOT(socketDisconnected()));
     connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(updateWriteCount(qint64)));
+
+    qDebug() << "Exiting QHttpConnection constructor.";
 }
 
 QHttpConnection::~QHttpConnection()
 {
-    delete m_socket;
-    m_socket = 0;
+    qDebug() << "Entering QHttpConnection destructor.";
+    if (m_socket) {
+        delete m_socket;
+        m_socket = 0;
+        qDebug() << "QTcpSocket deleted.";
+    }
 
-    free(m_parser);
-    m_parser = 0;
+    if (m_parser) {
+        free(m_parser);
+        m_parser = 0;
+        qDebug() << "http_parser freed.";
+    }
 
-    delete m_parserSettings;
-    m_parserSettings = 0;
+    if (m_parserSettings) {
+        delete m_parserSettings;
+        m_parserSettings = 0;
+        qDebug() << "http_parser_settings deleted.";
+    }
+    qDebug() << "Exiting QHttpConnection destructor.";
 }
 
 void QHttpConnection::socketDisconnected()
 {
+    qDebug() << "Socket disconnected.";
     deleteLater();
 
     if (m_request) {
+        qDebug() << "Request deleted.";
         if (m_request->successful())
             return;
 
@@ -69,20 +88,24 @@ void QHttpConnection::socketDisconnected()
 
 void QHttpConnection::updateWriteCount(qint64 count)
 {
+    qDebug() << "Bytes written:" << count;
     Q_ASSERT(m_transmitPos + count <= m_transmitLen);
 
     m_transmitPos += count;
 
     if (m_transmitPos == m_transmitLen)
     {
+        qDebug() << "All bytes written.";
         m_transmitLen = 0;
         m_transmitPos = 0;
         Q_EMIT allBytesWritten();
     }
+    qDebug() << "Bytes written end";
 }
 
 void QHttpConnection::parseRequest()
 {
+    qDebug() << "Entering parseRequest.";
     Q_ASSERT(m_parser);
 
     while (m_socket->bytesAvailable()) {
@@ -114,9 +137,12 @@ bool QHttpConnection::isWritable()
 
 void QHttpConnection::responseDone()
 {
+    qDebug() << "Response done.";
     QHttpResponse *response = qobject_cast<QHttpResponse *>(QObject::sender());
-    if (response->m_last)
+    if (response->m_last) {
+        qDebug() << "Last response, disconnecting socket.";
         m_socket->disconnectFromHost();
+    }
 }
 
 /* URL Utilities */
@@ -130,6 +156,7 @@ void QHttpConnection::responseDone()
 
 QUrl createUrl(const char *urlData, const http_parser_url &urlInfo)
 {
+    qDebug() << "Creating URL.";
     QUrl url;
     url.setScheme(CHECK_AND_GET_FIELD(urlData, urlInfo, UF_SCHEMA));
     url.setHost(CHECK_AND_GET_FIELD(urlData, urlInfo, UF_HOST));
@@ -162,6 +189,7 @@ QUrl createUrl(const char *urlData, const http_parser_url &urlInfo)
 
 int QHttpConnection::MessageBegin(http_parser *parser)
 {
+    qDebug() << "Message begin.";
     QHttpConnection *theConnection = static_cast<QHttpConnection *>(parser->data);
     theConnection->m_currentHeaders.clear();
     theConnection->m_currentUrl.clear();
@@ -175,6 +203,7 @@ int QHttpConnection::MessageBegin(http_parser *parser)
 
 int QHttpConnection::HeadersComplete(http_parser *parser)
 {
+    qDebug() << "Headers complete.";
     QHttpConnection *theConnection = static_cast<QHttpConnection *>(parser->data);
     Q_ASSERT(theConnection->m_request);
 
@@ -218,6 +247,7 @@ int QHttpConnection::HeadersComplete(http_parser *parser)
 
 int QHttpConnection::MessageComplete(http_parser *parser)
 {
+    qDebug() << "Message complete.";
     // TODO: do cleanup and prepare for next request
     QHttpConnection *theConnection = static_cast<QHttpConnection *>(parser->data);
     Q_ASSERT(theConnection->m_request);
@@ -229,6 +259,7 @@ int QHttpConnection::MessageComplete(http_parser *parser)
 
 int QHttpConnection::Url(http_parser *parser, const char *at, size_t length)
 {
+    qDebug() << "URL.";
     QHttpConnection *theConnection = static_cast<QHttpConnection *>(parser->data);
     Q_ASSERT(theConnection->m_request);
 
@@ -238,6 +269,7 @@ int QHttpConnection::Url(http_parser *parser, const char *at, size_t length)
 
 int QHttpConnection::HeaderField(http_parser *parser, const char *at, size_t length)
 {
+    qDebug() << "Header field.";
     QHttpConnection *theConnection = static_cast<QHttpConnection *>(parser->data);
     Q_ASSERT(theConnection->m_request);
 
@@ -262,6 +294,7 @@ int QHttpConnection::HeaderField(http_parser *parser, const char *at, size_t len
 
 int QHttpConnection::HeaderValue(http_parser *parser, const char *at, size_t length)
 {
+    qDebug() << "Header value.";
     QHttpConnection *theConnection = static_cast<QHttpConnection *>(parser->data);
     Q_ASSERT(theConnection->m_request);
 
@@ -272,6 +305,7 @@ int QHttpConnection::HeaderValue(http_parser *parser, const char *at, size_t len
 
 int QHttpConnection::Body(http_parser *parser, const char *at, size_t length)
 {
+    qDebug() << "Body.";
     QHttpConnection *theConnection = static_cast<QHttpConnection *>(parser->data);
     Q_ASSERT(theConnection->m_request);
 

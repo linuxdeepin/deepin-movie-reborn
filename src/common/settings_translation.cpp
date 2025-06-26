@@ -4,9 +4,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <DSettings>
+#include <QDebug>
 
 void GenerateSettingTranslate()
 {
+    qDebug() << "Entering GenerateSettingTranslate function.";
     auto base_play_addsimilarText = QObject::tr("Auto add similar files to play");
     auto base_play_emptylistText = QObject::tr("Clear playlist when exit");
     auto base_play_showthumbnailmode = QObject::tr("Show thumbnails in progress bar");
@@ -65,5 +67,6 @@ void GenerateSettingTranslate()
     auto group_customize_Decodemode = QObject::tr("Decode mode");
     auto group_customize_Videoout = QObject::tr("Video out");
     auto group_effectmode_Effectmode = QObject::tr("Rendering engine");
+    qDebug() << "Exiting GenerateSettingTranslate function. All settings translations generated.";
 }
 

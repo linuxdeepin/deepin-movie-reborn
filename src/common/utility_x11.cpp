@@ -44,6 +44,7 @@ const char kAtomNameWmSkipPager[] = "_NET_WM_STATE_SKIP_PAGER";
 
 xcb_atom_t Utility::internAtom(const char *name)
 {
+    qDebug() << "Entering Utility::internAtom. Atom name:" << name;
     if (!name || *name == 0) {
         qWarning() << "Invalid atom name provided";
         return XCB_NONE;
@@ -67,12 +68,16 @@ xcb_atom_t Utility::internAtom(const char *name)
 
 void Utility::startWindowSystemMove(quint32 WId)
 {
+    qDebug() << "Entering Utility::startWindowSystemMove. Window ID:" << WId;
     sendMoveResizeMessage(WId, _NET_WM_MOVERESIZE_MOVE);
+    qDebug() << "Exiting Utility::startWindowSystemMove.";
 }
 
 void Utility::cancelWindowMoveResize(quint32 WId)
 {
+    qDebug() << "Entering Utility::cancelWindowMoveResize. Window ID:" << WId;
     sendMoveResizeMessage(WId, _NET_WM_MOVERESIZE_CANCEL);
+    qDebug() << "Exiting Utility::cancelWindowMoveResize.";
 }
 
 void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos)

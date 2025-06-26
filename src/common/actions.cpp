@@ -12,10 +12,12 @@ namespace dmr {
 static ActionFactory *pActionFactory = nullptr;
 ActionFactory &ActionFactory::get()
 {
+    qDebug() << "Entering ActionFactory::get().";
     if (pActionFactory == nullptr) {
-        qDebug() << "Creating new ActionFactory instance";
+        qDebug() << "pActionFactory is null, creating new ActionFactory instance.";
         pActionFactory = new ActionFactory();
     }
+    qDebug() << "Exiting ActionFactory::get(). Returning instance.";
     return *pActionFactory;
 }
 #define DEF_ACTION(NAME, KD) do { \
@@ -49,12 +51,13 @@ ActionFactory &ActionFactory::get()
     } while (0)
 DMenu *ActionFactory::titlebarMenu()
 {
+    qDebug() << "Entering ActionFactory::titlebarMenu().";
     if (!m_pTitlebarMenu) {
-        qDebug() << "Creating new titlebar menu";
+        qDebug() << "Titlebar menu is null, creating new titlebar menu.";
         DMenu *pMenu_p = new DMenu();
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         if (!CompositingManager::isPadSystem()) {
-            qDebug() << "Adding desktop menu items";
+            qDebug() << "System is not a pad system. Adding desktop menu items.";
             DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
             DEF_ACTION(tr("Settings"), ActionKind::Settings);
             pMenu_p->addSeparator();
@@ -63,7 +66,7 @@ DMenu *ActionFactory::titlebarMenu()
             //DEF_ACTION("Help", ActionKind::Help);
             //DEF_ACTION("Exit", ActionKind::Exit);
         } else {
-            qDebug() << "Adding pad menu items";
+            qDebug() << "System is a pad system. Adding pad menu items.";
             m_pTitlebarMenu = pMenu_p;
             {
                 DMenu *pParent = pMenu_p;
@@ -118,19 +121,21 @@ DMenu *ActionFactory::titlebarMenu()
         m_pTitlebarMenu = pMenu_p;
         qInfo() << "Titlebar menu created successfully";
     }
+    qDebug() << "Exiting ActionFactory::titlebarMenu(). Returning existing menu.";
     return m_pTitlebarMenu;
 }
 
 DMenu *ActionFactory::mainContextMenu()
 {
+    qDebug() << "Entering ActionFactory::mainContextMenu().";
     if(m_pContextMenu) {
-        qDebug() << "Returning existing context menu";
+        qDebug() << "Context menu already exists. Returning existing context menu.";
         return m_pContextMenu;
     }
 
-    qInfo() << "Creating new main context menu";
+    qDebug() << "Context menu is null. Creating new main context menu.";
     if (CompositingManager::isMpvExists()) {
-        qDebug() << "Creating MPV-enabled context menu";
+        qDebug() << "MPV exists. Creating MPV-enabled context menu.";
         DMenu *pMenu_p = new DMenu();
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
@@ -317,9 +322,9 @@ DMenu *ActionFactory::mainContextMenu()
         DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
         m_pContextMenu = pMenu_p;
-        qInfo() << "MPV context menu created successfully";
+        qDebug() << "MPV context menu created successfully.";
     } else {
-        qDebug() << "Creating non-MPV context menu";
+        qDebug() << "MPV not found. Creating non-MPV context menu.";
         DMenu *pMenu_p = new DMenu();
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
@@ -375,22 +380,25 @@ DMenu *ActionFactory::mainContextMenu()
         DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
         m_pContextMenu = pMenu_p;
-        qInfo() << "Non-MPV context menu created successfully";
+        qDebug() << "Non-MPV context menu created successfully.";
     }
+    qDebug() << "Exiting ActionFactory::mainContextMenu(). Returning context menu.";
     return m_pContextMenu;
 }
 DMenu *ActionFactory::playlistContextMenu()
 {
+    qDebug() << "Entering ActionFactory::playlistContextMenu().";
     if (!m_pPlaylistMenu) {
-        qInfo() << "Creating new playlist context menu";
+        qDebug() << "Playlist menu is null. Creating new playlist context menu.";
         DMenu *pMenu_p = new DMenu();
         DEF_ACTION(tr("Delete from playlist"), ActionKind::PlaylistRemoveItem);
         DEF_ACTION(tr("Empty playlist"), ActionKind::EmptyPlaylist);
         DEF_ACTION(tr("Display in file manager"), ActionKind::PlaylistOpenItemInFM);
         DEF_ACTION(tr("Film info"), ActionKind::PlaylistItemInfo);
         m_pPlaylistMenu = pMenu_p;
-        qInfo() << "Playlist context menu created successfully";
+        qDebug() << "Playlist context menu created successfully.";
     }
+    qDebug() << "Exiting ActionFactory::playlistContextMenu(). Returning existing menu.";
     return m_pPlaylistMenu;
 }
 QList<QAction *> ActionFactory::findActionsByKind(ActionKind target_kd)
@@ -434,12 +442,15 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
         DMenu *pMenu = m_pTracksMenu;
         pMenu->clear();
         if (!m_pAudiosgroup) {
+            qDebug() << "m_pAudiosgroup is null";
             m_pAudiosgroup = new QActionGroup(pMenu); // mem leak ?
         }
         for (int i = 0; i < pmf.audios.size(); i++) {
             if (pmf.audios[i]["title"].toString().compare("[internal]") == 0) {
+                qDebug() << "title is [internal]";
                 DEF_ACTION_CHECKED_GROUP(tr("Track") + QString::number(i + 1), ActionKind::SelectTrack, m_pAudiosgroup);
             } else {
+                qDebug() << "title is not [internal]";
                 DEF_ACTION_CHECKED_GROUP(pmf.audios[i]["title"].toString(), ActionKind::SelectTrack, m_pAudiosgroup);
             }
             QAction *pAct = pMenu->actions().last();
@@ -453,10 +464,12 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
 }
 ActionFactory::ActionFactory()
 {
+    qDebug() << "ActionFactory";
     initMember();
 }
 void ActionFactory::initMember()
 {
+    qDebug() << "initMember";
     m_pTitlebarMenu = nullptr;
     m_pContextMenu = nullptr;
     m_pSubtitleMenu = nullptr;
@@ -467,6 +480,7 @@ void ActionFactory::initMember()
     m_pSubgroup = nullptr;
     m_pAudiosgroup = nullptr;
     m_listContextMenuActions.clear();
+    qDebug() << "initMember end";
 }
 #undef DEF_ACTION
 #undef DEF_ACTION_CHECKED
