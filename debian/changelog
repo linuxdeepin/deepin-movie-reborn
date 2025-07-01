@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.5.18) unstable; urgency=medium
+
+  * chore: update translation
+
+ -- xiepengfei <xiepengfei@uniontech.com>  Tue, 01 Jul 2025 19:23:43 +0800
+
 deepin-movie-reborn (6.5.17) unstable; urgency=medium
 
   * update version to 6.5.17. 
