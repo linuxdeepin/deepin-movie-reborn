@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.5.19) unstable; urgency=medium
+
+  * chore: Update deb sources for linglong yaml
+
+ -- wangrong <wangrong@uniontech.com>  Wed, 02 Jul 2025 10:53:07 +0800
+
 deepin-movie-reborn (6.5.18) unstable; urgency=medium
 
   * chore: update translation
