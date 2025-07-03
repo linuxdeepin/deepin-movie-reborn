@@ -1,0 +1,42 @@
+{
+    "magic": "dsg.config.meta",
+    "version": "1.0",
+    "contents": {
+        "enablePower": {
+            "value": -1,
+            "serial": 0,
+            "flags": [
+                "global"
+            ],
+            "name": "Mini Mode Special Handling",
+            "name[zh_CN]": "使能功耗",
+            "description": "使能功耗开关，-1为未配置，即不开启，0为不开启，1为开启，其他值大于1值默认开启，作为保留功能",
+            "permissions": "readwrite",
+            "visibility": "private"
+        },
+        "configKey": {
+            "value": "vo",
+            "serial": 0,
+            "flags": [
+                "global"
+            ],
+            "name": "mpv config key",
+            "name[zh_CN]": "mpv配置键",
+            "description": "此配置项默认为 vo",
+            "permissions": "readwrite",
+            "visibility": "private"
+        },
+        "configValue": {
+            "value": "gpu",
+            "serial": 0,
+            "flags": [
+                "global"
+            ],
+            "name": "mpv config value",
+            "name[zh_CN]": "mpv配置值",
+            "description": "此配置项默认为 gpu",
+            "permissions": "readwrite",
+            "visibility": "private"
+        }
+    }
+}
