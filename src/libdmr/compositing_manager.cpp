@@ -7,6 +7,7 @@
 #include "compositing_manager.h"
 #include "utils.h"
 #include "dmr_settings.h"
+#include <dconfig.h>
 #ifndef _LIBDMR_
 #include "options.h"
 #endif
@@ -262,6 +263,18 @@ CompositingManager::CompositingManager()
             _composited = false;//libmpv只能走opengl
         }
     }
+#endif
+#ifdef DTKCORE_CLASS_DConfigFile
+    DConfig *dconfig = DConfig::create("org.deepin.movie","org.deepin.movie.power");
+    if(dconfig && dconfig->isValid() && dconfig->keyList().contains("enablePower")){
+        m_enablePower = dconfig->value("enablePower").toInt();
+
+        if (m_enablePower > 0 && dconfig->keyList().contains("configKey") && dconfig->keyList().contains("configValue")) {
+            m_configKey = dconfig->value("configKey").toString();
+            m_configValue = dconfig->value("configValue").toString();
+        }
+    }
+    delete dconfig;
 #endif
     if(!isMpvExists())
     {
@@ -671,6 +684,16 @@ bool CompositingManager::is_device_viable(int id)
     }
 
     return false;
+}
+
+QPair<QString, QString> CompositingManager::getEnablePowerConfig() const
+{
+    return QPair(m_configKey, m_configValue);
+}
+
+int CompositingManager::enablePower() const
+{
+    return m_enablePower;
 }
 
 bool CompositingManager::isProprietaryDriver()

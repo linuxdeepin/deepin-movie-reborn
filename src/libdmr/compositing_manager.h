@@ -105,6 +105,10 @@ signals:
     void compositingChanged(bool);
 public:
     static bool m_bCanHwdec;//是否支持硬解，true支持，false不支持
+    int enablePower() const;
+
+    QPair<QString, QString>getEnablePowerConfig() const;
+
 private:
     CompositingManager();
     bool isDriverLoadedCorrectly();
@@ -130,6 +134,10 @@ private:
 
     QString m_cpuModelName;
     QString m_boardVendor;
+
+    int m_enablePower = -1;
+    QString m_configKey;
+    QString m_configValue;
 };
 }
 

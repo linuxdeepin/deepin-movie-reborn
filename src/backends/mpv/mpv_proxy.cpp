@@ -1479,6 +1479,11 @@ void MpvProxy::refreshDecode()
         if(utils::check_wayland_env()) {
             my_set_property(m_handle, "pulse-allow-suspended", "yes");
         }
+        if (CompositingManager::get().enablePower()) {
+            QPair<QString, QString> config= CompositingManager::get().getEnablePowerConfig();
+            my_set_property(m_handle, config.first, config.second);
+            qInfo() << __func__ << "enable power config: " << config;
+        }
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
         QMap<QString, QString>::iterator iter = m_pConfig->begin();
