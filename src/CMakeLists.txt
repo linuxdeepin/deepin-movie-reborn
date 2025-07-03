@@ -110,7 +110,9 @@ if (Qt6_FOUND)
     install (FILES ${CMAKE_SOURCE_DIR}/com.deepin.movie.service DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/services/)
 
     set(APPID org.deepin.movie)
-    set(configFile ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json)
+    set(configFile ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json
+        ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.power.json
+    )
     if (DEFINED DSG_DATA_DIR)
         message("-- DConfig is supported by DTK")
         dtk_add_config_meta_files(APPID ${APPID} FILES ${configFile})
@@ -209,7 +211,9 @@ else()
 
     #hw机型增加DConfig配置
     set(APPID org.deepin.movie)
-    set(configFile ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json)
+    set(configFile ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json
+        ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.power.json
+    )
     if (DEFINED DSG_DATA_DIR)
         message("-- DConfig is supported by DTK")
         dconfig_meta_files(APPID ${APPID} FILES ${configFile})
@@ -231,4 +235,3 @@ else()
     add_subdirectory(libdmr)
     #add_subdirectory(test)
 endif()
-

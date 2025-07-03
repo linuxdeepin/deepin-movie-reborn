@@ -392,7 +392,21 @@ CompositingManager::CompositingManager()
         qDebug() << "MPV config does not contain 'vo' key (test).";
     }
 #endif
-    if(!isMpvExists()) {
+
+#ifdef DTKCORE_CLASS_DConfigFile
+    DConfig *dconfig1 = DConfig::create("org.deepin.movie","org.deepin.movie.power");
+    if(dconfig1 && dconfig1->isValid() && dconfig1->keyList().contains("enablePower")){
+        m_enablePower = dconfig1->value("enablePower").toInt();
+
+        if (m_enablePower > 0 && dconfig1->keyList().contains("configKey") && dconfig1->keyList().contains("configValue")) {
+            m_configKey = dconfig1->value("configKey").toString();
+            m_configValue = dconfig1->value("configValue").toString();
+        }
+    }
+    delete dconfig1;
+#endif
+    if(!isMpvExists())
+    {
         _composited = true;
         qDebug() << "MPV does not exist, _composited set to true.";
     } else {
@@ -1010,6 +1024,16 @@ bool CompositingManager::is_device_viable(int id)
 
     qDebug() << "Exiting is_device_viable() with result: false (default return).";
     return false;
+}
+
+QPair<QString, QString> CompositingManager::getEnablePowerConfig() const
+{
+    return QPair<QString, QString>(m_configKey, m_configValue);
+}
+
+int CompositingManager::enablePower() const
+{
+    return m_enablePower;
 }
 
 bool CompositingManager::isProprietaryDriver()
