@@ -103,7 +103,10 @@ install(FILES ${PROJECT_SOURCE_DIR}/assets/deepin-movie.json DESTINATION /usr/li
 
 #hw机型增加DConfig配置
 set(APPID org.deepin.movie)
-set(configFile ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json)
+set(configFile
+    ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json
+    ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.restart.json
+)
 if (DEFINED DSG_DATA_DIR)
     message("-- DConfig is supported by DTK")
     dconfig_meta_files(APPID ${APPID} FILES ${configFile})
