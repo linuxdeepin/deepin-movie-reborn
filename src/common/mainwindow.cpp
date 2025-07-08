@@ -2254,9 +2254,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                 if ((panscan.isNull() || !CompositingManager::isMpvExists()) && Settings::get().isSet(Settings::ResumeFromLast)) {
                     qDebug() << "Settings::get().isSet(Settings::ResumeFromLast)";
                     int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
-                    //Playback when the playlist is not loaded, this will result in the 
-                    //last exit item without playing, because the playlist has not been 
-                    //loaded into that file, so adding a thread waiting here.  
+                    //Playback when the playlist is not loaded, this will result in the
+                    //last exit item without playing, because the playlist has not been
+                    //loaded into that file, so adding a thread waiting here.
                     //TODO(xxxxp):It will cause direct opening of the cartoon? May need to optimize Model View
                     while (m_pEngine->getplaylist()->getThumbnailRunning()) {
                         QCoreApplication::processEvents();
@@ -3445,6 +3445,22 @@ DSettingsDialog *MainWindow::initSettings()
 void MainWindow::play(const QList<QString> &listFiles)
 {
     qInfo() << "Starting playback with" << listFiles.size() << "files";
+    Q_ASSERT(m_pEngine);
+
+#ifdef DTKCORE_CLASS_DConfigFile
+    DConfig *dconfig = DConfig::create("org.deepin.movie","org.deepin.movie.restart");
+    if(dconfig && dconfig->isValid() && dconfig->keyList().contains("RestartAfterWakeUp")) {
+        if (dconfig->value("PausedOnPlay").toBool())
+            m_pEngine->setBackendProperty("pause-on-start", true);
+        else
+            m_pEngine->setBackendProperty("pause-on-start", false);
+    }
+    if (dconfig) {
+        dconfig->setValue("PausedOnPlay", false); //reset
+        delete dconfig;
+    }
+#endif
+
     QList<QUrl> lstValid;
     QList<QString> lstDir;
     QList<QString> lstFile;
@@ -3955,6 +3971,8 @@ void MainWindow::slotPlayerStateChanged()
         qDebug() << "pEngine->state() == PlayerEngine::CoreState::Idle";
         m_pMovieWidget->stopPlaying();
     }
+
+    m_pEngine->setBackendProperty("pause-on-start", false); //reset
 }
 
 void MainWindow::slotFocusWindowChanged()
@@ -5552,6 +5570,25 @@ void MainWindow::sleepStateChanged(bool bSleep)
     qInfo() << __func__ << bSleep;
     malloc_trim(0);
 
+#ifdef DTKCORE_CLASS_DConfigFile
+    DConfig *dconfig = DConfig::create("org.deepin.movie","org.deepin.movie.restart");
+
+    if(dconfig && dconfig->isValid() && dconfig->keyList().contains("RestartAfterWakeUp") && !bSleep) {
+        if (dconfig->value("RestartAfterWakeUp").toBool()) {
+            const auto &movieInfo = engine()->playlist().currentInfo().mi;
+            PlayerEngine::CoreState state = engine()->state();
+            if (state != PlayerEngine::Idle) {
+                Settings::get().settings()->setOption("set.start.crash", "2");
+                qApp->exit();
+                qWarning() << movieInfo.filePath;
+                QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart" << movieInfo.filePath);
+            }
+            dconfig->setValue("PausedOnPlay", state == PlayerEngine::Paused);  // 休眠时会暂停，所以这里恒为true
+        }
+    }
+    delete dconfig;
+#endif
+
     //if (m_bStateInLock) {                //休眠唤醒后会先执行锁屏操作,如果已经进行锁屏操作则忽略休眠唤醒信号
      //   m_bStartSleep = bSleep;
      //   m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));
@@ -5564,13 +5601,12 @@ void MainWindow::sleepStateChanged(bool bSleep)
     }
     if (bSleep && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
         qDebug() << "bSleep && m_pEngine->state() == PlayerEngine::CoreState::Playing";
-        m_bStartSleep = true;
         requestAction(ActionFactory::ActionKind::TogglePause);
     } else if (!bSleep && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
         qDebug() << "!bSleep && m_pEngine->state() == PlayerEngine::CoreState::Paused";
-        m_bStartSleep = false;
         m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));      //保证休眠后不管是否播放都不会卡帧
     }
+    m_bStartSleep = bSleep;
 }
 
 void MainWindow::lockStateChanged(bool bLock)
@@ -5582,6 +5618,7 @@ void MainWindow::lockStateChanged(bool bLock)
         qDebug() << "bLock && m_pMircastShowWidget && m_pMircastShowWidget->isVisible()";
         slotExitMircast();
     }
+
     if (bLock && m_pEngine->state() == PlayerEngine::CoreState::Playing && !m_bStateInLock) {
         qDebug() << "bLock && m_pEngine->state() == PlayerEngine::CoreState::Playing && !m_bStateInLock";
         m_bStateInLock = true;
