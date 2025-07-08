@@ -112,6 +112,7 @@ if (Qt6_FOUND)
     set(APPID org.deepin.movie)
     set(configFile ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json
         ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.power.json
+        ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.restart.json
     )
     if (DEFINED DSG_DATA_DIR)
         message("-- DConfig is supported by DTK")
@@ -213,6 +214,7 @@ else()
     set(APPID org.deepin.movie)
     set(configFile ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json
         ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.power.json
+        ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.restart.json
     )
     if (DEFINED DSG_DATA_DIR)
         message("-- DConfig is supported by DTK")
