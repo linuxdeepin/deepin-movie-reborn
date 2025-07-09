@@ -997,7 +997,14 @@ bool isSpecialHWHardware()
 
 bool MpvProxy::isSurportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight)
 {
+    // FIXME: gpuinfo crash on treeland, so force soft decode on treeland
+    if (utils::check_wayland_env()) {
+        qInfo() << "Wayland environment detected, forcing soft decode";
+        return false;
+    }
+
     if (utils::check_wayland_env() && isSpecialHWHardware()) {
+        qInfo() << "Wayland environment detected, special HW device, hardware decode";
         return true;
     }
 
