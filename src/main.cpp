@@ -288,8 +288,7 @@ int main(int argc, char *argv[])
         qInfo() << "Running in Wayland environment";
         qDebug() << "Wayland environment detected.";
         //qputenv("_d_disableDBusFileDialog", "true");
-        setenv("PULSE_PROP_media.role", "video", 1);
-        qDebug() << "Set PULSE_PROP_media.role to video.";
+        //setenv("PULSE_PROP_media.role", "video", 1); // 设置该属性后,pulseAudio会将所有video角色同步音量和禁音状态。 例如，VLC中设置静音后，影院也会同步禁音
 #ifndef __x86_64__
         qDebug() << "Non-__x86_64__ platform - setting OpenGLES renderable type.";
         QSurfaceFormat format;
