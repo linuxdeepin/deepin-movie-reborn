@@ -1129,6 +1129,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(dynamic_cast<MpvProxy *>(m_pEngine->getMpvProxy()),&MpvProxy::crashCheck,&Settings::get(),&Settings::crashCheck);
     //解码初始化
     decodeInit();
+
+    connect(qApp, &QApplication::primaryScreenChanged, this, [&] (QScreen *screen) {
+        qWarning() << "primaryScreenChanged:" << screen->geometry();
+        // 拔掉屏幕，导致屏幕参数为空，概率性导致解码渲染异常。此时应该暂停播放。
+        if (screen->geometry().isEmpty() && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
+            requestAction(ActionFactory::ActionKind::TogglePause);
+        }
+    });
 }
 
 void MainWindow::setupTitlebar()
