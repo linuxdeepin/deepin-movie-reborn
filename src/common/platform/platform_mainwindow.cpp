@@ -607,7 +607,8 @@ protected:
             }
             QMouseEvent *pMouseEvent = static_cast<QMouseEvent *>(pEvent);
             setLeftButtonPressed(true);
-            if (pMainWindow->insideResizeArea(pMouseEvent->globalPos()) &&
+            // 迷你模式下，不允许resize
+            if (!pMainWindow->getMiniMode() && pMainWindow->insideResizeArea(pMouseEvent->globalPos()) &&
                     lastCornerEdge != Platform_CornerEdge::Platform_NoneEdge)
                 m_bStartResizing = true;
 
@@ -764,7 +765,14 @@ skip_set_cursor:
             }
             break;
         }
-
+        case QEvent::Resize: {
+            // 迷你模式下，不允许resize
+            if (pMainWindow->getMiniMode()) {
+                qDebug() << "Could not resize window in mini mode";
+                return true;
+            }
+            break;
+        }
         default:
             break;
         }
