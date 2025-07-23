@@ -5319,7 +5319,8 @@ void Platform_MainWindow::toggleUIMode()
 #endif
 
         move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
-        resize(geom.width(), geom.height());
+        // 迷你模式下，窗口大小固定，不可被修改
+        setFixedSize(geom.width(), geom.height());
 
         m_pMiniPlayBtn->move(sz.width() - 12 - m_pMiniPlayBtn->width(),
                              sz.height() - 10 - m_pMiniPlayBtn->height());
@@ -5328,6 +5329,11 @@ void Platform_MainWindow::toggleUIMode()
     } else {
         qDebug() << "!m_bMiniMode";
         m_pCommHintWid->setAnchorPoint(QPoint(30, 58));
+        // 非迷你模式下，窗口大小恢复可被修改状态
+        QRect tmpRect = m_lastRectInNormalMode; // 先备份，避免被setMinimumSize()影响，后面再恢复
+        this->setMinimumSize(614, 500);
+        this->setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+        m_lastRectInNormalMode = tmpRect;
         setEnableSystemResize(true);
         if (m_nStateBeforeMiniMode & SBEM_Maximized) {
             //迷你模式切换最大化时，先恢复原来窗口大小
