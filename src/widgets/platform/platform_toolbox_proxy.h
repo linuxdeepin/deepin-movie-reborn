@@ -614,8 +614,8 @@ private:
     QHBoxLayout *_mid;                   ///
     QHBoxLayout *_right;                 ///
 
-    QLabel *m_pFullscreentimelable;      ///全屏下视频当前播放时长控件
-    QLabel *m_pFullscreentimelableend;   ///全屏下视频总时长控件
+    QLabel *m_pFullScreenTimeLabel;      ///全屏下视频当前播放时长控件
+    QLabel *m_pFullScreenTimeLabelend;   ///全屏下视频总时长控件
     QLabel *m_pTimeLabel;                ///视频当前播放时长控件
     QLabel *m_pTimeLabelend;             ///视频总时长的控件
     Platform_VolumeSlider *m_pVolSlider;          ///音量条控件窗口
