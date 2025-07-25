@@ -5880,7 +5880,7 @@ void MainWindow::slotUpdateMircastState(int state, QString msg)
         slotExitMircast();
     }
         break;
-    case MIRCAST_DISCONNECTIONED://投屏丢失连接
+    case MIRCAST_DISCONNECTED://投屏丢失连接
     {
         qDebug() << "MIRCAST_DISCONNECTIONED";
         m_pCommHintWid->updateWithMessage(tr("Miracast disconnected"));
