@@ -291,7 +291,7 @@ void MircastWidget::slotMircastTimeout()
         qDebug() << "Max Miracast attempts reached. Stopping timeout timer.";
         m_mircastTimeOut.stop();
         if (m_mircastState == MircastState::Screening)
-            emit mircastState(MIRCAST_DISCONNECTIONED);
+            emit mircastState(MIRCAST_DISCONNECTED);
         else
             emit mircastState(MIRCAST_CONNECTION_FAILED);
         qWarning() << "Miracast connection failed after" << MAXMIRCAST << "attempts";
