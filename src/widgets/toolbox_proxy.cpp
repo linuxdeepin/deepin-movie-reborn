@@ -1221,23 +1221,23 @@ void ToolboxProxy::setup()
 
     m_pTimeLabel = new QLabel(m_pBotToolWgt);
     m_pTimeLabel->setAlignment(Qt::AlignCenter);
-    m_pFullscreentimelable = new QLabel("");
-    m_pFullscreentimelable->setAttribute(Qt::WA_DeleteOnClose);
-    m_pFullscreentimelable->setForegroundRole(DPalette::Text);
+    m_pFullScreenTimeLabel = new QLabel("");
+    m_pFullScreenTimeLabel->setAttribute(Qt::WA_DeleteOnClose);
+    m_pFullScreenTimeLabel->setForegroundRole(DPalette::Text);
 
     DFontSizeManager::instance()->bind(m_pTimeLabel, DFontSizeManager::T6);
     m_pTimeLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    m_pFullscreentimelable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    DFontSizeManager::instance()->bind(m_pFullscreentimelable, DFontSizeManager::T6);
+    m_pFullScreenTimeLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    DFontSizeManager::instance()->bind(m_pFullScreenTimeLabel, DFontSizeManager::T6);
     m_pTimeLabelend = new QLabel(m_pBotToolWgt);
     m_pTimeLabelend->setAlignment(Qt::AlignCenter);
-    m_pFullscreentimelableend = new QLabel("");
-    m_pFullscreentimelableend->setAttribute(Qt::WA_DeleteOnClose);
-    m_pFullscreentimelableend->setForegroundRole(DPalette::Text);
+    m_pFullScreenTimeLabelend = new QLabel("");
+    m_pFullScreenTimeLabelend->setAttribute(Qt::WA_DeleteOnClose);
+    m_pFullScreenTimeLabelend->setForegroundRole(DPalette::Text);
     m_pTimeLabelend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     DFontSizeManager::instance()->bind(m_pTimeLabelend, DFontSizeManager::T6);
-    m_pFullscreentimelableend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    DFontSizeManager::instance()->bind(m_pFullscreentimelableend, DFontSizeManager::T6);
+    m_pFullScreenTimeLabelend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    DFontSizeManager::instance()->bind(m_pFullScreenTimeLabelend, DFontSizeManager::T6);
 
     m_pProgBar = new DMRSlider(m_pBotToolWgt);
     m_pProgBar->setObjectName(MOVIE_PROGRESS_WIDGET);
@@ -1626,8 +1626,8 @@ void ToolboxProxy::initMember()
     _mid = nullptr;
     _right = nullptr;
 
-    m_pFullscreentimelable = nullptr;
-    m_pFullscreentimelableend = nullptr;
+    m_pFullScreenTimeLabel = nullptr;
+    m_pFullScreenTimeLabelend = nullptr;
     m_pTimeLabel = nullptr;
     m_pTimeLabelend = nullptr;
     m_pViewProgBar = nullptr;
@@ -1909,8 +1909,8 @@ void ToolboxProxy::slotThemeTypeChanged()
             qDebug() << "bRawFormat && !m_pEngine->currFileIsAudio()";
             m_pTimeLabel->setPalette(textPalette);
             m_pTimeLabelend->setPalette(textPalette);
-            m_pFullscreentimelable->setPalette(textPalette);
-            m_pFullscreentimelableend->setPalette(textPalette);
+            m_pFullScreenTimeLabel->setPalette(textPalette);
+            m_pFullScreenTimeLabelend->setPalette(textPalette);
 
             m_pVolBtn->setButtonEnable(false);
         }
@@ -1918,8 +1918,8 @@ void ToolboxProxy::slotThemeTypeChanged()
             qDebug() << "bRawFormat";
             m_pTimeLabel->setPalette(textPalette);
             m_pTimeLabelend->setPalette(textPalette);
-            m_pFullscreentimelable->setPalette(textPalette);
-            m_pFullscreentimelableend->setPalette(textPalette);
+            m_pFullScreenTimeLabel->setPalette(textPalette);
+            m_pFullScreenTimeLabelend->setPalette(textPalette);
         }
         else {
             qDebug() << "else";
@@ -1928,8 +1928,8 @@ void ToolboxProxy::slotThemeTypeChanged()
 
             m_pTimeLabel->setPalette(textPalette);
             m_pTimeLabelend->setPalette(textPalette);
-            m_pFullscreentimelable->setPalette(textPalette);
-            m_pFullscreentimelableend->setPalette(textPalette);
+            m_pFullScreenTimeLabel->setPalette(textPalette);
+            m_pFullScreenTimeLabelend->setPalette(textPalette);
 
             m_pVolBtn->setButtonEnable(true);
         }
@@ -1940,8 +1940,8 @@ void ToolboxProxy::slotThemeTypeChanged()
 
         m_pTimeLabel->setPalette(textPalette);
         m_pTimeLabelend->setPalette(textPalette);
-        m_pFullscreentimelable->setPalette(textPalette);
-        m_pFullscreentimelableend->setPalette(textPalette);
+        m_pFullScreenTimeLabel->setPalette(textPalette);
+        m_pFullScreenTimeLabelend->setPalette(textPalette);
 
         m_pVolBtn->setButtonEnable(true);
     }
@@ -2182,17 +2182,17 @@ void ToolboxProxy::slotElapsedChanged()
     updateTimeInfo(static_cast<qint64>(url), elapsed, m_pTimeLabel, m_pTimeLabelend, true);
 
     qDebug() << "Updating fullscreen time display labels";
-    updateTimeInfo(static_cast<qint64>(url), elapsed, m_pFullscreentimelable, m_pFullscreentimelableend, false);
+    updateTimeInfo(static_cast<qint64>(url), elapsed, m_pFullScreenTimeLabel, m_pFullScreenTimeLabelend, false);
 
     QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     qDebug() << "Setting minimum widths for fullscreen time labels (Qt5)";
-    m_pFullscreentimelable->setMinimumWidth(fm.width(m_pFullscreentimelable->text()));
-    m_pFullscreentimelableend->setMinimumWidth(fm.width(m_pFullscreentimelableend->text()));
+    m_pFullScreenTimeLabel->setMinimumWidth(fm.width(m_pFullScreenTimeLabel->text()));
+    m_pFullScreenTimeLabelend->setMinimumWidth(fm.width(m_pFullScreenTimeLabelend->text()));
 #else
     qDebug() << "Setting minimum widths for fullscreen time labels (Qt6)";
-    m_pFullscreentimelable->setMinimumWidth(fm.horizontalAdvance(m_pFullscreentimelable->text()));
-    m_pFullscreentimelableend->setMinimumWidth(fm.horizontalAdvance(m_pFullscreentimelableend->text()));
+    m_pFullScreenTimeLabel->setMinimumWidth(fm.horizontalAdvance(m_pFullScreenTimeLabel->text()));
+    m_pFullScreenTimeLabelend->setMinimumWidth(fm.horizontalAdvance(m_pFullScreenTimeLabelend->text()));
 #endif
     qDebug() << "Updating movie progress display";
     updateMovieProgress();
@@ -2657,8 +2657,8 @@ void ToolboxProxy::updateButtonStates()
 
             m_pTimeLabel->setPalette(palette);             // 如果正在播放的视频是裸流置灰
             m_pTimeLabelend->setPalette(palette);
-            m_pFullscreentimelable->setPalette(palette);
-            m_pFullscreentimelableend->setPalette(palette);
+            m_pFullScreenTimeLabel->setPalette(palette);
+            m_pFullScreenTimeLabelend->setPalette(palette);
 
             m_pVolBtn->setButtonEnable(false);
         } else if (bRawFormat) {
@@ -2668,8 +2668,8 @@ void ToolboxProxy::updateButtonStates()
 
             m_pTimeLabel->setPalette(palette);
             m_pTimeLabelend->setPalette(palette);
-            m_pFullscreentimelable->setPalette(palette);
-            m_pFullscreentimelableend->setPalette(palette);
+            m_pFullScreenTimeLabel->setPalette(palette);
+            m_pFullScreenTimeLabelend->setPalette(palette);
         } else {
             qDebug() << "else";
             m_pProgBar->setEnabled(true);
@@ -2681,8 +2681,8 @@ void ToolboxProxy::updateButtonStates()
 
             m_pTimeLabel->setPalette(palette);
             m_pTimeLabelend->setPalette(palette);
-            m_pFullscreentimelable->setPalette(palette);
-            m_pFullscreentimelableend->setPalette(palette);
+            m_pFullScreenTimeLabel->setPalette(palette);
+            m_pFullScreenTimeLabelend->setPalette(palette);
 
             m_pVolBtn->setButtonEnable(true);
         }
@@ -2695,8 +2695,8 @@ void ToolboxProxy::updateButtonStates()
 
         m_pTimeLabel->setPalette(palette);
         m_pTimeLabelend->setPalette(palette);
-        m_pFullscreentimelable->setPalette(palette);
-        m_pFullscreentimelableend->setPalette(palette);
+        m_pFullScreenTimeLabel->setPalette(palette);
+        m_pFullScreenTimeLabelend->setPalette(palette);
 
          m_pVolBtn->setButtonEnable(true);
     }
@@ -2724,7 +2724,7 @@ void ToolboxProxy::updateFullState()
     qDebug() << "updateFullState";
     bool isFullscreen = window()->isFullScreen();
     qDebug() << "isFullscreen" << isFullscreen;
-    if (isFullscreen || m_pFullscreentimelable->isVisible()) {
+    if (isFullscreen || m_pFullScreenTimeLabel->isVisible()) {
         m_pFullScreenBtn->setIcon(QIcon::fromTheme("dcc_zoomout"));
         if (utils::check_wayland_env()) {
             qDebug() << "utils::check_wayland_env()";
@@ -3196,13 +3196,13 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *pPlaylist)
 QLabel *ToolboxProxy::getfullscreentimeLabel()
 {
     qDebug() << "getfullscreentimeLabel";
-    return m_pFullscreentimelable;
+    return m_pFullScreenTimeLabel;
 }
 
 QLabel *ToolboxProxy::getfullscreentimeLabelend()
 {
     qDebug() << "getfullscreentimeLabelend";
-    return m_pFullscreentimelableend;
+    return m_pFullScreenTimeLabelend;
 }
 
 bool ToolboxProxy::getbAnimationFinash()

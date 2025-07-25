@@ -918,7 +918,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (CompositingManager::get().platform() != Platform::Mips) {
         qDebug() << "Platform is not Mips. Initializing MovieProgressIndicator and QLabel for full screen time.";
         m_pProgIndicator = new MovieProgressIndicator(this);
-        m_pFullScreenTimeLable = new QLabel;
+        m_pFullScreenTimeLabel = new QLabel;
         qDebug() << "MovieProgressIndicator and QLabel initialized.";
     } else {
         qDebug() << "Platform is Mips. Skipping MovieProgressIndicator and QLabel initialization.";
@@ -932,16 +932,16 @@ MainWindow::MainWindow(QWidget *parent)
             m_pProgIndicator->updateMovieProgress(m_pEngine->duration(), m_pEngine->elapsed());
         });
 
-        m_pFullScreenTimeLable->setAttribute(Qt::WA_TranslucentBackground);
-        m_pFullScreenTimeLable->setWindowFlags(Qt::FramelessWindowHint);
-        m_pFullScreenTimeLable->setParent(this);
+        m_pFullScreenTimeLabel->setAttribute(Qt::WA_TranslucentBackground);
+        m_pFullScreenTimeLabel->setWindowFlags(Qt::FramelessWindowHint);
+        m_pFullScreenTimeLabel->setParent(this);
         m_pFullScreenTimeLayout = new QHBoxLayout;
         m_pFullScreenTimeLayout->addStretch();
         m_pFullScreenTimeLayout->addWidget(m_pToolbox->getfullscreentimeLabel());
         m_pFullScreenTimeLayout->addWidget(m_pToolbox->getfullscreentimeLabelend());
         m_pFullScreenTimeLayout->addStretch();
-        m_pFullScreenTimeLable->setLayout(m_pFullScreenTimeLayout);
-        m_pFullScreenTimeLable->close();
+        m_pFullScreenTimeLabel->setLayout(m_pFullScreenTimeLayout);
+        m_pFullScreenTimeLabel->close();
         qDebug() << "FullScreenTimeLabel configured and closed.";
     } else {
         qDebug() << "MovieProgressIndicator is null. Skipping related configurations.";
@@ -1000,7 +1000,7 @@ MainWindow::MainWindow(QWidget *parent)
             //播放切换时，更新音量dbus 当前的sinkInputPath
             if (m_pProgIndicator) {
                 qDebug() << "Player idle: Hiding full screen time label and progress indicator.";
-                m_pFullScreenTimeLable->close();
+                m_pFullScreenTimeLabel->close();
                 m_pProgIndicator->setVisible(false);
             }
             qDebug() << "Player idle: Disabling frame and play speed menus.";
@@ -1193,8 +1193,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
     m_pCommHintWid->setWM(m_bIsWM);
     connect(DWindowManagerHelper::instance(), &DWindowManagerHelper::hasBlurWindowChanged, this, &MainWindow::slotWMChanged);
-    m_pAnimationlable = new AnimationLabel(this, this);
-    m_pAnimationlable->setWM(m_bIsWM);
+    m_pAnimationlabel = new AnimationLabel(this, this);
+    m_pAnimationlabel->setWM(m_bIsWM);
 
     m_pPopupWid = new MessageWindow(this);
     m_pPopupWid->hide();
@@ -1212,7 +1212,7 @@ MainWindow::MainWindow(QWidget *parent)
             if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
                 if(m_pEngine && (m_pEngine->state() != PlayerEngine::Idle) && isFullScreen()) {
                     m_pProgIndicator->setVisible(value.toBool());
-                    m_pFullScreenTimeLable->setVisible(value.toBool());
+                    m_pFullScreenTimeLabel->setVisible(value.toBool());
                 }
             }
         }
@@ -1533,7 +1533,7 @@ void MainWindow::animatePlayState()
     if (!m_bInBurstShootMode && m_pEngine->state() == PlayerEngine::CoreState::Paused
             && !m_bMiniMode && !m_pMircastShowWidget->isVisible()) {
         qDebug() << "Pausing animation";
-        m_pAnimationlable->pauseAnimation();
+        m_pAnimationlabel->pauseAnimation();
     }
 }
 
@@ -2374,9 +2374,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
         QTimer::singleShot(nDelayTime, this, [ = ] {
             qDebug() << "nDelayTime";
-            if (m_pFullScreenTimeLable && !isFullScreen())
+            if (m_pFullScreenTimeLabel && !isFullScreen())
             {
-                m_pFullScreenTimeLable->close();
+                m_pFullScreenTimeLabel->close();
             }
             if (!bFromUI)
             {
@@ -2450,8 +2450,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         } else if (isFullScreen()) {
             qDebug() << "isFullScreen()";
             requestAction(ActionFactory::ToggleFullscreen);
-            if (m_pFullScreenTimeLable && !isFullScreen()) {
-                m_pFullScreenTimeLable->close();
+            if (m_pFullScreenTimeLabel && !isFullScreen()) {
+                m_pFullScreenTimeLabel->close();
             }
         } else {
             //当焦点在播放列表上按下Esc键，播放列表收起，焦点回到列表按钮上
@@ -2473,7 +2473,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         }
 
         //音量条控件打开时全屏位置异常，全屏时关掉音量条
-        m_pAnimationlable->hide();
+        m_pAnimationlabel->hide();
         m_pToolbox->closeAnyPopup();
 
         if (isFullScreen()) {
@@ -2492,9 +2492,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                         m_pTitlebar->setFixedWidth(m_lastRectInNormalMode.width());             //bug 39991
                 }
             }
-            if (m_pFullScreenTimeLable && !isFullScreen()) {
-                qDebug() << "m_pFullScreenTimeLable && !isFullScreen(), close";
-                m_pFullScreenTimeLable->close();
+            if (m_pFullScreenTimeLabel && !isFullScreen()) {
+                qDebug() << "m_pFullScreenTimeLabel && !isFullScreen(), close";
+                m_pFullScreenTimeLabel->close();
             }
         } else {
             qDebug() << "!isFullScreen()";
@@ -2525,10 +2525,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 #endif
                         qDebug() << "pixelsWidth";
                         pixelsWidth = qMax(117, pixelsWidth);
-                        m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
-                        qDebug() << "m_pFullScreenTimeLable->setGeometry";
-                        if (m_bShowTime) {
-                            m_pFullScreenTimeLable->show();
+                        m_pFullScreenTimeLabel->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
+                        qDebug() << "m_pFullScreenTimeLabel->setGeometry";
+                        if(m_bShowTime) {
+                            m_pFullScreenTimeLabel->show();
                         }
                     }
                 }
@@ -2973,7 +2973,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             if (m_pEngine->state() == PlayerEngine::Paused) {
                 qDebug() << "Resuming playback";
                 if (!m_bMiniMode) {
-                    m_pAnimationlable->playAnimation();
+                    m_pAnimationlabel->playAnimation();
                 }
                 QTimer::singleShot(160, [ = ]() {
                     m_pEngine->pauseResume();
@@ -3820,7 +3820,7 @@ void MainWindow::checkWarningMpvLogsChanged(const QString sPrefix, const QString
             //startPlayStateAnimation(true);
             if (!m_bMiniMode) {
                 qDebug() << "!m_bMiniMode";
-                m_pAnimationlable->playAnimation();
+                m_pAnimationlabel->playAnimation();
             }
             m_pEngine->pauseResume();
         });
@@ -4057,7 +4057,7 @@ void MainWindow::slotFontChanged(const QFont &/*font*/)
     QRect deskRect = qApp->primaryScreen()->availableGeometry();
 #endif
     qDebug() << "deskRect";
-    m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
+    m_pFullScreenTimeLabel->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
 #endif
 }
 
@@ -4106,7 +4106,7 @@ void MainWindow::slotWMChanged()
     qDebug() << "slotWMChanged";
     m_bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
 
-    m_pAnimationlable->setWM(m_bIsWM);
+    m_pAnimationlabel->setWM(m_bIsWM);
     m_pCommHintWid->setWM(m_bIsWM);
 }
 
@@ -4355,8 +4355,8 @@ void MainWindow::focusInEvent(QFocusEvent *pEvent)
     resumeToolsWindow();
 
     if(pEvent->lostFocus() && isFullScreen() &&
-            m_pProgIndicator && m_pFullScreenTimeLable) {
-        m_pFullScreenTimeLable->show();
+            m_pProgIndicator && m_pFullScreenTimeLabel) {
+        m_pFullScreenTimeLabel->show();
         m_pProgIndicator->setVisible(true);
     }
 
@@ -4366,8 +4366,8 @@ void MainWindow::focusInEvent(QFocusEvent *pEvent)
 void MainWindow::focusOutEvent(QFocusEvent *pEvent)
 {
     if(pEvent->lostFocus() && isFullScreen() &&
-            m_pProgIndicator && m_pFullScreenTimeLable) {
-        m_pFullScreenTimeLable->close();
+            m_pProgIndicator && m_pFullScreenTimeLabel) {
+        m_pFullScreenTimeLabel->close();
         m_pProgIndicator->setVisible(false);
     }
 
@@ -4383,7 +4383,7 @@ void MainWindow::hideEvent(QHideEvent *pEvent)
 void MainWindow::showEvent(QShowEvent *pEvent)
 {
     qDebug() << "showEvent";
-    m_pAnimationlable->raise();
+    m_pAnimationlabel->raise();
     m_pTitlebar->raise();
     m_pToolbox->raise();
     if (m_pPlaylist) {
@@ -4552,8 +4552,8 @@ void MainWindow::resizeEvent(QResizeEvent *pEvent)
     m_pMircastShowWidget->updateView();
     m_pMircastShowWidget->move(0, 0);
 
-    m_pAnimationlable->move(QPoint((width() - m_pAnimationlable->width()) / 2,
-                                   (height() - m_pAnimationlable->height()) / 2));
+    m_pAnimationlabel->move(QPoint((width() - m_pAnimationlabel->width()) / 2,
+                                   (height() - m_pAnimationlabel->height()) / 2));
     if(m_bMiniMode) {//迷你模式显示与半屏模式处理
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         int nScreenHeight = QApplication::desktop()->availableGeometry().height();
@@ -5161,7 +5161,7 @@ void MainWindow::toggleUIMode()
     }
     
     //迷你模式关闭动画及控件
-    m_pAnimationlable->hide();
+    m_pAnimationlabel->hide();
     m_pToolbox->closeAnyPopup();
     
     //判断窗口是否靠边停靠（靠边停靠不支持MINI模式）thx
@@ -5297,8 +5297,8 @@ void MainWindow::toggleUIMode()
             setWindowState(windowState() & ~Qt::WindowFullScreen);
             this->setWindowState(Qt::WindowNoState);
             setFocus();
-            if (m_pFullScreenTimeLable) {
-                m_pFullScreenTimeLable->close();
+            if (m_pFullScreenTimeLabel) {
+                m_pFullScreenTimeLabel->close();
             }
             if (utils::check_wayland_env()) {
                 m_pToolbox->updateFullState();
@@ -5374,9 +5374,9 @@ void MainWindow::toggleUIMode()
                     QRect deskRect = qApp->primaryScreen()->availableGeometry();
 #endif
                     pixelsWidth = qMax(117, pixelsWidth);
-                    m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
+                    m_pFullScreenTimeLabel->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
                     if(m_bShowTime) {
-                        m_pFullScreenTimeLable->show();
+                        m_pFullScreenTimeLabel->show();
                     }
                 }
             }
@@ -5638,13 +5638,13 @@ void MainWindow::initMember()
 {
     qDebug() << "initMember";
     m_pPopupWid = nullptr;
-    m_pFullScreenTimeLable = nullptr;             //全屏时右上角的影片进度
+    m_pFullScreenTimeLabel = nullptr;             //全屏时右上角的影片进度
     m_pFullScreenTimeLayout = nullptr;
     m_pTitlebar = nullptr;
     m_pToolbox = nullptr;
     m_pPlaylist = nullptr;
     m_pEngine = nullptr;
-    m_pAnimationlable = nullptr;
+    m_pAnimationlabel = nullptr;
     m_pProgIndicator = nullptr;   //全屏时右上角的系统时间
     m_pEventMonitor = nullptr;
     m_pEventListener = nullptr;
