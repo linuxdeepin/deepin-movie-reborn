@@ -88,7 +88,7 @@
 //#define SCREENSHOT_MENU_MENU QObject::tr("screenshotMenu")
 
 ////投屏界面
-#define MIRCAST_SUCCESSED          0
+#define MIRCAST_SUCCEEDED          0
 #define MIRCAST_EXIT              -1
 #define MIRCAST_CONNECTION_FAILED -3
 #define MIRCAST_DISCONNECTED   -4

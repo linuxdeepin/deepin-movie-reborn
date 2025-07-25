@@ -1294,7 +1294,7 @@ TEST(ToolBox, slotUpdateMircast)
     ToolboxProxy *toolboxProxy = w->toolbox();
     PlayerEngine *engine = w->engine();
     w->m_pMircastShowWidget->show();
-    toolboxProxy->slotUpdateMircast(MIRCAST_SUCCESSED, "test");
+    toolboxProxy->slotUpdateMircast(MIRCAST_SUCCEEDED, "test");
     QTest::qWait(100);
     w->m_pMircastShowWidget->show();
     toolboxProxy->slotUpdateMircast(MIRCAST_EXIT, "test");
@@ -1318,7 +1318,7 @@ TEST(ToolBox, slotUpdateMircast)
     mircastWgt->setMircastState(MircastWidget::Screening);
     mircastWgt->show();
     engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
-    toolboxProxy->slotUpdateMircast(MIRCAST_SUCCESSED, "test");
+    toolboxProxy->slotUpdateMircast(MIRCAST_SUCCEEDED, "test");
     QTest::qWait(500);
     mircastWgt->hide();
     engine->clearPlaylist();
