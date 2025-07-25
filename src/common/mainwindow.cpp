@@ -5855,7 +5855,7 @@ void MainWindow::slotUpdateMircastState(int state, QString msg)
 {
     qDebug() << "slotUpdateMircastState";
     switch (state) {
-    case MIRCAST_SUCCESSED: //投屏成功
+    case MIRCAST_SUCCEEDED: //投屏成功
     {
         qDebug() << "MIRCAST_SUCCESSED";
         mircastSuccess(msg);
