@@ -35,7 +35,7 @@ public:
     QMargins        shadowMargins       = QMargins(20, 20, 20, 20);
     QColor          borderColor         = QColor(0, 0, 0, static_cast<int>(0.2 * 255));
 
-    DLabel          *textLable          = nullptr;
+    DLabel          *textLabel          = nullptr;
     QFrame          *m_interFrame       = nullptr;
 
 
@@ -79,15 +79,15 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
         iconLabel->setPixmap(icon);
     }
 
-    d->textLable = new DLabel(text);
-    d->textLable->setObjectName("TipText");
-    d->textLable->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-    d->textLable->setWordWrap(false);
-    DFontSizeManager::instance()->bind(d->textLable, DFontSizeManager::T8);
-    d->textLable->setForegroundRole(DPalette::ToolTipText);
+    d->textLabel = new DLabel(text);
+    d->textLabel->setObjectName("TipText");
+    d->textLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    d->textLabel->setWordWrap(false);
+    DFontSizeManager::instance()->bind(d->textLabel, DFontSizeManager::T8);
+    d->textLabel->setForegroundRole(DPalette::ToolTipText);
 
     interlayout->addWidget(iconLabel, 0, Qt::AlignVCenter);
-    interlayout->addWidget(d->textLable, 0, Qt::AlignVCenter);
+    interlayout->addWidget(d->textLabel, 0, Qt::AlignVCenter);
     layout->addWidget(d->m_interFrame, 0, Qt::AlignVCenter);
 
     adjustSize();
@@ -138,7 +138,7 @@ void Tip::setText(const QString text)
     qDebug() << "Entering setText function";
     Q_D(const Tip);
     qDebug() << "Setting tip text:" << text;
-    d->textLable->setText(text);
+    d->textLabel->setText(text);
     m_strText = text;
     update();
 }
@@ -210,12 +210,12 @@ void Tip::paintEvent(QPaintEvent *)
     auto penWidthf = 1.0;
     const QPalette pal = QGuiApplication::palette();//this->palette();
     QColor background = pal.color(QPalette::ToolTipBase);
-    DPalette pa_name = DGuiApplicationHelper::instance()->palette(d->textLable);
+    DPalette pa_name = DGuiApplicationHelper::instance()->palette(d->textLabel);
     pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
     pa_name.setBrush(DPalette::ToolTipText, pa_name.color(DPalette::ToolTipText));
-    d->textLable->setForegroundRole(DPalette::Text);
-    d->textLable->setForegroundRole(DPalette::ToolTipText);
-    d->textLable->setPalette(pa_name);
+    d->textLabel->setForegroundRole(DPalette::Text);
+    d->textLabel->setForegroundRole(DPalette::ToolTipText);
+    d->textLabel->setPalette(pa_name);
     auto borderColor = d->borderColor;
     auto margin = 2.0;
     auto shadowMargins = QMarginsF(margin, margin, margin, margin);
@@ -292,13 +292,13 @@ void Tip::resetSize(const int maxWidth)
     Q_D(Tip);
     QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
     QFontMetrics fm(font);
-    auto w = fm.boundingRect(d->textLable->text()).width();
+    auto w = fm.boundingRect(d->textLabel->text()).width();
 
     if (w >= maxWidth - 14) {
         qDebug() << "w >= maxWidth - 14";
-        d->textLable->setWordWrap(true);
+        d->textLabel->setWordWrap(true);
         this->setFixedWidth(maxWidth);
-        d->textLable->setFixedWidth(maxWidth - 14);
+        d->textLabel->setFixedWidth(maxWidth - 14);
     }
     qDebug() << "Exiting resetSize function";
 }
