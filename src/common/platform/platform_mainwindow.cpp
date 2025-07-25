@@ -4925,7 +4925,7 @@ void Platform_MainWindow::slotInvalidFile(QString strFileName)
 void Platform_MainWindow::slotUpdateMircastState(int state, QString msg)
 {
     switch (state) {
-    case MIRCAST_SUCCESSED: //投屏成功
+    case MIRCAST_SUCCEEDED: //投屏成功
     {
         mircastSuccess(msg);
         emit frameMenuEnable(false);
