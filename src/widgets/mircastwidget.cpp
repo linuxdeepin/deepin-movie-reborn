@@ -359,8 +359,9 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
         m_mircastState = MircastState::Screening;
         if (m_connectDevice.deviceState == Connecting) {
             m_connectDevice.deviceState = MircastState::Screening;
-            emit mircastState(MIRCAST_SUCCESSED, m_connectDevice.miracastDevice.name);
+
             qDebug() << "Miracast connection successful";
+            emit mircastState(MIRCAST_SUCCEEDED, m_connectDevice.miracastDevice.name);
         }
         ItemWidget *item = m_listWidget->currentItemWidget();
         if(item)
@@ -368,7 +369,7 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
         m_attempts = 0;
     } else {
         if (duration > 0 && m_connectDevice.deviceState == Connecting) {
-            emit mircastState(MIRCAST_SUCCESSED, m_connectDevice.miracastDevice.name);
+            emit mircastState(MIRCAST_SUCCEEDED, m_connectDevice.miracastDevice.name);
         }
         qWarning() << "Miracast connection failed - Attempts:" << m_attempts;
         if (m_attempts >= MAXMIRCAST * 10) {
