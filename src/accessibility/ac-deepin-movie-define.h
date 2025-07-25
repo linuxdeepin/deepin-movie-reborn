@@ -91,7 +91,7 @@
 #define MIRCAST_SUCCEEDED          0
 #define MIRCAST_EXIT              -1
 #define MIRCAST_CONNECTION_FAILED -3
-#define MIRCAST_DISCONNECTIONED   -4
+#define MIRCAST_DISCONNECTED   -4
 
 
 
