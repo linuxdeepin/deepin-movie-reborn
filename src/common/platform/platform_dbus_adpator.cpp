@@ -82,7 +82,7 @@ void Platform_ApplicationAdaptor::initMember()
     m_pMainWindow = nullptr;
 }
 
-QVariant Platform_ApplicationAdaptor::redDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
+QVariant Platform_ApplicationAdaptor::readDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
 {
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,
@@ -100,7 +100,7 @@ QVariant Platform_ApplicationAdaptor::redDBusProperty(const QString &sService, c
 }
 
 //cppcheck 单元测试在使用
-QVariant Platform_ApplicationAdaptor::redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
+QVariant Platform_ApplicationAdaptor::readDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,
