@@ -599,7 +599,7 @@ void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
     }
 }
 
-QVariant redDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
+QVariant readDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
 {
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,
@@ -617,7 +617,7 @@ QVariant redDBusProperty(const QString &sService, const QString &sPath, const QS
 void switchToDefaultSink()
 {
 
-    QVariant v = redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
+    QVariant v = readDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
                                              "com.deepin.daemon.Audio", "SinkInputs");
 
     if (!v.isValid())
@@ -628,7 +628,7 @@ void switchToDefaultSink()
     int inputIndex = -1; //当前音乐的索引值
     int curSinkIndex = -1;
     for (auto curPath : allSinkInputsList) {
-        QVariant nameV = redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
+        QVariant nameV = readDBusProperty("com.deepin.daemon.Audio", curPath.path(),
                                                      "com.deepin.daemon.Audio.SinkInput", "Name");
 
         if (!nameV.isValid() || nameV.toString() != QObject::tr("Movie"))
@@ -642,7 +642,7 @@ void switchToDefaultSink()
         } else
             return;
 
-        QVariant sinkV = redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
+        QVariant sinkV = readDBusProperty("com.deepin.daemon.Audio", curPath.path(),
                                                      "com.deepin.daemon.Audio.SinkInput", "SinkIndex");
         if (!sinkV.isValid())
             continue;
@@ -653,7 +653,7 @@ void switchToDefaultSink()
         return;
 
     //获取默认输出设备
-    QVariant varsink = redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
+    QVariant varsink = readDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
                                                    "com.deepin.daemon.Audio", "DefaultSink");
     if (!varsink.isValid())
         return;

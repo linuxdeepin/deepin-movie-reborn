@@ -21,7 +21,7 @@ public:
      * @param 获取的参数名
      * @return 获取参数的值
      */
-    static QVariant redDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface = QString(), const char *pPropert = "");
+    static QVariant readDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface = QString(), const char *pPropert = "");
     /**
      * @brief 调用d-bus方法
      * @param d-bus服务名
@@ -30,7 +30,7 @@ public:
      * @param d-bus的方法
      * @return 方法的返回值
      */
-    static QVariant redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod);
+    static QVariant readDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod);
 };
 
 #endif // DBUSUTILS_H

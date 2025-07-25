@@ -20,7 +20,7 @@ DBusUtils::DBusUtils()
 
 }
 
-QVariant DBusUtils::redDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
+QVariant DBusUtils::readDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
 {
     // 创建QDBusInterface接口
     mutex.lock();
@@ -40,7 +40,7 @@ QVariant DBusUtils::redDBusProperty(const QString &sService, const QString &sPat
     mutex.unlock();
     return  v;
 }
-QVariant DBusUtils::redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
+QVariant DBusUtils::readDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,

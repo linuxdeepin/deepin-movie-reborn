@@ -102,7 +102,7 @@ QString Platform_VolumeSlider::readSinkInputPath()
 {
     QString strPath = "";
 
-    QVariant v = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
+    QVariant v = ApplicationAdaptor::readDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
                                                      "com.deepin.daemon.Audio", "SinkInputs");
 
     if (!v.isValid())
@@ -111,7 +111,7 @@ QString Platform_VolumeSlider::readSinkInputPath()
     QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
 
     for (auto curPath : allSinkInputsList) {
-        QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
+        QVariant nameV = ApplicationAdaptor::readDBusProperty("com.deepin.daemon.Audio", curPath.path(),
                                                              "com.deepin.daemon.Audio.SinkInput", "Name");
         QString strMovie = QObject::tr("Movie");
         if (!nameV.isValid() || (!nameV.toString().contains(strMovie, Qt::CaseInsensitive) && !nameV.toString().contains("deepin movie", Qt::CaseInsensitive)))
