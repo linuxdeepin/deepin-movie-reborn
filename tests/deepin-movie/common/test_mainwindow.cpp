@@ -1303,7 +1303,7 @@ TEST(ToolBox, slotUpdateMircast)
     toolboxProxy->slotUpdateMircast(MIRCAST_CONNECTION_FAILED, "test");
     w->m_pMircastShowWidget->show();
     QTest::qWait(100);
-    toolboxProxy->slotUpdateMircast(MIRCAST_DISCONNECTIONED, "test");
+    toolboxProxy->slotUpdateMircast(MIRCAST_DISCONNECTED, "test");
     QTest::qWait(100);
     w->m_pMircastShowWidget->hide();
     //投屏加载音乐
