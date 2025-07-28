@@ -874,6 +874,8 @@ void PlaylistModel::playNext(bool fromUser)
                 _current = _last;
                 tryPlayCurrent(true);
             } else {
+                // 等待播放状态的真正结束，避免时序问题
+                _engine->waitLastEnd();
                 // replay current
                 tryPlayCurrent(true);
             }
