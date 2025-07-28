@@ -1022,6 +1022,8 @@ void PlaylistModel::playNext(bool fromUser)
                 qDebug() << "Engine idle, playing current item at position:" << _current;
                 tryPlayCurrent(true);
             } else {
+                // 等待播放状态的真正结束，避免时序问题
+                _engine->waitLastEnd();
                 qDebug() << "Replaying current item in single loop mode";
                 tryPlayCurrent(true);
             }
