@@ -186,7 +186,7 @@ void killOldMovie()
         QStringList parts = line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
 #endif
         if (parts.size() < 3) continue;
-        if (!parts[6].startsWith("deepin-movie")) continue;
+        if (!parts[6].contains("deepin-movie")) continue;
 
         int pid = parts[0].toInt();
         if(QCoreApplication::applicationPid() == pid) continue;
@@ -444,18 +444,10 @@ int main(int argc, char *argv[])
     if (singleton && !runSingleInstance()) {
         qDebug() << "Singleton mode enabled and another instance running.";
         if (clm.isSet("restart")) {
-            qInfo() << "Restart requested - waiting for old instance to terminate";
-            qDebug() << "Restart option is set.";
-            sleep(2);
-            qDebug() << "Waited for 2 seconds.";
             qWarning() << "killOldMovie";
-            if (!runSingleInstance()) {
-                qWarning() << "Failed to acquire single instance lock - killing old instance";
-                qDebug() << "Failed to acquire single instance lock during restart, killing old movie.";
-                killOldMovie();
-            } else {
-                qDebug() << "Successfully acquired single instance lock after restart wait.";
-            }
+            killOldMovie();
+            sleep(1);
+            runSingleInstance();
         } else {
             qDebug() << "Restart option not set - forwarding request to existing instance.";
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
