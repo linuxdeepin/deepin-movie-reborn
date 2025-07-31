@@ -4740,13 +4740,13 @@ void MainWindow::sleepStateChanged(bool bSleep)
         if (dconfig->value("RestartAfterWakeUp").toBool()) {
             const auto &movieInfo = engine()->playlist().currentInfo().mi;
             PlayerEngine::CoreState state = engine()->state();
+            dconfig->setValue("PausedOnPlay", state == PlayerEngine::Paused);  // 休眠时会暂停，所以这里恒为true
             if (state != PlayerEngine::Idle) {
                 Settings::get().settings()->setOption("set.start.crash", "2");
-                qApp->exit();
-                qWarning() << movieInfo.filePath;
+                m_pEngine->savePlaybackPosition();
+                qInfo() << "restart deepin-movie and continue --- " << movieInfo.filePath;
                 QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart" << movieInfo.filePath);
             }
-            dconfig->setValue("PausedOnPlay", state == PlayerEngine::Paused);  // 休眠时会暂停，所以这里恒为true
         }
     }
     delete dconfig;

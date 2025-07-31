@@ -155,7 +155,7 @@ void killOldMovie()
     for (const QString &line : lines) {
         QStringList parts = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
         if (parts.size() < 3) continue;
-        if (!parts[6].startsWith("deepin-movie")) continue;
+        if (!parts[6].contains("deepin-movie")) continue;
 
         int pid = parts[0].toInt();
         if(QCoreApplication::applicationPid() == pid) continue;
@@ -339,12 +339,10 @@ int main(int argc, char *argv[])
     }
     if (singleton && !runSingleInstance()) {
         if (clm.isSet("restart")) {
-            sleep(2);
             qWarning() << "killOldMovie";
-            if (!runSingleInstance()) {
-                killOldMovie();
-            }
-
+            killOldMovie();
+            sleep(1);
+            runSingleInstance();
         } else {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
             if (clm.isSet("functioncall")) {
