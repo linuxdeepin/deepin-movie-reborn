@@ -4382,6 +4382,20 @@ void MainWindow::paintEvent(QPaintEvent *pEvent)
 
 void MainWindow::toggleUIMode()
 {
+    // 对于最大化的窗口，需要先恢复至正常窗口，再进行迷你模式的操作
+    // 因为有个时序的问题，避免窗口跳动引起用户不适，所以加入hide和show操作
+    if (!m_bMiniMode && isMaximized() && !isFullScreen()) {
+        qInfo() << "Toggle mini mode, now is Maximized, we need show normal first.";
+        m_nStateBeforeMiniMode |= SBEM_Maximized;
+        showNormal();
+        hide();
+        QTimer::singleShot(100, [&] {
+            toggleUIMode();
+            show();
+        });
+        return;
+    }
+
     //迷你模式关闭动画及控件
     m_pAnimationlabel->hide();
     m_pToolbox->closeAnyPopup();
@@ -4486,7 +4500,7 @@ void MainWindow::toggleUIMode()
         updateSizeConstraints();
         //设置等比缩放
         setEnableSystemResize(false);
-        m_nStateBeforeMiniMode = SBEM_None;
+        //m_nStateBeforeMiniMode = SBEM_None;
 
         if (isFullScreen()) {
             m_nStateBeforeMiniMode |= SBEM_Fullscreen;
@@ -4499,9 +4513,6 @@ void MainWindow::toggleUIMode()
             if (utils::check_wayland_env()) {
                 m_pToolbox->updateFullState();
             }
-        } else if (isMaximized()) {
-            m_nStateBeforeMiniMode |= SBEM_Maximized;
-            showNormal();
         } else {
             m_lastRectInNormalMode = geometry();
         }
@@ -4527,23 +4538,9 @@ void MainWindow::toggleUIMode()
             }
         }
 
-        QRect geom = {0, 0, 0, 0};
-        if (m_lastRectInNormalMode.isValid()) {
-            geom = m_lastRectInNormalMode;
-        }
-
-        geom.setSize(sz);
-        setGeometry(geom);
-        if (geom.x() < 0) {
-            geom.moveTo(0, geom.y());
-        }
-        if (geom.y() < 0) {
-            geom.moveTo(geom.x(), 0);
-        }
-
+        setFixedSize(sz);
         QRect deskGeom = qApp->desktop()->availableGeometry(this);
-        move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
-        setFixedSize(geom.width(), geom.height());
+        move(deskGeom.x() + (deskGeom.width() - sz.width()) / 2, deskGeom.y() + (deskGeom.height() - sz.height()) / 2); //迷你模式下窗口居中 by zhuyuliang
 
         m_pMiniPlayBtn->move(sz.width() - 12 - m_pMiniPlayBtn->width(),
                              sz.height() - 10 - m_pMiniPlayBtn->height());
@@ -4563,7 +4560,11 @@ void MainWindow::toggleUIMode()
             } else {
                 resizeByConstraints();
             }
-            showMaximized();
+            hide();
+            // 由于时序问题，延迟最大化
+            QTimer::singleShot(100, [&] {
+                showMaximized();
+            });
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
             setWindowState(windowState() | Qt::WindowFullScreen);
             if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
