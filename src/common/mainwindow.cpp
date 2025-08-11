@@ -2142,7 +2142,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         m_bWindowAbove = !m_bWindowAbove;
         if (!utils::check_wayland_env()) {
             my_setStayOnTop(this, m_bWindowAbove);
-            show();
+            //show(); // 原本就是show状态，不用再次调用
         } else {
             //wayland 置顶实现
             QFunctionPointer setWindowProperty = qApp->platformFunction("_d_setWindowProperty");
@@ -4390,8 +4390,8 @@ void MainWindow::toggleUIMode()
         showNormal();
         hide();
         QTimer::singleShot(100, [&] {
-            toggleUIMode();
             show();
+            toggleUIMode();
         });
         return;
     }
@@ -4560,7 +4560,6 @@ void MainWindow::toggleUIMode()
             } else {
                 resizeByConstraints();
             }
-            hide();
             // 由于时序问题，延迟最大化
             QTimer::singleShot(100, [&] {
                 showMaximized();
