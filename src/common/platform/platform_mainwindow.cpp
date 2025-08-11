@@ -2169,7 +2169,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
     case ActionFactory::ActionKind::WindowAbove: {
         m_bWindowAbove = !m_bWindowAbove;
         my_setStayOnTop(this, m_bWindowAbove);
-        show();
+        //show(); // 原本就是show状态，不用再次调用
         if (!bFromUI) {
             reflectActionToUI(actionKind);
         }
@@ -4408,8 +4408,8 @@ void Platform_MainWindow::toggleUIMode()
         showNormal();
         hide();
         QTimer::singleShot(100, [&] {
-            toggleUIMode();
             show();
+            toggleUIMode();
         });
         return;
     }
@@ -4518,7 +4518,6 @@ void Platform_MainWindow::toggleUIMode()
             } else {
                 resizeByConstraints();
             }
-            hide();
             // 由于时序问题，延迟最大化
             QTimer::singleShot(100, [&] {
                 showMaximized();
