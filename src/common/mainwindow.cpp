@@ -4876,7 +4876,6 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
         qDebug() << "insideToolsArea(pEvent->pos())";
         return;
     }
-        return;
 
     if (utils::check_wayland_env()) {
         qDebug() << "utils::check_wayland_env()";
