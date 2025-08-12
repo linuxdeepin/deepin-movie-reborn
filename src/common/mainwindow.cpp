@@ -2392,7 +2392,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         if (!utils::check_wayland_env()) {
             qDebug() << "!utils::check_wayland_env()";
             my_setStayOnTop(this, m_bWindowAbove);
-            show();
         } else {
             //wayland 置顶实现
             QFunctionPointer setWindowProperty = qApp->platformFunction("_d_setWindowProperty");
@@ -5159,6 +5158,19 @@ void MainWindow::paintEvent(QPaintEvent *pEvent)
 void MainWindow::toggleUIMode()
 {
     qInfo() << "Toggling UI mode, current mini mode:" << m_bMiniMode;
+    // 对于最大化的窗口，需要先恢复至正常窗口，再进行迷你模式的操作
+    // 因为有个时序的问题，避免窗口跳动引起用户不适，所以加入hide和show操作
+    if (!m_bMiniMode && isMaximized() && !isFullScreen()) {
+        qInfo() << "Toggle mini mode, now is Maximized, we need show normal first.";
+        m_nStateBeforeMiniMode |= SBEM_Maximized;
+        showNormal();
+        hide();
+        QTimer::singleShot(100, [&] {
+            show();
+            toggleUIMode();
+        });
+        return;
+    }
     
     //迷你模式关闭动画及控件
     m_pAnimationlable->hide();
@@ -5289,7 +5301,7 @@ void MainWindow::toggleUIMode()
         updateSizeConstraints();
         //设置等比缩放
         setEnableSystemResize(false);
-        m_nStateBeforeMiniMode = SBEM_None;
+        //m_nStateBeforeMiniMode = SBEM_None;
 
         if (isFullScreen()) {
             qDebug() << "isFullScreen()";
@@ -5303,10 +5315,6 @@ void MainWindow::toggleUIMode()
             if (utils::check_wayland_env()) {
                 m_pToolbox->updateFullState();
             }
-        } else if (isMaximized()) {
-            qDebug() << "isMaximized()";
-            m_nStateBeforeMiniMode |= SBEM_Maximized;
-            showNormal();
         } else {
             qDebug() << "else Max";
             m_lastRectInNormalMode = geometry();
@@ -5334,27 +5342,13 @@ void MainWindow::toggleUIMode()
             }
         }
 
-        QRect geom = {0, 0, 0, 0};
-        if (m_lastRectInNormalMode.isValid()) {
-            geom = m_lastRectInNormalMode;
-        }
-
-        geom.setSize(sz);
-        setGeometry(geom);
-        if (geom.x() < 0) {
-            geom.moveTo(0, geom.y());
-        }
-        if (geom.y() < 0) {
-            geom.moveTo(geom.x(), 0);
-        }
-
+        setFixedSize(sz);
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QRect deskGeom = QGuiApplication::primaryScreen()->availableGeometry();
 #else
         QRect deskGeom = QApplication::desktop()->availableGeometry(this);
 #endif
-        move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
-        setFixedSize(geom.width(), geom.height());
+        move(deskGeom.x() + (deskGeom.width() - sz.width()) / 2, deskGeom.y() + (deskGeom.height() - sz.height()) / 2); //迷你模式下窗口居中 by zhuyuliang
 
         m_pMiniPlayBtn->move(sz.width() - 12 - m_pMiniPlayBtn->width(),
                              sz.height() - 10 - m_pMiniPlayBtn->height());
@@ -5363,7 +5357,7 @@ void MainWindow::toggleUIMode()
     } else {
         qDebug() << "!m_bMiniMode";
         m_pCommHintWid->setAnchorPoint(QPoint(30, 58));
-	QRect tmp = m_lastRectInNormalMode;
+        QRect tmp = m_lastRectInNormalMode;
         this->setMinimumSize(614, 500);
         this->setMaximumSize(QSize(QWIDGETSIZE_MAX-1, QWIDGETSIZE_MAX-1));
         m_lastRectInNormalMode = tmp;
@@ -5376,7 +5370,10 @@ void MainWindow::toggleUIMode()
             } else {
                 resizeByConstraints();
             }
-            showMaximized();
+            // 由于时序问题，延迟最大化
+            QTimer::singleShot(100, [&] {
+                showMaximized();
+            });
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
             qDebug() << "m_nStateBeforeMiniMode & SBEM_Fullscreen";
             setWindowState(windowState() | Qt::WindowFullScreen);
