@@ -611,6 +611,7 @@ mpv_handle *MpvProxy::mpv_init()
     my_set_property(pHandle, "screenshot-template", "deepin-movie-shot%n");
     my_set_property(pHandle, "screenshot-directory", "/tmp");
     my_set_property(m_handle, "vd-queue-enable","no");
+    my_set_property(pHandle, "stop-screensaver", "no"); // 屏幕保护逻辑影院自己控制，不由mpv控制
 
 #ifndef _LIBDMR_
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
