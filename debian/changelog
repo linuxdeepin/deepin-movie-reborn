@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.5.24) unstable; urgency=medium
+
+  * chore: Add Lao translation support for deepin-movie
+
+ -- dengzhongyuan <dengzhongyuan@uniontech.com>  Wed, 13 Aug 2025 14:10:51 +0800
+
 deepin-movie-reborn (6.5.23) unstable; urgency=medium
 
   * chore: Add new Lao translation file
