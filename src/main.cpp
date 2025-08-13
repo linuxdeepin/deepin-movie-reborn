@@ -232,6 +232,7 @@ int main(int argc, char *argv[])
         qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
         //qputenv("_d_disableDBusFileDialog", "true");
         //setenv("PULSE_PROP_media.role", "video", 1); // 设置该属性后,pulseAudio会将所有video角色同步音量和禁音状态。 例如，VLC中设置静音后，影院也会同步禁音
+        setenv("QT_WAYLAND_DISABLE_RESIZECHECK", "1", 1); //临时设置该变量，用以egl窗口主动resize，避免驱动返回错误大小导致不resize的问题,如果QtWayland解决了commit问题，可以考虑移除
 #ifndef __x86_64__
         QSurfaceFormat format;
         format.setRenderableType(QSurfaceFormat::OpenGLES);
