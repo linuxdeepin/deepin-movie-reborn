@@ -781,6 +781,7 @@ mpv_handle *MpvProxy::mpv_init()
     my_set_property(pHandle, "sub-border-size", 0);
     my_set_property(pHandle, "screenshot-template", "deepin-movie-shot%n");
     my_set_property(pHandle, "screenshot-directory", "/tmp");
+    my_set_property(pHandle, "stop-screensaver", "no"); // 屏幕保护逻辑影院自己控制，不由mpv控制
     qDebug() << "DEBUG: Basic MPV properties set.";
 
 #ifndef _LIBDMR_
