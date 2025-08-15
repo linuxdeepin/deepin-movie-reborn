@@ -199,7 +199,6 @@ void killOldMovie()
         QDateTime startTime = QDateTime::fromString(time, "dd HH:mm:ss");
 
         if (earlierProcessPids.isEmpty() || startTime < earliestStartTime) {
-            earlierProcessPids.clear();
             earlierProcessPids << QString::number(pid);
             earliestStartTime = startTime;
         }
@@ -447,8 +446,11 @@ int main(int argc, char *argv[])
         if (clm.isSet("restart")) {
             qWarning() << "killOldMovie";
             killOldMovie();
-            sleep(1);
-            runSingleInstance();
+            sleep(2);
+            if (!runSingleInstance()) {
+                qCritical() << "Can not restart deepin-movie.";
+                return 0;
+            }
         } else {
             qDebug() << "Restart option not set - forwarding request to existing instance.";
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
