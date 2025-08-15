@@ -412,6 +412,9 @@ int main(int argc, char *argv[])
         QDBusConnection::sessionBus().registerService("com.deepin.movie");
         QDBusConnection::sessionBus().registerObject("/", &mw);
         getEncodeRanderConfigInfo();
+
+        if (clm.isSet("restart"))
+            mw.restoreWindowGeometry();
         return app->exec();
     } else {
         dmr::Platform_MainWindow platform_mw;

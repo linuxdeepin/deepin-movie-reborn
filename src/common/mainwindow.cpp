@@ -2877,6 +2877,7 @@ void MainWindow::handleSettings(DSettingsDialog *dsd)
         msgBox.addButton(tr("Restart"), true, DDialog::ButtonType::ButtonWarning);
         msgBox.setOnButtonClickedClose(true);
         if (msgBox.exec() == 1) {
+            saveWindowGeometry();
             Settings::get().settings()->setOption("set.start.crash", "2");
             qApp->exit();
             QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
@@ -2901,6 +2902,7 @@ void MainWindow::handleSettings(DSettingsDialog *dsd)
                 msgBox.addButton(tr("Restart"), true, DDialog::ButtonType::ButtonWarning);
                 msgBox.setOnButtonClickedClose(true);
                 if (msgBox.exec() == 1) {
+                    saveWindowGeometry();
                     Settings::get().settings()->setOption("set.start.crash", "2");
                     qApp->exit();
                     QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart");
@@ -4741,6 +4743,9 @@ void MainWindow::sleepStateChanged(bool bSleep)
             const auto &movieInfo = engine()->playlist().currentInfo().mi;
             PlayerEngine::CoreState state = engine()->state();
             dconfig->setValue("PausedOnPlay", state == PlayerEngine::Paused);  // 休眠时会暂停，所以这里恒为true
+
+            // 保存窗口几何信息用于重启后恢复
+            saveWindowGeometry();
             if (state != PlayerEngine::Idle) {
                 Settings::get().settings()->setOption("set.start.crash", "2");
                 m_pEngine->savePlaybackPosition();
@@ -4773,6 +4778,7 @@ void MainWindow::lockStateChanged(bool bLock)
 {
     qInfo() << __func__ << bLock;
     malloc_trim(0);
+
     //锁屏退出投屏
     if(bLock && m_pMircastShowWidget && m_pMircastShowWidget->isVisible()) {
         slotExitMircast();
@@ -5174,6 +5180,7 @@ MainWindow::~MainWindow()
         }
     }
     m_pEngine->savePlaybackPosition();
+
     if (m_pEventListener) {
         this->windowHandle()->removeEventFilter(m_pEventListener);
         delete m_pEventListener;
@@ -5211,6 +5218,58 @@ MainWindow::~MainWindow()
     if (m_pShortcutViewProcess) {
         m_pShortcutViewProcess->deleteLater();
         m_pShortcutViewProcess = nullptr;
+    }
+}
+
+void MainWindow::saveWindowGeometry()
+{
+    if (!m_bMiniMode) {
+        QRect geometry = this->geometry();
+        Settings::get().setInternalOption("window_state", QVariant(this->windowState()));
+        Settings::get().setInternalOption("window_width", geometry.width());
+        Settings::get().setInternalOption("window_height", geometry.height());
+        Settings::get().setInternalOption("window_x", geometry.x());
+        Settings::get().setInternalOption("window_y", geometry.y());
+        qInfo() << "Saved window geometry before restart:" << geometry;
+    }
+}
+
+void MainWindow::restoreWindowGeometry()
+{
+    // 从配置中恢复窗口几何信息
+    Qt::WindowState state = Settings::get().internalOption("window_state").value<Qt::WindowState>();
+    int width = Settings::get().internalOption("window_width").toInt();
+    int height = Settings::get().internalOption("window_height").toInt();
+    int x = Settings::get().internalOption("window_x").toInt();
+    int y = Settings::get().internalOption("window_y").toInt();
+
+    // 验证几何信息的有效性
+    if (width > 0 && height > 0 && x >= -1 && y >= -1) {
+        // 检查屏幕边界
+        QRect screenGeometry = qApp->desktop()->availableGeometry();
+        if (x < 0 || y < 0) {
+            // 如果坐标无效，居中显示
+            x = screenGeometry.x() + (screenGeometry.width() - width) / 2;
+            y = screenGeometry.y() + (screenGeometry.height() - height) / 2;
+        } else if (x + width > screenGeometry.right() || y + height > screenGeometry.bottom()) {
+            // 如果超出屏幕边界，调整到可见区域
+            if (x + width > screenGeometry.right()) {
+                x = screenGeometry.right() - width;
+            }
+            if (y + height > screenGeometry.bottom()) {
+                y = screenGeometry.bottom() - height;
+            }
+            if (x < screenGeometry.x()) x = screenGeometry.x();
+            if (y < screenGeometry.y()) y = screenGeometry.y();
+        }
+
+        // 设置窗口几何
+        setGeometry(x, y, width, height);
+
+        if (state != Qt::WindowNoState)
+            setWindowState(state);
+
+        qInfo() << "Restored window geometry:" << QRect(x, y, width, height);
     }
 }
 #include "mainwindow.moc"
