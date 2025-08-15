@@ -1274,7 +1274,7 @@ void MainWindow::onWindowStateChanged()
     update();
 
     if (isMinimized()) {
-        if (m_pPlaylist->state() == PlaylistWidget::Opened) {
+        if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Opened) {
             m_pPlaylist->togglePopup(false);
         }
     }
@@ -4738,7 +4738,8 @@ void MainWindow::sleepStateChanged(bool bSleep)
 #ifdef DTKCORE_CLASS_DConfigFile
     DConfig *dconfig = DConfig::create("org.deepin.movie","org.deepin.movie.restart");
 
-    if(dconfig && dconfig->isValid() && dconfig->keyList().contains("RestartAfterWakeUp") && !bSleep) {
+    if(dconfig && dconfig->isValid() && dconfig->keyList().contains("RestartAfterWakeUp") && !bSleep && m_bStartSleep) {
+        m_bStartSleep = bSleep;
         if (dconfig->value("RestartAfterWakeUp").toBool()) {
             const auto &movieInfo = engine()->playlist().currentInfo().mi;
             PlayerEngine::CoreState state = engine()->state();
