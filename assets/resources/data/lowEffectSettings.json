@@ -142,6 +142,41 @@
                             "type": "checkbox",
                             "hide": true,
                             "default": true
+                        },
+                        {
+                            "key": "window_width",
+                            "name": "Window Width",
+                            "type": "lineedit",
+                            "hide": true,
+                            "default": 650
+                        },
+                        {
+                            "key": "window_height",
+                            "name": "Window Height",
+                            "type": "lineedit",
+                            "hide": true,
+                            "default": 800
+                        },
+                        {
+                            "key": "window_x",
+                            "name": "Window X Position",
+                            "type": "lineedit",
+                            "hide": true,
+                            "default": 0
+                        },
+                        {
+                            "key": "window_y",
+                            "name": "Window Y Position",
+                            "type": "lineedit",
+                            "hide": true,
+                            "default": 0
+                        },
+                        {
+                            "key": "window_state",
+                            "name": "Window State",
+                            "type": "lineedit",
+                            "hide": true,
+                            "default": 0
                         }
                     ]
                 },

@@ -403,6 +403,7 @@ public slots:
      * @brief slotExitMircast 退出投屏槽函数
      */
     void slotExitMircast();
+    void restoreWindowGeometry();
 
 protected:
     void showEvent(QShowEvent *pEvent) override;
@@ -499,6 +500,7 @@ private:
      */
     void mircastSuccess(QString name);
     void exitMircast();
+    void saveWindowGeometry();
 
     /**
      * @brief 使用dbus获取当前机器CPU型号
