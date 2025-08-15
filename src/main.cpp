@@ -562,6 +562,9 @@ int main(int argc, char *argv[])
         QDBusConnection::sessionBus().registerObject("/", &mw);
         getDecodeConfigInfo();
 
+        if (clm.isSet("restart"))
+            mw.restoreWindowGeometry();
+
         int ret = app->exec();
         if (ret == 2)
             execv( app->applicationFilePath().toUtf8().data(), nullptr);
