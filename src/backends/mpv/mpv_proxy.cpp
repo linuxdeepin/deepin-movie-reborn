@@ -619,7 +619,7 @@ mpv_handle *MpvProxy::mpv_init()
 #endif
         if (utils::check_wayland_env()) {
             qInfo() << "V25 set ao auto";
-            my_set_property(pHandle, "ao", "auto");
+            my_set_property(pHandle, "ao", "sdl");
         }
 
         if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
