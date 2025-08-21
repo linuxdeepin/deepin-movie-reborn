@@ -115,8 +115,8 @@ class RefreButtonWidget: public QWidget
 public:
     RefreButtonWidget(QWidget *parent = nullptr);
 
-    void refershTimeout();
-    void refershStart();
+    void refreshTimeout();
+    void refreshStart();
 
 protected:
     void mouseReleaseEvent(QMouseEvent *pEvent) override;
