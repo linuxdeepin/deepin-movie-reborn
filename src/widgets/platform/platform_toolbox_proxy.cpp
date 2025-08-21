@@ -236,7 +236,7 @@ public:
      */
    Platform_ViewProgBar(DMRSlider *m_pProgBar, QWidget *parent = nullptr)
     {
-        initMemeber();
+        initMember();
         //传入进度条，以便重新获取胶片进度条长度 by ZhuYuliang
         this->m_pProgBar = m_pProgBar;
         _parent = parent;
@@ -554,7 +554,7 @@ private:
         return span/* * (p.x())*/;
     }
 
-    void initMemeber()
+    void initMember()
     {
         m_pEngine = nullptr;
         _parent = nullptr;
