@@ -239,7 +239,7 @@ void MircastWidget::togglePopup()
         m_bIsToggling = true;
         show();
         raise();
-        m_refreshBtn->refershStart();
+        m_refreshBtn->refreshStart();
         m_bIsToggling = false;
         qDebug() << "Widget shown, raised, refresh started, toggling flag reset.";
     }
@@ -273,7 +273,7 @@ void MircastWidget::slotSearchTimeout()
         qDebug() << "Device list is not empty, updating state to ListExhibit.";
     }
 
-    m_refreshBtn->refershTimeout();
+    m_refreshBtn->refreshTimeout();
     update();
     qDebug() << "Refresh button timeout and widget updated.";
     qDebug() << "Exiting slotSearchTimeout().";
@@ -743,26 +743,26 @@ RefreButtonWidget::RefreButtonWidget(QWidget *parent)
     qDebug() << "Exiting RefreButtonWidget constructor.";
 }
 
-void RefreButtonWidget::refershTimeout()
+void RefreButtonWidget::refreshTimeout()
 {
-    qDebug() << "Entering refershTimeout().";
+    qDebug() << "Entering refreshTimeout().";
     m_spinner->stop();
     m_spinner->hide();
     m_refreBtn->show();
     qDebug() << "Spinner stopped/hidden, refresh button shown.";
-    qDebug() << "Exiting refershTimeout().";
+    qDebug() << "Exiting refreshTimeout().";
 }
 
-void RefreButtonWidget::refershStart()
+void RefreButtonWidget::refreshStart()
 {
-    qDebug() << "Entering refershStart().";
+    qDebug() << "Entering refreshStart().";
     m_spinner->start();
     m_spinner->show();
     m_refreBtn->hide();
 
     emit buttonClicked();
     qDebug() << "Spinner started/shown, refresh button hidden, buttonClicked emitted.";
-    qDebug() << "Exiting refershStart().";
+    qDebug() << "Exiting refreshStart().";
 }
 
 void RefreButtonWidget::mouseReleaseEvent(QMouseEvent *pEvent)
@@ -772,9 +772,9 @@ void RefreButtonWidget::mouseReleaseEvent(QMouseEvent *pEvent)
         qDebug() << "Spinner is visible, returning.";
         return;
     }
-    refershStart();
-    qDebug() << "RefershStart called.";
+    qDebug() << "RefreshStart called.";
     qDebug() << "Exiting RefreButtonWidget::mouseReleaseEvent().";
+    refreshStart();
 }
 
 ListWidget::ListWidget(QWidget *parent)
