@@ -1351,7 +1351,6 @@ void Platform_ToolboxProxy::initMember()
     m_pTimeLabel = nullptr;
     m_pTimeLabelend = nullptr;
     m_pViewProgBar = nullptr;
-    m_pViewProgBar = nullptr;
     m_pProgBar = nullptr;
     m_pPreviewer = nullptr;
     m_pPreviewTime = nullptr;
