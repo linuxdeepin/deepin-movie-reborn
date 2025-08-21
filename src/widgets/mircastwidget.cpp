@@ -197,7 +197,7 @@ void MircastWidget::togglePopup()
         m_bIsToggling = true;
         show();
         raise();
-        m_refreshBtn->refershStart();
+        m_refreshBtn->refreshStart();
         m_bIsToggling = false;
     }
 }
@@ -221,7 +221,7 @@ void MircastWidget::slotSearchTimeout()
     else
         updateMircastState(SearchState::ListExhibit);
 
-    m_refreshBtn->refershTimeout();
+    m_refreshBtn->refreshTimeout();
     update();
 }
 /**
@@ -634,14 +634,14 @@ RefreButtonWidget::RefreButtonWidget(QWidget *parent)
 
 }
 
-void RefreButtonWidget::refershTimeout()
+void RefreButtonWidget::refreshTimeout()
 {
     m_spinner->stop();
     m_spinner->hide();
     m_refreBtn->show();
 }
 
-void RefreButtonWidget::refershStart()
+void RefreButtonWidget::refreshStart()
 {
     m_spinner->start();
     m_spinner->show();
@@ -654,7 +654,7 @@ void RefreButtonWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 {
     if (m_spinner->isVisible())
         return;
-    refershStart();
+    refreshStart();
 }
 
 ListWidget::ListWidget(QWidget *parent)
