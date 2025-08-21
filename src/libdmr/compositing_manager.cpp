@@ -96,7 +96,7 @@ static bool detect550Series()
 {
     QStringList sList = dmr::utils::runPipeProcess("lspci -nk", "");
     foreach(QString readData, sList) {
-        if(readData.contains("1002:699f") || readData.contains("1002:6987" || readData.contains("6766:3d02"))) {
+        if(readData.contains("1002:699f") || readData.contains("1002:6987") || readData.contains("6766:3d02")) {
             if (!readData.isEmpty()) {
                 qInfo() << qPrintable("Detect 550 series, using vaapi. ") << readData;
                 return true;
