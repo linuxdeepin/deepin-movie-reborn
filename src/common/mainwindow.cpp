@@ -862,7 +862,7 @@ MainWindow::MainWindow(QWidget *parent)
     pSignalMapper->setMapping(m_pMiniPlayBtn, "play");
 
     connect(m_pEngine, &PlayerEngine::stateChanged, [ = ]() {
-        qInfo() << __func__ << m_pEngine->state();
+        qInfo() << "stateChanged" << m_pEngine->state();
 
         if (m_pEngine->state() == PlayerEngine::CoreState::Playing
                 && m_pEngine->playlist().currentInfo().mi.isRawFormat()) {
@@ -4623,7 +4623,7 @@ void MainWindow::toggleUIMode()
 
 void MainWindow::miniButtonClicked(const QString &id)
 {
-    qInfo() << id;
+    qInfo() << __FUNCTION__ << id;
     if (id == "play") {
         if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
             requestAction(ActionFactory::ActionKind::StartPlay);
