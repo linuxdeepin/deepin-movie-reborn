@@ -3649,22 +3649,7 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
         }
     }
 
-    int volume = Settings::get().internalOption("global_volume").toInt();
-    int displayVolume = m_nDisplayVolume > 100 ? 100 : m_nDisplayVolume;
-    if (displayVolume != volume) {
-        static QEventLoop loop;
-        QFileSystemWatcher fileWatcher;
-        fileWatcher.addPath(Settings::get().configPath());
-        connect(&fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](){
-            loop.quit();
-        });
-        QTimer::singleShot(2000, this, [=](){
-            loop.quit();
-        });
-        //关闭窗口时保存音量值
-        Settings::get().setInternalOption("global_volume", displayVolume);
-        loop.exec();
-    }
+    saveVolume();
     m_pEngine->savePlaybackPosition();
 
     pEvent->accept();
@@ -4745,11 +4730,12 @@ void MainWindow::sleepStateChanged(bool bSleep)
             PlayerEngine::CoreState state = engine()->state();
             dconfig->setValue("PausedOnPlay", state == PlayerEngine::Paused);  // 休眠时会暂停，所以这里恒为true
 
-            // 保存窗口几何信息用于重启后恢复
-            saveWindowGeometry();
             if (state != PlayerEngine::Idle) {
                 Settings::get().settings()->setOption("set.start.crash", "2");
                 m_pEngine->savePlaybackPosition();
+                // 保存窗口几何信息用于重启后恢复
+                saveWindowGeometry();
+                saveVolume();
                 qInfo() << "restart deepin-movie and continue --- " << movieInfo.filePath;
                 QProcess::startDetached(qApp->applicationFilePath(), QStringList() << "--restart" << movieInfo.filePath);
             }
@@ -5273,4 +5259,25 @@ void MainWindow::restoreWindowGeometry()
         qInfo() << "Restored window geometry:" << QRect(x, y, width, height);
     }
 }
+
+void MainWindow::saveVolume()
+{
+    int volume = Settings::get().internalOption("global_volume").toInt();
+    int displayVolume = m_nDisplayVolume > 100 ? 100 : m_nDisplayVolume;
+    if (displayVolume != volume) {
+        static QEventLoop loop;
+        QFileSystemWatcher fileWatcher;
+        fileWatcher.addPath(Settings::get().configPath());
+        connect(&fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](){
+            loop.quit();
+        });
+        QTimer::singleShot(2000, this, [=](){
+            loop.quit();
+        });
+        //关闭窗口时保存音量值
+        Settings::get().setInternalOption("global_volume", displayVolume);
+        loop.exec();
+    }
+}
+
 #include "mainwindow.moc"
