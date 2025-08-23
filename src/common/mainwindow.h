@@ -512,6 +512,7 @@ private:
     void mircastSuccess(QString name);
     void exitMircast();
     void saveWindowGeometry();
+    void saveVolume();
 
     /**
      * @brief 使用dbus获取当前机器CPU型号
