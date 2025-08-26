@@ -546,7 +546,7 @@ namespace dmr {
         qDebug() << "DEBUG: Loaded deepin-movie icon for splash.";
 
         QPainter painter(&pixmap);
-        painter.drawPixmap(98,127,pixmap2);
+        painter.drawPixmap(102,126,pixmap2); // 参数102 126，在界面上保持居中
         m_imgBgDark=pixmap.toImage();
         m_imgBgDark.setDevicePixelRatio(qApp->devicePixelRatio());
         qDebug() << "DEBUG: Dark splash image prepared.";
@@ -564,7 +564,7 @@ namespace dmr {
         qDebug() << "DEBUG: Loaded deepin-movie icon for light splash.";
 
         QPainter painter1(&pixmap3);
-        painter1.drawPixmap(98,127,pixmap4);
+        painter1.drawPixmap(102,126,pixmap4); // 参数102 126，在界面上保持居中
         m_imgBgLight = pixmap3.toImage();
         m_imgBgLight.setDevicePixelRatio(qApp->devicePixelRatio());
         qDebug() << "DEBUG: Light splash image prepared.";
