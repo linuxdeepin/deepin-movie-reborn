@@ -465,7 +465,7 @@ namespace dmr {
         pixmap2=pixmap2.fromImage(img1);
 
         QPainter painter(&pixmap);
-        painter.drawPixmap(98,127,pixmap2);
+        painter.drawPixmap(102,126,pixmap2); // 参数102 126，在界面上保持居中
         m_imgBgDark=pixmap.toImage();
         m_imgBgDark.setDevicePixelRatio(qApp->devicePixelRatio());
 
@@ -480,7 +480,7 @@ namespace dmr {
         pixmap4=pixmap4.fromImage(img2);
 
         QPainter painter1(&pixmap3);
-        painter1.drawPixmap(98,127,pixmap4);
+        painter1.drawPixmap(102,126,pixmap4); // 参数102 126，在界面上保持居中
         m_imgBgLight = pixmap3.toImage();
         m_imgBgLight.setDevicePixelRatio(qApp->devicePixelRatio());
     }
