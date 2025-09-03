@@ -16,6 +16,7 @@
 #include "movie_configuration.h"
 #endif
 #include <mpv/client.h>
+#include <DConfig>
 
 #include <random>
 #include <QtWidgets>
@@ -765,6 +766,20 @@ bool isSpecialHWHardware()
     enum HWDevice { Unknown, IsHWDev, NotHWDev };
     static HWDevice s_DevType = Unknown;
 
+#ifdef DTKCORE_CLASS_DConfigFile
+    DTK_CORE_NAMESPACE::DConfig *dconfig = DTK_CORE_NAMESPACE::DConfig::create("org.deepin.movie","org.deepin.movie.specialhwdec");
+    if(dconfig && dconfig->isValid() && dconfig->keyList().contains("IsSpecialHWDec")){
+        if (dconfig->value("IsSpecialHWDec").toBool()) {
+            delete dconfig;
+            return true;
+        }
+    }
+    delete dconfig;
+#endif
+
+    if (!utils::check_wayland_env())
+        return false;
+
     if (Unknown == s_DevType) {
         s_DevType = NotHWDev;
 
@@ -803,7 +818,7 @@ bool isSpecialHWHardware()
 
 bool MpvProxy::isSurportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight)
 {
-    if (utils::check_wayland_env() && isSpecialHWHardware()) {
+    if (isSpecialHWHardware()) {
         return true;
     }
 
