@@ -377,7 +377,7 @@ protected:
     /**
      * @brief 是否支持硬件解码
      */
-    bool isSurportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight);
+    bool isSupportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight);
     /**
      * @brief 获取探测解码值
      */

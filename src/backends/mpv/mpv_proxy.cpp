@@ -816,7 +816,7 @@ bool isSpecialHWHardware()
     return bool(s_DevType == IsHWDev);
 }
 
-bool MpvProxy::isSurportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight)
+bool MpvProxy::isSupportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight)
 {
     if (isSpecialHWHardware()) {
         return true;
@@ -828,9 +828,9 @@ bool MpvProxy::isSurportHardWareDecode(const QString sDecodeName, const int &nVi
     if(decoderValue != decoder_profile::UN_KNOW ) {//开始探测是否支持硬解码
         VDP_Decoder_t *probeDecode = new VDP_Decoder_t;
         if(m_gpuInfo) {
-            int nSurport =  ((gpu_decoderInfo)m_gpuInfo)(decoderValue, probeDecode);
-            isHardWare = (nSurport > 0 && probeDecode->max_width >= nVideoWidth
-                    &&  probeDecode->max_height >= nVideoHeight);//nSurport大于0表示支持，硬解码支持的最大宽高必须大于或等于视频的宽高
+            int nSupport =  ((gpu_decoderInfo)m_gpuInfo)(decoderValue, probeDecode);
+            isHardWare = (nSupport > 0 && probeDecode->max_width >= nVideoWidth
+                    &&  probeDecode->max_height >= nVideoHeight);//nSupport大于0表示支持，硬解码支持的最大宽高必须大于或等于视频的宽高
         }
         delete probeDecode;
     }
@@ -1345,7 +1345,7 @@ void MpvProxy::refreshDecode()
 #if !defined(_loongarch) && !defined(__loongarch__) && !defined(__loongarch64)
             //探测硬解码
             if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag && !x100flag) {
-                isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
+                isSoftCodec = !isSupportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
             if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
                 isSoftCodec = codec.contains("vp8") && (currentInfo.mi.width > 1920 || currentInfo.mi.height > 1080);
