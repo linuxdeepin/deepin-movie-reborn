@@ -49,7 +49,9 @@ public:
     Platform check()
     {
         QProcess uname;
-        uname.start("uname -m");
+        uname.setProgram("uname");
+        uname.setArguments({"-m"});
+        uname.start();
         if (uname.waitForStarted()) {
             if (uname.waitForFinished()) {
                 auto data = uname.readAllStandardOutput();
@@ -76,6 +78,9 @@ public:
                     _pf = Platform::Arm64;
                 }
             }
+        } else {
+            QString error = uname.readAllStandardError();
+            qWarning() << error;
         }
 
         return _pf;

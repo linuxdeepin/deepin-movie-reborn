@@ -4292,13 +4292,20 @@ void MainWindow::decodeInit()
         return;
 
     //崩溃检测
-    int bcatch = Settings::get().settings()->getOption(QString("set.start.crash")).toInt(); // this value can be 0 1 2 after `Custom Decode mode`. 1:crash 2:restart
-    if (bcatch == 1) {
+    int bcatch = Settings::get().settings()->getOption(QString("set.start.crash")).toInt();
+    switch (bcatch) {
+    case 1:
         pMpvProxy->setDecodeModel(DecodeMode::AUTO);
         Settings::get().settings()->setOption(QString("base.decode.select"),DecodeMode::AUTO);
-    } else {
-        int value = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
-        pMpvProxy->setDecodeModel(value);
+        break;
+    case 2:
+        pMpvProxy->setDecodeModel(Settings::get().settings()->
+                                  getOption(QString("base.decode.select")).toInt());
+        dmr::Settings::get().crashCheck();
+        break;
+    case 0:
+    default:
+        break;
     }
 }
 
