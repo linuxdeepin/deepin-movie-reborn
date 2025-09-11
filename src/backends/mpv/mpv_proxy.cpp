@@ -1012,24 +1012,38 @@ void MpvProxy::processPropertyChange(mpv_event_property *pEvent)
     QString sName = QString::fromUtf8(pEvent->name);
     if (sName != "time-pos") qInfo() << sName;
 
-    if (sName == "time-pos") {
+    // 使用 QPointer 检查对象是否还存在
+    QPointer<MpvProxy> self(this);
+    QTimer::singleShot(0, [this, sName, self]() {
+        if (self.isNull()) {
+            qWarning() << "MpvProxy obj is destroyed";
+            return; // 对象已被销毁
+        }
+
+        processPropertyChange(sName);
+    });
+}
+
+void MpvProxy::processPropertyChange(const QString &name)
+{
+    if (name == "time-pos") {
         emit elapsedChanged();
-    } else if (sName == "volume") {
+    } else if (name == "volume") {
         emit volumeChanged();
-    } else if (sName == "dwidth" || sName == "dheight") {
+    } else if (name == "dwidth" || name == "dheight") {
         auto sz = videoSize();
         if (!sz.isEmpty())
             emit videoSizeChanged();
         qInfo() << "update videoSize " << sz;
-    } else if (sName == "aid") {
+    } else if (name == "aid") {
         emit aidChanged();
-    } else if (sName == "sid") {
+    } else if (name == "sid") {
         emit sidChanged();
-    } else if (sName == "mute") {
+    } else if (name == "mute") {
         emit muteChanged();
-    } else if (sName == "sub-visibility") {
+    } else if (name == "sub-visibility") {
         //_hideSub = my_get_property(m_handle, "sub-visibility")
-    } else if (sName == "pause") {
+    } else if (name == "pause") {
         auto idle = my_get_property(m_handle, "idle-active").toBool();
         if (my_get_property(m_handle, "pause").toBool()) {
             if (!idle)
@@ -1041,8 +1055,8 @@ void MpvProxy::processPropertyChange(mpv_event_property *pEvent)
                 setState(PlayState::Playing);
             }
         }
-    } else if (sName == "core-idle") {
-    } else if (sName == "paused-for-cache") {
+    } else if (name == "core-idle") {
+    } else if (name == "paused-for-cache") {
         qInfo() << "paused-for-cache" << my_get_property_variant(m_handle, "paused-for-cache");
         emit urlpause(my_get_property_variant(m_handle, "paused-for-cache").toBool());
     }
