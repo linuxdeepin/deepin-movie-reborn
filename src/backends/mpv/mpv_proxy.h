@@ -377,6 +377,7 @@ protected slots:
 private:
     mpv_handle *mpv_init();   //初始化mpv
     void processPropertyChange(mpv_event_property *pEvent);
+    void processPropertyChange(const QString &name);
     void processLogMessage(mpv_event_log_message *pEvent);
     QImage takeOneScreenshot();
     void updatePlayingMovieInfo();
