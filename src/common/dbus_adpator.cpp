@@ -98,7 +98,7 @@ void ApplicationAdaptor::initMember()
     qDebug() << "Exiting ApplicationAdaptor::initMember.";
 }
 
-QVariant ApplicationAdaptor::redDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
+QVariant ApplicationAdaptor::readDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
 {
     qDebug() << "Entering ApplicationAdaptor::redDBusProperty.";
     qDebug() << "Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Property:" << pPropert;
@@ -120,7 +120,7 @@ QVariant ApplicationAdaptor::redDBusProperty(const QString &sService, const QStr
 }
 
 //cppcheck 单元测试在使用
-QVariant ApplicationAdaptor::redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
+QVariant ApplicationAdaptor::readDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
     qDebug() << "Entering ApplicationAdaptor::redDBusMethod.";
     qDebug() << "Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Method:" << pMethod;

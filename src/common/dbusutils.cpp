@@ -22,7 +22,7 @@ DBusUtils::DBusUtils()
     qDebug() << "Exiting DBusUtils constructor.";
 }
 
-QVariant DBusUtils::redDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
+QVariant DBusUtils::readDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
 {
     qDebug() << "Entering DBusUtils::redDBusProperty. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Property:" << pPropert;
     // 创建QDBusInterface接口
@@ -47,7 +47,7 @@ QVariant DBusUtils::redDBusProperty(const QString &sService, const QString &sPat
     qDebug() << "Mutex unlocked. Exiting DBusUtils::redDBusProperty. Returned value:" << v;
     return  v;
 }
-QVariant DBusUtils::redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
+QVariant DBusUtils::readDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
     qDebug() << "Entering DBusUtils::redDBusMethod. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Method:" << pMethod;
     // 创建QDBusInterface接口
