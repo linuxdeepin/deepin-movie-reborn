@@ -92,6 +92,9 @@ public:
     }
     bool isZXIntgraphics() const;
 
+    // 处理BXC NF301B机器（GPU: FTG340）的情况
+    static bool isFtg340Gpu();
+
     PlayerOptionList getProfile(const QString &name);
     PlayerOptionList getBestProfile(); // best for current platform and env
     static void detectPciID();

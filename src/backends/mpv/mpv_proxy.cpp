@@ -345,6 +345,7 @@ mpv_handle *MpvProxy::mpv_init()
 
     my_set_property(pHandle, "panscan", 1.0);
 
+    qInfo() << "DecodeMode:" << m_decodeMode << "(AUTO:0, HARDWARE:1, SOFTWARE:2, CUSTOM:3)";
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
         my_set_property(pHandle, "hwdec", "no");
 #if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
@@ -492,6 +493,14 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "vo", "vaapi");
             m_sInitVo = "vaapi";
         }
+
+        // 处理BXC NF301B机器（GPU: FTG340）的情况
+        if (CompositingManager::isFtg340Gpu()) {
+            qInfo() << "GPU: FTG340 detected, using (hwdec=vaapi, vo=vaapi)";
+            my_set_property(pHandle, "hwdec", "vaapi");
+            my_set_property(pHandle, "vo", "vaapi");
+            m_sInitVo = "vaapi";
+        }
     } else if (DecodeMode::HARDWARE == m_decodeMode) { //3.设置硬解
         QFileInfo fi("/dev/mwv206_0");
         QFileInfo jmfi("/dev/jmgpu");
@@ -561,6 +570,14 @@ mpv_handle *MpvProxy::mpv_init()
         }
 
         if (CompositingManager::get().isSpecialControls()) {
+            my_set_property(pHandle, "hwdec", "vaapi");
+            my_set_property(pHandle, "vo", "vaapi");
+            m_sInitVo = "vaapi";
+        }
+
+        // 处理BXC NF301B机器（GPU: FTG340）的情况
+        if (CompositingManager::isFtg340Gpu()) {
+            qInfo() << "GPU: FTG340 detected, using (hwdec=vaapi, vo=vaapi)";
             my_set_property(pHandle, "hwdec", "vaapi");
             my_set_property(pHandle, "vo", "vaapi");
             m_sInitVo = "vaapi";
@@ -819,6 +836,11 @@ bool isSpecialHWHardware()
 bool MpvProxy::isSurportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight)
 {
     if (isSpecialHWHardware()) {
+        return true;
+    }
+
+    // 实际测试，FTG340支持硬解，但是m_gpuInfo函数检测不到
+    if (CompositingManager::isFtg340Gpu()) {
         return true;
     }
 
@@ -1315,6 +1337,7 @@ void MpvProxy::refreshDecode()
     malloc_trim(0);
     //bool bIsCanHwDec = HwdecProbe::get().isFileCanHwdec(_file.url(), canHwTypes);
 
+    qInfo() << "DecodeMode:" << m_decodeMode << "(AUTO:0, HARDWARE:1, SOFTWARE:2, CUSTOM:3)";
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
         my_set_property(m_handle, "hwdec", "no");
     } else if (DecodeMode::AUTO == m_decodeMode) {//2.设置自动
@@ -1324,6 +1347,7 @@ void MpvProxy::refreshDecode()
             PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
             auto codec = currentInfo.mi.videoCodec();
             auto name = _file.fileName();
+            qInfo() << "Codec:" << codec;
             isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv");
             //去除9200显卡适配
             QFileInfo jmfi("/dev/jmgpu");
@@ -1404,6 +1428,10 @@ void MpvProxy::refreshDecode()
                 my_set_property(m_handle, "hwdec", "no");
             } else if (CompositingManager::get().isSpecialControls()) {
                 my_set_property(m_handle, "hwdec", "vaapi");
+            } else if (CompositingManager::isFtg340Gpu()) {
+                qInfo() << "GPU: FTG340 detected, using (hwdec=vaapi, vo=vaapi)";
+                my_set_property(m_handle, "hwdec", "vaapi");
+                my_set_property(m_handle, "vo", "vaapi");
             } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
                 my_set_property(m_handle, "hwdec", "omx-copy");
             } else { //2.2.2 非特殊硬件 + 非特殊格式
@@ -1479,6 +1507,10 @@ void MpvProxy::refreshDecode()
         } else if (X100GPU.exists() && X100VPU.exists()) {
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
+        } else if (CompositingManager::isFtg340Gpu()) {
+            qInfo() << "GPU: FTG340 detected, using (hwdec=vaapi, vo=vaapi)";
+            my_set_property(m_handle, "hwdec", "vaapi");
+            my_set_property(m_handle, "vo", "vaapi");
         } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
             my_set_property(m_handle, "hwdec", "omx-copy");
         }
@@ -1667,6 +1699,7 @@ void MpvProxy::play()
     QMap<QString, QString>::iterator iter = m_pConfig->begin();
     qInfo() << __func__ << "Set mpv propertys!!";
     while (iter != m_pConfig->end()) {
+        qInfo() << __func__ << iter.key() << iter.value();
         my_set_property(m_handle, iter.key(), iter.value());
         iter++;
     }

@@ -377,6 +377,12 @@ bool CompositingManager::isZXIntgraphics() const
     return m_bZXIntgraphics;
 }
 
+bool CompositingManager::isFtg340Gpu()
+{
+    QDir ftg340Dir("/sys/bus/platform/drivers/ftg340");
+    return ftg340Dir.exists();
+}
+
 bool CompositingManager::runningOnNvidia()
 {
     static bool s_runningOnNvidia = false;
