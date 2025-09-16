@@ -95,6 +95,7 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
 
 void Presenter::slotplay()
 {
+    qDebug() << "MPRIS: Play requested";
     if (m_mprisplayer->playbackStatus() == Mpris::Paused) {
         slotpause();
     } else {
@@ -107,6 +108,7 @@ void Presenter::slotplay()
 
 void Presenter::slotpause()
 {
+    qDebug() << "MPRIS: Pause requested";
     if (_mw)
         _mw->requestAction(ActionFactory::TogglePause);
     else
@@ -115,6 +117,7 @@ void Presenter::slotpause()
 
 void Presenter::slotplaynext()
 {
+    qDebug() << "MPRIS: Next requested";
     if (_mw)
         _mw->requestAction(ActionFactory::GotoPlaylistNext);
     else
@@ -123,6 +126,7 @@ void Presenter::slotplaynext()
 
 void Presenter::slotplayprev()
 {
+    qDebug() << "MPRIS: Previous requested";
     if (_mw)
         _mw->requestAction(ActionFactory::GotoPlaylistPrev);
     else
@@ -131,6 +135,7 @@ void Presenter::slotplayprev()
 
 void Presenter::slotvolumeRequested(double volume)
 {
+    qDebug() << "MPRIS: Volume requested:" << volume;
     QList<QVariant> arg;
     arg.append((volume + 0.001) * 100.0);
     if (_mw)
@@ -141,6 +146,7 @@ void Presenter::slotvolumeRequested(double volume)
 
 void Presenter::slotopenUrlRequested(const QUrl url)
 {
+    qDebug() << "MPRIS: Open URI requested:" << url.toString();
     if (_mw)
         _mw->play({url.toString()});
     else
@@ -150,6 +156,7 @@ void Presenter::slotopenUrlRequested(const QUrl url)
 void Presenter::slotstateChanged()
 {
     if (_mw) {
+        qDebug() << "MPRIS: State changed to:" << _mw->engine()->state();
         switch (_mw->engine()->state()) {
         case PlayerEngine::CoreState::Idle:
             m_mprisplayer->setPlaybackStatus(Mpris::Stopped);
@@ -162,6 +169,7 @@ void Presenter::slotstateChanged()
             break;
         }
     } else {
+        qDebug() << "MPRIS: State changed to:" << _platform_mw->engine()->state();
         switch (_platform_mw->engine()->state()) {
         case PlayerEngine::CoreState::Idle:
             m_mprisplayer->setPlaybackStatus(Mpris::Stopped);
@@ -178,6 +186,7 @@ void Presenter::slotstateChanged()
 
 void Presenter::slotloopStatusRequested(Mpris::LoopStatus loopStatus)
 {
+    qDebug() << "MPRIS: Loop status requested:" << loopStatus;
     if (_mw) {
         if (loopStatus == Mpris::LoopStatus::InvalidLoopStatus) {
             return;
@@ -209,6 +218,7 @@ void Presenter::slotloopStatusRequested(Mpris::LoopStatus loopStatus)
 
 void Presenter::slotplayModeChanged(PlaylistModel::PlayMode pm)
 {
+    qDebug() << "MPRIS: Play mode changed:" << pm;
     if (pm == PlaylistModel::PlayMode::OrderPlay) {
         m_mprisplayer->setLoopStatus(Mpris::LoopStatus::None);
     } else if (pm == PlaylistModel::PlayMode::SingleLoop) {
@@ -222,6 +232,7 @@ void Presenter::slotplayModeChanged(PlaylistModel::PlayMode pm)
 
 void Presenter::slotvolumeChanged()
 {
+    qDebug() << "MPRIS: Volume changed";
     if (_mw) {
         if (_mw->engine()->muted()) {
             m_mprisplayer->setVolume(0.0);
@@ -241,6 +252,7 @@ void Presenter::slotvolumeChanged()
 
 void Presenter::slotseek(qlonglong Offset)
 {
+    qDebug() << "MPRIS: Seek requested:" << Offset;
     if (_mw)
         _mw->engine()->seekAbsolute(Offset);
     else
@@ -249,6 +261,7 @@ void Presenter::slotseek(qlonglong Offset)
 
 void Presenter::slotstop()
 {
+    qDebug() << "MPRIS: Stop requested";
     if (_mw)
         _mw->engine()->stop();
     else
