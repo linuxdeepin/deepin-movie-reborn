@@ -345,6 +345,7 @@ mpv_handle *MpvProxy::mpv_init()
 
     my_set_property(pHandle, "panscan", 1.0);
 
+    qInfo() << "DecodeMode:" << m_decodeMode << "(AUTO:0, HARDWARE:1, SOFTWARE:2, CUSTOM:3)";
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
         my_set_property(pHandle, "hwdec", "no");
 #if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
@@ -1315,6 +1316,7 @@ void MpvProxy::refreshDecode()
     malloc_trim(0);
     //bool bIsCanHwDec = HwdecProbe::get().isFileCanHwdec(_file.url(), canHwTypes);
 
+    qInfo() << "DecodeMode:" << m_decodeMode << "(AUTO:0, HARDWARE:1, SOFTWARE:2, CUSTOM:3)";
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
         my_set_property(m_handle, "hwdec", "no");
     } else if (DecodeMode::AUTO == m_decodeMode) {//2.设置自动
@@ -1324,6 +1326,7 @@ void MpvProxy::refreshDecode()
             PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
             auto codec = currentInfo.mi.videoCodec();
             auto name = _file.fileName();
+            qInfo() << "Codec:" << codec << "Name:" << name;
             isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv");
             //去除9200显卡适配
             QFileInfo jmfi("/dev/jmgpu");
@@ -1667,6 +1670,7 @@ void MpvProxy::play()
     QMap<QString, QString>::iterator iter = m_pConfig->begin();
     qInfo() << __func__ << "Set mpv propertys!!";
     while (iter != m_pConfig->end()) {
+        qInfo() << __func__ << iter.key() << iter.value();
         my_set_property(m_handle, iter.key(), iter.value());
         iter++;
     }
