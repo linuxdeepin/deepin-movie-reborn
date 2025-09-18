@@ -100,9 +100,9 @@ void Platform_ApplicationAdaptor::initMember()
     qDebug() << "Exiting Platform_ApplicationAdaptor::initMember(). m_pMainWindow set to nullptr.";
 }
 
-QVariant Platform_ApplicationAdaptor::redDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
+QVariant Platform_ApplicationAdaptor::readDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
 {
-    qDebug() << "Entering Platform_ApplicationAdaptor::redDBusProperty. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Property:" << pPropert;
+    qDebug() << "Entering Platform_ApplicationAdaptor::readDBusProperty. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Property:" << pPropert;
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,
                               sInterface,
@@ -120,14 +120,14 @@ QVariant Platform_ApplicationAdaptor::redDBusProperty(const QString &sService, c
     qDebug() << "Dynamic property names retrieved. Count:" << q.count();
     QVariant v = ainterface.property(pPropert);
     qDebug() << "Property value retrieved. Returning:" << v;
-    qDebug() << "Exiting Platform_ApplicationAdaptor::redDBusProperty.";
+    qDebug() << "Exiting Platform_ApplicationAdaptor::readDBusProperty.";
     return  v;
 }
 
 //cppcheck 单元测试在使用
-QVariant Platform_ApplicationAdaptor::redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
+QVariant Platform_ApplicationAdaptor::readDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
-    qDebug() << "Entering Platform_ApplicationAdaptor::redDBusMethod. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Method:" << pMethod;
+    qDebug() << "Entering Platform_ApplicationAdaptor::readDBusMethod. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Method:" << pMethod;
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,
                               sInterface,
@@ -152,5 +152,5 @@ QVariant Platform_ApplicationAdaptor::redDBusMethod(const QString &sService, con
         qWarning() << "QDBusReply is not valid. Returning default QVariant(0).";
         return  v;
     }
-    qDebug() << "Exiting Platform_ApplicationAdaptor::redDBusMethod.";
+    qDebug() << "Exiting Platform_ApplicationAdaptor::readDBusMethod.";
 }

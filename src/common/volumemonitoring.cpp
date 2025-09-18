@@ -57,7 +57,7 @@ void VolumeMonitoring::stop()
 void VolumeMonitoring::timeoutSlot()
 {
     qDebug() << "Checking audio sink inputs";
-    QVariant v = DBusUtils::redDBusProperty("org.deepin.dde.Audio1", "/org/deepin/dde/Audio1",
+    QVariant v = DBusUtils::readDBusProperty("org.deepin.dde.Audio1", "/org/deepin/dde/Audio1",
                                             "org.deepin.dde.Audio1", "SinkInputs");
 
     if (!v.isValid()) {
@@ -70,7 +70,7 @@ void VolumeMonitoring::timeoutSlot()
 
     QString sinkInputPath;
     for (auto curPath : allSinkInputsList) {
-        QVariant nameV = DBusUtils::redDBusProperty("org.deepin.dde.Audio1", curPath.path(),
+        QVariant nameV = DBusUtils::readDBusProperty("org.deepin.dde.Audio1", curPath.path(),
                                                     "org.deepin.dde.Audio1.SinkInput", "Name");
 
         QString movieStr = QObject::tr("Movie");
@@ -98,11 +98,11 @@ void VolumeMonitoring::timeoutSlot()
     }
 
     //获取音量
-    QVariant volumeV = DBusUtils::redDBusProperty("org.deepin.dde.Audio1", sinkInputPath,
+    QVariant volumeV = DBusUtils::readDBusProperty("org.deepin.dde.Audio1", sinkInputPath,
                                                   "org.deepin.dde.Audio1.SinkInput", "Volume");
 
     //获取音量
-    QVariant muteV = DBusUtils::redDBusProperty("org.deepin.dde.Audio1", sinkInputPath,
+    QVariant muteV = DBusUtils::readDBusProperty("org.deepin.dde.Audio1", sinkInputPath,
                                                 "org.deepin.dde.Audio1.SinkInput", "Mute");
 
     // int temp = volumeV.toDouble();
