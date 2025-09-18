@@ -98,9 +98,9 @@ void ApplicationAdaptor::initMember()
     qDebug() << "Exiting ApplicationAdaptor::initMember.";
 }
 
-QVariant ApplicationAdaptor::redDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
+QVariant ApplicationAdaptor::readDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
 {
-    qDebug() << "Entering ApplicationAdaptor::redDBusProperty.";
+    qDebug() << "Entering ApplicationAdaptor::readDBusProperty.";
     qDebug() << "Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Property:" << pPropert;
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,
@@ -109,20 +109,20 @@ QVariant ApplicationAdaptor::redDBusProperty(const QString &sService, const QStr
     if (!ainterface.isValid()) {
         qInfo() << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
-        qDebug() << "Exiting ApplicationAdaptor::redDBusProperty with invalid interface.";
+        qDebug() << "Exiting ApplicationAdaptor::readDBusProperty with invalid interface.";
         return  v;
     }
     // 调用远程的value方法
     QList<QByteArray> q = ainterface.dynamicPropertyNames();
     QVariant v = ainterface.property(pPropert);
-    qDebug() << "Exiting ApplicationAdaptor::redDBusProperty. Property value:" << v;
+    qDebug() << "Exiting ApplicationAdaptor::readDBusProperty. Property value:" << v;
     return  v;
 }
 
 //cppcheck 单元测试在使用
-QVariant ApplicationAdaptor::redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
+QVariant ApplicationAdaptor::readDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
-    qDebug() << "Entering ApplicationAdaptor::redDBusMethod.";
+    qDebug() << "Entering ApplicationAdaptor::readDBusMethod.";
     qDebug() << "Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Method:" << pMethod;
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,
@@ -131,7 +131,7 @@ QVariant ApplicationAdaptor::redDBusMethod(const QString &sService, const QStrin
     if (!ainterface.isValid()) {
         qInfo() <<  "error:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
-        qDebug() << "Exiting ApplicationAdaptor::redDBusMethod with invalid interface.";
+        qDebug() << "Exiting ApplicationAdaptor::readDBusMethod with invalid interface.";
         return  v;
     }
     // 调用远程的value方法
@@ -142,7 +142,7 @@ QVariant ApplicationAdaptor::redDBusMethod(const QString &sService, const QStrin
     } else {
         qInfo() << "error1:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
-        qDebug() << "Exiting ApplicationAdaptor::redDBusMethod with failed method call.";
+        qDebug() << "Exiting ApplicationAdaptor::readDBusMethod with failed method call.";
         return  v;
     }
 }
