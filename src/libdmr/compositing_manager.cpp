@@ -7,7 +7,9 @@
 #include "compositing_manager.h"
 #include "utils.h"
 #include "dmr_settings.h"
-#include <dconfig.h>
+#ifdef DTKCORE_CLASS_DConfigFile
+#include <DConfig>
+#endif
 #ifndef _LIBDMR_
 #include "options.h"
 #endif
