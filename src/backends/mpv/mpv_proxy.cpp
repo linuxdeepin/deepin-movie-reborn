@@ -16,7 +16,9 @@
 #include "movie_configuration.h"
 #endif
 #include <mpv/client.h>
+#ifdef DTKCORE_CLASS_DConfigFile
 #include <DConfig>
+#endif
 
 #include <random>
 #include <QtWidgets>
