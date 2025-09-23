@@ -340,7 +340,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
 
         if (videoStream->avg_frame_rate.den != 0) {
             qDebug() << "Video frame rate denominator is not zero, calculating fps.";
-            mi.fps = videoStream->avg_frame_rate.num / videoStream->avg_frame_rate.den;
+            mi.fps = static_cast<int>(round(static_cast<double>(videoStream->avg_frame_rate.num) / videoStream->avg_frame_rate.den));
         } else {
             qDebug() << "Video frame rate denominator is zero, setting fps to 0.";
             mi.fps = 0;
@@ -1942,7 +1942,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.strFmtName = av_ctx->iformat->long_name;
 #endif
     if (av_stream->avg_frame_rate.den != 0) {
-        mi.fps = av_stream->avg_frame_rate.num / av_stream->avg_frame_rate.den;
+        mi.fps = static_cast<int>(round(static_cast<double>(av_stream->avg_frame_rate.num) / av_stream->avg_frame_rate.den));
     } else {
         mi.fps = 0;
     }
