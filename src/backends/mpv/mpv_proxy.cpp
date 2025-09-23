@@ -1849,6 +1849,8 @@ void MpvProxy::play()
         my_set_property(m_handle, iter.key(), iter.value());
         iter++;
     }
+    qInfo() << "FINALLY, hwdec:" << my_get_property(m_handle, "hwdec").toString();
+    qInfo() << "FINALLY, vo:" << my_get_property(m_handle, "vo").toString();
 
     qInfo() << "Executing play command with args:" << listArgs << "and options:" << listOpts;
     my_command(m_handle, listArgs);

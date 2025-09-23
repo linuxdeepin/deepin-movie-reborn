@@ -709,7 +709,7 @@ void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
     QFileInfo fi(path);
     if ((fi.exists() && fi.isFile()) && fi.isReadable()) {
         QFile file(path);
-        if (file.open(QIODevice::ReadOnly) | QIODevice::Text) {
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QByteArray t;
             int index = 0;
             while (!file.atEnd()) {
@@ -720,16 +720,18 @@ void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
                     QString temp = list.back();
                     temp = temp.mid(0, temp.length() - 1);//去除/n
                     proMap->insert(list.first(), temp);
-                    qDebug() << "Added property:" << list.first() << "=" << temp;
+                    qInfo() << "Read config line: key:" << list.first() << "value:" << temp;
                 } else {
-                    qWarning() << "Invalid config line:" << index << t;
+                    qWarning() << __func__ << QString("ERROR! config line: %1 (line No: %2)").arg(QString(t)).arg(index);
                     continue;
                 }
             }
+            file.close();
+        } else {
+            qWarning() << __func__ << "File open ERROR, file path:" << path;
         }
-        file.close();
     } else {
-        qWarning() << "Invalid file path or permissions:" << path;
+        qWarning() << __func__ << "File not exist, file path:" << path;
     }
 #endif
 }
