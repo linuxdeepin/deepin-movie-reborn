@@ -1532,6 +1532,7 @@ void MpvProxy::refreshDecode()
     }
 #ifndef _LIBDMR_
     else if (Settings::get().settings()->getOption(QString("base.decode.select")).toInt() == DecodeMode::CUSTOM) {
+        qWarning() << "Detected CUSTOM decode mode";
         int decodeIndex = Settings::get().settings()->getOption(QString("base.decode.Decodemode")).toInt();
         auto decodeModeOpt = Settings::get().settings()->option("base.decode.Decodemode");
         QString decodeMode = decodeModeOpt.data()->data("items").toStringList()[decodeIndex];
@@ -1676,6 +1677,8 @@ void MpvProxy::play()
         my_set_property(m_handle, iter.key(), iter.value());
         iter++;
     }
+    qInfo() << "FINALLY, hwdec:" << my_get_property(m_handle, "hwdec").toString();
+    qInfo() << "FINALLY, vo:" << my_get_property(m_handle, "vo").toString();
 
     my_command(m_handle, listArgs);
     my_set_property(m_handle, "pause", m_bPauseOnStart);
