@@ -341,7 +341,11 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         mi.aCodeID = audio_dec_ctx->codec_id;
         mi.aCodeRate = audio_dec_ctx->bit_rate;
         mi.aDigit = audio_dec_ctx->format;
+#if LIBAVFORMAT_VERSION_MAJOR >= 60
+        mi.channels = audio_dec_ctx->ch_layout.nb_channels;
+#else
         mi.channels = audio_dec_ctx->channels;
+#endif
         mi.sampling = audio_dec_ctx->sample_rate;
 
 #ifdef USE_TEST
@@ -1706,7 +1710,11 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.aCodeID = dec_ctx->codec_id;
     mi.aCodeRate = dec_ctx->bit_rate;
     mi.aDigit = dec_ctx->format;
+#if LIBAVFORMAT_VERSION_MAJOR >= 60
+    mi.channels = dec_ctx->ch_layout.nb_channels;
+#else
     mi.channels = dec_ctx->channels;
+#endif
     mi.sampling = dec_ctx->sample_rate;
 
     AVDictionaryEntry *tag = NULL;
