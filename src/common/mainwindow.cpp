@@ -191,12 +191,12 @@ static QWidget *createDecodeOptionHandle(QObject *pObj)
 {
     qDebug() << "Entering createDecodeOptionHandle";
     DSettingsOption *pSettingOption = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(pObj);
-    QWidget *mianWidget = new QWidget;
+    QWidget *mainWidget = new QWidget;
     QComboBox *combobox = new QComboBox;
     QHBoxLayout *pLayout = new QHBoxLayout;
 
     combobox->addItems(pSettingOption->data("items").toStringList());
-    mianWidget->setLayout(pLayout);
+    mainWidget->setLayout(pLayout);
     pLayout->addStretch();
     pLayout->addWidget(combobox);
     combobox->setFixedWidth(245);
@@ -209,8 +209,8 @@ static QWidget *createDecodeOptionHandle(QObject *pObj)
     pOptionLayout->setContentsMargins(0, 0, 0, 0);
     pOptionLayout->setSpacing(0);
 
-    mianWidget->setMinimumWidth(240);
-    pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mianWidget);
+    mainWidget->setMinimumWidth(240);
+    pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mainWidget);
 
     pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value){
         if (dataType == "items") {
@@ -231,12 +231,12 @@ static QWidget *createVoOptionHandle(QObject *pObj)
 {
     qDebug() << "Entering createVoOptionHandle";
     DSettingsOption *pSettingOption = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(pObj);
-    QWidget *mianWidget = new QWidget;
+    QWidget *mainWidget = new QWidget;
     QComboBox *combobox = new QComboBox;
     QHBoxLayout *pLayout = new QHBoxLayout;
 
     combobox->addItems(pSettingOption->data("items").toStringList());
-    mianWidget->setLayout(pLayout);
+    mainWidget->setLayout(pLayout);
     pLayout->addStretch();
     pLayout->addWidget(combobox);
     combobox->setFixedWidth(245);
@@ -249,8 +249,8 @@ static QWidget *createVoOptionHandle(QObject *pObj)
     pOptionLayout->setContentsMargins(0, 0, 0, 0);
     pOptionLayout->setSpacing(0);
 
-    mianWidget->setMinimumWidth(240);
-    pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mianWidget);
+    mainWidget->setMinimumWidth(240);
+    pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mainWidget);
 
     pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value){
         if (dataType == "items") {
@@ -274,12 +274,12 @@ static QWidget *createEffectOptionHandle(QObject *pObj)
 {
     qDebug() << "Entering createEffectOptionHandle";
     DSettingsOption *pSettingOption = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(pObj);
-    QWidget *mianWidget = new QWidget;
+    QWidget *mainWidget = new QWidget;
     QComboBox *combobox = new QComboBox;
     QHBoxLayout *pLayout = new QHBoxLayout;
 
     combobox->addItems(pSettingOption->data("items").toStringList());
-    mianWidget->setLayout(pLayout);
+    mainWidget->setLayout(pLayout);
     pLayout->addStretch();
     pLayout->addWidget(combobox);
     combobox->setFixedWidth(245);
@@ -292,8 +292,8 @@ static QWidget *createEffectOptionHandle(QObject *pObj)
     pOptionLayout->setContentsMargins(0, 0, 0, 0);
     pOptionLayout->setSpacing(0);
 
-    mianWidget->setMinimumWidth(240);
-    pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mianWidget);
+    mainWidget->setMinimumWidth(240);
+    pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), mainWidget);
 
     pSettingOption->connect(pSettingOption, &DSettingsOption::dataChanged, [=](const QString &dataType, QVariant value){
         if (dataType == "items") {
@@ -525,10 +525,10 @@ public:
         m_pWindow = pTarget->windowHandle();
     }
 
-    void setEnabled(bool bEnale)
+    void setEnabled(bool bEnable)
     {
         qDebug() << "Entering MainWindowEventListener setEnabled";
-        m_bEnabled = bEnale;
+        m_bEnabled = bEnable;
     }
 
 protected:

@@ -87,7 +87,7 @@ typedef enum  {
   decoder_profiles_HEVC_MAIN_444,    //     {"HEVC_MAIN_444", VDP_DECODER_PROFILE_HEVC_MAIN_444},
   _decoder_maxnull
 }VDP_Decoder_e;
-#define  RET_INFO_LENTH_MAX  (512)
+#define  RET_INFO_LENGTH_MAX  (512)
 typedef struct  {
   VDP_Decoder_e  func; //具体值的功能查询
   VdpBool is_supported; //是否支持具体值硬解码
@@ -95,7 +95,7 @@ typedef struct  {
   uint32_t max_height;//最大支持视频高度
   uint32_t max_level; //最大支持等级
   uint32_t max_macroblocks;//最大宏块大小
-  char ret_info[RET_INFO_LENTH_MAX];//支持的列表
+  char ret_info[RET_INFO_LENGTH_MAX];//支持的列表
 }VDP_Decoder_t;
 //返回值大于0表示支持硬解， index 视频格式解码请求值， result 返回解码支持信息
 typedef unsigned int (*gpu_decoderInfo)(decoder_profile index, VDP_Decoder_t *result );
@@ -1180,7 +1180,7 @@ void MpvProxy::processLogMessage(mpv_event_log_message *pEvent)
     case MPV_LOG_LEVEL_FATAL: {
         QString strError = pEvent->text;
         if (strError.contains("Failed setup for format vdpau")) {
-            m_bLastIsSpecficFormat = true;
+            m_bLastIsSpecificFormat = true;
         }
         qCritical() << QString("%1: %2").arg(pEvent->prefix).arg(strError);
         emit mpvErrorLogsChanged(QString(pEvent->prefix), strError);
@@ -1719,7 +1719,7 @@ void MpvProxy::initMember()
     m_bIsJingJia = false;
     m_bInited = false;
     m_bHwaccelAuto = false;
-    m_bLastIsSpecficFormat = false;
+    m_bLastIsSpecificFormat = false;
 
     m_sInitVo = "gpu,xv,x11";//初始化vo数据
     m_listBurstPoints.clear();
