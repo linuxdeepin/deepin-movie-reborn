@@ -2227,8 +2227,8 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
             qDebug() << "QDateTime::currentMSecsSinceEpoch() - m_pToolbox->getMouseTime() < 500";
             return;
         }
-        if (m_pEngine->getplaylist()->items().isEmpty() && m_pEngine->getplaylist()->getThumanbilRunning()) {
-            qDebug() << "m_pEngine->getplaylist()->items().isEmpty() && m_pEngine->getplaylist()->getThumanbilRunning()";
+        if (m_pEngine->getplaylist()->items().isEmpty() && m_pEngine->getplaylist()->getThumbnailRunning()) {
+            qDebug() << "m_pEngine->getplaylist()->items().isEmpty() && m_pEngine->getplaylist()->getThumbnailRunning()";
             return;
         }
         //允许影院打开音乐文件进行播放
@@ -2317,7 +2317,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
                     //last exit item without playing, because the playlist has not been
                     //loaded into that file, so adding a thread waiting here.
                     //TODO(xxxxp):It will cause direct opening of the cartoon? May need to optimize Model View
-                    while (m_pEngine->getplaylist()->getThumanbilRunning()) {
+                    while (m_pEngine->getplaylist()->getThumbnailRunning()) {
                         QCoreApplication::processEvents();
                     }
                     qInfo() << "playlist_pos: " << restore_pos << " current: " << m_pEngine->playlist().current();

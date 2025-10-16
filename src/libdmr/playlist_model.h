@@ -33,7 +33,7 @@ typedef int (*mvideo_thumbnailer_generate_thumbnail_to_buffer)(video_thumbnailer
 namespace dmr {
 class PlayerEngine;
 class LoadThread;
-class GetThumanbil;
+class GetThumbnail;
 
 struct MovieInfo {
     bool valid;
@@ -225,10 +225,10 @@ public:
     };
     void loadPlaylist();
     /**
-     * @brief getThumanbilRunning 获取加载线程是否运行
+     * @brief getThumbnailRunning 获取加载线程是否运行
      * @return 返回是否正在运行
      */
-    bool getThumanbilRunning();
+    bool getThumbnailRunning();
 
     //获取视频信息
     MovieInfo getMovieInfo(const QUrl &url, bool *is);
@@ -301,7 +301,7 @@ private:
     QString _playlistFile;
 
     LoadThread *m_ploadThread;
-    GetThumanbil *m_getThumanbil {nullptr};
+    GetThumbnail *m_getThumbnail {nullptr};
     QMutex *m_pdataMutex;
     bool m_brunning;
     QList<QUrl> m_tempList;
@@ -334,17 +334,17 @@ private:
     QSet<QString> _urlsInJob;  // url list
 };
 
-class GetThumanbil : public QThread
+class GetThumbnail : public QThread
 {
     Q_OBJECT
 public:
-    GetThumanbil(PlaylistModel *model, const QList<QUrl> &urls): m_model(model), m_urls(urls)
+    GetThumbnail(PlaylistModel *model, const QList<QUrl> &urls): m_model(model), m_urls(urls)
     {
 //        m_model = model;
 //        m_urls = urls;
         m_mutex = new QMutex;
     };
-    ~GetThumanbil()
+    ~GetThumbnail()
     {
         m_stop = true;
         delete m_mutex;

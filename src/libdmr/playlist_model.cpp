@@ -697,22 +697,22 @@ void PlaylistModel::loadPlaylist()
     qDebug() << "Exiting PlaylistModel::loadPlaylist()";
 }
 
-bool PlaylistModel::getThumanbilRunning()
+bool PlaylistModel::getThumbnailRunning()
 {
-    qDebug() << "Entering PlaylistModel::getThumanbilRunning()";
-    if (m_getThumanbil) {
-        if (m_getThumanbil->isRunning()) {
-            qDebug() << "m_getThumanbil is running";
+    qDebug() << "Entering PlaylistModel::getThumbnailRunning()";
+    if (m_getThumbnail) {
+        if (m_getThumbnail->isRunning()) {
+            qDebug() << "m_getThumbnail is running";
             return true;
         } else {
-            qDebug() << "m_getThumanbil is not running";
+            qDebug() << "m_getThumbnail is not running";
             return false;
         }
     } else {
-        qDebug() << "m_getThumanbil is null";
+        qDebug() << "m_getThumbnail is null";
         return false;
     }
-    qDebug() << "Exiting PlaylistModel::getThumanbilRunning()";
+    qDebug() << "Exiting PlaylistModel::getThumbnailRunning()";
 }
 
 MovieInfo PlaylistModel::getMovieInfo(const QUrl &url, bool *is)
@@ -1343,17 +1343,17 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
 
     qInfo() << "not wayland";
     if (QThread::idealThreadCount() > 1) {
-        if (!m_getThumanbil) {
-            m_getThumanbil = new GetThumanbil(this, t_urls);
-            connect(m_getThumanbil, &GetThumanbil::finished, this, &PlaylistModel::onAsyncFinished);
-            connect(m_getThumanbil, &GetThumanbil::updateItem, this, &PlaylistModel::onAsyncUpdate, Qt::BlockingQueuedConnection);
-            m_getThumanbil->start();
+        if (!m_getThumbnail) {
+            m_getThumbnail = new GetThumbnail(this, t_urls);
+            connect(m_getThumbnail, &GetThumbnail::finished, this, &PlaylistModel::onAsyncFinished);
+            connect(m_getThumbnail, &GetThumbnail::updateItem, this, &PlaylistModel::onAsyncUpdate, Qt::BlockingQueuedConnection);
+            m_getThumbnail->start();
         } else {
-            if (m_getThumanbil->isRunning()) {
+            if (m_getThumbnail->isRunning()) {
                 m_tempList.append(t_urls);
             } else {
-                m_getThumanbil->setUrls(t_urls);
-                m_getThumanbil->start();
+                m_getThumbnail->setUrls(t_urls);
+                m_getThumbnail->start();
             }
         }
         _pendingJob.clear();
@@ -1417,13 +1417,13 @@ void PlaylistModel::onAsyncFinished()
 {
     qDebug() << "Entering PlaylistModel::onAsyncFinished()";
     //qInfo() << fil.size();
-    m_getThumanbil->clearItem();
+    m_getThumbnail->clearItem();
     //handleAsyncAppendResults(fil);
     if (!m_tempList.isEmpty()) {
         qDebug() << "m_tempList is not empty, set urls and start";
-        m_getThumanbil->setUrls(m_tempList);
+        m_getThumbnail->setUrls(m_tempList);
         m_tempList.clear();
-        m_getThumanbil->start();
+        m_getThumbnail->start();
     }
     qDebug() << "Exiting PlaylistModel::onAsyncFinished()";
 }
@@ -1765,13 +1765,13 @@ PlaylistModel::~PlaylistModel()
         qDebug() << "Preserving playlist on exit";
     }
 #endif
-    if (m_getThumanbil) {
-        if (m_getThumanbil->isRunning()) {
+    if (m_getThumbnail) {
+        if (m_getThumbnail->isRunning()) {
             qDebug() << "Stopping running thumbnail generation thread";
-            m_getThumanbil->stop();
+            m_getThumbnail->stop();
         }
-        m_getThumanbil->deleteLater();
-        m_getThumanbil = nullptr;
+        m_getThumbnail->deleteLater();
+        m_getThumbnail = nullptr;
         qDebug() << "Thumbnail generator scheduled for deletion";
     }
     if (m_video_thumbnailer != nullptr) {
