@@ -631,10 +631,10 @@ void PlaylistModel::loadPlaylist()
     delayedAppendAsync(urls);
 }
 
-bool PlaylistModel::getThumanbilRunning()
+bool PlaylistModel::getThumbnailRunning()
 {
-    if (m_getThumanbil) {
-        if (m_getThumanbil->isRunning()) {
+    if (m_getThumbnail) {
+        if (m_getThumbnail->isRunning()) {
             return true;
         } else {
             return false;
@@ -1154,17 +1154,17 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
     };
 
     if (QThread::idealThreadCount() > 1) {
-        if (!m_getThumanbil) {
-            m_getThumanbil = new GetThumanbil(this, t_urls);
-            connect(m_getThumanbil, &GetThumanbil::finished, this, &PlaylistModel::onAsyncFinished);
-            connect(m_getThumanbil, &GetThumanbil::updateItem, this, &PlaylistModel::onAsyncUpdate, Qt::BlockingQueuedConnection);
-            m_getThumanbil->start();
+        if (!m_getThumbnail) {
+            m_getThumbnail = new GetThumbnail(this, t_urls);
+            connect(m_getThumbnail, &GetThumbnail::finished, this, &PlaylistModel::onAsyncFinished);
+            connect(m_getThumbnail, &GetThumbnail::updateItem, this, &PlaylistModel::onAsyncUpdate, Qt::BlockingQueuedConnection);
+            m_getThumbnail->start();
         } else {
-            if (m_getThumanbil->isRunning()) {
+            if (m_getThumbnail->isRunning()) {
                 m_tempList.append(t_urls);
             } else {
-                m_getThumanbil->setUrls(t_urls);
-                m_getThumanbil->start();
+                m_getThumbnail->setUrls(t_urls);
+                m_getThumbnail->start();
             }
         }
         _pendingJob.clear();
@@ -1225,12 +1225,12 @@ static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
 void PlaylistModel::onAsyncFinished()
 {
     //qInfo() << fil.size();
-    m_getThumanbil->clearItem();
+    m_getThumbnail->clearItem();
     //handleAsyncAppendResults(fil);
     if (!m_tempList.isEmpty()) {
-        m_getThumanbil->setUrls(m_tempList);
+        m_getThumbnail->setUrls(m_tempList);
         m_tempList.clear();
-        m_getThumanbil->start();
+        m_getThumbnail->start();
     }
 }
 
@@ -1550,12 +1550,12 @@ PlaylistModel::~PlaylistModel()
         clearPlaylist();
     }
 #endif
-    if (m_getThumanbil) {
-        if (m_getThumanbil->isRunning()) {
-            m_getThumanbil->stop();
+    if (m_getThumbnail) {
+        if (m_getThumbnail->isRunning()) {
+            m_getThumbnail->stop();
         }
-        m_getThumanbil->deleteLater();
-        m_getThumanbil = nullptr;
+        m_getThumbnail->deleteLater();
+        m_getThumbnail = nullptr;
     }
     if (m_video_thumbnailer != nullptr) {
         m_mvideo_thumbnailer_destroy(m_video_thumbnailer);
