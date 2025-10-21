@@ -52,18 +52,31 @@ void VolumeMonitoring::stop()
 
 void VolumeMonitoring::timeoutSlot()
 {
-    QVariant v = DBusUtils::redDBusProperty("org.deepin.daemon.Audio1", "/org/deepin/daemon/Audio1",
-                                            "org.deepin.daemon.Audio1", "SinkInputs");
+    QString dbusName = "org.deepin.dde.Audio1";
+    QString dbusPath = "/org/deepin/dde/Audio1";
+
+    QVariant v = DBusUtils::redDBusProperty(dbusName, dbusPath,
+                                            dbusName, "SinkInputs");
 
     if (!v.isValid())
-        return;
+    {
+        dbusName = "org.deepin.daemon.Audio1";
+        dbusPath = "/org/deepin/daemon/Audio1";
+        v = DBusUtils::redDBusProperty(dbusName, dbusPath,
+                                            dbusName, "SinkInputs");
+        if (!v.isValid())
+        {
+           return;
+        }                                    
+    }
+
 
     QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
 
     QString sinkInputPath;
     for (auto curPath : allSinkInputsList) {
-        QVariant nameV = DBusUtils::redDBusProperty("org.deepin.daemon.Audio1", curPath.path(),
-                                                    "org.deepin.daemon.Audio1.SinkInput", "Name");
+        QVariant nameV = DBusUtils::redDBusProperty(dbusName, curPath.path(),
+                                                    dbusName+".SinkInput", "Name");
 
         QString movieStr = QObject::tr("Movie");
         if (!nameV.isValid() || (!nameV.toString().contains( movieStr, Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
@@ -75,20 +88,20 @@ void VolumeMonitoring::timeoutSlot()
     if (sinkInputPath.isEmpty())
         return;
 
-    QDBusInterface ainterface("org.deepin.daemon.Audio1", sinkInputPath,
-                              "org.deepin.daemon.Audio1.SinkInput",
+    QDBusInterface ainterface(dbusName, sinkInputPath,
+                              dbusName+".SinkInput",
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
         return ;
     }
 
     //获取音量
-    QVariant volumeV = DBusUtils::redDBusProperty("org.deepin.daemon.Audio1", sinkInputPath,
-                                                  "org.deepin.daemon.Audio1.SinkInput", "Volume");
+    QVariant volumeV = DBusUtils::redDBusProperty(dbusName, sinkInputPath,
+                                                  dbusName+".SinkInput", "Volume");
 
     //获取音量
-    QVariant muteV = DBusUtils::redDBusProperty("org.deepin.daemon.Audio1", sinkInputPath,
-                                                "org.deepin.daemon.Audio1.SinkInput", "Mute");
+    QVariant muteV = DBusUtils::redDBusProperty(dbusName, sinkInputPath,
+                                                dbusName + ".SinkInput", "Mute");
 
     // int temp = volumeV.toDouble();
     int volume = static_cast<int>(volumeV.toDouble() * 100);

@@ -102,17 +102,28 @@ QString Platform_VolumeSlider::readSinkInputPath()
 {
     QString strPath = "";
 
-    QVariant v = ApplicationAdaptor::redDBusProperty("org.deepin.daemon.Audio1", "/org/deepin/daemon/Audio1",
-                                                     "org.deepin.daemon.Audio1", "SinkInputs");
+    QString dbusName = "org.deepin.dde.Audio1";
+    QString dbusPath = "/org/deepin/dde/Audio1";
 
+    QVariant v = ApplicationAdaptor::redDBusProperty(dbusName, dbusPath,
+                                                     dbusName, "SinkInputs");
     if (!v.isValid())
-        return strPath;
+    {
+        dbusName = "org.deepin.daemon.Audio1";
+        dbusPath = "/org/deepin/daemon/Audio1";
+        v = ApplicationAdaptor::redDBusProperty(dbusName, dbusPath,
+                                            dbusName, "SinkInputs");
+        if (!v.isValid())
+        {
+           return strPath;
+        }                                    
+    }
 
     QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
 
     for (auto curPath : allSinkInputsList) {
-        QVariant nameV = ApplicationAdaptor::redDBusProperty("org.deepin.daemon.Audio1", curPath.path(),
-                                                             "org.deepin.daemon.Audio1.SinkInput", "Name");
+        QVariant nameV = ApplicationAdaptor::redDBusProperty(dbusName, curPath.path(),
+                                                             dbusName + ".SinkInput", "Name");
         QString strMovie = QObject::tr("Movie");
         if (!nameV.isValid() || (!nameV.toString().contains(strMovie, Qt::CaseInsensitive) && !nameV.toString().contains("deepin movie", Qt::CaseInsensitive)))
             continue;
@@ -128,10 +139,18 @@ void Platform_VolumeSlider::setMute(bool muted)
     QString sinkInputPath = readSinkInputPath();
 
     if (!sinkInputPath.isEmpty()) {
-        QDBusInterface ainterface("org.deepin.daemon.Audio1", sinkInputPath,
-                                  "org.deepin.daemon.Audio1.SinkInput",
+        QDBusInterface ainterface("org.deepin.dde.Audio1", sinkInputPath,
+                                  "org.deepin.dde.Audio1.SinkInput",
                                   QDBusConnection::sessionBus());
         if (!ainterface.isValid()) {
+            QDBusInterface ainterfaceold("org.deepin.daemon.Audio1", sinkInputPath,
+                                  "org.deepin.daemon.Audio1.SinkInput",
+                                  QDBusConnection::sessionBus());
+            if(ainterfaceold.isValid())
+            {
+                //调用设置音量
+                ainterfaceold.call(QLatin1String("SetMute"), muted);
+            }                      
             return;
         }
 

@@ -139,7 +139,9 @@ void MpvProxy::setDecodeModel(const QVariant &value)
 
 void MpvProxy::initMpvFuns()
 {
-    QLibrary mpvLibrary(CompositingManager::libPath("libmpv.so.1"));
+    QString libmpvPath;
+    libmpvPath = CompositingManager::libPath("libmpv.so.");
+    QLibrary mpvLibrary(libmpvPath);
 
     m_waitEvent = reinterpret_cast<mpv_waitEvent>(mpvLibrary.resolve("mpv_wait_event"));
     m_setOptionString = reinterpret_cast<mpv_set_optionString>(mpvLibrary.resolve("mpv_set_option_string"));
@@ -1316,7 +1318,11 @@ void MpvProxy::play()
     }
 
     if (listOpts.size()) {
-        listArgs << "replace" << listOpts.join(',');
+        listArgs << "replace";
+        if (MPV_CLIENT_API_VERSION >= MPV_MAKE_VERSION(2,3)) {
+             listArgs << "-1";
+        }
+        listArgs << listOpts.join(',');
     }
 
     qInfo() << listArgs;
@@ -1459,9 +1465,13 @@ int MpvProxy::my_set_property(mpv_handle *pHandle, const QString &sName, const Q
     }
 #endif
 #else
-   if(sName.compare("hwdec") == 0) {
-       sValue = "no";
-   }
+    if(sName.compare("hwdec") == 0) {
+        if( property("dmrhwdec-switch").isValid() && property("dmrhwdec-switch").toBool()) {
+            sValue = v;
+        } else {
+            sValue = "no";
+        }
+    }
 #endif
 
     node_builder node(sValue);
@@ -1794,6 +1804,10 @@ void MpvProxy::setProperty(const QString &sName, const QVariant &val)
         m_bPauseOnStart = val.toBool();
     } else if (sName == "video-zoom") {
         my_set_property(m_handle, sName, val.toDouble());
+    }  else if (sName == "color") {
+        QObject::setProperty("color", val);
+    } else if (sName == "dmrhwdec-switch") {
+        QObject::setProperty("dmrhwdec-switch", val);
     } else {
         my_set_property(m_handle, sName.toUtf8().data(), val);
     }

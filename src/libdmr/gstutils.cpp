@@ -186,9 +186,6 @@ GstUtils* GstUtils::get()
 
 MovieInfo GstUtils:: parseFileByGst(const QFileInfo &fi)
 {
-    char *uri = nullptr;
-    uri = new char[200];
-
     m_movieInfo = MovieInfo();
 
     m_movieInfo.title = fi.fileName();
@@ -197,17 +194,14 @@ MovieInfo GstUtils:: parseFileByGst(const QFileInfo &fi)
     m_movieInfo.fileSize = fi.size();
     m_movieInfo.fileType = fi.suffix();
 
-    uri = strcpy(uri, QUrl::fromLocalFile(fi.filePath()).toString().toUtf8().constData());
-
-    if (!g_mvideo_gst_discoverer_discover_uri_async (m_gstData.discoverer, uri)) {
+    QByteArray uri = QUrl::fromLocalFile(fi.filePath()).toString().toLocal8Bit();
+    if (!g_mvideo_gst_discoverer_discover_uri_async (m_gstData.discoverer, uri.constData())) {
       qInfo() << "Failed to start discovering URI " << uri;
       g_object_unref (m_gstData.discoverer);
       return m_movieInfo;
     }
 
     g_main_loop_run (m_gstData.loop);
-
-    delete []uri;
 
     return m_movieInfo;
 }

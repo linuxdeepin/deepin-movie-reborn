@@ -1,3 +1,51 @@
+deepin-movie-reborn (6.0.13) unstable; urgency=medium
+
+  * fix loogn64 exit fail
+
+ -- Liu zheng <liuzheng@uniontech.com>  Tue, 11 Feb 2025 09:41:47 +0800
+
+deepin-movie-reborn (6.0.12) unstable; urgency=medium
+
+  * fix:startup stuck problem
+
+ -- Liu zheng <liuzheng@uniontech.com>  Wed, 05 Feb 2025 16:40:16 +0800
+
+deepin-movie-reborn (6.0.11) unstable; urgency=medium
+
+  * chore: clear obsolete *.psd files(Bug: 267081)
+
+ -- renbin <renbin@uniontech.com>  Mon, 30 Sep 2024 09:39:55 +0800
+
+deepin-movie-reborn (6.0.10) unstable; urgency=medium
+
+  * New version 6.0.10. 
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 04 Jul 2024 16:03:18 +0800
+
+deepin-movie-reborn (6.0.9) unstable; urgency=medium
+
+  * New version 6.0.9.
+
+ -- muyuankai <muyuankai@uniontech.com>  Wed, 26 Jun 2024 16:09:09 +0800
+
+deepin-movie-reborn (6.0.8) unstable; urgency=medium
+
+  * New version 6.0.8.
+
+ -- xiepengfei <xiepengfei@uniontech.com>  Tue, 28 May 2024 15:04:22 +0800
+
+deepin-movie-reborn (6.0.7) unstable; urgency=medium
+
+  * New version 6.0.7.
+
+ -- lijiaxuan <lijiaxuan@uniontech.com>  Fri, 12 Apr 2024 16:12:30 +0800
+
+deepin-movie-reborn (6.0.6) unstable; urgency=medium
+
+  * New version 6.0.6.
+
+ -- muyuankai <muyuankai@uniontech.com>  Tue, 16 Jan 2024 11:42:05 +0800
+
 deepin-movie-reborn (6.0.5) unstable; urgency=medium
 
   * New version 6.0.5.

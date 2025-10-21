@@ -498,7 +498,12 @@ namespace dmr {
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
             a = static_cast<float>(252.0 / 255.0);
         }
-        pGLFunction->glClearColor(a, a, a, 1.0);
+        if(parent()->property("color").isValid()) {
+            QColor clr = parent()->property("color").value<QColor>();
+            pGLFunction->glClearColor(clr.red()/255.f, clr.green()/255.f, clr.blue()/255.f, 1.0);
+        } else {
+            pGLFunction->glClearColor(a, a, a, 1.0);
+        }
 
         prepareSplashImages();
         setupIdlePipe();
@@ -956,7 +961,12 @@ namespace dmr {
                 color = QColor(252, 252, 252, 255);
                 fRation = 252.0f / 255.0f;
             }
-            pGLFunction->glClearColor(fRation, fRation, fRation, 1.0);
+            if(parent()->property("color").isValid()) {
+                QColor clr = parent()->property("color").value<QColor>();
+                pGLFunction->glClearColor(clr.red()/255.f, clr.green()/255.f, clr.blue()/255.f, 1.0);
+            } else {
+                pGLFunction->glClearColor(fRation, fRation, fRation, 1.0);
+            }
             pGLFunction->glClear(GL_COLOR_BUFFER_BIT);
 
             for(int i = 0;i < 2 ;i ++){
@@ -1058,7 +1068,9 @@ namespace dmr {
     void MpvGLWidget::initMpvFuns()
     {
         qInfo() << "MpvGLWidget开始initMpvFuns";
-        QLibrary mpvLibrary(CompositingManager::libPath("libmpv.so.1"));
+        QString libmpvPath;
+        libmpvPath = CompositingManager::libPath("libmpv.so.");
+        QLibrary mpvLibrary(libmpvPath);
         m_callback = reinterpret_cast<mpv_render_contextSet_update_callback>(mpvLibrary.resolve("mpv_render_context_set_update_callback"));
         m_context_report = reinterpret_cast<mpv_render_contextReport_swap>(mpvLibrary.resolve("mpv_render_context_report_swap"));
         m_renderContex = reinterpret_cast<mpv_renderContext_free>(mpvLibrary.resolve("mpv_render_context_free"));
