@@ -29,18 +29,18 @@ find_package(Qt6 REQUIRED COMPONENTS OpenGL OpenGLWidgets)
 # target_include_directories(${CMD_NAME} PUBLIC
 #     ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mediaplayer ${PROJECT_SOURCE_DIR}/../backends/mpv /usr/include/glib-2.0 /usr/include/gstreamer-1.0)
 target_include_directories(${CMD_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mpv /usr/include/glib-2.0 /usr/include/gstreamer-1.0)
+    ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mpv /usr/include/glib-2.0 /usr/include/gstreamer-1.0 drm)
 
 if (Qt6_FOUND)
     # Qt6 environment
     message(STATUS "Qt6_FOUND---------------- = ${Qt6_FOUND}")
     target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt6::Widgets Qt6::Concurrent
-        Qt6::Network Qt6::Sql Qt6::Svg Qt6::SvgWidgets Qt6::Multimedia Qt6::MultimediaWidgets Qt6::DBus PkgConfig::Gst GL Qt6::SvgWidgets Qt6::OpenGL
+        Qt6::Network Qt6::Sql Qt6::Svg Qt6::SvgWidgets Qt6::Multimedia Qt6::MultimediaWidgets Qt6::DBus PkgConfig::Gst PkgConfig::DRM GL Qt6::SvgWidgets Qt6::OpenGL
         Qt6::GuiPrivate Qt6::OpenGLWidgets)
 else()
     # Qt5 environment
     target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
-        Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::Svg Qt5::Multimedia Qt5::MultimediaWidgets Qt5::DBus PkgConfig::Gst GL)
+        Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::Svg Qt5::Multimedia Qt5::MultimediaWidgets Qt5::DBus PkgConfig::Gst PkgConfig::DRM GL)
 endif()
 
 configure_file(libdmr.pc.in ${PROJECT_BINARY_DIR}/libdmr.pc @ONLY)

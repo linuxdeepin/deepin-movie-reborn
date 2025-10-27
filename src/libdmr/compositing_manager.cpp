@@ -317,9 +317,7 @@ CompositingManager::CompositingManager()
 
     //针对jm显卡适配
     qDebug() << "Checking for jm GPU.";
-    QFileInfo jmfi("/dev/jmgpu");
-    QFileInfo fi("/dev/mwv206_0");
-    if (jmfi.exists() || fi.exists()) {
+    if (utils::isJjwGPUPresent()) {
         _composited = false;
         qDebug() << "jm GPU or mwv206_0 detected, _composited set to false.";
     } else {
