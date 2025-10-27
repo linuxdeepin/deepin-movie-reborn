@@ -4,9 +4,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "utils.h"
+
 #include <QtDBus>
 #include <QtWidgets>
 #include <QPainterPath>
+
+#include <fcntl.h>
+#include <unistd.h>
+#include <xf86drm.h>
 
 namespace dmr {
 namespace utils {
@@ -680,6 +685,55 @@ void switchToDefaultSink()
     sList.append(QString::number(sinkindex));
     proc.start("pacmd", sList);
     proc.waitForFinished();
+}
+
+bool isJjwGPUPresent()
+{
+    QString jjwPath = getJjwGPUPath();
+
+    return jjwPath == "/dev/mwv206_0" || jjwPath == "/dev/jmgpu" || jjwPath == "mwv207d";
+}
+
+QString getJjwGPUPath()
+{
+    // jm72
+    QFileInfo fi("/dev/mwv206_0");
+    if (fi.exists()) {
+        return "/dev/mwv206_0";
+    }
+
+    // jm9
+    QFileInfo jmfi("/dev/jmgpu");
+    if (jmfi.exists()) {
+        return "/dev/jmgpu";
+    }
+
+    // jm11
+    static int MAX_PCIE_SLOT = 8;
+    drmVersionPtr version = nullptr;
+    int fd;
+
+    for (int i = 128; i < 128+ MAX_PCIE_SLOT; i++) {
+        char device_path[64] = {0};
+        sprintf(device_path, "/dev/dri/renderD%d", i);
+        fd = open(device_path, O_RDWR);
+
+        if (fd < 0)
+            break;
+        version = drmGetVersion(fd);
+        if (!version) {
+            close(fd);
+            continue;
+        }
+        if (!strncmp(version->name, "mwv207d", version->name_len) && version->name_len == strlen("mwv207d")) {
+            drmFreeVersion(version);
+            close(fd);
+            qInfo() << __FUNCTION__ << "jm11 detected";
+            return "mwv207d";
+        }
+    }
+
+    return QString();
 }
 }
 }

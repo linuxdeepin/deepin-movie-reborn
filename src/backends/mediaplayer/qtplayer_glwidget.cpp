@@ -818,9 +818,7 @@ namespace dmr {
     void QtPlayerGLWidget::setVideoTex(QImage image)
     {
         if(!m_pVideoTex){
-            QFileInfo fi("/dev/mwv206_0");
-            QFileInfo jmfi("/dev/jmgpu");
-            if (fi.exists() || jmfi.exists()) {
+            if (utils::isJjwGPUPresent()) {
                 m_pVideoTex = new QOpenGLTexture(image, QOpenGLTexture::DontGenerateMipMaps);
             } else {
                 m_pVideoTex = new QOpenGLTexture(image, QOpenGLTexture::GenerateMipMaps);
