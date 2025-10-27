@@ -222,9 +222,7 @@ CompositingManager::CompositingManager()
 #endif
 
     //针对jm显卡适配
-    QFileInfo jmfi("/dev/jmgpu");
-    QFileInfo fi("/dev/mwv206_0");
-    if (jmfi.exists() || fi.exists()) {
+    if (utils::isJjwGPUPresent()) {
         _composited = false;
     }
 
