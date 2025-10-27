@@ -43,6 +43,7 @@ if (Qt6_FOUND)
     pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
     #pkg_check_modules(DBusextended REQUIRED IMPORTED_TARGET dbusextended-qt5)
     pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gobject-2.0)
+    pkg_check_modules(DRM REQUIRED IMPORTED_TARGET libdrm)
     # IMPORTED_TARGET failed to work for some of libs under flatpak env
     pkg_check_modules(Other REQUIRED  gsettings-qt)
 
@@ -90,7 +91,7 @@ if (Qt6_FOUND)
     target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
     set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt6::Widgets Qt6::Network Qt6::DBus Qt6::Sql Qt6::Svg Qt6::Multimedia
-        Qt6::MultimediaWidgets PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::Gst GL va va-x11
+        Qt6::MultimediaWidgets PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::Gst PkgConfig::DRM GL va va-x11
         Qt6::Concurrent Qt6::Xml Qt6::SvgWidgets Qt6::OpenGL Qt6::Core Qt6::Gui Qt6::GuiPrivate Qt6::OpenGLWidgets)
 
     target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES} dmr)
@@ -139,6 +140,7 @@ else()
     pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
     pkg_check_modules(DBusextended REQUIRED IMPORTED_TARGET dbusextended-qt5)
     pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gobject-2.0)
+    pkg_check_modules(DRM REQUIRED IMPORTED_TARGET libdrm)
     # IMPORTED_TARGET failed to work for some of libs under flatpak env
     pkg_check_modules(Other REQUIRED gsettings-qt)
 
@@ -190,7 +192,7 @@ else()
     target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
     set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network Qt5::DBus Qt5::Sql Qt5::Svg Qt5::Multimedia
-        Qt5::MultimediaWidgets PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::DBusextended PkgConfig::Gst GL va va-x11
+        Qt5::MultimediaWidgets PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::DBusextended PkgConfig::Gst PkgConfig::DRM GL va va-x11
         Qt5::Concurrent Qt5::Xml)
 
     target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})

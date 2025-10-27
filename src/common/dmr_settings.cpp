@@ -206,11 +206,7 @@ Settings::Settings()
         qWarning() << "Font family option not found!";
     }
 
-    QFileInfo fi("/dev/mwv206_0");      //景嘉微显卡默认不勾选预览
-    QFileInfo jmfi("/dev/jmgpu");
-    qDebug() << "Checking for specific GPU devices: /dev/mwv206_0 exists:" << fi.exists() << ", /dev/jmgpu exists:" << jmfi.exists();
-
-    if ((fi.exists() || jmfi.exists()) && utils::check_wayland_env()) {
+    if (utils::isJjwGPUPresent() && utils::check_wayland_env()) {
         qInfo() << "Disabling mouse preview for JM GPU in Wayland environment";
         setInternalOption("mousepreview", false);
     }
