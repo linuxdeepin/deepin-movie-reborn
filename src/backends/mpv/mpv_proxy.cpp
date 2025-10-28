@@ -487,27 +487,10 @@ mpv_handle *MpvProxy::mpv_init()
             qWarning() << "WARNING: Failed to open /proc/cpuinfo.";
         }
 
-        if (utils::isJjwGPUPresent()) { //2.1.1景嘉微
+        //2.1.1景嘉微
+        if (utils::isJjwGPUPresent()) {
             qDebug() << "DEBUG: Jingjiawei GPU detected. Checking driver existence.";
-            QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
-            QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
-            QString jjwPath = utils::getJjwGPUPath();
-            if(sdir.exists() && jjwPath == "/dev/mwv206_0") {
-                my_set_property(pHandle, "hwdec", "vdpau");
-                my_set_property(pHandle, "vo", "vdpau");
-                m_sInitVo = "vdpau";
-                qDebug() << "DEBUG: Jingjiawei (mwv206) driver found. hwdec: vdpau, vo: vdpau.";
-            } else if ((jjwPath == "/dev/jmgpu" && jmdir.exists()) || jjwPath == "mwv207d") {
-                my_set_property(pHandle, "hwdec", "vaapi");
-                my_set_property(pHandle, "vo", "vaapi");
-                m_sInitVo = "vaapi";
-                qDebug() << "DEBUG: Jingjiawei (mwv207) driver found. hwdec: vaapi, vo: vaapi.";
-            } else {
-                qWarning() << "WARNING: Jingjiawei driver not found. Setting hwdec to auto.";
-                my_set_property(pHandle, "hwdec", "auto");
-                my_set_property(pHandle, "vo", "vdpau,xv,x11");
-                m_sInitVo = "vdpau,xv,x11";
-            }
+            configureJjwGPU(pHandle, true);
         } else if (QFile::exists("/dev/csmcore")) { //2.1.2中船重工
             qDebug() << "DEBUG: CSMCORE detected. Setting vo to xv,x11 and hwdec to auto.";
             my_set_property(pHandle, "vo", "xv,x11");
@@ -650,27 +633,10 @@ mpv_handle *MpvProxy::mpv_init()
         qDebug() << "DEBUG: Decode mode set to HARDWARE. Checking specific hardware.";
         QFileInfo X100GPU("/dev/x100gpu");
         QFileInfo X100VPU("/dev/vxd0");
-        if (utils::isJjwGPUPresent()) { //2.1.1景嘉微
+        //2.1.1景嘉微
+        if (utils::isJjwGPUPresent()) {
             qDebug() << "DEBUG: Jingjiawei GPU detected. Checking driver existence.";
-            QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
-            QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
-            QString jjwPath = utils::getJjwGPUPath();
-            if(sdir.exists() && jjwPath == "/dev/mwv206_0") {
-                my_set_property(pHandle, "hwdec", "vdpau");
-                my_set_property(pHandle, "vo", "vdpau");
-                m_sInitVo = "vdpau";
-                qDebug() << "DEBUG: Jingjiawei (mwv206) driver found. hwdec: vdpau, vo: vdpau.";
-            }else if (utils::isJjwGPUPresent() && jmdir.exists() || jjwPath == "mwv207d") {
-                my_set_property(pHandle, "hwdec", "vaapi");
-                my_set_property(pHandle, "vo", "vaapi");
-                m_sInitVo = "vaapi";
-                qDebug() << "DEBUG: Jingjiawei (mwv207) driver found. hwdec: vaapi, vo: vaapi.";
-            } else {
-                qWarning() << "WARNING: Jingjiawei driver not found. Setting hwdec to auto.";
-                my_set_property(pHandle, "hwdec", "auto");
-                my_set_property(pHandle, "vo", "vdpau,xv,x11");
-                m_sInitVo = "vdpau,xv,x11";
-            }
+            configureJjwGPU(pHandle, true);
         } else if (X100GPU.exists() && X100VPU.exists()) {
             qDebug() << "DEBUG: X100 GPU and VPU detected. Setting hwdec to ftomx-copy and vo to gpu.";
             my_set_property(m_handle, "hwdec", "ftomx-copy");
@@ -1060,6 +1026,31 @@ int MpvProxy::getDecodeProbeValue(const QString sDecodeName)
         }
     }
     return (int)decoder_profile::UN_KNOW;
+}
+
+void MpvProxy::configureJjwGPU(mpv_handle *pHandle, bool setInitVo)
+{
+    QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) + QDir::separator() + "mwv206"); //判断是否安装核外驱动
+    QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) + QDir::separator() + "mwv207");
+    QString jjwPath = utils::getJjwGPUPath();
+    QString vo = m_sInitVo;
+
+    if (sdir.exists() && jjwPath == "/dev/mwv206_0") {
+        my_set_property(pHandle, "hwdec", "vdpau");
+        my_set_property(pHandle, "vo", "vdpau");
+        vo = "vdpau";
+    } else if ((jjwPath == "/dev/jmgpu" && jmdir.exists()) || jjwPath == "mwv207d") {
+        my_set_property(pHandle, "hwdec", "vaapi");
+        my_set_property(pHandle, "vo", "vaapi");
+        vo = "vaapi";
+    } else {
+        my_set_property(pHandle, "hwdec", "auto");
+        my_set_property(pHandle, "vo", "vdpau,xv,x11");
+        vo = "vdpau,xv,x11";
+    }
+
+    if (setInitVo)
+        m_sInitVo = vo;
 }
 
 void MpvProxy::handle_mpv_events()
@@ -1606,19 +1597,8 @@ void MpvProxy::refreshDecode()
                 if (codec.toLower().contains("mpeg2") || codec.toLower().contains("mpeg4")) {
                     qWarning() << "Using SoftCodec because of codec";
                     my_set_property(m_handle, "hwdec", "no");
-                } else {
-                    QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
-                    QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
-                    QString jjwPath = utils::getJjwGPUPath();
-                    if(sdir.exists() && jjwPath == "/dev/mwv206_0") {
-                        my_set_property(m_handle, "hwdec", "vdpau");
-                        my_set_property(m_handle, "vo", "vdpau");
-                    }else if (utils::isJjwGPUPresent() && jmdir.exists() || jjwPath == "mwv207d") {
-                        my_set_property(m_handle, "hwdec", "vaapi");
-                        my_set_property(m_handle, "vo", "vaapi");
-                    } else {
-                        my_set_property(m_handle, "hwdec", "auto");
-                    }
+                } else if (utils::isJjwGPUPresent()) {
+                    configureJjwGPU(m_handle);
                 }
 #ifdef _LIBDMR_
     my_set_property(m_handle, "vo", "libmpv,opengl-cb");
@@ -1694,18 +1674,7 @@ void MpvProxy::refreshDecode()
         QFileInfo X100GPU("/dev/x100gpu");
         QFileInfo X100VPU("/dev/vxd0");
         if (utils::isJjwGPUPresent()) {
-            QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
-            QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
-            QString jjwPath = utils::getJjwGPUPath();
-            if(sdir.exists() && jjwPath == "/dev/mwv206_0") {
-                my_set_property(m_handle, "hwdec", "vdpau");
-                my_set_property(m_handle, "vo", "vdpau");
-            }else if (utils::isJjwGPUPresent() && jmdir.exists() || jjwPath == "mwv207d") {
-                my_set_property(m_handle, "hwdec", "vaapi");
-                my_set_property(m_handle, "vo", "vaapi");
-            } else {
-                my_set_property(m_handle, "hwdec", "auto");
-            }
+            configureJjwGPU(m_handle);
 #ifdef _LIBDMR_
     my_set_property(m_handle, "vo", "libmpv,opengl-cb");
 #endif
