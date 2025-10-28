@@ -382,6 +382,12 @@ protected:
      * @brief 获取探测解码值
      */
     int getDecodeProbeValue(const QString sDecodeName);
+    /**
+     * @brief 配置景嘉微显卡的硬件解码参数
+     * @param pHandle mpv句柄
+     * @param setInitVo 是否设置初始项
+     */
+    void configureJjwGPU(mpv_handle *pHandle, bool setInitVo = false);
     void resizeEvent(QResizeEvent *pEvent) override;
     void showEvent(QShowEvent *pEvent) override;
 
