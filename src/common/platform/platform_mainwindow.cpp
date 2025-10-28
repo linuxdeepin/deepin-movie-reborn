@@ -3714,7 +3714,14 @@ void Platform_MainWindow::suspendToolsWindow()
             qDebug() << "isFullScreen()";
             if (qApp->focusWindow() == this->windowHandle()) {
                 qDebug() << "qApp->focusWindow() == this->windowHandle()";
-                qApp->setOverrideCursor(Qt::BlankCursor);
+                static QCursor blankCursor;
+                if (blankCursor.shape() != Qt::BlankCursor) {
+                    QPixmap emptyPixmap(1, 1);
+                    emptyPixmap.fill(Qt::transparent);
+                    blankCursor = QCursor(emptyPixmap);
+                    qApp->setOverrideCursor(blankCursor);
+                    qDebug() << "set blank cursor";
+                }
             } else {
                 qApp->setOverrideCursor(Qt::ArrowCursor);
             }
