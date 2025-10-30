@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.5.27) unstable; urgency=medium
+
+  * Enable mouse wheel support for volume slider
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 30 Oct 2025 19:20:31 +0800
+
 deepin-movie-reborn (6.5.26) unstable; urgency=medium
 
   * chore: Update linglong base and runtime
