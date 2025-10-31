@@ -1515,6 +1515,9 @@ void MpvProxy::refreshDecode()
             auto name = _file.fileName();
             qInfo() << "Codec:" << codec << "Name:" << name;
             isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv");
+            if (isSoftCodec) {
+                qWarning() << "Using SoftCodec because of codec OR name";
+            }
             //去除9200显卡适配
             QFileInfo jmfi("/dev/jmgpu");
             QFileInfo fi("/dev/mwv206_0");
@@ -1536,6 +1539,9 @@ void MpvProxy::refreshDecode()
             //探测硬解码
             if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag && !x100flag) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
+                if (isSoftCodec) {
+                    qWarning() << "Using SoftCodec because of check SupportHardWareDecode";
+                }
             }
 #endif
             if(utils::check_wayland_env()){
@@ -1543,6 +1549,7 @@ void MpvProxy::refreshDecode()
                 QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
                 if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
                     isSoftCodec = true;
+                    qWarning() << "Using SoftCodec because of format";
                 }
             }
         }
@@ -1559,6 +1566,7 @@ void MpvProxy::refreshDecode()
                 PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
                 auto codec = currentInfo.mi.videoCodec();
                 if (codec.toLower().contains("mpeg2") || codec.toLower().contains("mpeg4")) {
+                    qWarning() << "Using SoftCodec because of codec";
                     my_set_property(m_handle, "hwdec", "no");
                 } else {
                     QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
@@ -1577,6 +1585,7 @@ void MpvProxy::refreshDecode()
                 my_set_property(m_handle, "hwdec", "ftomx-copy");
                 my_set_property(m_handle, "vo", "gpu");
             } else if (CompositingManager::get().isOnlySoftDecode()) { //2.2.1.2 鲲鹏920 || 曙光+英伟达 || 浪潮
+                qWarning() << "Using SoftCodec because of OnlySoftDecode";
                 my_set_property(m_handle, "hwdec", "no");
             } else if (CompositingManager::get().isSpecialControls()) {
                 my_set_property(m_handle, "hwdec", "vaapi");
@@ -1607,6 +1616,7 @@ void MpvProxy::refreshDecode()
 #if defined (__aarch64__)
         // 鲲鹏920 || 曙光+英伟达 || 浪潮
         if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
+            qWarning() << "Using SoftCodec because of hascard OR OnlySoftDecode";
             my_set_property(m_handle, "hwdec", "no");
         } else if (CompositingManager::get().isSpecialControls()) {
             my_set_property(m_handle, "hwdec", "vaapi");
@@ -1615,6 +1625,7 @@ void MpvProxy::refreshDecode()
         }
 #else
         if(CompositingManager::get().isOnlySoftDecode()) {
+            qWarning() << "Using SoftCodec because of OnlySoftDecode";
             my_set_property(m_handle, "hwdec","no");
         } else {
             my_set_property(m_handle, "hwdec","auto");
@@ -1623,6 +1634,7 @@ void MpvProxy::refreshDecode()
 
 #else
         if (CompositingManager::get().isOnlySoftDecode()) { // 鲲鹏920 || 曙光+英伟达 || 浪潮
+            qWarning() << "Using SoftCodec because of OnlySoftDecode";
             my_set_property(m_handle, "hwdec", "no");
         } else {
              my_set_property(m_handle, "hwdec","auto");
@@ -1668,6 +1680,7 @@ void MpvProxy::refreshDecode()
             PlayItemInfo currentInfo = playMode->currentInfo();
             QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
             if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
+                qWarning() << "Using SoftCodec because of format";
                 my_set_property(m_handle, "hwdec","no");
             }
         }
@@ -1826,8 +1839,9 @@ void MpvProxy::play()
         QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206");
         QString sCodec = pEngine->playlist().currentInfo().mi.videoCodec();
         if(sdir.exists() && sCodec.contains("avs2", Qt::CaseInsensitive)) {
-             my_set_property(m_handle, "hwdec", "no");
-             my_set_property(m_handle, "vo", "gpu,x11,xv");
+            qWarning() << "Using SoftCodec because of codec";
+            my_set_property(m_handle, "hwdec", "no");
+            my_set_property(m_handle, "vo", "gpu,x11,xv");
         }
     }
 
