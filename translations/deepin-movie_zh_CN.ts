@@ -1453,12 +1453,12 @@ and whether to restart it?</source>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1322"/>
         <source>Previous</source>
-        <translation>上一步</translation>
+        <translation>上一个</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1322"/>
         <source>Next</source>
-        <translation>下一步</translation>
+        <translation>下一个</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1323"/>
