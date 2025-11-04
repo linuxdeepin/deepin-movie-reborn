@@ -50,6 +50,7 @@ Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *p
     m_slider = new DSlider(Qt::Vertical, this);
     m_slider->setFixedWidth(24);
     m_slider->setIconSize(QSize(15, 15));
+    m_slider->setMouseWheelEnabled(true);
     m_slider->installEventFilter(this);
     m_slider->show();
     m_slider->slider()->setRange(0, 100);
