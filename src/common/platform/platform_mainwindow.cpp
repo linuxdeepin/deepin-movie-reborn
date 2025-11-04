@@ -4366,6 +4366,25 @@ void Platform_MainWindow::focusInEvent(QFocusEvent *pEvent)
 {
     qDebug() << "Enter focusInEvent function";
     resumeToolsWindow();
+
+    if(pEvent->gotFocus() && isFullScreen() &&
+            m_pProgIndicator && m_pFullScreenTimeLable) {
+        m_pFullScreenTimeLable->show();
+        m_pProgIndicator->setVisible(true);
+    }
+
+    QMainWindow::focusInEvent(pEvent);
+}
+
+void Platform_MainWindow::focusOutEvent(QFocusEvent *pEvent)
+{
+    if(pEvent->lostFocus() && isFullScreen() &&
+            m_pProgIndicator && m_pFullScreenTimeLable) {
+        m_pFullScreenTimeLable->close();
+        m_pProgIndicator->setVisible(false);
+    }
+
+    QMainWindow::focusOutEvent(pEvent);
 }
 
 void Platform_MainWindow::hideEvent(QHideEvent *pEvent)

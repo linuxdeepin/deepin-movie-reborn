@@ -424,6 +424,7 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *pEvent) override;
     void mouseReleaseEvent(QMouseEvent *pEvent) override;
     void focusInEvent(QFocusEvent *pEvent) override;
+    void focusOutEvent(QFocusEvent *pEvent) override;
     void wheelEvent(QWheelEvent *pEvent) override;
     void keyPressEvent(QKeyEvent *pEvent) override;
     void keyReleaseEvent(QKeyEvent *pEvent) override;
