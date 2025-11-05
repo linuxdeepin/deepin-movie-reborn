@@ -169,6 +169,8 @@ void Platform_VolumeSlider::updatePoint(QPoint point)
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
     m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
                              view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT);
+    // 控件顶点更新后，同步移动控件到正确位置
+    move(m_point);
 }
 void Platform_VolumeSlider::popup()
 {
