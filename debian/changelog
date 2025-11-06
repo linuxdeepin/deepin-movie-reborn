@@ -1,3 +1,14 @@
+deepin-movie-reborn (6.5.28) unstable; urgency=medium
+
+  * chore: Update version to 6.5.28
+  * fix: Hide fullscreen time label and progress indicator on focus loss
+  * fix: Correct Chinese translation for navigation buttons
+  * fix: Enable mouse wheel support for volume slider
+  * chore: Correction of some misspelled words.
+  * chore: Add some necessary logs to specify the reasons why software decoding must be used.
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 06 Nov 2025 20:07:20 +0800
+
 deepin-movie-reborn (6.5.27) unstable; urgency=medium
 
   * Enable mouse wheel support for volume slider
