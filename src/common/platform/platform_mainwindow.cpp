@@ -4025,7 +4025,15 @@ void Platform_MainWindow::slotPlayerStateChanged()
                 && windowState() == Qt::WindowNoState && !isFullScreen()) {
             qDebug() << "pEngine->state() == PlayerEngine::Idle && !m_bMiniMode && windowState() == Qt::WindowNoState && !isFullScreen()";
             this->setMinimumSize(QSize(614, 500));
-            this->resize(850, 600);
+            
+            // 优先使用用户设置的窗口大小，而不是默认的850x600
+            if (m_bUserWindowSizeSet && m_userSetWindowSize.isValid()) {
+                qDebug() << "Using user set window size:" << m_userSetWindowSize;
+                this->resize(m_userSetWindowSize.width(), m_userSetWindowSize.height());
+            } else {
+                qDebug() << "Using default window size: 850x600";
+                this->resize(850, 600);
+            }
         }
     });
 
@@ -4546,6 +4554,14 @@ void Platform_MainWindow::resizeEvent(QResizeEvent *pEvent)
     qInfo() << __func__ << geometry();
     // modify 4.1  Limit video to mini mode size by thx
     LimitWindowize();
+
+    // 保存用户手动设置的窗口大小（排除程序自动调整的情况）
+    if (!m_bMiniMode && !isFullScreen() && !isMaximized() &&
+        m_pEngine->state() != PlayerEngine::Idle) {
+        m_userSetWindowSize = geometry();
+        m_bUserWindowSizeSet = true;
+        qDebug() << "User set window size saved:" << m_userSetWindowSize;
+    }
 
     updateSizeConstraints();
     updateProxyGeometry();
@@ -5410,6 +5426,11 @@ void Platform_MainWindow::toggleUIMode()
         }
         m_nStateBeforeMiniMode = SBEM_None;
         qDebug() << "m_nStateBeforeMiniMode = SBEM_None";
+        
+        // 退出迷你模式时，清除用户设置标志，重新开始记录
+        m_bUserWindowSizeSet = false;
+        m_userSetWindowSize = QRect();
+        qDebug() << "Reset user window size settings when exiting mini mode";
     }
 
     m_bStartMini = false;
@@ -5679,6 +5700,10 @@ void Platform_MainWindow::initMember()
     m_dPlaySpeed = 1.0;
     m_iAngleDelta = 0;
     m_nFullscreenTime = 0;
+
+    m_lastRectInNormalMode = QRect();
+    m_userSetWindowSize = QRect();
+    m_bUserWindowSizeSet = false;
 
     m_lastWindowState = Qt::WindowNoState;
 
