@@ -567,7 +567,7 @@ void MovieInfoDialog::addRow(QString sTitle, QString sField, QFormLayout *pForm,
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     DPalette pa1 = DGuiApplicationHelper::instance()->palette(f);
 #else
-    DPalette pa1 = DGuiApplicationHelper::instance()->standardPalette(DGuiApplicationHelper::LightType);
+    DPalette pa1 = DGuiApplicationHelper::instance()->standardPalette(DGuiApplicationHelper::instance()->themeType());
 #endif
     pa1.setBrush(DPalette::Text, pa1.color(DPalette::TextTitle));
     f->setPalette(pa1);
@@ -581,7 +581,7 @@ void MovieInfoDialog::addRow(QString sTitle, QString sField, QFormLayout *pForm,
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     DPalette pa2 = DGuiApplicationHelper::instance()->palette(t);
 #else
-    DPalette pa2 = DGuiApplicationHelper::instance()->standardPalette(DGuiApplicationHelper::LightType);
+    DPalette pa2 = DGuiApplicationHelper::instance()->standardPalette(DGuiApplicationHelper::instance()->themeType());
 #endif
     pa2.setBrush(DPalette::Text, pa2.color(DPalette::TextTitle));
     t->setPalette(pa2);
