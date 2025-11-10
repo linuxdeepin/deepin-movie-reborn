@@ -2269,9 +2269,18 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         qDebug() << "ActionFactory::ActionKind::OpenFile";
         DFileDialog fileDialog(this);
         QStringList filename;
-        fileDialog.setNameFilters({tr("All (*)"), QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")),
-                                   QString("Audio (%1)").arg(m_pEngine->audio_filetypes.join(" "))});
-        fileDialog.selectNameFilter(QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")));
+        QString strVideoTypes = m_pEngine->video_filetypes.join(" ");
+        QString strAudioTypes = m_pEngine->audio_filetypes.join(" ");
+        if(!CompositingManager::isMpvExists()) {
+            qDebug() << "CompositingManager::isMpvExists()";
+            strVideoTypes = QString("ogg dv avi webm");
+            strAudioTypes = QString("wv flac mp3");
+        }
+
+        fileDialog.setParent(this);
+        fileDialog.setNameFilters({tr("All (*)"), QString("Video (%1)").arg(strVideoTypes),
+                                   QString("Audio (%1)").arg(strAudioTypes)});
+        fileDialog.selectNameFilter(QString("Video (%1)").arg(strVideoTypes));
         fileDialog.setDirectory(lastOpenedPath());
         fileDialog.setFileMode(QFileDialog::ExistingFiles);
 
