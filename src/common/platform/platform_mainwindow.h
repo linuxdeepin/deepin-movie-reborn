@@ -532,6 +532,8 @@ private:
     QImage m_imgBgLight;
     bool m_bMiniMode;                               ///记录迷你模式
     QRect m_lastRectInNormalMode;                   /// used to restore to recent geometry when quit fullscreen or minVolumeMonitoringi mode
+    QRect m_userSetWindowSize;                      /// 保存用户手动设置的窗口大小
+    bool m_bUserWindowSizeSet;                      /// 标记用户是否手动设置了窗口大小
     bool m_bInited;                                 /// the first time a play happens, we consider it inited.
     EventMonitor *m_pEventMonitor;                  ///x11事件处理器
     bool m_bMovieSwitchedInFsOrMaxed;               /// track if next/prev is triggered in fs/maximized mode
