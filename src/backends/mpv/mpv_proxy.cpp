@@ -1420,6 +1420,13 @@ void MpvProxy::refreshDecode()
             my_set_property(m_handle, "profile", "sw-fast");
             m_sInitVo = "x11";
         }
+
+        // 设置芯瞳显卡硬解
+        if(utils::isSietiumGPUPresent()) {
+            my_set_property(m_handle, "hwdec", "vaapi");
+            my_set_property(m_handle, "vo", "gpu");
+        }
+
         if (!CompositingManager::get().composited()) {
             if (CompositingManager::get().isSpecialControls()) {
                 my_set_property(m_handle, "hwdec","vaapi");
@@ -1481,6 +1488,12 @@ void MpvProxy::refreshDecode()
             my_set_property(m_handle, "video-sync", "desync");
             my_set_property(m_handle, "profile", "sw-fast");
             m_sInitVo = "x11";
+        }
+
+        // 设置芯瞳显卡硬解
+        if(utils::isSietiumGPUPresent()) {
+            my_set_property(m_handle, "hwdec", "vaapi");
+            my_set_property(m_handle, "vo", "gpu");
         }
 
         PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
