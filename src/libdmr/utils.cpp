@@ -844,6 +844,16 @@ void switchToDefaultSink()
     proc.waitForFinished();
 }
 
+// 判断是否为芯瞳显卡
+bool isSietiumGPUPresent()
+{
+    QProcess process;
+    process.start("lspci");
+    process.waitForFinished();
+    QString output = process.readAllStandardOutput();
+    return output.contains("Sietium", Qt::CaseInsensitive);
+}
+
 bool isJjwGPUPresent()
 {
     QString jjwPath = getJjwGPUPath();
