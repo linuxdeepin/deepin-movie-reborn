@@ -61,6 +61,12 @@ QStringList runPipeProcess(const QString &command, const QString &filter);
 void switchToDefaultSink();
 
 /**
+ * @brief 检测是否存在Sietium显卡
+ * @return 如果存在Sietium显卡返回true，否则返回false
+ */
+bool isSietiumGPUPresent();
+
+/**
  * @brief 检测是否存在jjw显卡
  * @return 如果存在jjw显卡返回true，否则返回false
  */
