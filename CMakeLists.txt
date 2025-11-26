@@ -33,10 +33,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 # 查找PkgConfig包管理工具
 find_package(PkgConfig REQUIRED)
+find_package(Qt6 QUIET)
 
 # 使用PkgConfig查找mpris-qt5库
-#pkg_check_modules(MPRIS REQUIRED IMPORTED_TARGET mpris-qt5)
-pkg_check_modules(MPRIS REQUIRED IMPORTED_TARGET mpris-qt6)
+if (Qt6_FOUND)
+    pkg_check_modules(MPRIS REQUIRED IMPORTED_TARGET mpris-qt6)
+else()
+    pkg_check_modules(MPRIS REQUIRED IMPORTED_TARGET mpris-qt5)
+endif()
 
 # 测试是否使用deepin fork的mpris-qt5
 try_compile(USE_FORK_MPRIS

@@ -12,6 +12,9 @@
 #include <QDebug>
 
 #include "moviewidget.h"
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QDesktopWidget>
+#endif
 
 #define DEFAULT_RATION (1.0f*1080/1920)     //背景图片比例
 #define INTERVAL 50                         //刷新间隔

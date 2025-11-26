@@ -14,7 +14,7 @@ DGUI_USE_NAMESPACE
 
 // 定义一个辅助宏来处理兼容性检查
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    #define MAP_CONTAINS(map, key) map.contains(key)
+    #define MAP_CONTAINS(map, key) (map.find(key) != map.end())
 #else
     #define MAP_CONTAINS(map, key) (map.find(key) != map.end())
 #endif

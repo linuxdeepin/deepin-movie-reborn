@@ -19,13 +19,13 @@
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DThemeManager>
 #include <QDesktopWidget>
+#include <DApplicationHelper>
 #else
 #include <QScreen>
 #include <QGuiApplication>
 #endif
 
 
-#include <DGuiApplicationHelper>
 #include <DGuiApplicationHelper>
 #include <DApplication>
 #include <DArrowLineDrawer>

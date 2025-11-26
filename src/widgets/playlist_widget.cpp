@@ -20,6 +20,9 @@
 #include <dthememanager.h>
 #include <DScrollBar>
 #include "../accessibility/ac-deepin-movie-define.h"
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <DApplicationHelper>
+#endif
 
 #define PLAYLIST_FIXED_WIDTH 800
 #define POPUP_DURATION 350
@@ -573,7 +576,7 @@ protected:
 
         if (_hovered) {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-            DPalette pa = DGuiApplicationHelper::instance()->palette(this);
+            DPalette pa = DApplicationHelper::instance()->palette(this);
 #else
             DPalette pa = DGuiApplicationHelper::instance()->applicationPalette();
 #endif
@@ -809,7 +812,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     DFontSizeManager::instance()->bind(m_pClearButton, DFontSizeManager::T6);
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    DPalette pa_cb = DGuiApplicationHelper::instance()->palette(m_pClearButton);
+    DPalette pa_cb = DApplicationHelper::instance()->palette(m_pClearButton);
 #else
     DPalette pa_cb = DGuiApplicationHelper::instance()->applicationPalette();
 #endif
@@ -829,7 +832,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, m_pClearButton, [ = ]() {
         qDebug() << "paletteTypeChanged";
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        DPalette pa_cBtn = DGuiApplicationHelper::instance()->palette(m_pClearButton);
+        DPalette pa_cBtn = DApplicationHelper::instance()->palette(m_pClearButton);
 #else
         DPalette pa_cBtn = DGuiApplicationHelper::instance()->applicationPalette();
 #endif

@@ -13,8 +13,10 @@
 #include "../../vendor/qthelper.hpp"
 #include <DGuiApplicationHelper>
 //DWIDGET_USE_NAMESPACE
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGL>
 #include <QtOpenGLWidgets>
+#endif
 #include <QOpenGLWidget>
 
 //add by heyi

@@ -565,7 +565,7 @@ void MovieInfoDialog::addRow(QString sTitle, QString sField, QFormLayout *pForm,
     DFontSizeManager::instance()->bind(f, DFontSizeManager::T8);
     
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    DPalette pa1 = DGuiApplicationHelper::instance()->palette(f);
+    DPalette pa1 = DApplicationHelper::instance()->palette(f);
 #else
     DPalette pa1 = DGuiApplicationHelper::instance()->standardPalette(DGuiApplicationHelper::instance()->themeType());
 #endif
@@ -579,7 +579,7 @@ void MovieInfoDialog::addRow(QString sTitle, QString sField, QFormLayout *pForm,
     DFontSizeManager::instance()->bind(t, DFontSizeManager::T8);
     
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    DPalette pa2 = DGuiApplicationHelper::instance()->palette(t);
+    DPalette pa2 = DApplicationHelper::instance()->palette(t);
 #else
     DPalette pa2 = DGuiApplicationHelper::instance()->standardPalette(DGuiApplicationHelper::instance()->themeType());
 #endif

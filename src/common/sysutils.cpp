@@ -51,7 +51,7 @@ QString SysUtils::libPath(const QString &strlib)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QString path = QLibraryInfo::path(QLibraryInfo::LibrariesPath);
 #else   
-    QString path = QLibraryInfo::path();
+    QString path = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
 #endif
 
     if (path.isEmpty()) {
