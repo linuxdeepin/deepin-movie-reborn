@@ -27,21 +27,21 @@ Build-Depends:
     libgstreamer1.0-dev,
     libdrm-dev,
 # qt6
-    qt6-base-dev,
-    qt6-base-dev-tools,
-    qt6-base-private-dev,
-    qt6-l10n-tools,
-    qt6-svg-dev,
-    qt6-tools-dev-tools,
-    qt6-tools-dev,
-    qt6-multimedia-dev,
-    libqt6sql6-sqlite,
-    libmpris-qt6-dev,
-    libqt6opengl6-dev,
+    qt6-base-dev | libqt5widgets5,
+    qt6-base-dev-tools | libqt5widgets5,
+    qt6-base-private-dev | libqt5widgets5,
+    qt6-l10n-tools | libqt5x11extras5-dev,
+    qt6-svg-dev | libqt5svg5-dev,
+    qt6-tools-dev-tools | qttools5-dev-tools,
+    qt6-tools-dev | qttools5-dev,
+    qt6-multimedia-dev | qtmultimedia5-dev,
+    libqt6sql6-sqlite | libqt5sql5-sqlite,
+    libmpris-qt6-dev | libmpris-qt5-dev,
+    libqt6opengl6-dev | libdbusextended-qt5-dev,
 # dtk
-    libdtk6gui-dev,
-    libdtk6widget-dev,
-    libdtk6core-dev
+    libdtk6gui-dev | libdtkwidget-dev,
+    libdtk6widget-dev | libdtkwidget-dev,
+    libdtk6core-dev | libdtkcore5-bin
 Standards-Version: 3.9.8
 Homepage: https://www.deepin.org/
 
