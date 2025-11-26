@@ -62,7 +62,7 @@ bool runSingleInstance()
         qDebug() << "user is root, use /tmp/deepin-movie";
     } else {
         path = DStandardPaths::writableLocation(QStandardPaths::AppConfigLocation).toStdString();
-        qDebug() << "user is not root, use " << path;
+        qDebug() << "user is not root, use " << path.c_str();
     }
     QDir tdir(path.c_str());
     if (!tdir.exists()) {

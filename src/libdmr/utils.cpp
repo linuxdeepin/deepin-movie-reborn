@@ -722,10 +722,18 @@ void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
     if(dconfig && dconfig->isValid() && dconfig->keyList().contains("playConfigHandling")){
         QString compositedHandling = dconfig->value("playConfigHandling").toString();
         qInfo() << "Found play config handling:" << compositedHandling;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        QStringList confList = compositedHandling.split(";");
+#else
         QStringList confList = compositedHandling.split(";", Qt::SkipEmptyParts);
+#endif
         if (!confList.isEmpty()) {
             foreach (QString item, confList) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                QStringList confItem = item.split("=");
+#else
                 QStringList confItem = item.split("=", Qt::SkipEmptyParts);
+#endif
                 if (confItem.size() == 2) {
                     proMap->insert(confItem.first(), confItem.last());
                     qDebug() << "Added config:" << confItem.first() << "=" << confItem.last();

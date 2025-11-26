@@ -23,6 +23,9 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QTimer>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <DApplicationHelper>
+#endif
 
 DWIDGET_USE_NAMESPACE
 
@@ -142,7 +145,7 @@ protected:
         pt.drawPath(painterPath);
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        DPalette pal_text = DGuiApplicationHelper::instance()->palette(this);
+        DPalette pal_text = DApplicationHelper::instance()->palette(this);
 #else
         DPalette pal_text = DGuiApplicationHelper::instance()->applicationPalette();
 #endif
@@ -252,7 +255,7 @@ protected:
         pt.drawPath(painterPath);
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        DPalette pal_text = DGuiApplicationHelper::instance()->palette(this);
+        DPalette pal_text = DApplicationHelper::instance()->palette(this);
 #else
         DPalette pal_text = DGuiApplicationHelper::instance()->applicationPalette();
 #endif

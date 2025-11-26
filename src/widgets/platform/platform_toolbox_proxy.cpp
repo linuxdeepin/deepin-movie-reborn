@@ -24,6 +24,7 @@
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <DImageButton>
 #include <DThemeManager>
+#include <DApplicationHelper>
 #endif
 
 #include <DArrowRectangle>
@@ -176,7 +177,7 @@ public:
 //        _time->setFixedSize(_size);
         m_pTime->setForegroundRole(DPalette::Text);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        DPalette pa = DGuiApplicationHelper::instance()->palette(m_pTime);
+        DPalette pa = DApplicationHelper::instance()->palette(m_pTime);
 #else   
         DPalette pa = m_pTime->palette();
 #endif
@@ -1698,9 +1699,9 @@ void Platform_ToolboxProxy::slotThemeTypeChanged()
         pa.setColor(DPalette::FrameBorder, btnframecolor);
         // 取消阴影
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        DGuiApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
-        DGuiApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
-        DGuiApplicationHelper::instance()->setPalette(m_pListBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pListBtn, pa);
 #else
         m_pFullScreenBtn->setPalette(pa);
         m_pVolBtn->setPalette(pa);
@@ -1714,7 +1715,7 @@ void Platform_ToolboxProxy::slotThemeTypeChanged()
         pl.setColor(DPalette::FrameBorder, framecolor);
         pl.setColor(DPalette::Shadow, framecolor);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        DGuiApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
+        DApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
 #else
         m_pPalyBox->setPalette(pl);
 #endif
@@ -1738,9 +1739,9 @@ void Platform_ToolboxProxy::slotThemeTypeChanged()
         // 取消阴影
         pa.setColor(DPalette::Shadow, framecolor);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)    
-        DGuiApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
-        DGuiApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
-        DGuiApplicationHelper::instance()->setPalette(m_pListBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pListBtn, pa);
 #else
         m_pFullScreenBtn->setPalette(pa);
         m_pVolBtn->setPalette(pa);
@@ -1754,7 +1755,7 @@ void Platform_ToolboxProxy::slotThemeTypeChanged()
         pl.setColor(DPalette::FrameBorder, framecolor);
         pl.setColor(DPalette::Shadow, framecolor);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        DGuiApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
+        DApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
 #else
         m_pPalyBox->setPalette(pl);
 #endif

@@ -24,15 +24,17 @@ list(APPEND SRCS player_widget.cpp ${MPV_SRCS} ${HWDEC_SRCS} ${SYS_UTILS_SRCS})
 
 add_library(${CMD_NAME} SHARED ${SRCS})
 set_target_properties(${CMD_NAME} PROPERTIES VERSION 0.1.0 SOVERSION 0.1)
-find_package(Qt6 REQUIRED COMPONENTS OpenGL OpenGLWidgets)
 
 # target_include_directories(${CMD_NAME} PUBLIC
 #     ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mediaplayer ${PROJECT_SOURCE_DIR}/../backends/mpv /usr/include/glib-2.0 /usr/include/gstreamer-1.0)
 target_include_directories(${CMD_NAME} PUBLIC
     ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mpv /usr/include/glib-2.0 /usr/include/gstreamer-1.0 drm)
 
+find_package(Qt6 QUIET)
+
 if (Qt6_FOUND)
     # Qt6 environment
+    find_package(Qt6 REQUIRED COMPONENTS OpenGL OpenGLWidgets)
     message(STATUS "Qt6_FOUND---------------- = ${Qt6_FOUND}")
     target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt6::Widgets Qt6::Concurrent
         Qt6::Network Qt6::Sql Qt6::Svg Qt6::SvgWidgets Qt6::Multimedia Qt6::MultimediaWidgets Qt6::DBus PkgConfig::Gst PkgConfig::DRM GL Qt6::SvgWidgets Qt6::OpenGL
