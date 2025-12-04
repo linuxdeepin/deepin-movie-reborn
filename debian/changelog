@@ -1,3 +1,52 @@
+deepin-movie-reborn (6.5.30) unstable; urgency=medium
+
+  * chore: Update version to 6.5.30
+  * fix(mpv): handle video aspect property for api v2.2+
+  * fix(window): ensure window state updates work consistently across platforms
+  * fix: Resolve debian control issues for v20.
+  * fix: Resolve compilation issues for v20.
+  * fix: Add support for Sietium GPU hardware decoding
+  * feat: Extract JingJiaWei GPU configuration into a separate function
+  * fix: Supports jjm11 graphics card
+  * fix: build error
+  * feat: add log of mprsi signal
+  * fix: Video advances 1 frame on unlock while paused
+  * fix: can not use hwdec on special machine
+  * fix: save volume when restart after wakeup
+  * fix: optimize process management and sleep wake-up restart logic
+  * fix: implement window geometry persistence for app restart scenarios
+  * fix: [egl] add QT_WAYLAND_DISABLE_RESIZECHECK env
+  * fix: prevent crash during restart by removing qApp->exit()
+  * style: fix variable naming consistency
+  * fix: Window resizing issue in mini mode
+  * fix: Remove environment variable settings
+  * feat: Support restart after wake-up and pause-on-play, improve DConfig, optimize playback and volume hint logic
+  * fix: Round-based power consumption function returns to main thread
+  * fix: [display] Set the delay for the first time volume display to general.
+  * fix: play and next logic issue.
+  * revert: remove slot function of screenChaned
+  * fix: [ui] Delayed volume display on loongarch machine
+  * fix: [settings] The actual decoding method does not match the settings.
+  * fix: [HW] Use omx-copy decoding by default on the specified machine.
+  * fix: [settings] Saved with incorrect fields stored in the data.
+  * fix: Compatible with FLMX VAAPI decoding
+  * fix: Opening multiple files won’t add all to the playback queue.
+  * fix: pause state after sleep.
+  * fix: can not pause issue.
+  * fix: add mpv param pulse-allow-suspended=yes
+  * fix: not use resize in wayland.
+  * fix: add malloc_trim
+  * fix: movie coredump
+  * fix: move window issue.
+  * fix: add config "Display countdown in full screen".
+  * fix: Inserting and removing the screen causes display abnormalities.
+  * fix: ZhaoXin hardware decode issue.
+  * fix: Compatible with AMD RX550 graphics card.
+  * fix: hardward decode improvement.
+  * fix: Custom video playback runtime environment.
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 04 Dec 2025 19:25:37 +0800
+
 deepin-movie-reborn (6.5.29) unstable; urgency=medium
 
   * chore: Update version to 6.5.29
