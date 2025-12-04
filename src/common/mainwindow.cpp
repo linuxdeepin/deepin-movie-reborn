@@ -2460,6 +2460,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                 m_pToolbox->playlistClosedByEsc();
             }
         }
+        m_pToolbox->updateFullState();
         break;
     }
 
@@ -2545,10 +2546,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
         // fixed bug 103560
         // the window state change signal is not sent under wayland, so call directly here
-        // if the problem is fixed in the future, please remove this code
-        if (utils::check_wayland_env()) {
-            m_pToolbox->updateFullState();
-        }
+        // if the problem is fixed in the future, please remove this code, in Qt6 also has this problem.
+        // if (utils::check_wayland_env()) {
+        m_pToolbox->updateFullState();
+        // }
 
         break;
     }
