@@ -1484,12 +1484,22 @@ void MpvProxy::setVideoRotation(int nDegree)
 
 void MpvProxy::setVideoAspect(double dValue)
 {
-    my_set_property(m_handle, "video-aspect", dValue);
+#if MPV_CLIENT_API_VERSION >= MPV_MAKE_VERSION(2, 2)
+    QString aspectProperty = "video-aspect-override";
+#else
+    QString aspectProperty = "video-aspect";
+#endif
+    my_set_property(m_handle, aspectProperty, dValue);
 }
 
 double MpvProxy::videoAspect() const
 {
-    return my_get_property(m_handle, "video-aspect").toDouble();
+#if MPV_CLIENT_API_VERSION >= MPV_MAKE_VERSION(2, 2)
+    QString aspectProperty = "video-aspect-override";
+#else
+    QString aspectProperty = "video-aspect";
+#endif  
+    return my_get_property(m_handle, aspectProperty).toDouble();
 }
 
 bool MpvProxy::muted() const
