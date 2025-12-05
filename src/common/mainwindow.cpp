@@ -4305,6 +4305,9 @@ void MainWindow::decodeInit()
         break;
     case 0:
     default:
+        // 正常启动时，从设置中读取解码模式
+        int decodeMode = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
+        pMpvProxy->setDecodeModel(decodeMode);
         break;
     }
 }
