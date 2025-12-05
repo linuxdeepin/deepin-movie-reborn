@@ -741,6 +741,9 @@ QString getJjwGPUPath()
             qInfo() << __FUNCTION__ << "jm11 detected";
             return "mwv207d";
         }
+
+        drmFreeVersion(version);
+        close(fd);
     }
 
     return QString();
