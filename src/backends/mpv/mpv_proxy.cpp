@@ -1438,9 +1438,14 @@ void MpvProxy::refreshDecode()
 
 #if defined (__aarch64__)
         // 鲲鹏920 || 曙光+英伟达 || 浪潮
-        if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
-            qWarning() << "Using SoftCodec because of hascard OR OnlySoftDecode";
+        if (CompositingManager::get().isOnlySoftDecode()) {
+            qWarning() << "Using SoftCodec because of OnlySoftDecode";
             my_set_property(m_handle, "hwdec", "no");
+        } else if (!CompositingManager::get().hascard()) {
+            // 即使检测不到显卡（如AIGLX error），也尝试让mpv自己判断硬解
+            // 因为硬解不依赖AIGLX，可能仍然可用
+            qWarning() << "hascard is false, but try auto hwdec";
+            my_set_property(m_handle, "hwdec", "auto");
         } else if (CompositingManager::get().isSpecialControls()) {
             my_set_property(m_handle, "hwdec", "vaapi");
         } else {
