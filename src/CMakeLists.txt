@@ -32,7 +32,8 @@ if (Qt6_FOUND)
     pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gobject-2.0)
     pkg_check_modules(DRM REQUIRED IMPORTED_TARGET libdrm)
     # IMPORTED_TARGET failed to work for some of libs under flatpak env
-    pkg_check_modules(Other REQUIRED  gsettings-qt)
+    # pkg_check_modules(Other REQUIRED  gsettings-qt)
+    pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavcodec)
 
     qt6_add_resources(RCS ../assets/resources.qrc)
     qt6_add_resources(RCS ../assets/icons/theme-icons.qrc)
@@ -75,7 +76,7 @@ if (Qt6_FOUND)
 
     add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 
-    target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
+    target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE} ${FFMPEG_INCLUDE_DIRS})
 
     set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt6::Widgets Qt6::Network Qt6::DBus Qt6::Sql Qt6::Svg Qt6::Multimedia
         Qt6::MultimediaWidgets PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::Gst PkgConfig::DRM GL va va-x11
