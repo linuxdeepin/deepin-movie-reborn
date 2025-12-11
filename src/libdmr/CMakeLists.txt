@@ -11,6 +11,7 @@ add_definitions(-D_LIBDMR_)
 remove_definitions(-D_MOVIE_USE_)
 
 pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gstreamer-1.0 glib-2.0)
+pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavcodec libavformat)
 
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 
@@ -28,7 +29,7 @@ set_target_properties(${CMD_NAME} PROPERTIES VERSION 0.1.0 SOVERSION 0.1)
 # target_include_directories(${CMD_NAME} PUBLIC
 #     ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mediaplayer ${PROJECT_SOURCE_DIR}/../backends/mpv /usr/include/glib-2.0 /usr/include/gstreamer-1.0)
 target_include_directories(${CMD_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mpv /usr/include/glib-2.0 /usr/include/gstreamer-1.0 drm)
+    ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mpv /usr/include/glib-2.0 /usr/include/gstreamer-1.0 drm ${FFMPEG_INCLUDE_DIRS})
 
 find_package(Qt6 QUIET)
 
