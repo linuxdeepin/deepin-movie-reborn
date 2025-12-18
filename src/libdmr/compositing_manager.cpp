@@ -321,13 +321,14 @@ CompositingManager::CompositingManager()
         qDebug() << "jm GPU and mwv206_0 not detected.";
     }
 
+    // xd分析：xd显卡不支持vaapi+glx, mpv会默认走glx，而mpv中glx只能搭配vdpau，所以不能走mpv，必须由deepin-movie来渲染。暂屏蔽
     //判断xd显卡不能通过opengl渲染
-    qDebug() << "Checking for xd GPU.";
-    QDir innodir("/sys/bus/platform/drivers/inno-codec");
-    if ( innodir.exists()) {
-       _composited = false;
-       qDebug() << "xd GPU (inno-codec) detected, _composited set to false.";
-    }
+    // qDebug() << "Checking for xd GPU.";
+    // QDir innodir("/sys/bus/platform/drivers/inno-codec");
+    // if ( innodir.exists()) {
+    //    _composited = false;
+    //    qDebug() << "xd GPU (inno-codec) detected, _composited set to false.";
+    // }
 
     //判断MT显卡不能通过opengl渲染
     qDebug() << "Checking for MT GPU.";
