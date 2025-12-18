@@ -226,11 +226,12 @@ CompositingManager::CompositingManager()
         _composited = false;
     }
 
-    //判断xd显卡不能通过opengl渲染
-    QDir innodir("/sys/bus/platform/drivers/inno-codec");
-    if ( innodir.exists()) {
-       _composited = false;
-    }
+    // xd分析：xd显卡不支持vaapi+glx mpv会默认走glx， mpv中egl只能搭配vdpau，所以不能走mpv，必须由deepin-movie来渲染。暂屏蔽
+    // //判断xd显卡不能通过opengl渲染
+    // QDir innodir("/sys/bus/platform/drivers/inno-codec");
+    // if ( innodir.exists()) {
+    //    _composited = false;
+    // }
 
     //判断MT显卡不能通过opengl渲染
     QFileInfo mtfi("/dev/mtgpu.0");
