@@ -92,17 +92,28 @@ void checkIsCanHwdec(int argc, char *argv[])
 {
     qDebug() << "checkIsCanHwdec";
     QApplication a(argc, argv);
-    Display *x11=QX11Info::display();
-    VADisplay *display = (VADisplay *)vaGetDisplay(x11);
+
+    Display *x11 = QX11Info::display();
+    if (!x11) {
+        qDebug() << "checkIsCanHwdec: x11 display is null";
+        exit(-1);
+    }
+
+    VADisplay display = vaGetDisplay(x11);
+    if (!display) {
+        qDebug() << "checkIsCanHwdec: VA display is null";
+        exit(-1);
+    }
+
     int major, minor;
     int status = 0;
     try {
         status = vaInitialize(display, &major, &minor);
-    }
-    catch (...) {
-        qDebug() << "catch";
+    } catch (...) {
+        qDebug() << "checkIsCanHwdec: catch exception";
         status = -1;
     }
+
     qDebug() << "checkIsCanHwdec end";
     exit(status);
 }
@@ -272,7 +283,7 @@ int main(int argc, char *argv[])
 
 #ifdef __x86_64__
     qDebug() << "__x86_64__ defined.";
-    if(argc==2 && strcmp(argv[1],"hwdec") == 0) {
+    if (!dmr::utils::first_check_wayland_env() && argc == 2 && strcmp(argv[1],"hwdec") == 0) {
         qDebug() << "Hardware decoding check requested with argc:" << argc << ", argv[1]:" << argv[1];
         checkIsCanHwdec(argc, argv);
         qDebug() << "checkIsCanHwdec() completed.";
