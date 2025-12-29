@@ -4410,30 +4410,6 @@ void Platform_MainWindow::paintEvent(QPaintEvent *pEvent)
 
 void Platform_MainWindow::toggleUIMode()
 {
-    //判断窗口是否靠边停靠（靠边停靠不支持MINI模式）thx
-    QRect deskrect = QApplication::desktop()->availableGeometry();
-    QPoint windowPos = pos();
-    if (this->geometry() != deskrect) {
-        if (windowPos.x() == 0 && (windowPos.y() == 0 ||
-                                   (abs(windowPos.y() + this->geometry().height() - deskrect.height()) < 50))) {
-            if (abs(this->geometry().width() - deskrect.width() / 2) < 50) {
-                m_pCommHintWid->updateWithMessage(tr("Please exit smart dock"));
-                m_bStartMini = false;
-                reflectActionToUI(ActionFactory::ToggleMiniMode);
-                return ;
-            }
-        }
-        if ((abs(windowPos.x() + this->geometry().width() - deskrect.width()) < 50)  &&
-                (windowPos.y()  == 0 || abs(windowPos.y() + this->geometry().height() - deskrect.height()) < 50)) {
-            if (abs(this->geometry().width() - deskrect.width() / 2) < 50) {
-                m_pCommHintWid->updateWithMessage(tr("Please exit smart dock"));
-                m_bStartMini = false;
-                reflectActionToUI(ActionFactory::ToggleMiniMode);
-                return ;
-            }
-        }
-    }
-
     m_bMiniMode = !m_bMiniMode;
     qInfo() << __func__ << m_bMiniMode;
 
@@ -4466,13 +4442,13 @@ void Platform_MainWindow::toggleUIMode()
         setEnableSystemResize(false);
         m_nStateBeforeMiniMode = SBEM_None;
 
+        hide();
         if (isFullScreen()) {
             m_nStateBeforeMiniMode |= SBEM_Fullscreen;
-            setWindowState(windowState() & ~Qt::WindowFullScreen);
             this->setWindowState(Qt::WindowNoState);
         } else if (isMaximized()) {
             m_nStateBeforeMiniMode |= SBEM_Maximized;
-            showNormal();
+            this->setWindowState(Qt::WindowNoState);
         } else {
             m_lastRectInNormalMode = geometry();
         }
@@ -4505,17 +4481,13 @@ void Platform_MainWindow::toggleUIMode()
 
         geom.setSize(sz);
         setGeometry(geom);
-        if (geom.x() < 0) {
-            geom.moveTo(0, geom.y());
-        }
-        if (geom.y() < 0) {
-            geom.moveTo(geom.x(), 0);
-        }
 
         QRect deskGeom = qApp->desktop()->availableGeometry(this);
-        move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
+        move(deskGeom.x() + (deskGeom.width() - this->width()) / 2,
+             deskGeom.y() + (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
         resize(geom.width(), geom.height());
         setFixedSize(geom.size());
+        show();
 
         m_pMiniPlayBtn->move(sz.width() - 12 - m_pMiniPlayBtn->width(),
                              sz.height() - 10 - m_pMiniPlayBtn->height());
