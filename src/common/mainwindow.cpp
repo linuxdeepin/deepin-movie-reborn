@@ -4950,7 +4950,13 @@ QMargins MainWindow::dragMargins() const
 bool MainWindow::insideResizeArea(const QPoint &globalPos)
 {
     qDebug() << "insideResizeArea";
-    const QRect window_visible_rect = frameGeometry() - dragMargins();
+    QRect window_visible_rect;
+    if (utils::check_wayland_env()) {
+        // 在 Wayland 下，使用窗口内坐标系进行判断
+        window_visible_rect = rect() - dragMargins();
+    } else {
+        window_visible_rect = frameGeometry() - dragMargins();
+    }
     return !window_visible_rect.contains(globalPos);
 }
 
