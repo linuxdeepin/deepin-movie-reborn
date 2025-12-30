@@ -877,11 +877,11 @@ sources:
     url: http://10.20.64.92:8080/crimson_25.0/pool/main/q/qt6mpris/libmpris-qt6_1.0.0.1-1deepin1_amd64.deb
     digest: 1d606cefa9ee6afe77585bcd75f09724f437a0c91b05d6cd7d63ba9d756bc903
   - kind: file
-    url: http://10.20.64.92:8080/crimson_25.0/pool/main/m/mpv/libmpv-dev_0.38.0-1deepin1_amd64.deb
-    digest: 0b7d4b1919852ec73da3e05b892c3a658b7a6979c3cd9a7480a23346c5fd23b1
+    url: http://10.20.64.92:8080/crimson_25.1/stable_20251230/pool/main/m/mpv/libmpv-dev_0.38.0-1deepin3_amd64.deb
+    digest: 4815f8b4183cb3c3a690f4f942da736326d44e0912915871260085946075d036
   - kind: file
-    url: http://10.20.64.92:8080/crimson_25.0/pool/main/m/mpv/libmpv2_0.38.0-1deepin1_amd64.deb
-    digest: c6b5c572fae1453e8c241d27baf823e002cd3dd7ff4213d0e8c7cbe422a3c33c
+    url: http://10.20.64.92:8080/crimson_25.1/stable_20251230/pool/main/m/mpv/libmpv2_0.38.0-1deepin3_amd64.deb
+    digest: 33f5ddaf8ad0d28ae56acb2ff0a0bd2c4b9babf501803368ddb8c556de24b5c6
   - kind: file
     url: http://10.20.64.92:8080/crimson_25.0/pool/main/m/mtdev/libmtdev-dev_1.1.6-1_amd64.deb
     digest: 92553337dcd1837205a4f136419b0cf40956e0975a938ad8e8e7b586659d0e46
