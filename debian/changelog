@@ -1,3 +1,17 @@
+deepin-movie-reborn (6.5.31) unstable; urgency=medium
+
+  * chore: Update version to 6.5.31
+  * fix(mainwindow): improve resize area detection for Wayland support
+  * chore: update mpv package URLs and digests for version 25.
+  * fix: improve error handling in hardware decoding initialization
+  * fix: hardware decode mode when AIGLX error detected
+  * fix: the issue of small black blocks appearing during video playback.
+  * fix: Fix build failure due to missing FFMPEG libraries
+  * feat: Support FFMPEG 7
+  * feat: support Qt 6.10.0
+
+ -- re2zero <yangwu@uniontech.com>  Sun, 04 Jan 2026 11:01:39 +0800
+
 deepin-movie-reborn (6.5.30) unstable; urgency=medium
 
   * chore: Update version to 6.5.30
