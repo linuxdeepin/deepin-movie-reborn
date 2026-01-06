@@ -1,3 +1,10 @@
+deepin-movie-reborn (6.5.32) unstable; urgency=medium
+
+  * chore: Update version to 6.5.32
+  * fix(engine): expose decode mode getter through player engine
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Tue, 06 Jan 2026 13:32:06 +0800
+
 deepin-movie-reborn (6.5.31) unstable; urgency=medium
 
   * chore: Update version to 6.5.31
