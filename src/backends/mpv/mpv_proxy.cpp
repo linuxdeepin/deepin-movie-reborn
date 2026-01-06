@@ -171,6 +171,11 @@ void MpvProxy::setDecodeModel(const QVariant &value)
     qDebug() << "DEBUG: Exiting MpvProxy::setDecodeModel. Decode mode set to:" << static_cast<int>(m_decodeMode);
 }
 
+QVariant MpvProxy::getDecodeModel()
+{
+    return QVariant(m_decodeMode);
+}
+
 void MpvProxy::initMpvFuns()
 {
     qInfo() << "Initializing MPV functions";
@@ -1531,10 +1536,12 @@ void MpvProxy::refreshDecode()
     if (dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size() <= 0) return;
     malloc_trim(0);
     //bool bIsCanHwDec = HwdecProbe::get().isFileCanHwdec(_file.url(), canHwTypes);
-
     qInfo() << "DecodeMode:" << m_decodeMode << "(AUTO:0, HARDWARE:1, SOFTWARE:2, CUSTOM:3)";
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
         my_set_property(m_handle, "hwdec", "no");
+        if (!utils::check_wayland_env()) {
+            my_set_property(m_handle, "vo", "x11");
+        }
     } else if (DecodeMode::AUTO == m_decodeMode) {//2.设置自动
         //2.1 特殊格式
         bool isSoftCodec = false;

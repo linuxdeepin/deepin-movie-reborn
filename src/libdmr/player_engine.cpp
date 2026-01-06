@@ -634,6 +634,24 @@ void PlayerEngine::changehwaccelMode(Backend::hwaccelMode hwaccelMode)
     return _current->changehwaccelMode(hwaccelMode);
 }
 
+
+void PlayerEngine::setDecodeModel(const QVariant &value)
+{
+    MpvProxy *pMpv = static_cast<MpvProxy *>(_current);
+    if (pMpv) {
+        pMpv->setDecodeModel(value);
+    }
+}
+
+QVariant PlayerEngine::getDecodeModel()
+{
+    MpvProxy *pMpv = static_cast<MpvProxy *>(_current);
+    if (pMpv) {
+        return pMpv->getDecodeModel();
+    }
+    return QVariant();
+}
+
 Backend *PlayerEngine::getMpvProxy()
 {
     qDebug() << "Enter getMpvProxy function";
