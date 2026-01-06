@@ -138,6 +138,9 @@ public:
 
     void changehwaccelMode(Backend::hwaccelMode hwaccelMode);
 
+    void setDecodeModel(const QVariant &value);
+    QVariant getDecodeModel();
+
     PlaylistModel &playlist() const
     {
         return *_playlist;

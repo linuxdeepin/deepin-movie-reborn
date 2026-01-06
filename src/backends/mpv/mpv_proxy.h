@@ -121,6 +121,11 @@ public:
      */
     void setDecodeModel(const QVariant &value);
     /**
+     * @brief 获取解码模式
+     * @return
+     */
+    QVariant getDecodeModel();
+    /**
      * @brief 刷新解码方式
      */
     void refreshDecode();
