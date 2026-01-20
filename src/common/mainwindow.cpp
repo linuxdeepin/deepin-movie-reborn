@@ -1921,8 +1921,15 @@ void MainWindow::mipsShowFullScreen()
     pAn->setEndValue(1);
     pAn->setStartValue(0);
     pAn->start(QAbstractAnimation::DeleteWhenStopped);
-
     setWindowState(windowState() | Qt::WindowFullScreen);
+
+
+    connect(pAn, &QPropertyAnimation::finished, this, [=](){
+        // 全屏时设置绕过合成器
+        if (windowHandle()) {
+            Utility::setBypassCompositor(windowHandle()->winId(), true);
+        }
+    });
 }
 
 void MainWindow::menuItemInvoked(QAction *pAction)
@@ -2506,6 +2513,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
         if (isFullScreen()) {
             qDebug() << "isFullScreen()";
+            // 取消全屏前，先取消绕过合成器
+            if (windowHandle()) {
+                Utility::setBypassCompositor(windowHandle()->winId(), false);
+            }
+
             setWindowState(windowState() & ~Qt::WindowFullScreen);
             if (m_bMaximized) {
                 qDebug() << "m_bMaximized";
@@ -2520,6 +2532,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                         m_pTitlebar->setFixedWidth(m_lastRectInNormalMode.width());             //bug 39991
                 }
             }
+
             if (m_pFullScreenTimeLabel && !isFullScreen()) {
                 qDebug() << "m_pFullScreenTimeLabel && !isFullScreen(), close";
                 m_pFullScreenTimeLabel->close();

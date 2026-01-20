@@ -1,9 +1,10 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "utility.h"
+#include "utils.h"
 
 #include <QtWidgets>
 
@@ -41,6 +42,7 @@ const char kAtomNameWmStateAbove[] = "_NET_WM_STATE_ABOVE";
 const char kAtomNameWmStateStaysOnTop[] = "_NET_WM_STATE_STAYS_ON_TOP";
 const char kAtomNameWmSkipTaskbar[] = "_NET_WM_STATE_SKIP_TASKBAR";
 const char kAtomNameWmSkipPager[] = "_NET_WM_STATE_SKIP_PAGER";
+const char kAtomNameBypassCompositor[] = "_NET_WM_BYPASS_COMPOSITOR";
 
 xcb_atom_t Utility::internAtom(const char *name)
 {
@@ -380,4 +382,36 @@ bool Utility::setWindowCursor(quint32 WId, Utility::CornerEdge ce)
                &xev);
     XFlush(display);
 }*/
+
+void Utility::setBypassCompositor(quint32 WId, bool bypass)
+{
+    if (dmr::utils::check_wayland_env()) {
+        return;
+    }
+
+    Display *display = QX11Info::display();
+    if (!display) {
+        return;
+    }
+
+    Window windowId = static_cast<Window>(WId);
+    if (windowId == 0) {
+        return;
+    }
+
+    Atom bypassAtom = XInternAtom(display, kAtomNameBypassCompositor, false);
+    if (bypassAtom == None) {
+        return;
+    }
+
+    Atom cardinalAtom = XInternAtom(display, "CARDINAL", false);
+    if (cardinalAtom == None) {
+        return;
+    }
+
+    unsigned long value = bypass ? 1 : 0;
+    XChangeProperty(display, windowId, bypassAtom, cardinalAtom, 32,
+                   PropModeReplace, reinterpret_cast<unsigned char*>(&value), 1);
+    XFlush(display);
+}
 
