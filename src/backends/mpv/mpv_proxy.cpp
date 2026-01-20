@@ -398,7 +398,12 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "修改音视频同步模式";
             my_set_property(pHandle, "video-sync", "desync");
         }
-        if (!utils::isJjwGPUPresent() && !mtfi.exists()) {
+        // 检测特殊机型，使用配置的 VO 渲染
+        if (CompositingManager::get().shouldUseSpecialVo()) {
+            QString voName = CompositingManager::get().getSpecialVoName();
+            my_set_property(pHandle, "vo", voName.toUtf8().constData());
+            m_sInitVo = voName;
+        } else if (!utils::isJjwGPUPresent() && !mtfi.exists()) {
             if(CompositingManager::get().property("directRendering").toBool()) {
                 my_set_property(pHandle, "vo", "gpu,x11");
                 m_sInitVo = "gpu,x11";
@@ -504,7 +509,12 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "修改音视频同步模式";
             my_set_property(pHandle, "video-sync", "desync");
         }
-        if (!utils::isJjwGPUPresent()) {
+        // 检测特殊机型，使用配置的 VO 渲染
+        if (CompositingManager::get().shouldUseSpecialVo()) {
+            QString voName = CompositingManager::get().getSpecialVoName();
+            my_set_property(pHandle, "vo", voName.toUtf8().constData());
+            m_sInitVo = voName;
+        } else if (!utils::isJjwGPUPresent()) {
             if(CompositingManager::get().property("directRendering").toBool()) {
                 my_set_property(pHandle, "vo", "gpu,x11");
                 m_sInitVo = "gpu,x11";
