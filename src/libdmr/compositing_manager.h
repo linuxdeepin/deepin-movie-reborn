@@ -97,8 +97,11 @@ public:
     static void detectPciID();
     static bool runningOnNvidia();
     void softDecodeCheck();
+    void detectSpecialVoFromConfig(); // 从配置检测是否需要使用特殊 VO
     bool isOnlySoftDecode();
     bool isSpecialControls();
+    bool shouldUseSpecialVo();  // 检测是否需要使用特殊 VO
+    QString getSpecialVoName(); // 获取特殊机型的 VO 名称
     void getMpvConfig(QMap<QString, QString> *&aimMap);
 
 signals:
@@ -128,6 +131,8 @@ private:
     bool m_bHasCard;
     bool m_bOnlySoftDecode {false};  //kunpeng920走软解码
     bool m_setSpecialControls {false};
+    bool m_bUseSpecialVo {false};  // 特殊机型需要使用特殊 VO
+    QString m_specialVoName;  // 特殊机型的 VO 名称
     bool m_bZXIntgraphics;
     //保存配置
     QMap<QString, QString> *m_pMpvConfig;

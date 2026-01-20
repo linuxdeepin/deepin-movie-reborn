@@ -108,6 +108,7 @@ set(configFile
     ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.minimode.json
     ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.restart.json
     ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.specialhwdec.json
+    ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.playmode.json
 )
 if (DEFINED DSG_DATA_DIR)
     message("-- DConfig is supported by DTK")

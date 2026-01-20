@@ -1,0 +1,45 @@
+{
+  "magic": "dsg.config.meta",
+  "version": "1.0",
+  "contents": {
+      "IsSpecialHWDec": {
+          "value": 0,
+          "serial": 0,
+          "flags": ["global"],
+          "name": "Using HardWare Decoding on special machine",
+          "name[zh_CN]": "在特殊机型上使用硬解",
+          "description": "Using HardWare Decoding on special machine",
+          "permissions": "readwrite",
+          "visibility": "private"
+      },
+      "HwdecName": {
+          "value": "",
+          "serial": 0,
+          "flags": ["global"],
+          "name": "The name of the hardware decoding engine",
+          "name[zh_CN]": "硬件解码引擎名称",
+          "description": "The name of the hardware decoding engine",
+          "permissions": "readwrite",
+          "visibility": "private"
+      },
+      "IsSpecialVo": {
+          "value": 0,
+          "serial": 0,
+          "flags": ["global"],
+          "name": "Whether to use special video output",
+          "name[zh_CN]": "是否使用特殊视频输出",
+          "description": "Whether to use special video output",
+          "permissions": "readwrite",
+          "visibility": "private"
+      },
+      "VoName": {
+          "value": "",
+          "serial": 0,
+          "flags": ["global"],
+          "name": "The name of the video output engine",
+          "name[zh_CN]": "视频输出引擎名称",
+          "description": "The name of the video output engine",
+          "permissions": "readwrite",
+          "visibility": "private"
+      }
+}
