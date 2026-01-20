@@ -1794,6 +1794,11 @@ void Platform_MainWindow::mipsShowFullScreen()
     // 保留 WindowMinimized 旧状态标识
     setWindowState(windowState() | Qt::WindowFullScreen);
     setVisible(true);
+
+    // 全屏时设置绕过合成器
+    if (windowHandle()) {
+        Utility::setBypassCompositor(windowHandle()->winId(), true);
+    }
 }
 
 void Platform_MainWindow::menuItemInvoked(QAction *pAction)
@@ -2216,7 +2221,11 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         m_pToolbox->closeAnyPopup();
 
         if (isFullScreen()) {
-            // 和 mainwindow.cpp 保持一致，在 mipsShowFullScreen() 时保留 Qt::WindowMaximized 的状态以正常切换。
+            // 取消全屏前，先取消绕过合成器
+            if (windowHandle()) {
+                Utility::setBypassCompositor(windowHandle()->winId(), false);
+            }
+
             setWindowState(windowState() & ~Qt::WindowFullScreen);
 
             if (m_bMaximized) {
