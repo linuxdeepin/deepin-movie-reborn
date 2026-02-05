@@ -21,7 +21,7 @@ if (Qt6_FOUND)
     find_package(Qt6Sql)
     find_package(Qt6DBus)
     find_package(Qt6Svg)
-    pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtk6widget)
+    find_package(Dtk6 REQUIRED COMPONENTS Core Widget)
 else()
     # Qt5 environment
     find_package(Qt5Widgets)
@@ -31,7 +31,7 @@ else()
     find_package(Qt5Sql)
     find_package(Qt5DBus)
     find_package(Qt5Svg)
-    pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
+    find_package(Dtk REQUIRED COMPONENTS Core Widget)
 endif()
 
 pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gstreamer-1.0 glib-2.0)
@@ -52,10 +52,10 @@ target_include_directories(${CMD_NAME} PUBLIC
 
 if (Qt6_FOUND)
     # Qt6 environment
-    target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt6::Widgets Qt6::Concurrent
+    target_link_libraries(${CMD_NAME} Dtk6::Core Dtk6::Widget Qt6::Widgets Qt6::Concurrent
 		 Qt6::Network  Qt6::Sql Qt6::DBus PkgConfig::Gst GL dmr)
 else()
     # Qt5 environment
-	target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
+	target_link_libraries(${CMD_NAME} Dtk::Core Dtk::Widget Qt5::Widgets Qt5::Concurrent
 		 Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::Gst GL dmr)
 endif()

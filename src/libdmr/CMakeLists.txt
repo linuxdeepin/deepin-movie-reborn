@@ -37,12 +37,12 @@ if (Qt6_FOUND)
     # Qt6 environment
     find_package(Qt6 REQUIRED COMPONENTS OpenGL OpenGLWidgets)
     message(STATUS "Qt6_FOUND---------------- = ${Qt6_FOUND}")
-    target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt6::Widgets Qt6::Concurrent
+    target_link_libraries(${CMD_NAME} Dtk6::Core Dtk6::Widget Dtk6::Gui Qt6::Widgets Qt6::Concurrent
         Qt6::Network Qt6::Sql Qt6::Svg Qt6::SvgWidgets Qt6::Multimedia Qt6::MultimediaWidgets Qt6::DBus PkgConfig::Gst PkgConfig::DRM GL Qt6::SvgWidgets Qt6::OpenGL
         Qt6::GuiPrivate Qt6::OpenGLWidgets)
 else()
     # Qt5 environment
-    target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
+    target_link_libraries(${CMD_NAME} Dtk::Core Dtk::Widget Qt5::Widgets Qt5::Concurrent
         Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::Svg Qt5::Multimedia Qt5::MultimediaWidgets Qt5::DBus PkgConfig::Gst PkgConfig::DRM GL)
 endif()
 

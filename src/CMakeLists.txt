@@ -26,9 +26,8 @@ if (Qt6_FOUND)
     if(Qt6_VERSION VERSION_GREATER_EQUAL 6.10)
         find_package(Qt6 COMPONENTS GuiPrivate REQUIRED)
     endif()
-    find_package(Dtk6 REQUIRED COMPONENTS Core)
-    pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtk6widget)
-    pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtk6gui)
+    find_package(Dtk6 REQUIRED COMPONENTS Core Widget Gui)
+    # for Dtk_VERSION
     pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtk6core)
     pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
     #pkg_check_modules(DBusextended REQUIRED IMPORTED_TARGET dbusextended-qt5)
@@ -82,7 +81,7 @@ if (Qt6_FOUND)
     target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE} ${FFMPEG_INCLUDE_DIRS})
 
     set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt6::Widgets Qt6::Network Qt6::DBus Qt6::Sql Qt6::Svg Qt6::Multimedia
-        Qt6::MultimediaWidgets PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::Gst PkgConfig::DRM GL va va-x11
+        Qt6::MultimediaWidgets Dtk6::Core Dtk6::Widget Dtk6::Gui PkgConfig::MPRIS PkgConfig::Gst PkgConfig::DRM GL va va-x11
         Qt6::Concurrent Qt6::Xml Qt6::SvgWidgets Qt6::OpenGL Qt6::Core Qt6::Gui Qt6::GuiPrivate Qt6::OpenGLWidgets)
 
     target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES} dmr)
@@ -127,8 +126,8 @@ if (Qt6_FOUND)
 else()
     # Qt5 environment
     find_package(Qt5 COMPONENTS Widgets DBus X11Extras LinguistTools Network Concurrent Sql Svg Multimedia MultimediaWidgets Xml OpenGL Core REQUIRED)
-    find_package(DtkWidget REQUIRED)
-    pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
+    find_package(Dtk REQUIRED COMPONENTS Core Widget)
+    # for Dtk_VERSION
     pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
     pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
     pkg_check_modules(DBusextended REQUIRED IMPORTED_TARGET dbusextended-qt5)
@@ -185,7 +184,7 @@ else()
     target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
     set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network Qt5::DBus Qt5::Sql Qt5::Svg Qt5::Multimedia
-        Qt5::MultimediaWidgets PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::DBusextended PkgConfig::Gst PkgConfig::DRM GL va va-x11
+        Qt5::MultimediaWidgets Dtk::Core Dtk::Widget PkgConfig::MPRIS PkgConfig::DBusextended PkgConfig::Gst PkgConfig::DRM GL va va-x11
         Qt5::Concurrent Qt5::Xml)
 
     target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})

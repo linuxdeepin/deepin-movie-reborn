@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.5.34) unstable; urgency=medium
+
+  * fix: Fix build fail
+
+ -- wangrong <wangrong@uniontech.com>  Thu, 05 Feb 2026 21:13:00 +0800
+
 deepin-movie-reborn (6.5.33) unstable; urgency=medium
 
   * chore: Update compiler flags for security enhancements
