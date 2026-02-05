@@ -1,3 +1,11 @@
+deepin-movie-reborn (6.5.33) unstable; urgency=medium
+
+  * chore: Update compiler flags for security enhancements
+  * build: fix the build error on V20
+  * build(debian): separate Qt5/Qt6 build configurations for V25/V20 support
+
+ -- dengzhongyuan <dengzhongyuan@uniontech.com>  Thu, 05 Feb 2026 16:09:10 +0800
+
 deepin-movie-reborn (6.5.32) unstable; urgency=medium
 
   * chore: Update version to 6.5.32
