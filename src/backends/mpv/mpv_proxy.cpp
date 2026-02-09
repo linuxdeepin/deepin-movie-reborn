@@ -1553,7 +1553,7 @@ void MpvProxy::refreshDecode()
 
         if (!CompositingManager::get().composited()) {
             int voIndex = Settings::get().settings()->getOption(QString("base.decode.Videoout")).toInt();
-            auto voOpt = Settings::get().settings()->option("base.Customize.Videoout");
+            auto voOpt = Settings::get().settings()->option("base.decode.Videoout");
             QString voMode = voOpt.data()->data("items").toStringList()[voIndex];
             voMode = voMode.isEmpty() ? "auto" : voMode;
             m_pConfig->insert("vo", voMode);
