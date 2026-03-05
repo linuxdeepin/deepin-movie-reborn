@@ -136,6 +136,9 @@ QDataStream &operator>> (QDataStream &st, MovieInfo &mi)
 
 static class PersistentManager *_persistentManager = nullptr;
 
+static const qint32 CACHE_MAGIC = 0x444D5243;  // "DMRC" (Deepin Movie Replay Cache)
+static const qint32 CACHE_VERSION = 2;  // v2: lastModified
+
 static QString hashUrl(const QUrl &url)
 {
     return QString(QCryptographicHash::hash(url.toEncoded(), QCryptographicHash::Sha256).toHex());
@@ -158,12 +161,14 @@ public:
         struct MovieInfo mi;
         QPixmap thumb;
         QPixmap thumb_dark;
+        qint64 lastModified {0};
         bool mi_valid {false};
         bool thumb_valid {false};
 //        char m_padding [6];//占位符
         CacheInfo() {
             thumb = QPixmap();
             thumb_dark = QPixmap();
+            lastModified = 0;
             mi_valid = false;
             thumb_valid = false;
         }
@@ -171,6 +176,17 @@ public:
 
     CacheInfo loadFromCache(const QUrl &url)
     {
+        qDebug() << "Entering PersistentManager::loadFromCache() with URL:" << url.toString();
+
+        // Get current file modification time for cache validation
+        qint64 currentLastModified = 0;
+        if (url.isLocalFile()) {
+            QFileInfo fi(url.toLocalFile());
+            if (fi.exists()) {
+                currentLastModified = fi.lastModified().toMSecsSinceEpoch();
+            }
+        }
+
         auto h = hashUrl(url);
         CacheInfo ci;
 
@@ -181,8 +197,31 @@ public:
 
             if (f.open(QIODevice::ReadOnly)) {
                 QDataStream ds(&f);
+
+                qint32 magic = 0;
+                qint32 cacheVersion = 0;
+                ds >> magic;
+                ds >> cacheVersion;
+
+                if (magic != CACHE_MAGIC || cacheVersion < CACHE_VERSION) {
+                    qInfo() << "Old cache format detected (magic:" << magic << ", version:" << cacheVersion
+                            << "), invalidating cache for:" << url.fileName();
+                    f.close();
+                    f.remove();
+                    return ci;
+                }
+
                 ds >> ci.mi;
+                ds >> ci.lastModified;
                 ci.mi_valid = ci.mi.valid;
+
+                if (ci.mi_valid && currentLastModified > 0 && ci.lastModified != currentLastModified) {
+                    qInfo() << "File modified, cache invalid for:" << url.fileName()
+                            << "(cached:" << ci.lastModified << ", current:" << currentLastModified << ")";
+                    ci.mi_valid = false;
+                    ci.thumb_valid = false;
+                    return ci;
+                }
             } else {
                 qWarning() << f.errorString();
             }
@@ -216,6 +255,14 @@ public:
 
     void save(const PlayItemInfo &pif)
     {
+        qDebug() << "Entering PersistentManager::save() with PlayItemInfo.";
+
+        // Get file modification time for cache, used to validate cache later
+        qint64 lastModified = 0;
+        if (pif.url.isLocalFile() && pif.info.exists()) {
+            lastModified = pif.info.lastModified().toMSecsSinceEpoch();
+        }
+
         auto h = hashUrl(pif.url);
 
         bool mi_saved = false;
@@ -225,7 +272,10 @@ public:
             QFile f(filename);
             if (f.open(QIODevice::WriteOnly)) {
                 QDataStream ds(&f);
+                ds << CACHE_MAGIC;
+                ds << CACHE_VERSION;
                 ds << pif.mi;
+                ds << lastModified;
                 mi_saved = true;
                 qInfo() << "cache" << pif.url << "->" << h;
             } else {
@@ -1516,10 +1566,26 @@ bool PlaylistModel::getMusicPix(const QFileInfo &fi, QPixmap &rImg)
 struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFileInfo &fi, bool isDvd)
 {
     bool ok = false;
+    bool useCachedMi = false;
     struct MovieInfo mi;
+
+    // Try to load from cache first
+    // loadFromCache already validates lastModified to detect file changes
     auto ci = PersistentManager::get().loadFromCache(url);
 
-    mi = parseFromFile(fi, &ok);
+    // Use cached video info if cache is valid
+    // lastModified check is done in loadFromCache
+    if (ci.mi_valid) {
+        qInfo() << "Using cached video info for:" << url.fileName();
+        mi = ci.mi;
+        ok = true;
+        useCachedMi = true;
+    }
+
+    // Only parse with FFmpeg if cache is not valid or file changed
+    if (!useCachedMi) {
+        mi = parseFromFile(fi, &ok);
+    }
     if (isDvd && url.scheme().startsWith("dvd")) {
         QString dev = url.path();
         if (dev.isEmpty()) dev = "/dev/sr0";
@@ -1575,7 +1641,12 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
 
     PlayItemInfo pif { fi.exists() || !url.isLocalFile(), ok, url, fi, pm, dark_pm, mi };
 
-    if (ok && url.isLocalFile() && (!ci.mi_valid || !ci.thumb_valid)) {
+    // Only save to cache if:
+    // 1. We successfully parsed the file (ok is true)
+    // 2. This is a local file
+    // 3. Either cache doesn't exist cache is invalid, or we re-parsed the file
+    if (ok && url.isLocalFile() && (!ci.mi_valid || !ci.thumb_valid || !useCachedMi)) {
+        qInfo() << "Saving to cache:" << url.fileName() << "(useCachedMi:" << useCachedMi << ")";
         PersistentManager::get().save(pif);
     }
     if (!url.isLocalFile() && !url.scheme().startsWith("dvd") && CompositingManager::isMpvExists()) {
