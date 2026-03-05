@@ -1,3 +1,13 @@
+deepin-movie-reborn (6.5.35) unstable; urgency=medium
+
+  * fix(x11): prevent crash when switching videos on aarch64 X11
+  * fix: optimize startup by removing sub-process calls and improve cache
+  * chore: Unify linglong.yaml
+  * fix: [decode] crash when using `custom decode` on some machines
+  * fix: Fix build fail (#808)
+
+ -- Wang Yu <wangyu@uniontech.com>  Thu, 05 Mar 2026 20:50:36 +0800
+
 deepin-movie-reborn (6.5.34) unstable; urgency=medium
 
   * fix: Fix build fail
