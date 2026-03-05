@@ -39,7 +39,23 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <pthread.h>
 #include <va/va_x11.h>
+#include <X11/Xlib.h>
+
+static Display *g_qtDisplay = nullptr;
+
+// mpv 的 XVideo VO 在后台线程析构时会调用 XCloseDisplay，若此时 X server
+// 已关闭连接，Xlib 默认的 IO 错误处理会直接 exit(1) 杀掉整个进程。
+// 这里区分 Qt 的 display 和 mpv 的私有 display：mpv 的连接断开只终止
+// 当前线程，不影响 Qt 主窗口。
+static int appX11IOErrorHandler(Display *dpy)
+{
+    if (g_qtDisplay && dpy != g_qtDisplay) {
+        pthread_exit(nullptr);
+    }
+    _exit(1);
+}
 
 #include "accessibility/acobjectlist.h"
 
@@ -359,6 +375,18 @@ int main(int argc, char *argv[])
 
     QAccessible::installFactory(accessibleFactory);
     qDebug() << "Accessible factory installed.";
+
+    // 仅在非 Wayland 环境下安装 X11 IO 错误处理器，避免 Wayland 平台访问 X11
+    if (!utils::check_wayland_env()) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        g_qtDisplay = QX11Info::display();
+#else
+        if (auto *x11App = qApp->nativeInterface<QNativeInterface::QX11Application>())
+            g_qtDisplay = x11App->display();
+#endif
+        XSetIOErrorHandler(appX11IOErrorHandler);
+    }
+
     // required by mpv
     setlocale(LC_NUMERIC, "C");
     qDebug() << "Locale set to C.";
