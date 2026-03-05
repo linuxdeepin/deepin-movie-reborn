@@ -176,29 +176,42 @@ void MpvProxy::initGpuInfoFuns()
 
 void MpvProxy::firstInit()
 {
-#ifndef _LIBDMR_
+    qInfo() << "Performing first initialization of MPV proxy";
+/*#ifndef _LIBDMR_
 #ifdef __x86_64__
-    //第一次运行deepin-movie，检测是否支持硬解
-    QString procName = QCoreApplication::applicationFilePath();
-    QProcess proc;
-    proc.start(procName, QStringList() << "hwdec");
-    if (!proc.waitForFinished())
-              return;
-    //检测进程退出码
-    if(proc.exitCode() != QProcess::NormalExit)
-    {
-        CompositingManager::setCanHwdec(false);
-    } else {//检测进程日志输出
-        QByteArray result = proc.readAllStandardError();
-        qInfo() << "deepin-movie hwdec: " << result;
-        if(result.toLower().contains("not supported")) {
-            CompositingManager::setCanHwdec(false);
-        } else {
-            CompositingManager::setCanHwdec(true);
-        }
-    }
+   qDebug() << "DEBUG: Running hardware decode check for x86_64."; // Log for hwdec check
+   //第一次运行deepin-movie，检测是否支持硬解
+   QString procName = QCoreApplication::applicationFilePath();
+   QProcess proc;
+   proc.start(procName, QStringList() << "hwdec");
+   if (!proc.waitForFinished()) {
+       qWarning() << "Hardware decode check process failed to finish";
+       return;
+   }
+   //检测进程退出码
+   if(proc.exitCode() != QProcess::NormalExit) {
+       qWarning() << "Hardware decode check process exited abnormally";
+       CompositingManager::setCanHwdec(false);
+       qDebug() << "DEBUG: CompositingManager::setCanHwdec set to false due to abnormal exit."; // Log state change
+   } else {//检测进程日志输出
+       QByteArray result = proc.readAllStandardError();
+       qInfo() << "Hardware decode check result:" << result;
+       if(result.toLower().contains("not supported")) {
+           qInfo() << "Hardware decode not supported";
+           CompositingManager::setCanHwdec(false);
+           qDebug() << "DEBUG: CompositingManager::setCanHwdec set to false."; // Log state change
+       } else {
+           qInfo() << "Hardware decode supported";
+           CompositingManager::setCanHwdec(true);
+           qDebug() << "DEBUG: CompositingManager::setCanHwdec set to true."; // Log state change
+       }
+   }
+#else
+   qDebug() << "DEBUG: Hardware decode check skipped for non-x86_64 platform."; // Log for skipped check
 #endif
-#endif
+#else
+   qDebug() << "DEBUG: _LIBDMR_ defined, skipping hardware decode check."; // Log for _LIBDMR_ case
+#endif*/
     initMpvFuns();
     initGpuInfoFuns();
     if (m_creat) {
