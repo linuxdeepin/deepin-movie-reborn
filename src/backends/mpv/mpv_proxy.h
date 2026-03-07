@@ -10,6 +10,7 @@
 
 #include <player_backend.h>
 #include <player_engine.h>
+#include <QThread>
 #include <xcb/xproto.h>
 #undef Bool
 #include "../../vendor/qthelper.hpp"
@@ -37,6 +38,7 @@ typedef void (*mpv_setWakeup_callback)(mpv_handle *ctx, void (*cb)(void *d), voi
 typedef int (*mpvinitialize)(mpv_handle *ctx);
 typedef void (*mpv_freeNode_contents)(mpv_node *node);
 typedef void (*mpv_terminateDestroy)(mpv_handle *ctx);
+typedef int (*mpv_commandFunc)(mpv_handle *ctx, const char **args);
 
 
 class MpvHandle
@@ -45,9 +47,31 @@ class MpvHandle
         explicit container(mpv_handle *pHandle) : m_pHandle(pHandle) {}
         ~container()
         {
-            mpv_terminateDestroy func = (mpv_terminateDestroy)QLibrary::resolve(SysUtils::libPath("libmpv.so"), "mpv_terminate_destroy");
-            if (func)
-                func(m_pHandle);
+            // Cache function pointers to avoid repeated resolve calls
+            static QString libPath = SysUtils::libPath("libmpv.so");
+            static mpv_commandFunc cmdFunc = reinterpret_cast<mpv_commandFunc>(QLibrary::resolve(libPath, "mpv_command"));
+            static mpv_terminateDestroy destroyFunc = reinterpret_cast<mpv_terminateDestroy>(QLibrary::resolve(libPath, "mpv_terminate_destroy"));
+            static const int kMpvQuitGracePeriodMs = 200;
+
+            if (m_pHandle) {
+                // Send "quit" command first to let mpv exit gracefully
+                // This prevents deadlock when mpv_terminate_destroy tries to acquire the dispatch lock
+                // while mpv's core thread is waiting in mp_dispatch_run (e.g., during vo_destroy in idle_loop)
+                if (cmdFunc) {
+                    const char *args[] = {"quit", nullptr};
+                    cmdFunc(m_pHandle, args);
+                }
+
+                // Grace period for mpv to process quit command
+                QThread::msleep(kMpvQuitGracePeriodMs);
+
+                // Destroy the handle
+                if (destroyFunc) {
+                    destroyFunc(m_pHandle);
+                }
+
+                m_pHandle = nullptr;
+            }
         }
         mpv_handle *m_pHandle;
     };
