@@ -10,6 +10,7 @@
 
 #include <player_backend.h>
 #include <player_engine.h>
+#include <QThread>
 #include <xcb/xproto.h>
 #undef Bool
 #include "../../vendor/qthelper.hpp"
@@ -37,6 +38,7 @@ typedef void (*mpv_setWakeup_callback)(mpv_handle *ctx, void (*cb)(void *d), voi
 typedef int (*mpvinitialize)(mpv_handle *ctx);
 typedef void (*mpv_freeNode_contents)(mpv_node *node);
 typedef void (*mpv_terminateDestroy)(mpv_handle *ctx);
+typedef int (*mpv_commandFunc)(mpv_handle *ctx, const char **args);
 
 
 class MpvHandle
@@ -45,6 +47,15 @@ class MpvHandle
         explicit container(mpv_handle *pHandle) : m_pHandle(pHandle) {}
         ~container()
         {
+            // Fix deadlock: Send "quit" command first to let mpv exit gracefully
+            // This prevents deadlock when mpv_terminate_destroy tries to acquire the dispatch lock
+            // while mpv's core thread is waiting in mp_dispatch_run (e.g., during vo_destroy in idle_loop)
+            mpv_commandFunc cmdFunc = (mpv_commandFunc)QLibrary::resolve(SysUtils::libPath("libmpv.so"), "mpv_command");
+            if (cmdFunc && m_pHandle) {
+                const char *args[] = {"quit", nullptr};
+                cmdFunc(m_pHandle, args);
+                QThread::msleep(200);  // Wait for mpv to process quit command
+            }
             mpv_terminateDestroy func = (mpv_terminateDestroy)QLibrary::resolve(SysUtils::libPath("libmpv.so"), "mpv_terminate_destroy");
             if (func)
                 func(m_pHandle);
