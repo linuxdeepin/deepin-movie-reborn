@@ -60,92 +60,44 @@ public:
     PlatformChecker() {}
     Platform check()
     {
-        // Read from /proc/cpuinfo instead of spawning uname sub-process
-        QFile cpuInfo("/proc/cpuinfo");
-        if (cpuInfo.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream in(&cpuInfo);
-            while (!in.atEnd()) {
-                QString line = in.readLine();
-                if (line.startsWith("Hardware")) {
-                    // ARM platforms
-                    if (line.contains("BCM", Qt::CaseInsensitive)) {
-                        qInfo() << "Match ARM (BCM)";
-                        _pf = Platform::Arm64;
-                    } else if (line.contains("qcom", Qt::CaseInsensitive)) {
-                        qInfo() << "Match ARM (Qualcomm)";
-                        _pf = Platform::Arm64;
-                    } else if (line.contains("sun8i", Qt::CaseInsensitive)) {
-                        qInfo() << "Match ARM (Allwinner)";
-                        _pf = Platform::Arm64;
-                    } else if (line.contains("Generic", Qt::CaseInsensitive)) {
-                        qInfo() << "Match MIPS (Generic)";
-                        _pf = Platform::Mips;
-                    } else if (line.contains("Loongson", Qt::CaseInsensitive)) {
-                        qInfo() << "Match Loongson";
-                        _pf = Platform::Mips;
-                    }
-                } else if (line.startsWith("Cpu architecture")) {
-                    // Loongson architecture
-                    if (line.contains("mips", Qt::CaseInsensitive)) {
-                        qInfo() << "Match MIPS";
-                        _pf = Platform::Mips;
-                    } else if (line.contains("aarch64") || line.contains("arm64", Qt::CaseInsensitive)) {
-                        qInfo() << "Match ARM64";
-                        _pf = Platform::Arm64;
-                    }
-                }
-            }
-            cpuInfo.close();
-        }
+        QProcess uname;
+        uname.setProgram("uname");
+        uname.setArguments({"-m"});
+        uname.start();
+        if (uname.waitForStarted()) {
+            if (uname.waitForFinished()) {
+                auto data = uname.readAllStandardOutput();
+                string machine(data.trimmed().constData());
+                qInfo() << QString("machine: %1").arg(machine.c_str());
 
-        // Fallback to /proc/sys/kernel/arch if not determined
-        if (_pf == Platform::Unknown) {
-            QFile archFile("/proc/sys/kernel/arch");
-            if (archFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                QString arch = QString::fromUtf8(archFile.readAll()).trimmed();
-                qInfo() << "Architecture from /proc/sys/kernel/arch:" << arch;
-
-                if (arch.contains("x86_64") || arch.contains("i386") || arch.contains("i686")) {
-                    qInfo() << "Match x86";
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                QRegExp re("x86.*|i?86|ia64", Qt::CaseInsensitive);
+                if (re.indexIn(C2Q(machine)) != -1) {
+#else
+                QRegularExpression re("x86.*|i?86|ia64", QRegularExpression::CaseInsensitiveOption);
+                if (re.match(C2Q(machine)).hasMatch()) {
+#endif
+                    qInfo() << "match x86";
                     _pf = Platform::X86;
-                } else if (arch.contains("alpha") || arch.contains("sw_64")) {
-                    qInfo() << "Match shenwei";
-                    _pf = Platform::Alpha;
-                } else if (arch.contains("mips") || arch.contains("loongarch")) {
-                    qInfo() << "Match loongson";
-                    _pf = Platform::Mips;
-                } else if (arch.contains("aarch64") || arch.contains("arm64")) {
-                    qInfo() << "Match arm";
-                    _pf = Platform::Arm64;
-                }
-                archFile.close();
-            }
-        }
 
-        // Fallback to uname command if still not determined
-        if (_pf == Platform::Unknown) {
-            QProcess uname;
-            uname.setProgram("uname");
-            uname.setArguments({"-m"});
-            uname.start();
-            if (uname.waitForStarted() && uname.waitForFinished()) {
-                QString machine = QString::fromUtf8(uname.readAllStandardOutput()).trimmed();
-                qInfo() << "Architecture from uname -m:" << machine;
-
-                if (machine.contains("x86_64") || machine.contains("i386") || machine.contains("i686")) {
-                    qInfo() << "Match x86";
-                    _pf = Platform::X86;
-                } else if (machine.contains("alpha") || machine.contains("sw_64")) {
-                    qInfo() << "Match shenwei";
+                } else if (machine.find("alpha") != string::npos
+                           || machine.find("sw_64") != string::npos) {
+                    // shenwei
+                    qInfo() << "match shenwei";
                     _pf = Platform::Alpha;
-                } else if (machine.contains("mips") || machine.contains("loongarch")) {
-                    qInfo() << "Match loongson";
+
+                } else if (machine.find("mips") != string::npos
+                           || machine.find("loongarch64") != string::npos) { // loongson
+                    qInfo() << "match loongson";
                     _pf = Platform::Mips;
-                } else if (machine.contains("aarch64") || machine.contains("arm64")) {
-                    qInfo() << "Match arm";
+                } else if (machine.find("aarch64") != string::npos) { // ARM64
+                    qInfo() << "match arm";
                     _pf = Platform::Arm64;
                 }
             }
+        } else {
+            QString error = uname.readAllStandardError();
+            qWarning() << error;
         }
 
         return _pf;
@@ -160,44 +112,16 @@ private:
     1002:699f Lexa PRO [Radeon 540/540X/550/550X / RX 540X/550/550X]
     1002:6987 Lexa [Radeon 540X/550X/630 / RX 640 / E9171 MCM]
 
-   @note 优化为直接读取 sysfs 避免启动子进程
+   @note 影响启动性能
  */
 static bool detect550Series()
 {
-    // Read directly from sysfs instead of calling lspci sub-process
-    QDir pciDir("/sys/bus/pci/devices");
-    QFileInfoList deviceList = pciDir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
-
-    foreach (const QFileInfo &deviceInfo, deviceList) {
-        QString vendorPath = deviceInfo.absoluteFilePath() + "/vendor";
-        QString devicePath = deviceInfo.absoluteFilePath() + "/device";
-        QString classPath = deviceInfo.absoluteFilePath() + "/class";
-
-        QFile vendorFile(vendorPath);
-        QFile deviceFile(devicePath);
-        QFile classFile(classPath);
-
-        if (vendorFile.open(QIODevice::ReadOnly) && deviceFile.open(QIODevice::ReadOnly) && classFile.open(QIODevice::ReadOnly)) {
-            QString vendorId = QString::fromUtf8(vendorFile.readAll()).trimmed();
-            QString deviceId = QString::fromUtf8(deviceFile.readAll()).trimmed();
-            QString classDev = QString::fromUtf8(classFile.readAll()).trimmed();
-
-            vendorFile.close();
-            deviceFile.close();
-            classFile.close();
-
-            // Check if this is a VGA/3D display controller (class 0x03)
-            if (classDev.startsWith("0x03")) {
-                // Remove "0x" prefix for comparison
-                QString vendorIdStr = vendorId.mid(2);
-                QString deviceIdStr = deviceId.mid(2);
-                // Match with lspci format: vendor:device
-                if ((vendorIdStr == "1002" && deviceIdStr == "699f") ||
-                    (vendorIdStr == "1002" && deviceIdStr == "6987") ||
-                    (vendorIdStr == "6766" && deviceIdStr == "3d02")) {
-                    qInfo() << "Detected 550 series GPU" << vendorId << deviceId;
-                    return true;
-                }
+    QStringList sList = dmr::utils::runPipeProcess("lspci -nk", "");
+    foreach(QString readData, sList) {
+        if(readData.contains("1002:699f") || readData.contains("1002:6987") || readData.contains("6766:3d02")) {
+            if (!readData.isEmpty()) {
+                qInfo() << qPrintable("Detect 550 series, using vaapi. ") << readData;
+                return true;
             }
         }
     }
