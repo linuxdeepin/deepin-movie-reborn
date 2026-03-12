@@ -2222,21 +2222,22 @@ void ToolboxProxy::updateButtonStates()
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle && m_pEngine->getplaylist()->count() > 0) {
         bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
+        const bool rawNoDuration = bRawFormat && m_pEngine->duration() <= 0;
         m_pMircastBtn->setEnabled(!m_pEngine->currFileIsAudio());
         if(m_pEngine->currFileIsAudio())
             m_mircastWidget->setVisible(false);
-        if(bRawFormat && !m_pEngine->currFileIsAudio()){                                             // 如果正在播放的视频是裸流不支持音量调节和进度调节
+        if(rawNoDuration && !m_pEngine->currFileIsAudio()){
             m_pProgBar->setEnabled(false);
             m_pProgBar->setEnableIndication(false);
             m_pVolSlider->setEnabled(false);
 
-            m_pTimeLabel->setPalette(palette);             // 如果正在播放的视频是裸流置灰
+            m_pTimeLabel->setPalette(palette);
             m_pTimeLabelend->setPalette(palette);
             m_pFullScreenTimeLabel->setPalette(palette);
             m_pFullScreenTimeLabelend->setPalette(palette);
 
             m_pVolBtn->setButtonEnable(false);
-        } else if (bRawFormat) {
+        } else if (rawNoDuration) {
             m_pProgBar->setEnabled(false);
             m_pProgBar->setEnableIndication(false);
 

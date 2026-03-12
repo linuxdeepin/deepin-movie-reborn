@@ -28,6 +28,8 @@ typedef int (*mvideo_avformat_open_input)(AVFormatContext **ps, const char *url,
 typedef int (*mvideo_avformat_find_stream_info)(AVFormatContext *ic, AVDictionary **options);
 typedef int (*mvideo_av_find_best_stream)(AVFormatContext *ic, enum AVMediaType type, int wanted_stream_nb, int related_stream, AVCodec **decoder_ret, int flags);
 typedef void (*mvideo_avformat_close_input)(AVFormatContext **s);
+typedef int (*mvideo_av_read_frame)(AVFormatContext *s, AVPacket *pkt);
+typedef int (*mvideo_av_seek_frame)(AVFormatContext *s, int stream_index, int64_t timestamp, int flags);
 typedef AVDictionaryEntry *(*mvideo_av_dict_get)(const AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags);
 typedef void (*mvideo_av_dump_format)(AVFormatContext *ic,int index, const char *url, int is_output);
 typedef AVCodec *(*mvideo_avcodec_find_decoder)(enum AVCodecID id);
@@ -36,6 +38,9 @@ typedef AVCodecContext *(*mvideo_avcodec_alloc_context3)(const AVCodec *codec);
 typedef int (*mvideo_avcodec_parameters_to_context)(AVCodecContext *codec, const AVCodecParameters *par);
 typedef int (*mvideo_avcodec_open2)(AVCodecContext *avctx, const AVCodec *codec, AVDictionary **options);
 typedef void (*mvideo_avcodec_free_context)(AVCodecContext **avctx);
+typedef AVPacket *(*mvideo_av_packet_alloc)(void);
+typedef void (*mvideo_av_packet_free)(AVPacket **pkt);
+typedef void (*mvideo_av_packet_unref)(AVPacket *pkt);
 
 video_thumbnailer *m_video_thumbnailer = nullptr;
 image_data *m_image_data = nullptr;
@@ -59,6 +64,8 @@ mvideo_avformat_open_input g_mvideo_avformat_open_input = nullptr;
 mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info = nullptr;
 mvideo_av_find_best_stream g_mvideo_av_find_best_stream = nullptr;
 mvideo_avformat_close_input g_mvideo_avformat_close_input = nullptr;
+mvideo_av_read_frame g_mvideo_av_read_frame = nullptr;
+mvideo_av_seek_frame g_mvideo_av_seek_frame = nullptr;
 mvideo_av_dict_get g_mvideo_av_dict_get = nullptr;
 mvideo_av_dump_format g_mvideo_av_dump_format = nullptr;
 mvideo_avcodec_find_decoder g_mvideo_avcodec_find_decoder = nullptr;
@@ -67,6 +74,9 @@ mvideo_avcodec_alloc_context3 g_mvideo_avcodec_alloc_context3 = nullptr;
 mvideo_avcodec_parameters_to_context g_mvideo_avcodec_parameters_to_context = nullptr;
 mvideo_avcodec_open2 g_mvideo_avcodec_open2 = nullptr;
 mvideo_avcodec_free_context g_mvideo_avcodec_free_context = nullptr;
+mvideo_av_packet_alloc g_mvideo_av_packet_alloc = nullptr;
+mvideo_av_packet_free g_mvideo_av_packet_free = nullptr;
+mvideo_av_packet_unref g_mvideo_av_packet_unref = nullptr;
 namespace dmr {
 QDataStream &operator<< (QDataStream &st, const MovieInfo &mi)
 {
@@ -262,6 +272,51 @@ private:
 
 };
 
+// 容器/流未提供 duration 时，扫包取首末 PTS 计算总时长（超过 100MB 不扫，结束后恢复 seek 位置）
+static qint64 computeDurationByPtsScan(AVFormatContext *av_ctx, int video_stream_index, int audio_stream_index, qint64 fileSize)
+{
+    const qint64 kMaxScanSize = 100 * 1024 * 1024;  // 100MB
+
+    if (!av_ctx || (!g_mvideo_av_read_frame) || (!g_mvideo_av_seek_frame)
+        || (!g_mvideo_av_packet_alloc) || (!g_mvideo_av_packet_free) || (!g_mvideo_av_packet_unref))
+        return 0;
+    if (fileSize > kMaxScanSize)
+        return 0;
+    int stream_index = (video_stream_index >= 0) ? video_stream_index : audio_stream_index;
+    if (stream_index < 0)
+        return 0;
+    AVStream *st = av_ctx->streams[stream_index];
+    if (!st || st->time_base.den <= 0)
+        return 0;
+    if (g_mvideo_av_seek_frame(av_ctx, -1, 0, AVSEEK_FLAG_BACKWARD) < 0)
+        return 0;
+    AVPacket *pkt = g_mvideo_av_packet_alloc();
+    if (!pkt)
+        return 0;
+    int64_t min_pts = INT64_MAX;
+    int64_t max_pts = INT64_MIN;
+    int count = 0;
+    while (g_mvideo_av_read_frame(av_ctx, pkt) >= 0) {
+        if (pkt->stream_index != stream_index) {
+            g_mvideo_av_packet_unref(pkt);
+            continue;
+        }
+        int64_t pts = (pkt->pts != AV_NOPTS_VALUE) ? pkt->pts : pkt->dts;
+        if (pts != AV_NOPTS_VALUE) {
+            if (pts < min_pts) min_pts = pts;
+            if (pts > max_pts) max_pts = pts;
+            count++;
+        }
+        g_mvideo_av_packet_unref(pkt);
+    }
+    g_mvideo_av_packet_free(&pkt);
+    g_mvideo_av_seek_frame(av_ctx, -1, 0, AVSEEK_FLAG_BACKWARD);
+    if (count == 0 || min_pts == INT64_MAX || max_pts == INT64_MIN || max_pts <= min_pts)
+        return 0;
+    double duration_sec = (max_pts - min_pts) * (double) st->time_base.num / (double) st->time_base.den;
+    return static_cast<qint64>(duration_sec + 0.5);
+}
+
 struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
 {
     struct MovieInfo mi;
@@ -383,7 +438,14 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         qInfo() << "tag:" << tag->key << tag->value;
     }
 
+    if (mi.duration <= 0) {
+        qint64 scanDuration = computeDurationByPtsScan(av_ctx, videoRet, audioRet, fi.size());
+        if (scanDuration > 0)
+            mi.duration = scanDuration;
+    }
+
     g_mvideo_avformat_close_input(&av_ctx);
+
     mi.valid = true;
 
     if (ok) *ok = true;
@@ -534,6 +596,8 @@ void PlaylistModel::initFFmpeg()
     g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) avformatLibrary.resolve("avformat_find_stream_info");
     g_mvideo_av_find_best_stream = (mvideo_av_find_best_stream) avformatLibrary.resolve("av_find_best_stream");
     g_mvideo_avformat_close_input = (mvideo_avformat_close_input) avformatLibrary.resolve("avformat_close_input");
+    g_mvideo_av_read_frame = (mvideo_av_read_frame) avformatLibrary.resolve("av_read_frame");
+    g_mvideo_av_seek_frame = (mvideo_av_seek_frame) avformatLibrary.resolve("av_seek_frame");
     g_mvideo_av_dict_get = (mvideo_av_dict_get) avutilLibrary.resolve("av_dict_get");
     g_mvideo_av_dump_format = (mvideo_av_dump_format) avformatLibrary.resolve("av_dump_format");
     g_mvideo_avcodec_find_decoder = (mvideo_avcodec_find_decoder) avcodecLibrary.resolve("avcodec_find_decoder");
@@ -542,6 +606,9 @@ void PlaylistModel::initFFmpeg()
     g_mvideo_avcodec_parameters_to_context = (mvideo_avcodec_parameters_to_context) avcodecLibrary.resolve("avcodec_parameters_to_context");
     g_mvideo_avcodec_open2 = (mvideo_avcodec_open2)(avcodecLibrary.resolve("avcodec_open2"));
     g_mvideo_avcodec_free_context = (mvideo_avcodec_free_context)(avcodecLibrary.resolve("avcodec_free_context"));
+    g_mvideo_av_packet_alloc = (mvideo_av_packet_alloc) avcodecLibrary.resolve("av_packet_alloc");
+    g_mvideo_av_packet_free = (mvideo_av_packet_free) avcodecLibrary.resolve("av_packet_free");
+    g_mvideo_av_packet_unref = (mvideo_av_packet_unref) avcodecLibrary.resolve("av_packet_unref");
     m_initFFmpeg = true;
 }
 

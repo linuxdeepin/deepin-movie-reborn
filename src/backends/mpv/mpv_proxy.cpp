@@ -2036,18 +2036,13 @@ QSize MpvProxy::videoSize() const
 
 qint64 MpvProxy::duration() const
 {
-    bool bRawFormat = false;
-
-    if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
-        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
-        bRawFormat = currentInfo.mi.isRawFormat();
+    auto *pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
+    if (pEngine && pEngine->getplaylist() && pEngine->getplaylist()->size() > 0) {
+        const PlayItemInfo &currentInfo = pEngine->getplaylist()->currentInfo();
+        if (currentInfo.mi.duration > 0)
+            return currentInfo.mi.duration;
     }
-
-    if (bRawFormat) {     // 因为格式众多时长输出不同，这里做统一处理不显示时长
-        return 0;
-    } else {
-        return my_get_property(m_handle, "duration").value<qint64>();
-    }
+    return my_get_property(m_handle, "duration").value<qint64>();
 }
 
 
