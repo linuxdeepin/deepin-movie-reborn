@@ -1,3 +1,10 @@
+deepin-movie-reborn (6.5.36) unstable; urgency=medium
+
+  * fix: revert to avoid play issue
+  * fix: prevent deadlock when destroying mpv handle
+
+ -- dengzhongyuan <dengzhongyuan@uniontech.com>  Thu, 12 Mar 2026 20:29:28 +0800
+
 deepin-movie-reborn (6.5.35) unstable; urgency=medium
 
   * fix(x11): prevent crash when switching videos on aarch64 X11
