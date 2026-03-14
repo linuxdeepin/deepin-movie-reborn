@@ -147,32 +147,32 @@ QList<QUrl> FileFilter::filterDir(QDir dir)
     return lstUrl;
 }
 
+// file:// URLs must not be parsed with QUrl(str): '#' would be treated as a fragment
+// delimiter, silently truncating paths that contain '#' in the filename (legal on Linux).
+// Strip the scheme prefix and percent-decode instead, so QUrl::fromLocalFile() always
+// receives a plain filesystem path and encodes it correctly.
+static const QString s_fileSchemePrefix = QStringLiteral("file://");
+
 QUrl FileFilter::fileTransfer(QString strFile)
 {
     qDebug() << "Entering FileFilter::fileTransfer() with strFile:" << strFile;
     QUrl realUrl;
-    bool bLocalFile = false;
 
-    bLocalFile = QUrl(strFile).isLocalFile();
-    qDebug() << "strFile is local file:" << bLocalFile;
-
-    if (bLocalFile)
-    {
-        qDebug() << "strFile is a local file. Converting to local file path.";
-        strFile = QUrl(strFile).toLocalFile();
+    if (strFile.startsWith(s_fileSchemePrefix)) {
+        strFile = QUrl::fromPercentEncoding(strFile.mid(s_fileSchemePrefix.size()).toUtf8());
+        qDebug() << "Extracted path from file URL:" << strFile;
     }
+    // Without "file://" prefix, strFile is already a filesystem path; do not URL-decode it.
 
-    if (QFileInfo(strFile).isFile() || QFileInfo(strFile).isDir()) {      // 如果是软链接则需要找到真实路径
-        qDebug() << "strFile is a file or directory. Checking for symlink.";
-        while (QFileInfo(strFile).isSymLink()) {
-            strFile = QFileInfo(strFile).symLinkTarget();
-            qDebug() << "Resolved symlink target:" << strFile;
-        }
-        realUrl = QUrl::fromLocalFile(strFile);
+    QFileInfo fileInfo(strFile);
+    if (fileInfo.isFile() || fileInfo.isDir()) {
+        // canonicalFilePath() resolves all symlinks in one step and returns empty string
+        // for broken or circular symlinks, avoiding an infinite loop.
+        const QString canonical = fileInfo.canonicalFilePath();
+        realUrl = QUrl::fromLocalFile(canonical.isEmpty() ? strFile : canonical);
         qDebug() << "realUrl set from local file:" << realUrl.toString();
-    }
-    else {
-        qDebug() << "strFile is neither a file nor a directory. Setting realUrl from raw string.";
+    } else {
+        // Non-existent local path or a non-file:// network URL (http://, rtmp://, etc.)
         realUrl = QUrl(strFile);
         qDebug() << "realUrl set from raw string:" << realUrl.toString();
     }
