@@ -23,8 +23,7 @@
 #include <DApplication>
 #include <QDBusInterface>
 //#include <wayland-client.h>
-//#include "../../window/qplatformnativeinterface.h"
-//qpa/qplatformnativeinterface.h
+#include <qpa/qplatformnativeinterface.h>
 #if defined(_WIN32) && !defined(_WIN32_WCE) && !defined(__SCITECH_SNAP__)
 /* Win32 but not WinCE */
 #   define KHRONOS_APIENTRY __stdcall
@@ -238,17 +237,32 @@ namespace dmr {
         return nullptr;
     }
 
-    static void* EGLAPIENTRY glMPGetNativeDisplay_EGL(const char* name) {
-        qWarning() << __func__ << name;
-        qDebug() << "DEBUG: Entering glMPGetNativeDisplay_EGL. Name:" << name;
-        //QPlatformNativeInterface* native = QGuiApplication::platformNativeInterface();
-        //struct wl_display * wl_dpy = (struct wl_display*) (native->nativeResourceForWindow("display",NULL));
-        if (!strcmp(name, "wayland")) {
-            qDebug() << "DEBUG: Wayland display detected.";
-            //return (void*)wl_dpy;
+    // Retrieves the Wayland wl_display from Qt's platform plugin.
+    // Returns nullptr if the platform plugin does not expose it; all callers
+    // must treat nullptr as "Wayland unavailable" and handle it explicitly.
+    static void *getWaylandDisplay()
+    {
+        QPlatformNativeInterface *native = QGuiApplication::platformNativeInterface();
+        if (!native) {
+            qWarning() << "getWaylandDisplay: platformNativeInterface() returned nullptr; "
+                           "the current Qt platform plugin does not support native resource queries.";
             return nullptr;
         }
-        qDebug() << "DEBUG: Exiting glMPGetNativeDisplay_EGL. No Wayland display found or handled.";
+        void *wl_dpy = native->nativeResourceForIntegration(QByteArrayLiteral("wl_display"));
+        if (!wl_dpy) {
+            qWarning() << "getWaylandDisplay: platform plugin did not expose 'wl_display'; "
+                           "check that a Wayland-capable Qt platform plugin (e.g. wayland) is active.";
+        } else {
+            qInfo() << "getWaylandDisplay: wl_display =" << wl_dpy;
+        }
+        return wl_dpy;
+    }
+
+    static void* EGLAPIENTRY glMPGetNativeDisplay_EGL(const char* name) {
+        qWarning() << __func__ << name;
+        if (!strcmp(name, "wayland")) {
+            return getWaylandDisplay();
+        }
         return nullptr;
     }
 
@@ -636,7 +650,12 @@ namespace dmr {
 
         if(utils::check_wayland_env()){
             qInfo() << "Configuring MPV for Wayland environment";
-            params[2] = {MPV_RENDER_PARAM_WL_DISPLAY, nullptr};
+            void *wl_dpy = getWaylandDisplay();
+            if (!wl_dpy) {
+                qWarning() << "initializeGL: wl_display is null; MPV Wayland render context "
+                               "will likely fail. Check the Qt platform plugin in use.";
+            }
+            params[2] = {MPV_RENDER_PARAM_WL_DISPLAY, wl_dpy};
         }
 
         //add by heyi
