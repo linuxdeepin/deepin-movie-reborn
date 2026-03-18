@@ -1,3 +1,10 @@
+deepin-movie-reborn (6.5.37) unstable; urgency=medium
+
+  * fix(mpv): enhance Wayland display handling in glMPGetNativeDisplay_EGL
+  * fix(filefilter): improve local file handling in fileTransfer method
+
+ -- dengzhongyuan <dengzhongyuan@uniontech.com>  Wed, 18 Mar 2026 11:42:49 +0800
+
 deepin-movie-reborn (6.5.36) unstable; urgency=medium
 
   * fix: revert to avoid play issue
