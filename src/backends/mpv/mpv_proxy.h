@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -477,6 +477,19 @@ private:
 
     //解码模式
     DecodeMode m_decodeMode {DecodeMode::AUTO};
+
+    // Cached property values populated by mpv_observe_property push events.
+    // These allow duration()/elapsed()/videoSize() to return without calling
+    // mpv_get_property(), which can deadlock when called from inside mpv's
+    // event dispatch (mp_dispatch_lock contention).
+    double m_cachedDuration {0.0};
+    double m_cachedElapsed  {0.0};
+    int    m_cachedDWidth   {0};
+    int    m_cachedDHeight  {0};
+    int    m_cachedRotate   {0};
+    bool   m_cachedPause          {false};
+    bool   m_cachedIdleActive     {false};
+    bool   m_cachedPausedForCache {false};
 };
 
 }
