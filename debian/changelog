@@ -1,3 +1,10 @@
+deepin-movie-reborn (6.5.39) unstable; urgency=medium
+
+  * fix(mpv): refactor playback property handling to prevent deadlock
+  * Revert "fix(mpv): avoid synchronous property calls during event handling"
+
+ -- dengzhongyuan <dengzhongyuan@uniontech.com>  Mon, 23 Mar 2026 17:33:32 +0800
+
 deepin-movie-reborn (6.5.38) unstable; urgency=medium
 
   * fix(mpv): avoid synchronous property calls during event handling
