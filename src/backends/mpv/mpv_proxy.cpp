@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -1137,13 +1137,16 @@ void MpvProxy::handle_mpv_events()
 //                }
 //#endif
 //            }
-            //设置播放参数
-            QMap<QString, QString>::iterator iter = m_pConfig->begin();
-            qInfo() << __func__ << "Set mpv propertys!!";
-            while (iter != m_pConfig->end()) {
-                my_set_property(m_handle, iter.key(), iter.value());
-                iter++;
-            }
+            // Refresh decode mode after file is loaded (moved from play() to avoid deadlock)
+            refreshDecode();
+
+            // m_pConfig properties are now set via loadfile options to avoid deadlock
+            // QMap<QString, QString>::iterator iter = m_pConfig->begin();
+            // qInfo() << __func__ << "Set mpv propertys!!";
+            // while (iter != m_pConfig->end()) {
+            //     my_set_property(m_handle, iter.key(), iter.value());
+            //     iter++;
+            // }
 
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
@@ -1828,7 +1831,7 @@ void MpvProxy::initMember()
 void MpvProxy::play()
 {
     qInfo() << "Starting playback";
-    
+
     if(m_bLoadMedia) {
         qInfo() << "Media already loading, scheduling retry in 5 seconds";
         QTimer::singleShot(5000, [=](){ //超时5s恢复状态，视频加载成功后也会重置状态，正常播放状态下不会进入此函数
@@ -1838,10 +1841,8 @@ void MpvProxy::play()
         qDebug() << "Exiting MpvProxy::play() - media already loading";
         return;
     }
-    
+
     bool bRawFormat = false;
-    QList<QVariant> listArgs = { "loadfile" };
-    QStringList listOpts = { };
     PlayerEngine* pEngine = nullptr;
     bool bAudio = false;
     m_bLoadMedia = true;
@@ -1862,14 +1863,66 @@ void MpvProxy::play()
         qDebug() << "No playlist items or player engine not available";
     }
 
-    if (bAudio) {
-        qInfo() << "Setting video output to null for audio-only file";
-        my_set_property(m_handle, "vo", "null");
-    } else {
-        qInfo() << "Setting video output to:" << m_sInitVo;
-        my_set_property(m_handle, "vo", m_sInitVo);
+    // ========== Use QMap to manage options, ensuring uniqueness and priority ==========
+    // Priority rule: later insertions override earlier ones
+    // 优先级规则：后插入的覆盖前面的
+    QMap<QString, QString> optMap;
+
+    // Priority 1: Basic vo setting
+    QString sVoValue = bAudio ? "null" : m_sInitVo;
+    if (!sVoValue.isEmpty()) {
+        optMap["vo"] = sVoValue;
+        qInfo() << "Setting video output:" << sVoValue;
     }
 
+#ifndef _LIBDMR_
+    // Priority 2: File-related config
+    QMap<QString, QVariant> cfg = MovieConfiguration::get().queryByUrl(_file);
+    QString key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
+    if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key) && !bRawFormat) {
+        optMap["start"] = QString::number(cfg[key].toInt());
+    }
+
+    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubCodepage);
+    if (cfg.contains(key)) {
+        optMap["sub-codepage"] = cfg[key].toString();
+    }
+
+    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubDelay);
+    if (cfg.contains(key)) {
+        optMap["sub-delay"] = QString::number(cfg[key].toDouble());
+    }
+
+    if (!_dvdDevice.isEmpty()) {
+        optMap["dvd-device"] = _dvdDevice;
+    }
+#endif
+
+    // Priority 3: JJW GPU special handling (override basic settings)
+    if (utils::getJjwGPUPath() == "/dev/mwv206_0") {
+        QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) + QDir::separator() + "mwv206");
+        QString sCodec = pEngine->playlist().currentInfo().mi.videoCodec();
+        if (sdir.exists() && sCodec.contains("avs2", Qt::CaseInsensitive)) {
+            qWarning() << "JJW GPU override: hwdec=no, vo=gpu,x11,xv";
+            optMap["hwdec"] = "no";
+            optMap["vo"] = "gpu,x11,xv";
+        }
+    }
+
+    // Pause option (must set both true and false)
+    optMap["pause"] = m_bPauseOnStart ? "yes" : "no";
+
+    // Priority 4: m_pConfig (originally in file-loaded event, executed last, highest priority)
+    qInfo() << __func__ << "Adding config properties to loadfile options";
+    QMap<QString, QString>::iterator iter = m_pConfig->begin();
+    while (iter != m_pConfig->end()) {
+        qInfo() << __func__ << iter.key() << iter.value();
+        optMap[iter.key()] = iter.value();
+        iter++;
+    }
+
+    // ========== Build loadfile arguments ==========
+    QList<QVariant> listArgs = { "loadfile" };
     if (_file.isLocalFile()) {
         qInfo() << "Loading local file:" << QFileInfo(_file.toLocalFile()).absoluteFilePath();
         listArgs << QFileInfo(_file.toLocalFile()).absoluteFilePath();
@@ -1877,39 +1930,11 @@ void MpvProxy::play()
         qInfo() << "Loading remote file:" << _file.url();
         listArgs << _file.url();
     }
-#ifndef _LIBDMR_
-    QMap<QString, QVariant> cfg = MovieConfiguration::get().queryByUrl(_file);
-    QString key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
-    if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key) && !bRawFormat) {   // 裸流没有时长，seek会崩溃
-        listOpts << QString("start=%1").arg(cfg[key].toInt());   //如果视频长度小于1s这段代码会导致视频无法播放
-    }
 
-    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubCodepage);
-    if (cfg.contains(key)) {
-        listOpts << QString("sub-codepage=%1").arg(cfg[key].toString());
-    }
-
-    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubDelay);
-    if (cfg.contains(key)) {
-        listOpts << QString("sub-delay=%1").arg(cfg[key].toDouble());
-    }
-
-    if (!_dvdDevice.isEmpty()) {
-        listOpts << QString("dvd-device=%1").arg(_dvdDevice);
-    }
-#endif
-
-    //刷新解码模式
-    refreshDecode();
-
-    if (utils::getJjwGPUPath() == "/dev/mwv206_0") {
-        QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206");
-        QString sCodec = pEngine->playlist().currentInfo().mi.videoCodec();
-        if(sdir.exists() && sCodec.contains("avs2", Qt::CaseInsensitive)) {
-            qWarning() << "Using SoftCodec because of codec";
-            my_set_property(m_handle, "hwdec", "no");
-            my_set_property(m_handle, "vo", "gpu,x11,xv");
-        }
+    // Convert optMap to option string
+    QStringList listOpts;
+    for (auto it = optMap.begin(); it != optMap.end(); ++it) {
+        listOpts << QString("%1=%2").arg(it.key(), it.value());
     }
 
     if (listOpts.size()) {
@@ -1920,22 +1945,9 @@ void MpvProxy::play()
         listArgs << listOpts.join(',');
     }
 
-    qInfo()<<"" << listArgs << listOpts;
-
-    //设置播放参数
-    QMap<QString, QString>::iterator iter = m_pConfig->begin();
-    qInfo() << __func__ << "Set mpv propertys!!";
-    while (iter != m_pConfig->end()) {
-        qInfo() << __func__ << iter.key() << iter.value();
-        my_set_property(m_handle, iter.key(), iter.value());
-        iter++;
-    }
-    qInfo() << "FINALLY, hwdec:" << my_get_property(m_handle, "hwdec").toString();
-    qInfo() << "FINALLY, vo:" << my_get_property(m_handle, "vo").toString();
-
-    qInfo() << "Executing play command with args:" << listArgs << "and options:" << listOpts;
+    qInfo() << "Executing loadfile with args:" << listArgs << "options:" << listOpts;
+    qInfo() << "FINALLY, hwdec:" << optMap.value("hwdec", "not set") << "vo:" << optMap.value("vo", "not set");
     my_command(m_handle, listArgs);
-    my_set_property(m_handle, "pause", m_bPauseOnStart);
     qInfo() << "Play command executed successfully";
 
 #ifndef _LIBDMR_
