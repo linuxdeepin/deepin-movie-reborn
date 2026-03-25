@@ -1164,7 +1164,7 @@ void MpvProxy::handle_mpv_events()
         case MPV_EVENT_TRACKS_CHANGED:
             qInfo() << m_eventName(pEvent->event_id);
             // Delay to avoid synchronous API calls during event handling
-            QTimer::singleShot(0, this, [this]() {
+            QTimer::singleShot(50, this, [this]() {
                 updatePlayingMovieInfo();
                 emit tracksChanged();
             });
@@ -1177,7 +1177,7 @@ void MpvProxy::handle_mpv_events()
             // Note: hwdec-interop, video-codec, video-format logging removed to avoid synchronous API calls
 #if MPV_CLIENT_API_VERSION > MPV_MAKE_VERSION(2,0)
             // Delay to avoid synchronous API calls during event handling
-            QTimer::singleShot(0, this, [this]() {
+            QTimer::singleShot(50, this, [this]() {
                 updatePlayingMovieInfo();
                 emit tracksChanged();
             });
@@ -1382,12 +1382,12 @@ bool MpvProxy::loadSubtitle(const QFileInfo &fileInfo)
 
     QList<QVariant> args = { "sub-add", fileInfo.absoluteFilePath(), "select" };
     qInfo() << args;
-    QVariant id = my_command(m_handle, args);
-    if (id.canConvert<ErrorReturn>()) {
-        return false;
-    }
+    my_command_async(m_handle, args, 0);
 
-    updatePlayingMovieInfo();
+    // Delay update to allow mpv to process the sub-add command and avoid deadlock
+    QTimer::singleShot(100, this, [this]() {
+        updatePlayingMovieInfo();
+    });
 
     // by settings this flag, we can match the corresponding sid change and save it
     // in the movie database
@@ -1496,7 +1496,8 @@ void MpvProxy::selectSubtitle(int nId)
         nId = m_movieInfo.subs.size() == 0 ? -1 : m_movieInfo.subs[0]["id"].toInt();
     }
 
-    my_set_property(m_handle, "sid", nId);
+    my_set_property_async(m_handle, "sid", nId, 0);
+    m_cachedSid = nId;  // Update cache immediately
 #ifndef _LIBDMR_
     MovieConfiguration::get().updateUrl(_file, ConfigKnownKey::SubId, sid());
 #endif
@@ -1508,7 +1509,7 @@ void MpvProxy::toggleSubtitle()
         return;
     }
 
-    my_set_property(m_handle, "sub-visibility", !isSubVisible());
+    my_set_property_async(m_handle, "sub-visibility", !isSubVisible(), 0);
 }
 
 int MpvProxy::aid() const
@@ -1636,7 +1637,16 @@ void MpvProxy::slotStateChanged()
 void MpvProxy::refreshDecode()
 {
     QList<QString> canHwTypes;
-    if (dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size() <= 0) return;
+    auto playlist = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
+    if (!playlist || playlist->size() <= 0) return;
+
+    // Check if there's a valid current item and file
+    PlayItemInfo currentInfo = playlist->currentInfo();
+    if (!currentInfo.valid || _file.isEmpty()) {
+        qInfo() << "No valid current item, skipping refreshDecode";
+        return;
+    }
+
     malloc_trim(0);
     //bool bIsCanHwDec = HwdecProbe::get().isFileCanHwdec(_file.url(), canHwTypes);
     qInfo() << "DecodeMode:" << m_decodeMode << "(AUTO:0, HARDWARE:1, SOFTWARE:2, CUSTOM:3)";
@@ -1654,11 +1664,9 @@ void MpvProxy::refreshDecode()
     } else if (DecodeMode::AUTO == m_decodeMode) {//2.设置自动
         //2.1 特殊格式
         bool isSoftCodec = false;
-        if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
-            PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
-            auto codec = currentInfo.mi.videoCodec();
-            auto name = _file.fileName();
-            qInfo() << "Codec:" << codec << "Name:" << name;
+        auto codec = currentInfo.mi.videoCodec();
+        auto name = _file.fileName();
+        qInfo() << "Codec:" << codec << "Name:" << name;
             isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv");
             if (isSoftCodec) {
                 qWarning() << "Using SoftCodec because of codec OR name";
@@ -1709,7 +1717,6 @@ void MpvProxy::refreshDecode()
                     isSoftCodec = false;
                 }
             }
-        }
         if (isSoftCodec) {
             qInfo() << "my_set_property_async hwdec no";
             my_set_property_async(m_handle, "hwdec", "no", 0);
@@ -2051,7 +2058,7 @@ void MpvProxy::play()
     // by giving a period of time, movie will be loaded and auto-loaded subs are
     // all ready, then load extra subs from db
     // this keeps order of subs
-    QTimer::singleShot(100, [this]() {
+    QTimer::singleShot(200, [this]() {
         auto mcfg = MovieConfiguration::get().queryByUrl(_file);
         auto ext_subs = MovieConfiguration::get().getListByUrl(_file, ConfigKnownKey::ExternalSubs);
         for (const auto &sub : ext_subs) {
