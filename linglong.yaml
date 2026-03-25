@@ -74,3 +74,4 @@ buildext:
   apt:
     build_depends:
       - libc6
+      - ffmpeg
