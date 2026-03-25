@@ -1,3 +1,10 @@
+deepin-movie-reborn (6.5.40) unstable; urgency=medium
+
+  * fix(mpv): refactor playback property handling to prevent deadlock
+  * chore: Add ffmpeg as a build dependency in linglong.yaml
+
+ -- Wang Yu <wangyu@uniontech.com>  Tue, 25 Mar 2026 16:30:00 +0800
+
 deepin-movie-reborn (6.5.39) unstable; urgency=medium
 
   * fix(mpv): refactor playback property handling to prevent deadlock
