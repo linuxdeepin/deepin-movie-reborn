@@ -1642,8 +1642,14 @@ void MpvProxy::refreshDecode()
     qInfo() << "DecodeMode:" << m_decodeMode << "(AUTO:0, HARDWARE:1, SOFTWARE:2, CUSTOM:3)";
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
         my_set_property_async(m_handle, "hwdec", "no", 0);
-        if (!utils::check_wayland_env()) {
+        // In composited mode we must keep using libmpv (embedded rendering).
+        // Forcing vo=x11 here will spawn a separate window and "detach" the playback surface.
+        if (CompositingManager::get().composited()) {
+            my_set_property_async(m_handle, "vo", "libmpv", 0);
+            m_sInitVo = "libmpv";
+        } else if (!utils::check_wayland_env()) {
             my_set_property_async(m_handle, "vo", "x11", 0);
+            m_sInitVo = "x11";
         }
     } else if (DecodeMode::AUTO == m_decodeMode) {//2.设置自动
         //2.1 特殊格式
