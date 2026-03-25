@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2026 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -40,6 +40,9 @@
 
 namespace dmr {
 using namespace mpv::qt;
+
+// Timeout for polling end of playback (200 * 5ms = 1 second)
+static const int POLLING_END_TIMEOUT = 200;
 
 enum AsyncReplyTag {
     SEEK,
@@ -771,8 +774,8 @@ mpv_handle *MpvProxy::mpv_init()
 #endif
 
     //only to get notification without data
-    m_observeProperty(pHandle, 0, "time-pos", MPV_FORMAT_NONE); //playback-time ?
-    m_observeProperty(pHandle, 0, "pause", MPV_FORMAT_NONE);
+    m_observeProperty(pHandle, 0, "time-pos", MPV_FORMAT_INT64); //playback-time ?
+    m_observeProperty(pHandle, 0, "pause", MPV_FORMAT_FLAG);
     m_observeProperty(pHandle, 0, "mute", MPV_FORMAT_NONE);
     m_observeProperty(pHandle, 0, "volume", MPV_FORMAT_NONE); //ao-volume ?
     m_observeProperty(pHandle, 0, "sid", MPV_FORMAT_NONE);
@@ -785,8 +788,9 @@ mpv_handle *MpvProxy::mpv_init()
     //m_observeProperty(pHandle, 0, "playlist-pos", MPV_FORMAT_NONE);
     //m_observeProperty(pHandle, 0, "playlist-count", MPV_FORMAT_NONE);
     m_observeProperty(pHandle, 0, "core-idle", MPV_FORMAT_NODE);
-    m_observeProperty(pHandle, 0, "paused-for-cache", MPV_FORMAT_NODE);
-    qDebug() << "DEBUG: MPV properties observed (core-idle, paused-for-cache).";
+    m_observeProperty(pHandle, 0, "paused-for-cache", MPV_FORMAT_FLAG);
+    m_observeProperty(pHandle, 0, "idle-active", MPV_FORMAT_FLAG);
+    qDebug() << "DEBUG: MPV properties observed (core-idle, paused-for-cache, idle-active).";
 
     m_setWakeupCallback(pHandle, mpv_callback, this);
     connect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events,
@@ -827,7 +831,7 @@ mpv_handle *MpvProxy::mpv_init()
     qDebug() << "DEBUG: Finished applying best profile.";
 
     if(utils::check_wayland_env()) {
-        my_set_property(m_handle, "pulse-allow-suspended", "yes");
+        my_set_property(pHandle, "pulse-allow-suspended", "yes");
     }
     //设置hwdec和vo配置
     CompositingManager::get().getMpvConfig(m_pConfig);
@@ -871,8 +875,63 @@ mpv_handle *MpvProxy::mpv_init()
     }
     qDebug() << "DEBUG: Finished setting mpv properties from config.";
 
+    // Initialize property cache to avoid synchronous API calls during event handling
+    initPropertyCache(pHandle);
+
     qDebug() << "DEBUG: Exiting MpvProxy::mpv_init() with handle:" << pHandle;
     return pHandle;
+}
+
+void MpvProxy::initPropertyCache(mpv_handle *pHandle)
+{
+    qDebug() << "Initializing property cache with mpv_observe_property";
+
+    // Register observers for properties that are accessed during event handling
+    // When these properties change, mpv will send MPV_EVENT_PROPERTY_CHANGE events
+    // Note: time-pos is already observed in mpv_init() with MPV_FORMAT_INT64
+    m_observeProperty(pHandle, 0, "duration", MPV_FORMAT_INT64);
+    m_observeProperty(pHandle, 0, "volume", MPV_FORMAT_INT64);
+    m_observeProperty(pHandle, 0, "mute", MPV_FORMAT_FLAG);
+    m_observeProperty(pHandle, 0, "aid", MPV_FORMAT_INT64);
+    m_observeProperty(pHandle, 0, "sid", MPV_FORMAT_INT64);
+    m_observeProperty(pHandle, 0, "dwidth", MPV_FORMAT_INT64);
+    m_observeProperty(pHandle, 0, "dheight", MPV_FORMAT_INT64);
+    m_observeProperty(pHandle, 0, "video-out-params/rotate", MPV_FORMAT_INT64);
+
+    qDebug() << "Property cache initialization completed";
+}
+
+void MpvProxy::updatePropertyCache(const QString &name, const QVariant &value)
+{
+    if (name == "duration") {
+        m_cachedDuration = value.toLongLong();
+        qDebug() << "Cache updated: duration =" << m_cachedDuration;
+    } else if (name == "time-pos") {
+        m_cachedElapsed = value.toLongLong();
+    } else if (name == "volume") {
+        m_cachedVolume = value.toInt();
+    } else if (name == "mute") {
+        m_cachedMute = value.toBool();
+    } else if (name == "aid") {
+        m_cachedAid = value.toInt();
+    } else if (name == "sid") {
+        m_cachedSid = value.toInt();
+    } else if (name == "dwidth") {
+        m_cachedVideoSize.setWidth(value.toInt());
+    } else if (name == "dheight") {
+        m_cachedVideoSize.setHeight(value.toInt());
+    } else if (name == "video-out-params/rotate") {
+        int rotate = value.toInt();
+        if (rotate == 90 || rotate == 270) {
+            m_cachedVideoSize.transpose();
+        }
+    } else if (name == "pause") {
+        m_cachedPause = value.toBool();
+    } else if (name == "idle-active") {
+        m_cachedIdleActive = value.toBool();
+    } else if (name == "paused-for-cache") {
+        m_cachedPausedForCache = value.toBool();
+    }
 }
 
 void MpvProxy::setState(PlayState state)
@@ -890,7 +949,10 @@ void MpvProxy::setState(PlayState state)
         if (m_pMpvGLwidget) {
             m_pMpvGLwidget->setPlaying(state != PlayState::Stopped);
         }
-        emit stateChanged();
+        // Delay signal emission to avoid deadlock during mpv event handling
+        QTimer::singleShot(0, this, [this]() {
+            emit stateChanged();
+        });
         qInfo() << "Play state changed to:" << static_cast<int>(state);
     }
 
@@ -905,16 +967,14 @@ void MpvProxy::pollingEndOfPlayback()
         m_bPolling = true;
         blockSignals(true);
         stop();
-        bool bIdel = my_get_property(m_handle, "idle-active").toBool();
-        if (bIdel) {
-            blockSignals(false);
-            setState(Backend::Stopped);
-            m_bPolling = false;
-            return;
-        }
 
-        while (_state != Backend::Stopped) {
+        // Add timeout protection to avoid deadlock
+        int nTimeout = 0;
+
+        while (_state != Backend::Stopped && nTimeout < POLLING_END_TIMEOUT) {
             mpv_event *pEvent = m_waitEvent(m_handle, 0.005);
+            nTimeout++;
+
             if (pEvent->event_id == MPV_EVENT_NONE)
                 continue;
 
@@ -924,6 +984,13 @@ void MpvProxy::pollingEndOfPlayback()
                 break;
             }
         }
+
+        if (nTimeout >= POLLING_END_TIMEOUT) {
+            qWarning() << "pollingEndOfPlayback timeout, forcing stop";
+            blockSignals(false);
+            setState(Backend::Stopped);
+        }
+
         m_bPolling = false;
     }
 }
@@ -1096,22 +1163,24 @@ void MpvProxy::handle_mpv_events()
 #if MPV_CLIENT_API_VERSION < MPV_MAKE_VERSION(2,0)
         case MPV_EVENT_TRACKS_CHANGED:
             qInfo() << m_eventName(pEvent->event_id);
-            updatePlayingMovieInfo();
-            emit tracksChanged();
+            // Delay to avoid synchronous API calls during event handling
+            QTimer::singleShot(0, this, [this]() {
+                updatePlayingMovieInfo();
+                emit tracksChanged();
+            });
             break;
 #endif
 
         case MPV_EVENT_FILE_LOADED: {
             qInfo() << m_eventName(pEvent->event_id);
 
-            if (m_pMpvGLwidget) {
-                qInfo() << "hwdec-interop" << my_get_property(m_handle, "gpu-hwdec-interop")
-                        << "codec: " << my_get_property(m_handle, "video-codec")
-                        << "format: " << my_get_property(m_handle, "video-format");
-            }
+            // Note: hwdec-interop, video-codec, video-format logging removed to avoid synchronous API calls
 #if MPV_CLIENT_API_VERSION > MPV_MAKE_VERSION(2,0)
-            updatePlayingMovieInfo();
-            emit tracksChanged();
+            // Delay to avoid synchronous API calls during event handling
+            QTimer::singleShot(0, this, [this]() {
+                updatePlayingMovieInfo();
+                emit tracksChanged();
+            });
 #endif
 //            if (!m_bIsJingJia) {
 //#ifdef __mips__
@@ -1137,22 +1206,20 @@ void MpvProxy::handle_mpv_events()
 //                }
 //#endif
 //            }
-            // Refresh decode mode after file is loaded (moved from play() to avoid deadlock)
-            refreshDecode();
-
-            // m_pConfig properties are now set via loadfile options to avoid deadlock
-            // QMap<QString, QString>::iterator iter = m_pConfig->begin();
-            // qInfo() << __func__ << "Set mpv propertys!!";
-            // while (iter != m_pConfig->end()) {
-            //     my_set_property(m_handle, iter.key(), iter.value());
-            //     iter++;
-            // }
+            //设置播放参数 - use async to avoid deadlock
+            QMap<QString, QString>::iterator iter = m_pConfig->begin();
+            qInfo() << __func__ << "Set mpv propertys (async)!!";
+            while (iter != m_pConfig->end()) {
+                my_set_property_async(m_handle, iter.key(), iter.value(), 0);
+                iter++;
+            }
 
             setState(PlayState::Playing); //might paused immediately
-            emit fileLoaded();
-            qInfo() << "File load complete - rotation metadata:"
-                    << "dec:" << my_get_property(m_handle, "video-dec-params/rotate").toInt()
-                    << "out:" << my_get_property(m_handle, "video-params/rotate").toInt();
+            // Delay signal emission to avoid synchronous API calls during event handling
+            QTimer::singleShot(0, this, [this]() {
+                emit fileLoaded();
+            });
+            // Note: rotation metadata logging removed to avoid synchronous API calls
             m_bLoadMedia = false;
             if(utils::check_wayland_env()) {
                 dmr::utils::switchToDefaultSink();
@@ -1160,9 +1227,12 @@ void MpvProxy::handle_mpv_events()
             break;
         }
         case MPV_EVENT_VIDEO_RECONFIG: {
-            QSize size = videoSize();
-            if (!size.isEmpty())
-                emit videoSizeChanged();
+            // Use QTimer to delay signal emission to avoid deadlock
+            QTimer::singleShot(0, this, [this]() {
+                QSize size = videoSize();
+                if (!size.isEmpty())
+                    emit videoSizeChanged();
+            });
             break;
         }
 
@@ -1183,7 +1253,10 @@ void MpvProxy::handle_mpv_events()
         case MPV_EVENT_IDLE:
             qInfo() << m_eventName(pEvent->event_id);
             setState(PlayState::Stopped);
-            emit elapsedChanged();
+            // Delay signal emission to avoid synchronous API calls during event handling
+            QTimer::singleShot(0, this, [this]() {
+                emit elapsedChanged();
+            });
             break;
 
         default:
@@ -1227,6 +1300,21 @@ void MpvProxy::processPropertyChange(mpv_event_property *pEvent)
     QString sName = QString::fromUtf8(pEvent->name);
     if (sName != "time-pos") qInfo() << sName;
 
+    // Update property cache first to avoid synchronous API calls later
+    if (pEvent->data) {
+        QVariant value;
+        if (pEvent->format == MPV_FORMAT_INT64) {
+            value = QVariant::fromValue<qint64>(*static_cast<qint64 *>(pEvent->data));
+        } else if (pEvent->format == MPV_FORMAT_DOUBLE) {
+            value = QVariant(*static_cast<double *>(pEvent->data));
+        } else if (pEvent->format == MPV_FORMAT_FLAG) {
+            value = QVariant(*static_cast<int *>(pEvent->data) != 0);
+        } else if (pEvent->format == MPV_FORMAT_STRING) {
+            value = QVariant(QString::fromUtf8(*static_cast<char **>(pEvent->data)));
+        }
+        updatePropertyCache(sName, value);
+    }
+
     // 使用 QPointer 检查对象是否还存在
     QPointer<MpvProxy> self(this);
     QTimer::singleShot(0, [this, sName, self]() {
@@ -1246,10 +1334,13 @@ void MpvProxy::processPropertyChange(const QString &name)
     } else if (name == "volume") {
         emit volumeChanged();
     } else if (name == "dwidth" || name == "dheight") {
-        auto sz = videoSize();
-        if (!sz.isEmpty())
-            emit videoSizeChanged();
-        qInfo() << "update videoSize " << sz;
+        // Use QTimer to delay signal emission to avoid deadlock
+        QTimer::singleShot(0, this, [this]() {
+            QSize size = videoSize();
+            if (!size.isEmpty())
+                emit videoSizeChanged();
+            qInfo() << "update videoSize " << size;
+        });
     } else if (name == "aid") {
         emit aidChanged();
     } else if (name == "sid") {
@@ -1259,21 +1350,26 @@ void MpvProxy::processPropertyChange(const QString &name)
     } else if (name == "sub-visibility") {
         //_hideSub = my_get_property(m_handle, "sub-visibility")
     } else if (name == "pause") {
-        auto idle = my_get_property(m_handle, "idle-active").toBool();
-        if (my_get_property(m_handle, "pause").toBool()) {
-            if (!idle)
-                setState(PlayState::Paused);
-            else
-                my_set_property(m_handle, "pause", false);
-        } else {
-            if (state() != PlayState::Stopped) {
-                setState(PlayState::Playing);
+        // Use cached values to avoid synchronous API calls
+        QTimer::singleShot(0, this, [this]() {
+            if (m_cachedPause) {
+                if (!m_cachedIdleActive)
+                    setState(PlayState::Paused);
+                else
+                    my_set_property_async(m_handle, "pause", false, 0);
+            } else {
+                if (state() != PlayState::Stopped) {
+                    setState(PlayState::Playing);
+                }
             }
-        }
+        });
     } else if (name == "core-idle") {
     } else if (name == "paused-for-cache") {
-        qInfo() << "paused-for-cache" << my_get_property_variant(m_handle, "paused-for-cache");
-        emit urlpause(my_get_property_variant(m_handle, "paused-for-cache").toBool());
+        // Use cached value to avoid synchronous API calls
+        QTimer::singleShot(0, this, [this]() {
+            qInfo() << "paused-for-cache" << m_cachedPausedForCache;
+            emit urlpause(m_cachedPausedForCache);
+        });
     }
 }
 
@@ -1417,12 +1513,14 @@ void MpvProxy::toggleSubtitle()
 
 int MpvProxy::aid() const
 {
-    return my_get_property(m_handle, "aid").toInt();
+    // Return cached value to avoid synchronous API calls during event handling
+    return m_cachedAid;
 }
 
 int MpvProxy::sid() const
 {
-    return my_get_property(m_handle, "sid").toInt();
+    // Return cached value to avoid synchronous API calls during event handling
+    return m_cachedSid;
 }
 
 void MpvProxy::selectTrack(int nId)
@@ -1474,7 +1572,8 @@ void MpvProxy::volumeDown()
 
 int MpvProxy::volume() const
 {
-    int nActualVol = my_get_property(m_handle, "volume").toInt();
+    // Use cached value to avoid synchronous API calls during event handling
+    int nActualVol = m_cachedVolume;
     int nDispalyVol = static_cast<int>((nActualVol - 40) / 60.0 * 100.0);
     return nDispalyVol > 100 ? nActualVol : nDispalyVol;
 }
@@ -1512,7 +1611,8 @@ double MpvProxy::videoAspect() const
 
 bool MpvProxy::muted() const
 {
-    return my_get_property(m_handle, "mute").toBool();
+    // Return cached value to avoid synchronous API calls during event handling
+    return m_cachedMute;
 }
 
 void MpvProxy::toggleMute()
@@ -1541,9 +1641,9 @@ void MpvProxy::refreshDecode()
     //bool bIsCanHwDec = HwdecProbe::get().isFileCanHwdec(_file.url(), canHwTypes);
     qInfo() << "DecodeMode:" << m_decodeMode << "(AUTO:0, HARDWARE:1, SOFTWARE:2, CUSTOM:3)";
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
-        my_set_property(m_handle, "hwdec", "no");
+        my_set_property_async(m_handle, "hwdec", "no", 0);
         if (!utils::check_wayland_env()) {
-            my_set_property(m_handle, "vo", "x11");
+            my_set_property_async(m_handle, "vo", "x11", 0);
         }
     } else if (DecodeMode::AUTO == m_decodeMode) {//2.设置自动
         //2.1 特殊格式
@@ -1599,14 +1699,14 @@ void MpvProxy::refreshDecode()
                         codec.toLower().contains("h264")  ||
                         codec.toLower().contains("hevc")  ||
                         codec.toLower().contains("vp")) {
-                    my_set_property(m_handle, "hwdec-codecs", codec.toLower());
+                    my_set_property_async(m_handle, "hwdec-codecs", codec.toLower(), 0);
                     isSoftCodec = false;
                 }
             }
         }
         if (isSoftCodec) {
-            qInfo() << "my_set_property hwdec no";
-            my_set_property(m_handle, "hwdec", "no");
+            qInfo() << "my_set_property_async hwdec no";
+            my_set_property_async(m_handle, "hwdec", "no", 0);
         } else { //2.2 非特殊格式
             //2.2.1 特殊硬件
             QFileInfo X100GPU("/dev/x100gpu");
@@ -1616,55 +1716,55 @@ void MpvProxy::refreshDecode()
                 auto codec = currentInfo.mi.videoCodec();
                 if (codec.toLower().contains("mpeg2") || codec.toLower().contains("mpeg4")) {
                     qWarning() << "Using SoftCodec because of codec";
-                    my_set_property(m_handle, "hwdec", "no");
+                    my_set_property_async(m_handle, "hwdec", "no", 0);
                 } else if (utils::isJjwGPUPresent()) {
                     configureJjwGPU(m_handle);
                 }
 #ifdef _LIBDMR_
-    my_set_property(m_handle, "vo", "libmpv,opengl-cb");
+    my_set_property_async(m_handle, "vo", "libmpv,opengl-cb", 0);
 #endif
             } else if (X100GPU.exists() && X100VPU.exists()) {
-                my_set_property(m_handle, "hwdec", "ftomx-copy");
-                my_set_property(m_handle, "vo", "gpu");
+                my_set_property_async(m_handle, "hwdec", "ftomx-copy", 0);
+                my_set_property_async(m_handle, "vo", "gpu", 0);
             } else if (CompositingManager::get().isOnlySoftDecode()) { //2.2.1.2 鲲鹏920 || 曙光+英伟达 || 浪潮
                 qWarning() << "Using SoftCodec because of OnlySoftDecode";
-                my_set_property(m_handle, "hwdec", "no");
+                my_set_property_async(m_handle, "hwdec", "no", 0);
             } else if (CompositingManager::get().isSpecialControls()) {
-                my_set_property(m_handle, "hwdec", "vaapi");
+                my_set_property_async(m_handle, "hwdec", "vaapi", 0);
             } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
-                my_set_property(m_handle, "hwdec", "omx-copy");
+                my_set_property_async(m_handle, "hwdec", "omx-copy", 0);
             } else { //2.2.2 非特殊硬件 + 非特殊格式
-                 my_set_property(m_handle, "hwdec","auto");
-                //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
+                 my_set_property_async(m_handle, "hwdec","auto", 0);
+                //bIsCanHwDec ? my_set_property_async(m_handle, "hwdec", canHwTypes.join(','), 0) : my_set_property_async(m_handle, "hwdec", "no", 0);
 #if defined (__sw_64__)
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
-        my_set_property(m_handle, "hwdec", "vdpau");
+        my_set_property_async(m_handle, "hwdec", "vdpau", 0);
 #endif
             }
         }
 
         if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
-            my_set_property(m_handle, "hwdec", "vaapi");
+            my_set_property_async(m_handle, "hwdec", "vaapi", 0);
         }
 
         if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default") && !QFile::exists("/dev/mtgpu.0")) {
-            my_set_property(m_handle, "hwdec", "no");
-            my_set_property(m_handle, "vo", "x11");
-            my_set_property(m_handle, "video-sync", "desync");
-            my_set_property(m_handle, "profile", "sw-fast");
+            my_set_property_async(m_handle, "hwdec", "no", 0);
+            my_set_property_async(m_handle, "vo", "x11", 0);
+            my_set_property_async(m_handle, "video-sync", "desync", 0);
+            my_set_property_async(m_handle, "profile", "sw-fast", 0);
             m_sInitVo = "x11";
         }
 
         // 设置芯瞳显卡硬解
         if(utils::isSietiumGPUPresent()) {
-            my_set_property(m_handle, "hwdec", "vaapi");
-            my_set_property(m_handle, "vo", "gpu");
+            my_set_property_async(m_handle, "hwdec", "vaapi", 0);
+            my_set_property_async(m_handle, "vo", "gpu", 0);
         }
 
         if (!CompositingManager::get().composited()) {
             if (CompositingManager::get().isSpecialControls()) {
-                my_set_property(m_handle, "hwdec","vaapi");
-                my_set_property(m_handle, "vo","vaapi");
+                my_set_property_async(m_handle, "hwdec","vaapi", 0);
+                my_set_property_async(m_handle, "vo","vaapi", 0);
             }
         }
     } else if (DecodeMode::HARDWARE == m_decodeMode) { //3.设置硬解
@@ -1674,33 +1774,33 @@ void MpvProxy::refreshDecode()
         // 鲲鹏920 || 曙光+英伟达 || 浪潮
         if (CompositingManager::get().isOnlySoftDecode()) {
             qWarning() << "Using SoftCodec because of OnlySoftDecode";
-            my_set_property(m_handle, "hwdec", "no");
+            my_set_property_async(m_handle, "hwdec", "no", 0);
         } else if (!CompositingManager::get().hascard()) {
             // 即使检测不到显卡（如AIGLX error），也尝试让mpv自己判断硬解
             // 因为硬解不依赖AIGLX，可能仍然可用
             qWarning() << "hascard is false, but try auto hwdec";
-            my_set_property(m_handle, "hwdec", "auto");
+            my_set_property_async(m_handle, "hwdec", "auto", 0);
         } else if (CompositingManager::get().isSpecialControls()) {
-            my_set_property(m_handle, "hwdec", "vaapi");
+            my_set_property_async(m_handle, "hwdec", "vaapi", 0);
         } else {
-            my_set_property(m_handle, "hwdec","auto");
+            my_set_property_async(m_handle, "hwdec","auto", 0);
         }
 #else
         if(CompositingManager::get().isOnlySoftDecode()) {
             qWarning() << "Using SoftCodec because of OnlySoftDecode";
-            my_set_property(m_handle, "hwdec","no");
+            my_set_property_async(m_handle, "hwdec","no", 0);
         } else {
-            my_set_property(m_handle, "hwdec","auto");
+            my_set_property_async(m_handle, "hwdec","auto", 0);
         }
 #endif
 
 #else
         if (CompositingManager::get().isOnlySoftDecode()) { // 鲲鹏920 || 曙光+英伟达 || 浪潮
             qWarning() << "Using SoftCodec because of OnlySoftDecode";
-            my_set_property(m_handle, "hwdec", "no");
+            my_set_property_async(m_handle, "hwdec", "no", 0);
         } else {
-             my_set_property(m_handle, "hwdec","auto");
-            //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
+             my_set_property_async(m_handle, "hwdec","auto", 0);
+            //bIsCanHwDec ? my_set_property_async(m_handle, "hwdec", canHwTypes.join(','), 0) : my_set_property_async(m_handle, "hwdec", "no", 0);
         }
 #endif
         QFileInfo X100GPU("/dev/x100gpu");
@@ -1708,32 +1808,32 @@ void MpvProxy::refreshDecode()
         if (utils::isJjwGPUPresent()) {
             configureJjwGPU(m_handle);
 #ifdef _LIBDMR_
-    my_set_property(m_handle, "vo", "libmpv,opengl-cb");
+    my_set_property_async(m_handle, "vo", "libmpv,opengl-cb", 0);
 #endif
         } else if (X100GPU.exists() && X100VPU.exists()) {
             qDebug() << "DEBUG: X100 GPU/VPU detected (harddec mode). Setting hwdec to ftomx-copy, vo to gpu.";
-            my_set_property(m_handle, "hwdec", "ftomx-copy");
-            my_set_property(m_handle, "vo", "gpu");
+            my_set_property_async(m_handle, "hwdec", "ftomx-copy", 0);
+            my_set_property_async(m_handle, "vo", "gpu", 0);
         } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
-            my_set_property(m_handle, "hwdec", "omx-copy");
+            my_set_property_async(m_handle, "hwdec", "omx-copy", 0);
         }
 
         if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
-            my_set_property(m_handle, "hwdec", "vaapi");
+            my_set_property_async(m_handle, "hwdec", "vaapi", 0);
         }
 
         if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default") && !QFile::exists("/dev/mtgpu.0")) {
-            my_set_property(m_handle, "hwdec", "no");
-            my_set_property(m_handle, "vo", "x11");
-            my_set_property(m_handle, "video-sync", "desync");
-            my_set_property(m_handle, "profile", "sw-fast");
+            my_set_property_async(m_handle, "hwdec", "no", 0);
+            my_set_property_async(m_handle, "vo", "x11", 0);
+            my_set_property_async(m_handle, "video-sync", "desync", 0);
+            my_set_property_async(m_handle, "profile", "sw-fast", 0);
             m_sInitVo = "x11";
         }
 
         // 设置芯瞳显卡硬解
         if(utils::isSietiumGPUPresent()) {
-            my_set_property(m_handle, "hwdec", "vaapi");
-            my_set_property(m_handle, "vo", "gpu");
+            my_set_property_async(m_handle, "hwdec", "vaapi", 0);
+            my_set_property_async(m_handle, "vo", "gpu", 0);
         }
 
         PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
@@ -1742,18 +1842,18 @@ void MpvProxy::refreshDecode()
             QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
             if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
                 qWarning() << "Using SoftCodec because of format";
-                my_set_property(m_handle, "hwdec","no");
+                my_set_property_async(m_handle, "hwdec","no", 0);
             }
         }
         auto codec = currentInfo.mi.videoCodec();
-        my_set_property(m_handle, "hwdec-codecs", codec.toLower());
+        my_set_property_async(m_handle, "hwdec-codecs", codec.toLower(), 0);
 
         if(utils::check_wayland_env()) {
-            my_set_property(m_handle, "pulse-allow-suspended", "yes");
+            my_set_property_async(m_handle, "pulse-allow-suspended", "yes", 0);
         }
         if (CompositingManager::get().enablePower()) {
             QPair<QString, QString> config= CompositingManager::get().getEnablePowerConfig();
-            my_set_property(m_handle, config.first, config.second);
+            my_set_property_async(m_handle, config.first, config.second, 0);
             qInfo() << __func__ << "enable power config: " << config;
         }
         //play.conf
@@ -1761,7 +1861,7 @@ void MpvProxy::refreshDecode()
         QMap<QString, QString>::iterator iter = m_pConfig->begin();
         while (iter != m_pConfig->end()) {
             if (iter.key().contains(QString("hwdec"))) {
-                my_set_property(m_handle, iter.key(), iter.value());
+                my_set_property_async(m_handle, iter.key(), iter.value(), 0);
                 break;
             }
             iter++;
@@ -1831,7 +1931,7 @@ void MpvProxy::initMember()
 void MpvProxy::play()
 {
     qInfo() << "Starting playback";
-
+    
     if(m_bLoadMedia) {
         qInfo() << "Media already loading, scheduling retry in 5 seconds";
         QTimer::singleShot(5000, [=](){ //超时5s恢复状态，视频加载成功后也会重置状态，正常播放状态下不会进入此函数
@@ -1841,8 +1941,10 @@ void MpvProxy::play()
         qDebug() << "Exiting MpvProxy::play() - media already loading";
         return;
     }
-
+    
     bool bRawFormat = false;
+    QList<QVariant> listArgs = { "loadfile" };
+    QStringList listOpts = { };
     PlayerEngine* pEngine = nullptr;
     bool bAudio = false;
     m_bLoadMedia = true;
@@ -1863,66 +1965,15 @@ void MpvProxy::play()
         qDebug() << "No playlist items or player engine not available";
     }
 
-    // ========== Use QMap to manage options, ensuring uniqueness and priority ==========
-    // Priority rule: later insertions override earlier ones
-    // 优先级规则：后插入的覆盖前面的
-    QMap<QString, QString> optMap;
-
-    // Priority 1: Basic vo setting
-    QString sVoValue = bAudio ? "null" : m_sInitVo;
-    if (!sVoValue.isEmpty()) {
-        optMap["vo"] = sVoValue;
-        qInfo() << "Setting video output:" << sVoValue;
+    // Use async property setting to avoid deadlock during short video playback
+    if (bAudio) {
+        qInfo() << "Setting video output to null for audio-only file (async)";
+        my_set_property_async(m_handle, "vo", "null", 0);
+    } else {
+        qInfo() << "Setting video output to:" << m_sInitVo << "(async)";
+        my_set_property_async(m_handle, "vo", m_sInitVo, 0);
     }
 
-#ifndef _LIBDMR_
-    // Priority 2: File-related config
-    QMap<QString, QVariant> cfg = MovieConfiguration::get().queryByUrl(_file);
-    QString key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
-    if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key) && !bRawFormat) {
-        optMap["start"] = QString::number(cfg[key].toInt());
-    }
-
-    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubCodepage);
-    if (cfg.contains(key)) {
-        optMap["sub-codepage"] = cfg[key].toString();
-    }
-
-    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubDelay);
-    if (cfg.contains(key)) {
-        optMap["sub-delay"] = QString::number(cfg[key].toDouble());
-    }
-
-    if (!_dvdDevice.isEmpty()) {
-        optMap["dvd-device"] = _dvdDevice;
-    }
-#endif
-
-    // Priority 3: JJW GPU special handling (override basic settings)
-    if (utils::getJjwGPUPath() == "/dev/mwv206_0") {
-        QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) + QDir::separator() + "mwv206");
-        QString sCodec = pEngine->playlist().currentInfo().mi.videoCodec();
-        if (sdir.exists() && sCodec.contains("avs2", Qt::CaseInsensitive)) {
-            qWarning() << "JJW GPU override: hwdec=no, vo=gpu,x11,xv";
-            optMap["hwdec"] = "no";
-            optMap["vo"] = "gpu,x11,xv";
-        }
-    }
-
-    // Pause option (must set both true and false)
-    optMap["pause"] = m_bPauseOnStart ? "yes" : "no";
-
-    // Priority 4: m_pConfig (originally in file-loaded event, executed last, highest priority)
-    qInfo() << __func__ << "Adding config properties to loadfile options";
-    QMap<QString, QString>::iterator iter = m_pConfig->begin();
-    while (iter != m_pConfig->end()) {
-        qInfo() << __func__ << iter.key() << iter.value();
-        optMap[iter.key()] = iter.value();
-        iter++;
-    }
-
-    // ========== Build loadfile arguments ==========
-    QList<QVariant> listArgs = { "loadfile" };
     if (_file.isLocalFile()) {
         qInfo() << "Loading local file:" << QFileInfo(_file.toLocalFile()).absoluteFilePath();
         listArgs << QFileInfo(_file.toLocalFile()).absoluteFilePath();
@@ -1930,11 +1981,40 @@ void MpvProxy::play()
         qInfo() << "Loading remote file:" << _file.url();
         listArgs << _file.url();
     }
+#ifndef _LIBDMR_
+    QMap<QString, QVariant> cfg = MovieConfiguration::get().queryByUrl(_file);
+    QString key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
+    if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key) && !bRawFormat) {   // 裸流没有时长，seek会崩溃
+        listOpts << QString("start=%1").arg(cfg[key].toInt());   //如果视频长度小于1s这段代码会导致视频无法播放
+    }
 
-    // Convert optMap to option string
-    QStringList listOpts;
-    for (auto it = optMap.begin(); it != optMap.end(); ++it) {
-        listOpts << QString("%1=%2").arg(it.key(), it.value());
+    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubCodepage);
+    if (cfg.contains(key)) {
+        listOpts << QString("sub-codepage=%1").arg(cfg[key].toString());
+    }
+
+    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubDelay);
+    if (cfg.contains(key)) {
+        listOpts << QString("sub-delay=%1").arg(cfg[key].toDouble());
+    }
+
+    if (!_dvdDevice.isEmpty()) {
+        listOpts << QString("dvd-device=%1").arg(_dvdDevice);
+    }
+#endif
+
+    //刷新解码模式
+    refreshDecode();
+
+    // Jingjiawei GPU special handling - use async to avoid deadlock
+    if (utils::getJjwGPUPath() == "/dev/mwv206_0") {
+        QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206");
+        QString sCodec = pEngine->playlist().currentInfo().mi.videoCodec();
+        if(sdir.exists() && sCodec.contains("avs2", Qt::CaseInsensitive)) {
+            qWarning() << "Using SoftCodec because of codec (async)";
+            my_set_property_async(m_handle, "hwdec", "no", 0);
+            my_set_property_async(m_handle, "vo", "gpu,x11,xv", 0);
+        }
     }
 
     if (listOpts.size()) {
@@ -1945,9 +2025,20 @@ void MpvProxy::play()
         listArgs << listOpts.join(',');
     }
 
-    qInfo() << "Executing loadfile with args:" << listArgs << "options:" << listOpts;
-    qInfo() << "FINALLY, hwdec:" << optMap.value("hwdec", "not set") << "vo:" << optMap.value("vo", "not set");
-    my_command(m_handle, listArgs);
+    qInfo()<<"" << listArgs << listOpts;
+
+    //设置播放参数
+    QMap<QString, QString>::iterator iter = m_pConfig->begin();
+    qInfo() << __func__ << "Set mpv propertys (async)!!";
+    while (iter != m_pConfig->end()) {
+        qInfo() << __func__ << iter.key() << iter.value();
+        my_set_property_async(m_handle, iter.key(), iter.value(), 0);
+        iter++;
+    }
+
+    qInfo() << "Executing play command with args:" << listArgs << "and options:" << listOpts;
+    my_command_async(m_handle, listArgs, 0);
+    my_set_property_async(m_handle, "pause", m_bPauseOnStart, 0);
     qInfo() << "Play command executed successfully";
 
 #ifndef _LIBDMR_
@@ -1996,11 +2087,11 @@ void MpvProxy::stop()
 {
     qDebug() << "Entering MpvProxy::stop()";
     qInfo() << "Stopping playback";
-    
+
     QList<QVariant> args = { "stop" };
     qInfo() << args;
-    my_command(m_handle, args);
-    
+    my_command_async(m_handle, args, 0);
+
     qDebug() << "Exiting MpvProxy::stop()";
 }
 
@@ -2389,16 +2480,8 @@ QSize MpvProxy::videoSize() const
         return QSize(-1, -1);
     }
 
-    QSize size = QSize(my_get_property(m_handle, "dwidth").toInt(),
-                       my_get_property(m_handle, "dheight").toInt());
-
-    auto r = my_get_property(m_handle, "video-out-params/rotate").toInt();
-    if (r == 90 || r == 270) {
-        qDebug() << "Video is rotated" << r << "degrees, transposing size";
-        size.transpose();
-    }
-
-    return size;
+    // Return cached value to avoid synchronous API calls during event handling
+    return m_cachedVideoSize;
 }
 
 qint64 MpvProxy::duration() const
@@ -2414,9 +2497,9 @@ qint64 MpvProxy::duration() const
         qDebug() << "Raw format detected, returning duration 0";
         return 0;
     } else {
-        qint64 duration = my_get_property(m_handle, "duration").value<qint64>();
-        qDebug() << "Returning duration" << duration;
-        return duration;
+        // Return cached value to avoid synchronous API calls during event handling
+        qDebug() << "Returning cached duration" << m_cachedDuration;
+        return m_cachedDuration;
     }
 }
 
@@ -2429,9 +2512,9 @@ qint64 MpvProxy::elapsed() const
         return 0;
     }
 
-    qint64 elapsed = my_get_property(m_handle, "time-pos").value<qint64>();
-    qDebug() << "Returning elapsed time" << elapsed;
-    return elapsed;
+    // Return cached value to avoid synchronous API calls during event handling
+    qDebug() << "Returning cached elapsed time" << m_cachedElapsed;
+    return m_cachedElapsed;
 }
 
 void MpvProxy::updatePlayingMovieInfo()
