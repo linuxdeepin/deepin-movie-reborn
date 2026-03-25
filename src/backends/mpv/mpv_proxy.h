@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -430,6 +430,10 @@ private:
     QVariant my_get_property_variant(mpv_handle *pHandle, const QString &sName);
     QVariant my_command(mpv_handle *pHandle, const QVariant &args);
 
+    // Property cache to avoid synchronous API calls during event handling
+    void initPropertyCache(mpv_handle *pHandle);
+    void updatePropertyCache(const QString &name, const QVariant &value);
+
 private:
     mpv_waitEvent m_waitEvent;
     mpv_set_optionString m_setOptionString;
@@ -477,6 +481,19 @@ private:
 
     //解码模式
     DecodeMode m_decodeMode {DecodeMode::AUTO};
+
+    // Cached property values to avoid synchronous API calls during event handling
+    mutable qint64 m_cachedDuration {0};
+    mutable qint64 m_cachedElapsed {0};
+    mutable int m_cachedVolume {100};
+    mutable bool m_cachedMute {false};
+    mutable int m_cachedAid {-1};
+    mutable int m_cachedSid {-1};
+    mutable QSize m_cachedVideoSize;
+    mutable double m_cachedAspectRatio {0.0};
+    mutable bool m_cachedPause {false};
+    mutable bool m_cachedIdleActive {true};
+    mutable bool m_cachedPausedForCache {false};
 };
 
 }
