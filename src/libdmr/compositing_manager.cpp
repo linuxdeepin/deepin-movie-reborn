@@ -694,6 +694,7 @@ bool CompositingManager::isDriverLoadedCorrectly()
     static QRegExp regZX("loading driver: zx");
     static QRegExp regCX4("loading driver: cx4");
     static QRegExp arise("loading driver: arise");
+    static QRegExp regLoonggpu("loading driver: loonggpu");
     static QRegExp controller("1ec8");
 #if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
     static QRegExp rendering("direct rendering");
@@ -719,7 +720,7 @@ bool CompositingManager::isDriverLoadedCorrectly()
             return true;
         }
 #if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
-        if (rendering.indexIn(ln.toLower()) != -1) {
+        if (rendering.indexIn(ln.toLower()) != -1 || regLoonggpu.indexIn(ln) != -1) {
             qInfo() << "_loongarch dri enabled successfully";
             return true;
         }
