@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -2174,8 +2174,17 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         fileDialog.setFileMode(QFileDialog::ExistingFiles);
 
         if (fileDialog.exec() == QDialog::Accepted) {
-            qDebug() << "fileDialog.exec() == QDialog::Accepted";
             filenames = fileDialog.selectedFiles();
+
+            // 玲珑环境处理：转换为播放路径
+            if (utils::IsLinglongEnvironment()) {
+                for (int i = 0; i < filenames.size(); i++) {
+                    const QString convertedPath = utils::ConvertLinglongPathForPlayback(filenames[i]);
+                    if (convertedPath != filenames[i]) {
+                        filenames[i] = convertedPath;
+                    }
+                }
+            }
         } else {
             qDebug() << "fileDialog.exec() != QDialog::Accepted, break";
             break;
@@ -2219,6 +2228,16 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         if (fileDialog.exec() == QDialog::Accepted) {
             qDebug() << "fileDialog.exec() == QDialog::Accepted";
             filename = fileDialog.selectedFiles();
+
+            // 玲珑环境处理：转换为播放路径
+            if (utils::IsLinglongEnvironment()) {
+                for (int i = 0; i < filename.size(); i++) {
+                    const QString convertedPath = utils::ConvertLinglongPathForPlayback(filename[i]);
+                    if (convertedPath != filename[i]) {
+                        filename[i] = convertedPath;
+                    }
+                }
+            }
         } else {
             qDebug() << "fileDialog.exec() != QDialog::Accepted, break";
             break;
@@ -3447,7 +3466,7 @@ DSettingsDialog *MainWindow::initSettings()
 
 void MainWindow::play(const QList<QString> &listFiles)
 {
-    qInfo() << "Starting playback with" << listFiles.size() << "files";
+    qDebug() << "Starting playback with" << listFiles.size() << "files";
     Q_ASSERT(m_pEngine);
 
 #ifdef DTKCORE_CLASS_DConfigFile
@@ -3502,13 +3521,11 @@ void MainWindow::play(const QList<QString> &listFiles)
     }
 
     lstValid = m_pEngine->addPlayFiles(lstFile);  // 先添加到播放列表再播放
-    qDebug() << "lstValid" << lstValid;
+    qDebug() << "addPlayFiles returned:" << lstValid;
 
     m_bHaveFile = !lstValid.isEmpty();
-    qDebug() << "m_bHaveFile" << m_bHaveFile;
     if (m_bHaveFile) {
-        qDebug() << "m_bHaveFile";
-        //The disposal is false here to prevent the introduction of the folder from blocking
+        qDebug() << "Calling playByName with:" << lstValid[0];
         m_pEngine->playByName(lstValid[0]);
     }
 
