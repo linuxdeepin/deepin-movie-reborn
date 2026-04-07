@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -77,7 +77,27 @@ bool isJjwGPUPresent();
  * @return 返回存在的设备路径，如果都不存在则返回空字符串
  */
 QString getJjwGPUPath();
+/**
+ * @brief 检测是否在玲珑环境
+ * @return 如果是玲珑环境返回true，否则返回false
+ */
+bool IsLinglongEnvironment();
+
+/**
+ * @brief 将路径转换为玲珑环境播放路径（添加 /run/host/rootfs 前缀）
+ * @param path 原始路径
+ * @return 转换后的路径
+ */
+QString ConvertLinglongPathForPlayback(const QString &path);
+
+/**
+ * @brief 将路径转换为玲珑环境文件管理器路径（去掉 /run/host/rootfs 前缀）
+ * @param path 原始路径
+ * @return 转换后的路径
+ */
+QString ConvertLinglongPathForFM(const QString &path);
 }
+
 }
 
 #endif /* ifndef _DMR_UTILS_H */

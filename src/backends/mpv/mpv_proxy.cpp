@@ -1,4 +1,4 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -2100,6 +2100,12 @@ void MpvProxy::stop()
 {
     qDebug() << "Entering MpvProxy::stop()";
     qInfo() << "Stopping playback";
+
+    // Check if mpv handle is valid before sending stop command
+    if (!m_handle) {
+        qWarning() << "MpvProxy::stop() called with null handle";
+        return;
+    }
 
     QList<QVariant> args = { "stop" };
     qInfo() << args;

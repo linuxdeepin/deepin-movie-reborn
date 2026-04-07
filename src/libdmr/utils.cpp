@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -54,35 +54,44 @@ QStringList runPipeProcess(const QString &command, const QString &filter)
 
 void ShowInFileManager(const QString &path)
 {
-    qDebug() << "Entering ShowInFileManager() with path:" << path;
-    if (path.isEmpty() || !QFile::exists(path)) {
-        qDebug() << "Path is empty or file does not exist:" << path << ", returning.";
-        qWarning() << "Invalid path or file does not exist:" << path;
+    qDebug() << "[ShowInFileManager] Input path:" << path;
+    if (path.isEmpty()) {
+        qDebug() << "Path is empty, returning.";
         return;
     }
 
-    QUrl url = QUrl::fromLocalFile(QFileInfo(path).dir().absolutePath());
+    // 玲珑环境处理：转换路径用于文件管理器
+    qDebug() << "[ShowInFileManager] IsLinglongEnvironment:" << IsLinglongEnvironment();
+    const QString actualPath = IsLinglongEnvironment() ? ConvertLinglongPathForFM(path) : path;
+    qDebug() << "[ShowInFileManager] actualPath:" << actualPath;
+
+    // 在玲珑环境下，actualPath 是给宿主机文件管理器用的路径
+    // 需要用原始路径（容器内可访问的路径）来检查文件是否存在
+    if (!QFile::exists(path)) {
+        qWarning() << "File does not exist:" << path;
+        return;
+    }
+
+    QUrl url = QUrl::fromLocalFile(QFileInfo(actualPath).dir().absolutePath());
     qInfo() << "Opening file manager for URL:" << url.toString();
 
     // Try dde-file-manager
     if (url.isLocalFile()) {
         qDebug() << "URL is a local file.";
-        // Start dde-file-manager failed, try nautilus
         QDBusInterface iface("org.freedesktop.FileManager1",
                              "/org/freedesktop/FileManager1",
                              "org.freedesktop.FileManager1",
                              QDBusConnection::sessionBus());
         if (iface.isValid()) {
             qDebug() << "DBus interface is valid, calling ShowItems.";
-            // Convert filepath to URI first.
-            const QStringList uris = { QUrl::fromLocalFile(path).toString() };
+            const QStringList uris = { QUrl::fromLocalFile(actualPath).toString() };
             qInfo() << "Using freedesktop.FileManager to show items:" << uris;
             QDBusPendingCall call = iface.asyncCall("ShowItems", uris, "");
             Q_UNUSED(call);
         } else {
             qDebug() << "DBus interface is invalid, using QDesktopServices::openUrl as fallback.";
             qInfo() << "Using desktopService::openUrl as fallback";
-            QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(path).dir().absolutePath()));
+            QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(actualPath).dir().absolutePath()));
         }
     } else {
         qDebug() << "URL is not a local file, directly opening URL.";
@@ -912,6 +921,53 @@ QString getJjwGPUPath()
     }
 
     return QString();
+}
+
+bool IsLinglongEnvironment()
+{
+    static const bool kIsLinglong = qEnvironmentVariableIsSet("LINGLONG_APPID");
+    return kIsLinglong;
+}
+
+QString ConvertLinglongPathForPlayback(const QString &path)
+{
+    if (!IsLinglongEnvironment()) {
+        return path;
+    }
+
+    // 检测原始路径是否存在
+    if (QFile::exists(path)) {
+        return path;
+    }
+
+    // 不存在，尝试加上 /run/host/rootfs 前缀
+    static const QString kLinglongHostRootfs = "/run/host/rootfs";
+    const QString linglongPath = kLinglongHostRootfs + path;
+
+    if (QFile::exists(linglongPath)) {
+        qWarning() << "[Linglong] Convert for playback:" << path << "->" << linglongPath;
+        return linglongPath;
+    }
+
+    // 如果加上前缀还是不存在，返回原始路径
+    return path;
+}
+
+QString ConvertLinglongPathForFM(const QString &path)
+{
+    if (!IsLinglongEnvironment()) {
+        return path;
+    }
+
+    static const QString kLinglongHostRootfs = "/run/host/rootfs";
+
+    if (path.startsWith(kLinglongHostRootfs)) {
+        const QString convertedPath = path.mid(kLinglongHostRootfs.length());
+        qDebug() << "[Linglong] Convert for FM:" << path << "->" << convertedPath;
+        return convertedPath;
+    }
+
+    return path;
 }
 }
 }
