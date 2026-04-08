@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -2273,6 +2273,16 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         if (fileDialog.exec() == QDialog::Accepted) {
             filenames = fileDialog.selectedFiles();
             qDebug() << "fileDialog.exec() == QDialog::Accepted";
+
+            // 玲珑环境处理：转换为播放路径
+            if (utils::IsLinglongEnvironment()) {
+                for (int i = 0; i < filenames.size(); i++) {
+                    const QString convertedPath = utils::ConvertLinglongPathForPlayback(filenames[i]);
+                    if (convertedPath != filenames[i]) {
+                        filenames[i] = convertedPath;
+                    }
+                }
+            }
         } else {
             qDebug() << "fileDialog.exec() == QDialog::Rejected";
             break;
@@ -2315,6 +2325,16 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         if (fileDialog.exec() == QDialog::Accepted) {
             filename = fileDialog.selectedFiles();
             qDebug() << "fileDialog.exec() == QDialog::Accepted";
+
+            // 玲珑环境处理：转换为播放路径
+            if (utils::IsLinglongEnvironment()) {
+                for (int i = 0; i < filename.size(); i++) {
+                    const QString convertedPath = utils::ConvertLinglongPathForPlayback(filename[i]);
+                    if (convertedPath != filename[i]) {
+                        filename[i] = convertedPath;
+                    }
+                }
+            }
         } else {
             break;
         }
