@@ -2135,6 +2135,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         QString name("/data/source/deepin-movie-reborn/movie");
 #endif
 
+        // 玲珑环境处理：转换为播放路径
+        if (utils::IsLinglongEnvironment()) {
+            const QString convertedPath = utils::ConvertLinglongPathForPlayback(name);
+            if (convertedPath != name) {
+                name = convertedPath;
+            }
+        }
+
         QFileInfo fi(name);
         if (fi.isDir() && fi.exists()) {
             Settings::get().setGeneralOption("last_open_path", fi.path());
