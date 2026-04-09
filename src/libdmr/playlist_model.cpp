@@ -742,6 +742,16 @@ void PlaylistModel::loadPlaylist()
     for (int i = 0; i < keys.size(); ++i) {
         auto url = cfg.value(QString::number(i)).toUrl();
         if (indexOf(url) >= 0) continue;
+
+        // Check if file exists before adding to avoid adding deleted files
+        if (url.isLocalFile()) {
+            QFileInfo fi(url.toLocalFile());
+            if (!fi.exists()) {
+                qInfo() << "Skipping non-existent file in playlist:" << url.toString();
+                continue;
+            }
+        }
+
         urls.append(url);
     }
     cfg.endGroup();
