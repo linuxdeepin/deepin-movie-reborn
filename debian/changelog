@@ -1,3 +1,9 @@
+deepin-movie-reborn (6.5.45) unstable; urgency=medium
+
+  * feat(mpv): prioritize gpuinfo VO recommendation in AUTO decode mode
+
+ -- Wang Yu <wangyu@uniontech.com>  Thu, 09 Apr 2026 21:50:29 +0800
+
 deepin-movie-reborn (6.5.44) unstable; urgency=medium
 
   * fix: add Linglong container path conversion for OpenDirectory action
