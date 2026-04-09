@@ -209,11 +209,13 @@ void MpvProxy::initGpuInfoFuns()
     if(!SysUtils::libExist("libgpuinfo.so")) {
         qWarning() << "libgpuinfo.so not found - GPU info functions will be unavailable";
         m_gpuInfo = NULL;
+        m_gpuInfoVo = NULL;
         qDebug() << "DEBUG: Exiting MpvProxy::initGpuInfoFuns due to missing libgpuinfo.so."; // Add exit log
         return;
     }
     QLibrary mpvLibrary(SysUtils::libPath("libgpuinfo.so"));
     m_gpuInfo = reinterpret_cast<void *>(mpvLibrary.resolve("vdp_Iter_decoderInfo"));
+    m_gpuInfoVo = reinterpret_cast<const char* (*)(void)>(mpvLibrary.resolve("gpuinfo_get_vo"));
     qInfo() << "GPU info functions initialized successfully";
 }
 
@@ -636,6 +638,16 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "hwdec", "vaapi");
             my_set_property(pHandle, "vo", "vaapi");
             m_sInitVo = "vaapi";
+        }
+
+        // gpuinfo VO: if matched, use gpuinfo's recommendation (AUTO mode only)
+        if (m_gpuInfoVo) {
+            const char* vo = m_gpuInfoVo();
+            if (vo && vo[0] != '\0') {
+                qInfo() << "gpuinfo recommended vo:" << vo;
+                my_set_property(pHandle, "vo", vo);
+                m_sInitVo = vo;
+            }
         }
     } else if (DecodeMode::HARDWARE == m_decodeMode) { //3.设置硬解
         qDebug() << "DEBUG: Decode mode set to HARDWARE. Checking specific hardware.";
@@ -1939,6 +1951,7 @@ void MpvProxy::initMember()
     m_freeNodecontents = nullptr;
     m_pConfig = nullptr;
     m_gpuInfo = nullptr;
+    m_gpuInfoVo = nullptr;
 }
 
 void MpvProxy::play()
