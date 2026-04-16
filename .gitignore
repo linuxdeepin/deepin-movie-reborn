@@ -12,3 +12,11 @@ debian/deepin-movie-reborn/
 debian/files
 
 CMakeLists.txt.user
+
+# ai
+CLAUDE.md
+AGENTS.md
+.cursor
+.trellis
+.claude
+.agents
