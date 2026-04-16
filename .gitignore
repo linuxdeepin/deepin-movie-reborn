@@ -51,3 +51,10 @@ node_modules/
 # Task files
 # tasks.json
 # tasks/ 
+# ai
+CLAUDE.md
+AGENTS.md
+.cursor
+.trellis
+.claude
+.agents
