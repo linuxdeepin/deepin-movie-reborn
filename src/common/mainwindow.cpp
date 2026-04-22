@@ -5097,7 +5097,9 @@ void MainWindow::decodeInit()
         Settings::get().settings()->setOption(QString("base.decode.select"),DecodeMode::AUTO);
     } else {
         qDebug() << "bcatch != 1";
-        if (Settings::get().settings()->option("base.decode.select")->value().toInt() == 3)
+        int decodeMode = Settings::get().settings()->option("base.decode.select")->value().toInt();
+        pMpvProxy->setDecodeModel(decodeMode);
+        if (decodeMode == 3)
             dmr::Settings::get().crashCheck();
     }
 }
