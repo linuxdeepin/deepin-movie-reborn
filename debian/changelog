@@ -1,3 +1,11 @@
+deepin-movie-reborn (6.5.46) unstable; urgency=medium
+
+  * feat: allow bypassing the compositor when fullscreen
+  * chore: update gitignore
+  * fix(decode): restore user decode mode setting on startup
+
+ -- xiepengfei <xiepengfei@uniontech.com>  Tue, 28 Apr 2026 08:59:24 +0800
+
 deepin-movie-reborn (6.5.45) unstable; urgency=medium
 
   * feat(mpv): prioritize gpuinfo VO recommendation in AUTO decode mode
