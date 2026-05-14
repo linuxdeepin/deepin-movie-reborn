@@ -1,4 +1,4 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -470,6 +470,7 @@ int main(int argc, char *argv[])
         dmr::Settings::get().settings()->setOption("base.decode.select", 0);
         dmr::Settings::get().settings()->setOption("base.decode.Decodemode", 0);
         dmr::Settings::get().settings()->setOption("base.decode.Videoout", 0);
+        dmr::Settings::get().settings()->setOption("base.decode.Effect", 0);
         dmr::Settings::get().crashCheck();
     }
 
