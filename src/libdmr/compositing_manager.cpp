@@ -1,4 +1,4 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -213,34 +213,50 @@ CompositingManager::CompositingManager()
         qDebug() << "Config file opened successfully. Reading contents.";
         QTextStream in(&file);
         QString line;
+        int decodeSelect = -1;
+        int effectValue = -1;
         while (!in.atEnd()) {
+            if (decodeSelect != -1 && effectValue != -1)
+                break;
             line = in.readLine();
-            if (line.contains("[base.decode.Effect]")) {
-                qDebug() << "Line contains [base.decode.Effect]. Reading next line for value.";
+            if (line.contains("[base.decode.select]")) {
+                if (in.atEnd()) break;
                 line = in.readLine();
-                int index = line.indexOf("value=");
-                if (index != -1) {
-                    qDebug() << "'value=' found in line.";
-                    QString value = line.mid(index + 6); // 6 is the length of "value="
-                    value = value.trimmed(); // Remove leading and trailing whitespace
-                    file.close();
-                    qDebug() << "Config file closed after reading value. Parsed value:" << value;
-                    if (value.toInt() != 0) {
-                        _composited = value.toInt() == 1 ? true : false;
-                        qDebug() << "Composited mode set from config file value:" << _composited;
-                        m_pMpvConfig = new QMap<QString, QString>;
-                        qDebug() << "New QMap for MPV config created (from config file path).";
-                        utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);
-                        return;
-                    }
-                } else {
-                    qDebug() << "'value=' not found in line after [base.decode.Effect].";
+                int idx = line.indexOf("value=");
+                if (idx != -1) {
+                    bool ok = false;
+                    int val = line.mid(idx + 6).trimmed().toInt(&ok);
+                    if (ok)
+                        decodeSelect = val;
+                    else
+                        qWarning() << "Invalid base.decode.select value in config";
+                }
+            } else if (line.contains("[base.decode.Effect]")) {
+                if (in.atEnd()) break;
+                line = in.readLine();
+                int idx = line.indexOf("value=");
+                if (idx != -1) {
+                    bool ok = false;
+                    int val = line.mid(idx + 6).trimmed().toInt(&ok);
+                    if (ok)
+                        effectValue = val;
+                    else
+                        qWarning() << "Invalid base.decode.Effect value in config";
                 }
             }
+                }
+        file.close();
+        qDebug() << "Parsed config: decodeSelect =" << decodeSelect << ", effectValue =" << effectValue;
+        // Effect only applies when in Customize mode (select == 3)
+        if (decodeSelect == 3 && effectValue > 0) {
+            _composited = (effectValue == 1);
+            qDebug() << "Composited mode set from config file value:" << _composited;
+            m_pMpvConfig = new QMap<QString, QString>;
+            qDebug() << "New QMap for MPV config created (from config file path).";
+            utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);
+            return;
         }
     }
-    file.close();
-    qDebug() << "Config file explicitly closed (if not already).";
 
     //TODO: 临时处理方案
     _composited = true;
