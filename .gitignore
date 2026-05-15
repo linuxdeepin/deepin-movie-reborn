@@ -26,6 +26,7 @@ build
 .windsurf/
 .clinerules/
 .trae/
+.cache/
 
 # Logs
 logs

@@ -32,7 +32,12 @@ static bool isWayland = false;
 QStringList runPipeProcess(const QString &command, const QString &filter)
 {
     QProcess process;
-    process.start(command);
+    QStringList parms = QProcess::splitCommand(command);
+    if (parms.isEmpty())
+        return QStringList();
+
+    QString cmd = parms.takeFirst();
+    process.start(cmd, parms);
     process.waitForFinished();
 
     QString comStr = process.readAllStandardOutput();
