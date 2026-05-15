@@ -298,6 +298,11 @@ void MpvProxy::firstInit()
 
     m_bInited = true;
     initSetting();
+
+    // Set fast profile globally for better playback performance
+    my_set_property_async(m_handle, "profile", "fast", 0);
+    qInfo() << "Set profile to fast for optimized playback";
+
     qInfo() << "First initialization completed successfully";
 }
 
@@ -889,6 +894,10 @@ mpv_handle *MpvProxy::mpv_init()
 
     // Initialize property cache to avoid synchronous API calls during event handling
     initPropertyCache(pHandle);
+
+    // Set fast profile globally for better playback performance
+    my_set_property_async(pHandle, "profile", "fast", 0);
+    qInfo() << "Set profile to fast for optimized playback";
 
     qDebug() << "DEBUG: Exiting MpvProxy::mpv_init() with handle:" << pHandle;
     return pHandle;
