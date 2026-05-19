@@ -216,7 +216,11 @@ void MpvProxy::initGpuInfoFuns()
     QLibrary mpvLibrary(SysUtils::libPath("libgpuinfo.so"));
     m_gpuInfo = reinterpret_cast<void *>(mpvLibrary.resolve("vdp_Iter_decoderInfo"));
     m_gpuInfoVo = reinterpret_cast<const char* (*)(void)>(mpvLibrary.resolve("gpuinfo_get_vo"));
-    qInfo() << "GPU info functions initialized successfully";
+    if (m_gpuInfo && m_gpuInfoVo) {
+        qInfo() << "GPU info functions initialized successfully";
+    } else {
+        qWarning() << "GPU info functions initialized error";
+    }
 }
 
 void MpvProxy::firstInit()
@@ -2701,4 +2705,3 @@ void MpvProxy::setProperty(const QString &sName, const QVariant &val)
 }
 
 } // end of namespace dmr
-
