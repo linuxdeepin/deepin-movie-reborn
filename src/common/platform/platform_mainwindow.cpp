@@ -5245,14 +5245,17 @@ void Platform_MainWindow::paintEvent(QPaintEvent *pEvent)
     }
 
     if (m_pEngine->state() == PlayerEngine::Idle) {
-        QImage bg = QIcon::fromTheme("deepin-movie").pixmap(130, 130).toImage();
+        qreal dpr = devicePixelRatioF();
+        int iconSize = static_cast<int>(130 * dpr);
+        QImage bg = QIcon::fromTheme("deepin-movie").pixmap(iconSize, iconSize).toImage();
+        bg.setDevicePixelRatio(dpr);
         //和产品、ui商议深色主题下去除深色背景效果
 //        if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
 //            QImage img = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg");
 //            QPointF pos = bgRect.center() - QPoint(img.width() / 2, img.height() / 2) / devicePixelRatioF();
 //            painter.drawImage(pos, img);
 //        }
-        QPointF pos = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
+        QPointF pos = bgRect.center() - QPointF(bg.width() / 2.0 / dpr, bg.height() / 2.0 / dpr);
         painter.drawImage(pos, bg);
     }
 

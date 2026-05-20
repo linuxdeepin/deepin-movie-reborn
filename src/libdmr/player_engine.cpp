@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -704,9 +704,12 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
             p.fillRect(rect, QBrush(QColor(0, 0, 0)));
         } else {
             qDebug() << "Player is idle or not audio, drawing icon.";
-            QImage icon = QIcon::fromTheme("deepin-movie").pixmap(130, 130).toImage();;
+            qreal dpr = devicePixelRatioF();
+            int iconSize = static_cast<int>(130 * dpr);
+            QImage icon = QIcon::fromTheme("deepin-movie").pixmap(iconSize, iconSize).toImage();
+            icon.setDevicePixelRatio(dpr);
             QPixmap pix = QPixmap::fromImage(icon);
-            QPointF pos = rect.center() - QPoint(pix.width() / 2, pix.height() / 2) / devicePixelRatioF();
+            QPointF pos = rect.center() - QPointF(pix.width() / 2.0 / dpr, pix.height() / 2.0 / dpr);
 
             if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
                 qDebug() << "Theme type is Light, filling white rectangle and drawing pixmap.";
