@@ -1,3 +1,13 @@
+deepin-movie-reborn (6.5.47) unstable; urgency=medium
+
+  * chore: Update version to 6.5.47
+  * fix(ui): center idle icon correctly on HiDPI displays
+  * fix(gpu): improve GPU info error handling
+  * fix(mpv): add fast profile for 4K playback
+  * fix(decode): check decode mode before applying Effect setting
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Wed, 20 May 2026 13:46:56 +0800
+
 deepin-movie-reborn (6.5.46) unstable; urgency=medium
 
   * feat: allow bypassing the compositor when fullscreen
