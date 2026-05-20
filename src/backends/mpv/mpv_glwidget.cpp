@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -456,33 +456,39 @@ namespace dmr {
 
     void MpvGLWidget::prepareSplashImages()
     {
+        qreal dpr = qApp->devicePixelRatio();
+
         QPixmap pixmap;
         QImage img=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg");
         pixmap=pixmap.fromImage(img);
 
+        int iconSize = static_cast<int>(130 * dpr);
         QPixmap pixmap2;
-        QImage img1=QIcon::fromTheme("deepin-movie").pixmap(130, 130).toImage();
+        QImage img1=QIcon::fromTheme("deepin-movie").pixmap(iconSize, iconSize).toImage();
         pixmap2=pixmap2.fromImage(img1);
 
+        int iconX = static_cast<int>(102 * dpr);
+        int iconY = static_cast<int>(126 * dpr);
+
         QPainter painter(&pixmap);
-        painter.drawPixmap(102,126,pixmap2); // 参数102 126，在界面上保持居中
+        painter.drawPixmap(iconX, iconY, pixmap2);
         m_imgBgDark=pixmap.toImage();
-        m_imgBgDark.setDevicePixelRatio(qApp->devicePixelRatio());
+        m_imgBgDark.setDevicePixelRatio(dpr);
 
         QPixmap pixmap3;
         QImage image(pixmap.size(),QImage::Format_Alpha8);
         image.fill(QColor(0, 0, 0, 0));
-        image.setDevicePixelRatio(qApp->devicePixelRatio());
+        image.setDevicePixelRatio(dpr);
         pixmap3=pixmap3.fromImage(image);
 
         QPixmap pixmap4;
-        QImage img2=QIcon::fromTheme("deepin-movie").pixmap(130, 130).toImage();
+        QImage img2=QIcon::fromTheme("deepin-movie").pixmap(iconSize, iconSize).toImage();
         pixmap4=pixmap4.fromImage(img2);
 
         QPainter painter1(&pixmap3);
-        painter1.drawPixmap(102,126,pixmap4); // 参数102 126，在界面上保持居中
+        painter1.drawPixmap(iconX, iconY, pixmap4);
         m_imgBgLight = pixmap3.toImage();
-        m_imgBgLight.setDevicePixelRatio(qApp->devicePixelRatio());
+        m_imgBgLight.setDevicePixelRatio(dpr);
     }
 
     //cppcheck误报
