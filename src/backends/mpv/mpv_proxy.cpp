@@ -273,9 +273,7 @@ void MpvProxy::firstInit()
 #ifdef __x86_64__
             connect(this, &MpvProxy::elapsedChanged, [ this ]() {
                 qDebug() << "DEBUG: Elapsed time changed, updating movie progress."; // Add log for lambda
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                 m_pMpvGLwidget->updateMovieProgress(duration(), elapsed());
-#endif
                 m_pMpvGLwidget->update();
             });
 #else

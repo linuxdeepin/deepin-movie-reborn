@@ -915,16 +915,18 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << "Connected PlayerEngine::finishedAddFiles signal.";
 
     //Initialization is performed at normal conditions
+    m_pProgIndicator = nullptr;
+    m_pFullScreenTimeLabel = nullptr;
     if (CompositingManager::get().platform() != Platform::Mips) {
         qDebug() << "Platform is not Mips. Initializing MovieProgressIndicator and QLabel for full screen time.";
-        m_pProgIndicator = new MovieProgressIndicator(this);
-        m_pFullScreenTimeLabel = new QLabel;
+        //m_pProgIndicator = new MovieProgressIndicator(this);
+        //m_pFullScreenTimeLabel = new QLabel;
         qDebug() << "MovieProgressIndicator and QLabel initialized.";
     } else {
         qDebug() << "Platform is Mips. Skipping MovieProgressIndicator and QLabel initialization.";
     }
 
-    if (m_pProgIndicator) {
+    if (m_pProgIndicator && m_pFullScreenTimeLabel) {
         qDebug() << "MovieProgressIndicator is valid. Setting visibility and connecting elapsedChanged.";
         m_pProgIndicator->setVisible(false);
         connect(m_pEngine, &PlayerEngine::elapsedChanged, [ = ]() {
@@ -998,7 +1000,7 @@ MainWindow::MainWindow(QWidget *parent)
         if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
             qInfo() << "Player entered idle state";
             //播放切换时，更新音量dbus 当前的sinkInputPath
-            if (m_pProgIndicator) {
+            if (m_pProgIndicator && m_pFullScreenTimeLabel) {
                 qDebug() << "Player idle: Hiding full screen time label and progress indicator.";
                 m_pFullScreenTimeLabel->close();
                 m_pProgIndicator->setVisible(false);
@@ -1210,7 +1212,7 @@ MainWindow::MainWindow(QWidget *parent)
             setProperty("showTimeFullScreen", value);
             //The X86 platform draws on GiWidget, and the MIPS platform does not need to draw
             if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
-                if(m_pEngine && (m_pEngine->state() != PlayerEngine::Idle) && isFullScreen()) {
+                if(m_pEngine && (m_pEngine->state() != PlayerEngine::Idle) && isFullScreen() && m_pProgIndicator && m_pFullScreenTimeLabel) {
                     m_pProgIndicator->setVisible(value.toBool());
                     m_pFullScreenTimeLabel->setVisible(value.toBool());
                 }
@@ -1399,7 +1401,8 @@ void MainWindow::onWindowStateChanged()
         if (m_bShowTime) {
             bool showIndicator = isFullScreen() && m_pEngine && m_pEngine->state() != PlayerEngine::Idle;
             qDebug() << "Setting progress indicator visibility:" << showIndicator;
-            m_pProgIndicator->setVisible(showIndicator);
+            if (m_pProgIndicator)
+                m_pProgIndicator->setVisible(showIndicator);
         }
     }
 
@@ -2566,10 +2569,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 #endif
                         qDebug() << "pixelsWidth";
                         pixelsWidth = qMax(117, pixelsWidth);
-                        m_pFullScreenTimeLabel->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
-                        qDebug() << "m_pFullScreenTimeLabel->setGeometry";
-                        if(m_bShowTime) {
-                            m_pFullScreenTimeLabel->show();
+                        if (m_pFullScreenTimeLabel) {
+                            m_pFullScreenTimeLabel->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
+                            qDebug() << "m_pFullScreenTimeLabel->setGeometry";
+                            if(m_bShowTime) {
+                                m_pFullScreenTimeLabel->show();
+                            }
                         }
                     }
                 }
@@ -4032,7 +4037,7 @@ void MainWindow::slotFocusWindowChanged()
 {
 #ifndef __mips__
     PlayerEngine *engine = dynamic_cast<PlayerEngine *>(sender());
-    if (engine) {
+    if (engine && m_pProgIndicator) {
         m_pProgIndicator->updateMovieProgress(engine->duration(), engine->elapsed());
     }
 #endif
@@ -4098,7 +4103,8 @@ void MainWindow::slotFontChanged(const QFont &/*font*/)
     QRect deskRect = qApp->primaryScreen()->availableGeometry();
 #endif
     qDebug() << "deskRect";
-    m_pFullScreenTimeLabel->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
+    if (m_pFullScreenTimeLabel)
+        m_pFullScreenTimeLabel->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
 #endif
 }
 
@@ -5425,9 +5431,11 @@ void MainWindow::toggleUIMode()
                     QRect deskRect = qApp->primaryScreen()->availableGeometry();
 #endif
                     pixelsWidth = qMax(117, pixelsWidth);
-                    m_pFullScreenTimeLabel->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
-                    if(m_bShowTime) {
-                        m_pFullScreenTimeLabel->show();
+                    if (m_pFullScreenTimeLabel) {
+                        m_pFullScreenTimeLabel->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
+                        if(m_bShowTime) {
+                            m_pFullScreenTimeLabel->show();
+                        }
                     }
                 }
             }

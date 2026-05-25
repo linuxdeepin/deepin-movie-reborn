@@ -938,11 +938,14 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
 
     //In the case of Platform, this is currently not initialized in the case of
     //MIPS, followed by the situation, and the code is subsequently removed by judging the macro.
+    m_pProgIndicator = nullptr;
+    m_pFullScreenTimeLabel = nullptr;
     if (CompositingManager::get().platform() != Platform::Mips) {
         qDebug() << "CompositingManager::get().platform() != Platform::Mips";
-        m_pProgIndicator = new Platform_MovieProgressIndicator(this);
-        m_pFullScreenTimeLabel = new QLabel;
-
+        //m_pProgIndicator = new Platform_MovieProgressIndicator(this);
+        //m_pFullScreenTimeLabel = new QLabel;
+    }
+    if (m_pProgIndicator && m_pFullScreenTimeLabel) {
         m_pProgIndicator->setVisible(false);
         connect(m_pEngine, &PlayerEngine::elapsedChanged, [ = ]() {
             m_pProgIndicator->updateMovieProgress(m_pEngine->duration(), m_pEngine->elapsed());
@@ -1012,7 +1015,7 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
             qDebug() << "m_pProgIndicator";
             if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
                 //播放切换时，更新音量dbus 当前的sinkInputPath
-                if (m_pProgIndicator) {
+                if (m_pProgIndicator && m_pFullScreenTimeLabel) {
                     qDebug() << "m_pProgIndicator";
                     m_pFullScreenTimeLabel->close();
                     m_pProgIndicator->setVisible(false);
@@ -1031,11 +1034,13 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
                     QRect screenGeo = windowHandle()->screen()->geometry();
                     int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
                     pixelsWidth = qMax(117, pixelsWidth);
-                    m_pFullScreenTimeLabel->setGeometry(screenGeo.width() + screenGeo.x() - pixelsWidth - 60, 40 + screenGeo.y(), pixelsWidth + 60, 36);
-                    qDebug() << "m_pFullScreenTimeLabel->setGeometry";
-                    if(m_bShowTime) {
-                        m_pFullScreenTimeLabel->show();
-                        m_pProgIndicator->setVisible(true);
+                    if (m_pFullScreenTimeLabel) {
+                        m_pFullScreenTimeLabel->setGeometry(screenGeo.width() + screenGeo.x() - pixelsWidth - 60, 40 + screenGeo.y(), pixelsWidth + 60, 36);
+                        qDebug() << "m_pFullScreenTimeLabel->setGeometry";
+                        if(m_bShowTime) {
+                            m_pFullScreenTimeLabel->show();
+                            m_pProgIndicator->setVisible(true);
+                        }
                     }
                     QTimer::singleShot(200, [ = ]() {
                         activateWindow();    // show other window make mainwindow deactivate
@@ -1267,7 +1272,7 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
             m_bShowTime = value.toBool();
             //The X86 platform draws on GiWidget, and the MIPS platform does not need to draw
             if (CompositingManager::get().platform() != Platform::Mips) {
-                if(m_pEngine && (m_pEngine->state() != PlayerEngine::Idle) && isFullScreen()) {
+                if(m_pEngine && (m_pEngine->state() != PlayerEngine::Idle) && isFullScreen() && m_pProgIndicator && m_pFullScreenTimeLabel) {
                     m_pProgIndicator->setVisible(value.toBool());
                     m_pFullScreenTimeLabel->setVisible(value.toBool());
                 }
@@ -1474,7 +1479,7 @@ void Platform_MainWindow::onWindowStateChanged()
         m_pTitlebar->setVisible(false);
     }
     if (CompositingManager::get().platform() != Platform::Mips) {
-        if (m_bShowTime) {
+        if (m_bShowTime && m_pProgIndicator) {
             m_pProgIndicator->setVisible(isFullScreen() && m_pEngine && m_pEngine->state() != PlayerEngine::Idle);
         }
     }
@@ -2605,7 +2610,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
                 QRect screenGeo = windowHandle()->screen()->geometry();
                 m_pProgIndicator->move(screenGeo.width() + screenGeo.x() - m_pProgIndicator->width() - 18, 8 + screenGeo.y());
                 if (CompositingManager::get().platform() != Platform::Mips) {
-                    if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+                    if (m_pEngine->state() != PlayerEngine::CoreState::Idle && m_pFullScreenTimeLabel) {
                         int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
                         pixelsWidth = qMax(117, pixelsWidth);
                         m_pFullScreenTimeLabel->setGeometry(screenGeo.width() + screenGeo.x() - pixelsWidth - 60, 40 + screenGeo.y(), pixelsWidth + 60, 36);
@@ -4072,7 +4077,7 @@ void Platform_MainWindow::slotFocusWindowChanged()
 {
 #ifndef __mips__
     PlayerEngine *engine = dynamic_cast<PlayerEngine *>(sender());
-    if (engine) {
+    if (engine && m_pProgIndicator) {
         m_pProgIndicator->updateMovieProgress(engine->duration(), engine->elapsed());
     }
 #endif
@@ -4123,7 +4128,8 @@ void Platform_MainWindow::slotFontChanged(const QFont &/*font*/)
 #else
         QRect deskRect = QGuiApplication::primaryScreen()->availableGeometry();
 #endif
-        m_pFullScreenTimeLabel->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
+        if (m_pFullScreenTimeLabel)
+            m_pFullScreenTimeLabel->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
     }
     qDebug() << "Exit slotFontChanged function";
 }

@@ -18,6 +18,7 @@
 
 #include <QLibrary>
 #include <QPainterPath>
+#include <QSharedPointer>
 
 #include <dthememanager.h>
 #include <DApplication>
@@ -227,6 +228,64 @@ void main() {
 )";
 
 namespace dmr {
+
+#ifdef __x86_64__
+    // Fullscreen overlay state stored in a file-static map (no header change).
+    // QPainter on offscreen QImage → GL texture, avoids glyph-cache corruption.
+    namespace {
+        struct OverlayState {
+            QOpenGLTexture *tex = nullptr;
+            QOpenGLVertexArrayObject vao;
+            QOpenGLBuffer vbo;
+            QString lastPlayTime;
+            QString lastSysTime;
+            int lastPert = -1;
+            QSize logicalSize{0, 0};
+            QSize lastWidgetSize{0, 0};
+            QImage img;
+        };
+        static QHash<const MpvGLWidget *, QSharedPointer<OverlayState>> g_overlayStates;
+
+        QSharedPointer<OverlayState> getOverlay(const MpvGLWidget *w)
+        {
+            auto it = g_overlayStates.find(w);
+            if (it == g_overlayStates.end()) {
+                auto ptr = QSharedPointer<OverlayState>::create();
+                // Auto-cleanup: remove entry when widget is destroyed, even if
+                // the destructor path is skipped due to abnormal shutdown.
+                QObject::connect(w, &QObject::destroyed, [w]() { g_overlayStates.remove(w); });
+                it = g_overlayStates.insert(w, ptr);
+            }
+            return *it;
+        }
+
+        void destroyOverlay(const MpvGLWidget *w)
+        {
+            auto it = g_overlayStates.find(w);
+            if (it == g_overlayStates.end())
+                return;
+            OverlayState *s = it.value().data();
+            // Explicitly clean GL resources while context is current.
+            if (s->tex) {
+                s->tex->destroy();
+                delete s->tex;
+                s->tex = nullptr;
+            }
+            if (s->vbo.isCreated())
+                s->vbo.destroy();
+            if (s->vao.isCreated())
+                s->vao.destroy();
+            g_overlayStates.erase(it);
+        }
+
+        // Forward declarations; definitions at file end for protected-member access.
+        static void rebuildOverlayTexture(MpvGLWidget *self, qreal pert, const QString &strSysTime, const QString &strPlayTime, bool bRawFormat);
+        static void renderFullscreenOverlay(MpvGLWidget *self, QOpenGLFunctions *pGLFunction,
+                                            QOpenGLShaderProgram *prog,
+                                            qreal pert, const QString &strPlayTime, bool bRawFormat);
+    }
+#endif
+
     static void* GLAPIENTRY glMPGetNativeDisplay(const char* name) {
         qWarning() << __func__ << name;
         if (!strcmp(name, "x11") || !strcmp(name, "X11")) {
@@ -296,7 +355,7 @@ namespace dmr {
         qDebug() << "DEBUG: Exiting gl_update_callback.";
     }
 
-    //cppcheck 被QMetaObject::invokeMethod使用
+    //cppcheck false positive: used by QMetaObject::invokeMethod
     void MpvGLWidget::onNewFrame()
     {
         qDebug() << "DEBUG: Entering onNewFrame.";
@@ -342,10 +401,14 @@ namespace dmr {
         qDebug() << "DEBUG: Exiting MpvGLWidget constructor.";
     }
 
-    MpvGLWidget::~MpvGLWidget() 
+    MpvGLWidget::~MpvGLWidget()
     {
         qDebug() << "DEBUG: Entering MpvGLWidget destructor.";
         makeCurrent();
+#ifdef __x86_64__
+        // Clean overlay GL resources first, while context is guaranteed valid.
+        destroyOverlay(this);
+#endif
         if (m_pDarkTex) {
             qDebug() << "DEBUG: Destroying dark texture.";
             m_pDarkTex->destroy();
@@ -698,14 +761,14 @@ namespace dmr {
             m_pFbo->release();
             delete m_pFbo;
         }
-        // 创建 FBO 格式
+        // Create FBO format
         QOpenGLFramebufferObjectFormat format;
         format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
-        format.setSamples(0);  // 禁用多重采样，避免与视频渲染冲突
+        format.setSamples(0);  // Disable MSAA to avoid conflict with video rendering
         format.setTextureTarget(GL_TEXTURE_2D);
-        format.setInternalTextureFormat(GL_RGBA8);  // 使用 8 位 RGBA 格式
+        format.setInternalTextureFormat(GL_RGBA8);  // 8-bit RGBA
         m_pFbo = new QOpenGLFramebufferObject(desiredSize, format);
-        // 检查 FBO 是否创建成功
+        // Verify FBO creation
         if (!m_pFbo || !m_pFbo->isValid()) {
             qCritical() << "Failed to create FBO with size:" << desiredSize;
             return;
@@ -961,6 +1024,9 @@ namespace dmr {
         m_renderContexRender = nullptr;
         m_renderContextUpdate = nullptr;
         m_bRawFormat = false;
+#ifdef __x86_64__
+        m_pert = 0.0;
+#endif
         qDebug() << "initMember end";
     }
 
@@ -979,7 +1045,7 @@ namespace dmr {
             return;
         }
     
-        // 检查纹理是否有效
+        // Check texture validity
         if (m_pLightTex && !m_pLightTex->isCreated()) {
             qWarning() << "Light texture not created in paintGL";
             return;
@@ -1072,48 +1138,12 @@ namespace dmr {
             }
 #ifdef __x86_64__
             QWidget *topWidget = topLevelWidget();
-            if(topWidget && (topWidget->isFullScreen())) {//全屏状态播放时更新显示进度
+            if (topWidget && topWidget->isFullScreen()) {
                 QVariant varShow = topWidget->property("showTimeFullScreen");
-                if(!varShow.isValid() || !varShow.toBool()) return;
-                QString time_text = QTime::currentTime().toString("hh:mm");
-                QRect rectTime = QRect(rect().width() - 90, 0, 90, 40);
-                QPainter painter;
-                painter.begin(this);
-                QPen pen;
-                pen.setColor(QColor(255, 255, 255, 255 * .4));
-                painter.setPen(pen);
-                QFontMetrics fm(font());
-                auto fr = fm.boundingRect(time_text);
-                fr.moveCenter(rectTime.center());
-                //显示系统时间
-                painter.drawText(fr,time_text);
-                QPoint pos((rectTime.topLeft().x() + 20), rectTime.topLeft().y() + rectTime.height() - 5);
-                int pert = qMin(m_pert * 10, 10.0);
-                for (int i = 0; i < 10; i++) {//显示影院视频播放进度
-                    if (i >= pert) {
-                        painter.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, 255 * .25));
-                    } else {
-                        painter.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, 255 * .5));
-                    }
-                    pos.rx() += 5;
+                if (varShow.isValid() && varShow.toBool()) {
+                    renderFullscreenOverlay(this, pGLFunction, m_pGlProgBlend,
+                                            m_pert, m_strPlayTime, m_bRawFormat);
                 }
-                QRect rectMovieTime = QRect(rect().width() - 175, 46, 175, 20);
-                if(m_strPlayTime.isNull() || m_strPlayTime.isEmpty()) return;
-                QPalette Palette;
-                pen.setColor(Palette.color(QPalette::Text));
-                if (m_bRawFormat) {
-                    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-                        pen.setColor(QColor(0, 0, 0, 40));
-                    } else {
-                        pen.setColor(QColor(255, 255, 255, 40));
-                    }
-                }
-                painter.setPen(pen);
-                fr = fm.boundingRect(m_strPlayTime);
-                fr.moveCenter(rectMovieTime.center());
-                //显示影院视频播放时间与总时间
-                painter.drawText(fr,m_strPlayTime);
-                painter.end();
             }
 #endif
         } else {
@@ -1200,10 +1230,183 @@ namespace dmr {
     {
         if (pos > duration)
             pos = duration;
-        m_pert = (qreal)pos / duration;//更新影院播放进度
+        m_pert = (duration > 0) ? (qreal)pos / duration : 0.0;
         QString sCurtime = QString("%1 %2").arg(utils::Time2str(pos)).arg("/ ");
         QString stime = QString("%1").arg(utils::Time2str(duration));
-        m_strPlayTime = sCurtime + stime;//更新影院当前播放时长
+        m_strPlayTime = sCurtime + stime;  // Update fullscreen play-time string
+    }
+
+    /**
+     * @brief Paint overlay onto offscreen QImage → upload as GL texture.
+     * Avoids QPainter on GL widget which corrupts mpv's GL state.
+     */
+    namespace {
+        void rebuildOverlayTexture(MpvGLWidget *self, qreal pert,
+                                   const QString &strSysTime, const QString &strPlayTime, bool bRawFormat)
+        {
+            auto s = getOverlay(self);
+
+            // Overlay logical size: 185×72 fits time + dots + duration
+            const int kOverlayWidth = 185;
+            const int kOverlayHeight = 72;
+            s->logicalSize = QSize(kOverlayWidth, kOverlayHeight);
+
+            qreal dpr = self->devicePixelRatioF();
+            QSize physSize = QSize(kOverlayWidth, kOverlayHeight) * dpr;
+            if (s->img.size() != physSize || s->img.format() != QImage::Format_ARGB32_Premultiplied) {
+                s->img = QImage(physSize, QImage::Format_ARGB32_Premultiplied);
+                s->img.setDevicePixelRatio(dpr);
+            }
+            s->img.fill(Qt::transparent);
+
+            QPainter p(&s->img);
+            p.setRenderHint(QPainter::Antialiasing);
+            p.setRenderHint(QPainter::TextAntialiasing);
+
+            QFont f = self->font();
+            f.setPixelSize(14);
+            QFontMetrics fm(f);
+            p.setFont(f);
+
+            // ① System time hh:mm, semi-transparent white
+            QRect rTime(kOverlayWidth - 90, 0, 90, 40);
+            QRect frTime = fm.boundingRect(strSysTime);
+            frTime.moveCenter(rTime.center());
+            p.setPen(QColor(255, 255, 255, static_cast<int>(255 * 0.4)));
+            p.drawText(frTime, strSysTime);
+
+            // ② Progress dots
+            int dotCount = qMin(qRound(pert * 10), 10);
+            QPoint dot(rTime.topLeft().x() + 20, rTime.topLeft().y() + rTime.height() - 5);
+            for (int i = 0; i < 10; ++i) {
+                QColor c = (i >= dotCount) ? QColor(255, 255, 255, static_cast<int>(255 * 0.25))
+                                           : QColor(255, 255, 255, static_cast<int>(255 * 0.5));
+                p.fillRect(QRect(dot, QSize(3, 3)), c);
+                dot.rx() += 5;
+            }
+
+            // ③ Video duration hh:mm:ss / hh:mm:ss
+            if (!strPlayTime.isNull() && !strPlayTime.isEmpty()) {
+                QRect rMovie(kOverlayWidth - 175, 46, 175, 20);
+                QColor textColor;
+                if (bRawFormat) {
+                    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType())
+                        textColor = QColor(0, 0, 0, 40);
+                    else
+                        textColor = QColor(255, 255, 255, 40);
+                } else {
+                    textColor = QPalette().color(QPalette::Text);
+                }
+                QRect frMovie = fm.boundingRect(strPlayTime);
+                frMovie.moveCenter(rMovie.center());
+                p.setPen(textColor);
+                p.drawText(frMovie, strPlayTime);
+            }
+            p.end();
+
+            // Convert ARGB32_Premultiplied → RGBA8888 (Qt handles unpremultiply)
+            // and upload as GL texture.
+            QImage glImg = s->img.convertToFormat(QImage::Format_RGBA8888);
+            if (!s->tex) {
+                s->tex = new QOpenGLTexture(QOpenGLTexture::Target2D);
+                s->tex->setMinificationFilter(QOpenGLTexture::Linear);
+                s->tex->setMagnificationFilter(QOpenGLTexture::Linear);
+                s->tex->setWrapMode(QOpenGLTexture::ClampToEdge);
+            }
+            s->tex->setData(glImg);
+        }
+
+        void renderFullscreenOverlay(MpvGLWidget *self, QOpenGLFunctions *pGLFunction,
+                                     QOpenGLShaderProgram *prog,
+                                     qreal pert, const QString &strPlayTime, bool bRawFormat)
+        {
+            auto s = getOverlay(self);
+            QString sCurSysTime = QTime::currentTime().toString("hh:mm");
+            int curPert = qMin(qRound(pert * 10), 10);
+
+            // Rebuild texture only when content changes
+            bool needRebuild = (!s->tex)
+                    || sCurSysTime != s->lastSysTime
+                    || curPert != s->lastPert
+                    || strPlayTime != s->lastPlayTime;
+            if (needRebuild) {
+                rebuildOverlayTexture(self, pert, sCurSysTime, strPlayTime, bRawFormat);
+                s->lastSysTime = sCurSysTime;
+                s->lastPert = curPert;
+                s->lastPlayTime = strPlayTime;
+            }
+            if (!s->tex || !prog)
+                return;
+
+            // Ensure we draw into Qt's internal FBO.
+            GLint prevFbo = 0;
+            pGLFunction->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &prevFbo);
+            pGLFunction->glBindFramebuffer(GL_FRAMEBUFFER, self->defaultFramebufferObject());
+
+            // Compute NDC coordinates for the top-right corner
+            const int W = self->width();
+            const int H = self->height();
+            const int ow = s->logicalSize.width();
+            const int oh = s->logicalSize.height();
+            float x0 = static_cast<float>(W - ow) / W * 2.0f - 1.0f;
+            float x1 = 1.0f;
+            float y0 = 1.0f;
+            float y1 = 1.0f - static_cast<float>(oh) / H * 2.0f;
+
+            // Vertices: (x, y, u, v). Top row (y=y0) maps to QImage row 0 → v=0.
+            const GLfloat verts[] = {
+                x0, y0,  0.0f, 0.0f,
+                x1, y0,  1.0f, 0.0f,
+                x0, y1,  0.0f, 1.0f,
+                x1, y0,  1.0f, 0.0f,
+                x1, y1,  1.0f, 1.0f,
+                x0, y1,  0.0f, 1.0f,
+            };
+
+            if (!s->vao.isCreated())
+                s->vao.create();
+            if (!s->vbo.isCreated()) {
+                s->vbo.create();
+                s->vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+            }
+
+            QSize curWidgetSize(W, H);
+            bool vboDirty = (curWidgetSize != s->lastWidgetSize);
+
+            QOpenGLVertexArrayObject::Binder vaoBind(&s->vao);
+            s->vbo.bind();
+            if (vboDirty) {
+                s->vbo.allocate(verts, sizeof(verts));
+                s->lastWidgetSize = curWidgetSize;
+            }
+
+            prog->bind();
+            int nVertexLoc = prog->attributeLocation("position");
+            int nCoordLoc = prog->attributeLocation("vTexCoord");
+            if (nVertexLoc < 0 || nCoordLoc < 0) {
+                prog->release();
+                return;
+            }
+            prog->enableAttributeArray(nVertexLoc);
+            prog->setAttributeBuffer(nVertexLoc, GL_FLOAT, 0, 2, 4 * sizeof(GLfloat));
+            prog->enableAttributeArray(nCoordLoc);
+            prog->setAttributeBuffer(nCoordLoc, GL_FLOAT, 2 * sizeof(GLfloat), 2, 4 * sizeof(GLfloat));
+            prog->setUniformValue("movie", 0);
+
+            pGLFunction->glEnable(GL_BLEND);
+            pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            pGLFunction->glActiveTexture(GL_TEXTURE0);
+            s->tex->bind();
+            pGLFunction->glDrawArrays(GL_TRIANGLES, 0, 6);
+            s->tex->release();
+
+            prog->disableAttributeArray(nVertexLoc);
+            prog->disableAttributeArray(nCoordLoc);
+            prog->release();
+            s->vbo.release();
+            pGLFunction->glDisable(GL_BLEND);
+            pGLFunction->glBindFramebuffer(GL_FRAMEBUFFER, prevFbo);
+        }
     }
 #endif
   
