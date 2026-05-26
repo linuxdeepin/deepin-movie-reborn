@@ -229,7 +229,6 @@ void main() {
 
 namespace dmr {
 
-#ifdef __x86_64__
     // Fullscreen overlay state stored in a file-static map (no header change).
     // QPainter on offscreen QImage → GL texture, avoids glyph-cache corruption.
     namespace {
@@ -243,6 +242,8 @@ namespace dmr {
             QSize logicalSize{0, 0};
             QSize lastWidgetSize{0, 0};
             QImage img;
+            qreal pert = 0.0;
+            QString strPlayTime;
         };
         static QHash<const MpvGLWidget *, QSharedPointer<OverlayState>> g_overlayStates;
 
@@ -284,7 +285,6 @@ namespace dmr {
                                             QOpenGLShaderProgram *prog,
                                             qreal pert, const QString &strPlayTime, bool bRawFormat);
     }
-#endif
 
     static void* GLAPIENTRY glMPGetNativeDisplay(const char* name) {
         qWarning() << __func__ << name;
@@ -405,10 +405,8 @@ namespace dmr {
     {
         qDebug() << "DEBUG: Entering MpvGLWidget destructor.";
         makeCurrent();
-#ifdef __x86_64__
         // Clean overlay GL resources first, while context is guaranteed valid.
         destroyOverlay(this);
-#endif
         if (m_pDarkTex) {
             qDebug() << "DEBUG: Destroying dark texture.";
             m_pDarkTex->destroy();
@@ -1136,16 +1134,16 @@ namespace dmr {
 
                 //pGLFunction->glDisable(GL_BLEND);
             }
-#ifdef __x86_64__
+
             QWidget *topWidget = topLevelWidget();
             if (topWidget && topWidget->isFullScreen()) {
                 QVariant varShow = topWidget->property("showTimeFullScreen");
                 if (varShow.isValid() && varShow.toBool()) {
+                    auto os = getOverlay(this);
                     renderFullscreenOverlay(this, pGLFunction, m_pGlProgBlend,
-                                            m_pert, m_strPlayTime, m_bRawFormat);
+                                            os->pert, os->strPlayTime, m_bRawFormat);
                 }
             }
-#endif
         } else {
             qDebug() << "Rendering idle state";
             pGLFunction->glEnable(GL_BLEND);
@@ -1225,15 +1223,15 @@ namespace dmr {
 
         }
     }
-#ifdef __x86_64__
     void MpvGLWidget::updateMovieProgress(qint64 duration, qint64 pos)
     {
         if (pos > duration)
             pos = duration;
-        m_pert = (duration > 0) ? (qreal)pos / duration : 0.0;
+        auto s = getOverlay(this);
+        s->pert = (duration > 0) ? (qreal)pos / duration : 0.0;
         QString sCurtime = QString("%1 %2").arg(utils::Time2str(pos)).arg("/ ");
         QString stime = QString("%1").arg(utils::Time2str(duration));
-        m_strPlayTime = sCurtime + stime;  // Update fullscreen play-time string
+        s->strPlayTime = sCurtime + stime;
     }
 
     /**
@@ -1408,8 +1406,7 @@ namespace dmr {
             pGLFunction->glBindFramebuffer(GL_FRAMEBUFFER, prevFbo);
         }
     }
-#endif
-  
+
     void MpvGLWidget::setRawFormatFlag(bool bRawFormat)
     {
         m_bRawFormat = bRawFormat;
