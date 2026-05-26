@@ -270,15 +270,13 @@ void MpvProxy::firstInit()
             qInfo() << "Creating MPV GL widget";
             m_pMpvGLwidget = new MpvGLWidget(this, m_handle);
             connect(this, &MpvProxy::stateChanged, this, &MpvProxy::slotStateChanged);
-#ifdef __x86_64__
             connect(this, &MpvProxy::elapsedChanged, [ this ]() {
-                qDebug() << "DEBUG: Elapsed time changed, updating movie progress."; // Add log for lambda
                 m_pMpvGLwidget->updateMovieProgress(duration(), elapsed());
-                m_pMpvGLwidget->update();
+                QWidget *top = m_pMpvGLwidget->topLevelWidget();
+                QVariant v = top ? top->property("showTimeFullScreen") : QVariant();
+                if (top && top->isFullScreen() && v.isValid() && v.toBool())
+                    m_pMpvGLwidget->update();
             });
-#else
-            qDebug() << "DEBUG: Skipping elapsedChanged connection for non-x86_64."; // Log for skipped connection
-#endif
 #if defined(USE_DXCB)
             qDebug() << "DEBUG: USE_DXCB defined. Toggling rounded clip to false."; // Log for DXCB
             m_pMpvGLwidget->toggleRoundedClip(false);
