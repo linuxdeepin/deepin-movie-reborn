@@ -49,11 +49,12 @@ try_compile(USE_FORK_MPRIS
               ${CMAKE_CURRENT_SOURCE_DIR}/tests/mpris_test.cc
             LINK_LIBRARIES
               PkgConfig::MPRIS
+            CXX_STANDARD 17
             OUTPUT_VARIABLE TRY_COMPILE_OUTPUT
 )
 
 # 输出是否使用deepin fork的mpris-qt5
-#message(STATUS "use deepin fork mpris-qt5: ${USE_FORK_MPRIS}")
+message(STATUS "use deepin fork mpris-qt5: ${USE_FORK_MPRIS}")
 
 # 如果使用deepin fork的mpris-qt5，添加编译定义
 if(USE_FORK_MPRIS)
