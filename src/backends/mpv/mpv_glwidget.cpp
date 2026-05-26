@@ -462,33 +462,30 @@ namespace dmr {
         QImage img=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg");
         pixmap=pixmap.fromImage(img);
 
-        int iconSize = static_cast<int>(130 * dpr);
         QPixmap pixmap2;
-        QImage img1=QIcon::fromTheme("deepin-movie").pixmap(iconSize, iconSize).toImage();
+        QImage img1=QIcon::fromTheme("deepin-movie").pixmap(130, 130).toImage();
         pixmap2=pixmap2.fromImage(img1);
 
-        int iconX = static_cast<int>(102 * dpr);
-        int iconY = static_cast<int>(126 * dpr);
-
         QPainter painter(&pixmap);
-        painter.drawPixmap(iconX, iconY, pixmap2);
+        painter.drawPixmap(102,126,pixmap2); // 参数102 126，在界面上保持居中
         m_imgBgDark=pixmap.toImage();
-        m_imgBgDark.setDevicePixelRatio(dpr);
+        m_imgBgDark.setDevicePixelRatio(qApp->devicePixelRatio());
 
         QPixmap pixmap3;
         QImage image(pixmap.size(),QImage::Format_Alpha8);
         image.fill(QColor(0, 0, 0, 0));
-        image.setDevicePixelRatio(dpr);
+        image.setDevicePixelRatio(qApp->devicePixelRatio());
         pixmap3=pixmap3.fromImage(image);
 
         QPixmap pixmap4;
-        QImage img2=QIcon::fromTheme("deepin-movie").pixmap(iconSize, iconSize).toImage();
+        QImage img2=QIcon::fromTheme("deepin-movie").pixmap(130 * dpr, 130 * dpr).toImage();
+        img2.setDevicePixelRatio(qApp->devicePixelRatio());
         pixmap4=pixmap4.fromImage(img2);
 
         QPainter painter1(&pixmap3);
-        painter1.drawPixmap(iconX, iconY, pixmap4);
+        painter1.drawPixmap(102,126,pixmap4); // 参数102 126，在界面上保持居中
         m_imgBgLight = pixmap3.toImage();
-        m_imgBgLight.setDevicePixelRatio(dpr);
+        m_imgBgLight.setDevicePixelRatio(qApp->devicePixelRatio());
     }
 
     //cppcheck误报
