@@ -1,3 +1,14 @@
+deepin-movie-reborn (6.5.48) unstable; urgency=medium
+
+  * chore: Update version to 6.5.48
+  * fix(gl): center idle icon dynamically on HiDPI displays
+  * fix(gl): use GL texture overlay for fullscreen time display
+  * fix(gl): remove x86_64 guard from fullscreen overlay
+  * fix(gl): use GL texture overlay for fullscreen time display
+  * fix: enable cpp17 for mpris try_compile
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 28 May 2026 19:48:43 +0800
+
 deepin-movie-reborn (6.5.47) unstable; urgency=medium
 
   * chore: Update version to 6.5.47
