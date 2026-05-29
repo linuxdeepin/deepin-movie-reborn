@@ -1,3 +1,4 @@
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -47,6 +48,7 @@ struct MovieInfo {
     int aDigit;
     int channels;
     int sampling;
+    int pix_fmt;
 #ifdef _MOVIE_USE_
     QString strFmtName; // 文件封装名
 #endif
@@ -66,6 +68,7 @@ struct MovieInfo {
         aDigit = -1;
         channels = -1;
         sampling = -1;
+        pix_fmt = -1;
     }
 
     static struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);

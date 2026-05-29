@@ -1,4 +1,4 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -100,6 +100,7 @@ QDataStream &operator<< (QDataStream &st, const MovieInfo &mi)
     st << mi.aDigit;
     st << mi.channels;
     st << mi.sampling;
+    st << mi.pix_fmt;
 #ifdef _MOVIE_USE_
     st << mi.strFmtName;
 #endif
@@ -128,6 +129,7 @@ QDataStream &operator>> (QDataStream &st, MovieInfo &mi)
     st >> mi.aDigit;
     st >> mi.channels;
     st >> mi.sampling;
+    st >> mi.pix_fmt;
 #ifdef _MOVIE_USE_
     st >> mi.strFmtName;
 #endif
@@ -137,7 +139,7 @@ QDataStream &operator>> (QDataStream &st, MovieInfo &mi)
 static class PersistentManager *_persistentManager = nullptr;
 
 static const qint32 CACHE_MAGIC = 0x444D5243;  // "DMRC" (Deepin Movie Replay Cache)
-static const qint32 CACHE_VERSION = 2;  // v2: lastModified
+static const qint32 CACHE_VERSION = 3;  // v3: pix_fmt
 
 static QString hashUrl(const QUrl &url)
 {
@@ -437,14 +439,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         } else {
             mi.proportion = 0;
         }
-        AVCodecContext *codec_context = g_mvideo_avcodec_alloc_context3(NULL);
-        g_mvideo_avcodec_parameters_to_context(codec_context, video_dec_ctx);
-        AVCodec *videoCodec = g_mvideo_avcodec_find_decoder(video_dec_ctx->codec_id);
-        if (g_mvideo_avcodec_open2(codec_context, videoCodec, 0) > 0) {
-            //用唯一的文件名绑定对应视频的对应pix_fmt值
-            setProperty(fi.filePath().toUtf8(), codec_context->pix_fmt);
-        }
-        g_mvideo_avcodec_free_context(&codec_context);
+        mi.pix_fmt = video_dec_ctx->format;
     }
     if (audioRet >= 0) {
         int audio_stream_index = -1;
