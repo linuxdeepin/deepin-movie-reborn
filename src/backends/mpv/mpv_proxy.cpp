@@ -1,4 +1,4 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -1381,9 +1381,8 @@ void MpvProxy::refreshDecode()
             }
 #endif
             if(utils::check_wayland_env()){
-                PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
-                QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
-                if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
+                if (currentInfo.mi.pix_fmt == AV_PIX_FMT_YUV444P
+                        || currentInfo.mi.pix_fmt == AV_PIX_FMT_YUV422P) {
                     isSoftCodec = true;
                     qWarning() << "Using SoftCodec because of format";
                 }
@@ -1393,7 +1392,6 @@ void MpvProxy::refreshDecode()
                         codec.toLower().contains("hevc")  ||
                         codec.toLower().contains("vp")) {
                     my_set_property(m_handle, "hwdec-codecs", codec.toLower());
-                    isSoftCodec = false;
                 }
             }
         }
@@ -1525,8 +1523,8 @@ void MpvProxy::refreshDecode()
         PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
         PlayItemInfo currentInfo = playMode->currentInfo();
         if(utils::check_wayland_env()){
-            QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
-            if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
+            if (currentInfo.mi.pix_fmt == AV_PIX_FMT_YUV444P
+                    || currentInfo.mi.pix_fmt == AV_PIX_FMT_YUV422P) {
                 qWarning() << "Using SoftCodec because of format";
                 my_set_property(m_handle, "hwdec","no");
             }
