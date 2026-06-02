@@ -4858,7 +4858,7 @@ void Platform_MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         bFlags = false;
     }
 
-    if (!m_bMouseMoved && (m_pPlaylist->state() != Platform_PlaylistWidget::Opened)) {
+    if (!m_bMouseMoved && m_pPlaylist && (m_pPlaylist->state() != Platform_PlaylistWidget::Opened)) {
         if (!insideToolsArea(ev->pos())) {
             qDebug() << "!insideToolsArea(ev->pos())";
             m_delayedMouseReleaseTimer.start(120);

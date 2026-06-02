@@ -1,4 +1,4 @@
-// Copyright (C) 2019 ~ 2020 UnionTech Software Technology Co.,Ltd
+// Copyright (C) 2019-2026 ~ 2020 UnionTech Software Technology Co.,Ltd
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -21,6 +21,24 @@ using namespace dmr;
 #ifndef __mips__
 #include <sanitizer/asan_interface.h>
 #endif
+
+#include <signal.h>
+#include <stdio.h>
+
+// Force flush coverage data on crash so .gcda files are preserved
+extern "C" void __gcov_dump(void);
+
+static void crashHandler(int sig) {
+    fprintf(stderr, "\n=== Crash detected (signal %d), flushing coverage data ===\n", sig);
+    __gcov_dump();
+    _exit(128 + sig);
+}
+
+static void setupCrashHandler() {
+    signal(SIGSEGV, crashHandler);
+    signal(SIGABRT, crashHandler);
+    signal(SIGFPE, crashHandler);
+}
 
 class QTestMain : public QObject
 {
@@ -60,7 +78,8 @@ void QTestMain::initTestCase()
 void QTestMain::cleanupTestCase()
 {
     qDebug() << "=====stop test=====";
-    exit(0);
+    __gcov_dump();
+    _exit(0);
 }
 
 void QTestMain::testGTest()
@@ -78,6 +97,8 @@ void QTestMain::testGTest()
 
 int main(int argc, char *argv[])
 {
+    setupCrashHandler();
+
     Application app(argc, argv);
     app.setAttribute(Qt::AA_Use96Dpi, true);
 

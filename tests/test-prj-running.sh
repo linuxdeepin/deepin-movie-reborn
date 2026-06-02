@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+# SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -8,13 +8,14 @@ rm -rf ${HOME}/.config/deepin-movie-test
 rm -rf ${HOME}/Pictures/DMovie
 
 rm -rf ../$(dirname $0)/build-ut
+mkdir ../$(dirname $0)/build-ut
+
 #rm -rf ../$(dirname $0)/test-deepin-movie
 #rm -rf ../$(dirname $0)/ut_dmr-test
 #mkdir ../$(dirname $0)/test-deepin-movie
 #mkdir ../$(dirname $0)/test-deepin-movie/build-ut
 #mkdir ../$(dirname $0)/ut_dmr-test
 #mkdir ../$(dirname $0)/ut_dmr-test/build-ut
-mkdir ../$(dirname $0)/build-ut
 
 cd ../build-ut
 
@@ -27,7 +28,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug ../
 make -j16
 
 
-#../tests/deepin-movie-platform/ut-build-run.sh
+../tests/deepin-movie-platform/ut-build-run.sh
 ../tests/deepin-movie/ut-build-run.sh
 ../tests/ut_dmr-test/ut-build-run.sh
 

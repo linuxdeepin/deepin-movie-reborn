@@ -4635,7 +4635,7 @@ void MainWindow::resizeEvent(QResizeEvent *pEvent)
 void MainWindow::updateWindowTitle()
 {
     qDebug() << "updateWindowTitle";
-    if (m_pEngine->state() != PlayerEngine::Idle) {
+    if (m_pEngine->state() != PlayerEngine::Idle && m_pEngine->playlist().count() > 0) {
         qDebug() << "State is not idle";
         const MovieInfo &mi = m_pEngine->playlist().currentInfo().mi;
         QString sTitle = m_pTitlebar->fontMetrics().elidedText(mi.title,

@@ -83,7 +83,7 @@ TEST(ToolBox, animationLabel)
     aLabel->show();
 
     QEvent moveEvent(QEvent::Move);
-    QMouseEvent releaseEvent(QEvent::MouseButtonRelease, QPoint(0,0), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    QMouseEvent releaseEvent(QEvent::MouseButtonRelease, QPointF(0,0), QPointF(0,0), Qt::LeftButton, Qt::NoButton, Qt::NoModifier, QPointingDevice::primaryPointingDevice());
     QApplication::sendEvent(aLabel, &moveEvent);
     QApplication::sendEvent(aLabel, &releaseEvent);
 }

@@ -6,7 +6,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # 设置cmake参数
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -21,7 +21,7 @@ add_definitions( -DUSE_TEST )
 
 # 设置Qt模块
 # TODO:X11Extras 没适配
-set(QtModule Core Gui Widgets Network  PrintSupport DBus Sql Svg Multimedia MultimediaWidgets Concurrent LinguistTools Test)
+set(QtModule Core Gui Widgets Network PrintSupport DBus Sql Svg SvgWidgets Multimedia MultimediaWidgets Concurrent LinguistTools Test OpenGL OpenGLWidgets Xml)
 
 # 设置工程名字
 project(deepin-movie-test)
@@ -45,6 +45,7 @@ include_directories(../../src/vendor)
 include_directories(../../src/backends)
 include_directories(../../src/backends/mpv)
 include_directories(../../src/backends/mediaplayer)
+include_directories(../../src/dlna)
 
 #add_subdirectory(googletest)
 
@@ -59,18 +60,20 @@ FILE (GLOB allSource
     ../../src/backends/mpv/*.cpp
     ../../src/backends/mediaplayer/*.cpp
     ../../src/backends/*.cpp
+    ../../src/dlna/*.cpp
+    ../../src/dlna/*/*.cpp
+    ../../src/dlna/*/*.c
     )
 
 FILE (GLOB allTestSource
     *.cpp
-    *.sh
     common/*.cpp
     widgets/*.cpp
     libdmr/*.cpp
     backends/*.cpp
     vendor/*.cpp
     stub/*.cpp
-    *.sh
+    dlna/*.cpp
     )
 
 # 定义资源文件
@@ -133,9 +136,9 @@ find_package(PkgConfig REQUIRED)
 #    PkgConfig::AV pthread GL)
 # 检查第三方库(这里检查了名字为dtkwidget的库和名字为dtkgui的库)，然后取名3rd_lib
 pkg_check_modules(3rd_lib REQUIRED
-        dtkwidget dtkgui
+        dtk6widget dtk6gui
         libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
-        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 libva libva-x11
+        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt6 libva libva-x11
         gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0 libdrm
         )
     #libpulse-simple xcb-aux gtest
@@ -149,4 +152,12 @@ target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} gmock gmock_main gtest gtest_main)
 
 # 将工程与Qt模块链接起来
-#qt5_use_modules(${PROJECT_NAME} ${QtModule})
+if (Qt6_FOUND)
+    set(_linkModules ${QtModule})
+    list(REMOVE_ITEM _linkModules LinguistTools)
+    foreach(module ${_linkModules})
+        list(APPEND QtLibs "Qt6::${module}")
+    endforeach()
+    list(APPEND QtLibs Qt6::GuiPrivate)
+    target_link_libraries(${PROJECT_NAME} ${QtLibs})
+endif()
