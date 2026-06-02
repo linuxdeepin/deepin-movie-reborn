@@ -1791,7 +1791,11 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                 isMusic = true;
             }
 
-            if (isMusic == false && m_mvideo_thumbnailer_generate_thumbnail_to_buffer) {
+            // raw stream formats without container cause libffmpegthumbnailer to crash
+            static const QStringList rawStreamExts = {"264", "265", "h264", "h265", "hevc", "yuv", "raw", "es"};
+            bool isRawStream = rawStreamExts.contains(fi.suffix().toLower());
+
+            if (isMusic == false && !isRawStream && m_mvideo_thumbnailer_generate_thumbnail_to_buffer && m_video_thumbnailer && m_image_data && fi.exists() && mi.width > 0 && mi.height > 0) {
                 m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, fi.canonicalFilePath().toUtf8().data(),  m_image_data);
                 auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
                 pm = QPixmap::fromImage(img);

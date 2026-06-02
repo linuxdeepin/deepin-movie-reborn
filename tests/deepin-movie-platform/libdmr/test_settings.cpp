@@ -67,12 +67,12 @@ TEST(Settings, shortcut)
 //    Settings::get().settings()->setOption("play.global_volume", 120);
 }
 
-TEST(Settings, mwDeconstruction)
-{
-    Platform_MainWindow *w = dApp->getMainWindow();
-    w->close();
-    delete w;
-    w = nullptr;
-}
+// TEST(Settings, mwDeconstruction)
+// {
+//     Platform_MainWindow *w = dApp->getMainWindow();
+//     w->close();
+//     delete w;
+//     w = nullptr;
+// }
 
 

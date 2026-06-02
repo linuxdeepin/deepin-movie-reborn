@@ -281,6 +281,8 @@ void PlayerEngine::onBackendStateChanged()
 PlayerEngine::CoreState PlayerEngine::state()
 {
     qDebug() << "Enter state function";
+    if (!_current)
+        return _state;
     auto old = _state;
     switch (_current->state()) {
     case Backend::PlayState::Playing:
@@ -470,6 +472,8 @@ double PlayerEngine::subDelay() const
 QString PlayerEngine::subCodepage()
 {
     qDebug() << "Enter subCodepage function";
+    if (!_current)
+        return "auto";
     if (_current->subCodepage().isEmpty()) {
         qDebug() << "subCodepage is empty, return auto";
         return "auto";
@@ -680,6 +684,7 @@ void PlayerEngine::toggleMute()
 void PlayerEngine::setMute(bool bMute)
 {
     qDebug() << "Entering PlayerEngine::setMute() with bMute:" << bMute;
+    if (!_current) return;
     _current->setMute(bMute);
     qDebug() << "Exiting PlayerEngine::setMute().";
 }
@@ -749,6 +754,7 @@ void PlayerEngine::requestPlay(int id)
     data.appExec = "deepin-movie";
     DRecentManager::addItem(item.url.toLocalFile(), data);
 
+    if (!_current) return;
     if (_current->isPlayable()) {
         qDebug() << "File is playable, starting playback";
 #ifdef __sw_64__
@@ -967,18 +973,21 @@ bool PlayerEngine::paused()
 QImage PlayerEngine::takeScreenshot()
 {
     qDebug() << "Enter takeScreenshot function";
+    if (!_current) return QImage();
     return _current->takeScreenshot();
 }
 
 void PlayerEngine::burstScreenshot()
 {
     qDebug() << "Enter burstScreenshot function";
+    if (!_current) return;
     _current->burstScreenshot();
 }
 
 void PlayerEngine::stopBurstScreenshot()
 {
     qDebug() << "Enter stopBurstScreenshot function";
+    if (!_current) return;
     _current->stopBurstScreenshot();
 }
 
@@ -996,6 +1005,7 @@ void PlayerEngine::seekForward(int secs)
         qDebug() << "Elapsed time unchanged, ignoring seek";
         return;
     }
+    if (!_current) return;
     _current->seekForward(secs);
 }
 
@@ -1007,6 +1017,7 @@ void PlayerEngine::seekBackward(int secs)
         return;
     }
 
+    if (!_current) return;
     if (elapsed() - abs(secs) <= 0) {
         qDebug() << "Seeking to start of file";
         _current->seekBackward(static_cast<int>(elapsed()));
@@ -1024,6 +1035,7 @@ void PlayerEngine::seekAbsolute(int pos)
         return;
     }
 
+    if (!_current) return;
     _current->seekAbsolute(pos);
 }
 

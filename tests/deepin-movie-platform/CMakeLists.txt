@@ -21,7 +21,7 @@ add_definitions( -DUSE_TEST )
 
 # 设置Qt模块
 # TODO: X11Extras qt6没适配X11Extras
-set(QtModule Core Gui Widgets Network  PrintSupport DBus Sql Svg Multimedia MultimediaWidgets Concurrent LinguistTools Test)
+set(QtModule Core Gui Widgets Network PrintSupport DBus Sql Svg SvgWidgets Multimedia MultimediaWidgets Concurrent LinguistTools Test OpenGL OpenGLWidgets Xml)
 
 # 设置工程名字
 project(deepin-movie-platform-test)
@@ -45,6 +45,7 @@ include_directories(../../src/vendor)
 include_directories(../../src/backends)
 include_directories(../../src/backends/mpv)
 include_directories(../../src/backends/mediaplayer)
+include_directories(../../src/dlna)
 
 #add_subdirectory(googletest)
 
@@ -59,17 +60,18 @@ FILE (GLOB allSource
     ../../src/backends/mpv/*.cpp
     ../../src/backends/mediaplayer/*.cpp
     ../../src/backends/*.cpp
+    ../../src/dlna/*.cpp
+    ../../src/dlna/*/*.cpp
+    ../../src/dlna/*/*.c
     )
 
 FILE (GLOB allTestSource
     *.cpp
-    *.sh
     common/*.cpp
     widgets/*.cpp
     libdmr/*.cpp
     backends/*.cpp
     vendor/*.cpp
-    *.sh
     )
 
 # 定义资源文件
@@ -159,7 +161,14 @@ target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} gmock gmock_main gtest gtest_main)
 
 # 将工程与Qt模块链接起来
-if (Qt5_FOUND)
-    # Qt5 environment
+if (Qt6_FOUND)
+    set(_linkModules ${QtModule})
+    list(REMOVE_ITEM _linkModules LinguistTools)
+    foreach(module ${_linkModules})
+        list(APPEND QtLibs "Qt6::${module}")
+    endforeach()
+    list(APPEND QtLibs Qt6::GuiPrivate)
+    target_link_libraries(${PROJECT_NAME} ${QtLibs})
+elseif (Qt5_FOUND)
     qt_use_modules(${PROJECT_NAME} ${QtModule})
 endif()

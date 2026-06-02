@@ -20,9 +20,9 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(DMR_DEBUG on)
 endif()
 
-# 如果使用GNU编译器，设置C++标准为C++11
+# 如果使用GNU编译器，设置C++标准为C++17（Qt6要求）
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 endif()
 
 # 设置C++标准为C++17
@@ -85,5 +85,5 @@ add_subdirectory(examples/test)
 
 # 如果构建类型是Debug，添加tests子目录
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  #  add_subdirectory(tests)
+  add_subdirectory(tests)
 endif()
