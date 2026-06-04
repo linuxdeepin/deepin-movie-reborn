@@ -908,8 +908,10 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
                         m_pProgIndicator->setVisible(true);
                     }
                     QTimer::singleShot(200, [ = ]() {
-                        activateWindow();    // show other window make mainwindow deactivate
-                        setFocus();
+                        if (qApp->applicationState() == Qt::ApplicationActive) {
+                            activateWindow();    // show other window make mainwindow deactivate
+                            setFocus();
+                        }
                     });
                 }
             }
