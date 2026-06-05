@@ -4925,7 +4925,19 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
     } else {
         qDebug() << "!utils::check_wayland_env()";
         //通过窗口id查询窗口状态是否置顶，同步右键菜单中的选项状态
-        QStringList sResult = dmr::utils::runPipeProcess(QString("xprop -id %1").arg(winId()), "_NET_WM_STATE(ATOM)");
+        QProcess xpropProc;
+        xpropProc.start("xprop", QStringList{"-id", QString::number(winId())});
+        xpropProc.waitForFinished();
+        QString xpropOutput = xpropProc.readAllStandardOutput();
+        QStringList sResult = xpropOutput.split('\n');
+        // Filter lines containing _NET_WM_STATE(ATOM)
+        QStringList filtered;
+        for (const QString &line : sResult) {
+            if (line.contains("_NET_WM_STATE(ATOM)")) {
+                filtered.append(line);
+            }
+        }
+        sResult = filtered;
         foreach (QString drv, sResult) {
             if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
                 m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");

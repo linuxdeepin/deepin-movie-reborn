@@ -4982,7 +4982,19 @@ void Platform_MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
     }
 
     //通过窗口id查询窗口状态是否置顶，同步右键菜单中的选项状态
-    QStringList sList = dmr::utils::runPipeProcess(QString("xprop -id %1").arg(winId()), "_NET_WM_STATE(ATOM)");
+    QProcess xpropProc;
+    xpropProc.start("xprop", QStringList{"-id", QString::number(winId())});
+    xpropProc.waitForFinished();
+    QString xpropOutput = xpropProc.readAllStandardOutput();
+    QStringList sList = xpropOutput.split('\n');
+    // Filter lines containing _NET_WM_STATE(ATOM)
+    QStringList filtered;
+    for (const QString &line : sList) {
+        if (line.contains("_NET_WM_STATE(ATOM)")) {
+            filtered.append(line);
+        }
+    }
+    sList = filtered;
     foreach(QString drv, sList) {
         if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
             m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
