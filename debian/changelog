@@ -1,3 +1,13 @@
+deepin-movie-reborn (6.5.49) unstable; urgency=medium
+
+  * chore: Update version to 6.5.49
+  * fix(security): harden QProcess usage against command injection
+  * chore: update chatops check workflow to inherit secrets
+  * fix(test): fix platform test crash and enable coverage data generation
+  * fix: notification widget clips last character on first show
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Fri, 05 Jun 2026 10:45:24 +0800
+
 deepin-movie-reborn (6.5.48) unstable; urgency=medium
 
   * chore: Update version to 6.5.48
