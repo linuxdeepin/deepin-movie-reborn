@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -771,7 +771,7 @@ void CompositingManager::detectPciID()
     qDebug() << "Entering CompositingManager::detectPciID()";
     QProcess pcicheck;
     qDebug() << "Starting lspci -vn process.";
-    pcicheck.start("lspci -vn");
+    pcicheck.start("lspci", QStringList{"-vn"});
     if (pcicheck.waitForStarted() && pcicheck.waitForFinished()) {
         qDebug() << "lspci -vn process started and finished successfully.";
 

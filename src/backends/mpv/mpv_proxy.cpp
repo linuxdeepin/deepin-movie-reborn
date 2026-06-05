@@ -586,13 +586,14 @@ mpv_handle *MpvProxy::mpv_init()
         if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
             qDebug() << "DEBUG: ZXIntgraphics detected and no Jingjiawei driver. Checking apt policy.";
             QProcess process;
-            QStringList options;
-            options << "-c" << QString("apt policy cx4-linux-graphics-driver-dri | sed -n \'2p\'");
-            process.start("/bin/bash", options);
+            process.start("apt", QStringList{"policy", "cx4-linux-graphics-driver-dri"});
             process.waitForFinished();
             process.waitForReadyRead();
 
             QString comStr = process.readAllStandardOutput();
+            // Extract the version number from the second line of apt policy output
+            QStringList outputLines = comStr.split('\n');
+            comStr = (outputLines.size() >= 2) ? outputLines.at(1) : QString();
             comStr = comStr.right(3).left(2);
             int version = comStr.toInt();
             qDebug() << "DEBUG: apt policy output version:" << version;

@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -983,7 +983,16 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     bool command = false;
     if(m_pEngine->duration() < 300) {
         qDebug() << "m_pEngine->duration() < 300";
-        QStringList sList = dmr::utils::runPipeProcess(QString("ffprobe -v quiet -show_frames %1").arg(url.toLocalFile()), "pict_type=I");
+        QProcess ffprobeProc;
+        ffprobeProc.start("ffprobe", QStringList{"-v", "quiet", "-show_frames", url.toLocalFile()});
+        ffprobeProc.waitForFinished();
+        QString ffprobeOutput = ffprobeProc.readAllStandardOutput();
+        QStringList sList;
+        for (const QString &line : ffprobeOutput.split('\n')) {
+            if (line.contains("pict_type=I")) {
+                sList.append(line);
+            }
+        }
         int pictI = sList.count();
         if (pictI < 5)
             command = true;

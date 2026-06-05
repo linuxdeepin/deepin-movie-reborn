@@ -37,6 +37,14 @@ QStringList runPipeProcess(const QString &command, const QString &filter)
         return QStringList();
 
     QString cmd = parms.takeFirst();
+
+    // Reject commands containing shell metacharacters to prevent injection.
+    // Use QProcess::start(program, args) directly for proper argument separation.
+    if (command.contains(QRegularExpression("[|;&$`\\\\]"))) {
+        qWarning() << "runPipeProcess: rejected potentially unsafe command:" << command;
+        return QStringList();
+    }
+
     process.start(cmd, parms);
     process.waitForFinished();
 
