@@ -166,7 +166,7 @@ void NotificationWidget::popup(const QString &msg, bool flag)
 #endif
     m_pMsgLabel->setText(msg);
     m_pMsgLabel->ensurePolished();
-    m_pMsgLabel->setFixedWidth(m_pMsgLabel->fontMetrics().horizontalAdvance(msg) + 10);
+    m_pMsgLabel->setFixedWidth(m_pMsgLabel->fontMetrics().horizontalAdvance(msg) + 15);
     show();
     raise();
 
@@ -195,7 +195,7 @@ void NotificationWidget::updateWithMessage(const QString &newMsg, bool flag)
 
     if (isVisible()) {
         m_pMsgLabel->setText(sMsg);
-        m_pMsgLabel->setFixedWidth(m_pMsgLabel->fontMetrics().horizontalAdvance(sMsg) + 10);
+        m_pMsgLabel->setFixedWidth(m_pMsgLabel->fontMetrics().horizontalAdvance(sMsg) + 15);
         int newWidth = m_pMsgLabel->sizeHint().width() + m_pMainLayout->contentsMargins().left()
                + m_pMainLayout->contentsMargins().right();
         qDebug() << "Resizing visible widget - Width:" << newWidth << "Height:" << height();
