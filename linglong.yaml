@@ -77,4 +77,6 @@ buildext:
     build_depends:
       - libc6
     depends:
-      - ffmpeg pciutils mesa-utils
+      - ffmpeg
+      - pciutils
+      - mesa-utils
