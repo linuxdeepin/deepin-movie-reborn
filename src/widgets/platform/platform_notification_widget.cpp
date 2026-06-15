@@ -97,7 +97,7 @@ void Platform_NotificationWidget::syncPosition()
         break;
 
     case ANCHOR_NORTH_WEST:
-        move(m_pMainWindow->mapToGlobal(QPoint(0, 0)) + m_anchorPoint);
+        move(m_pMainWindow->mapToGlobal(QPoint(0, 0) + m_anchorPoint));
         break;
 
     case ANCHOR_NONE:
