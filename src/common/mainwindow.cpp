@@ -1217,7 +1217,9 @@ bool MainWindow::event(QEvent *pEvent)
                     m_bQuitfullscreenflag = true;
                 }
                 QList<QAction *> listActs = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
-                listActs.at(0)->setChecked(false);
+                if (!listActs.isEmpty()) {
+                    listActs.at(0)->setChecked(false);
+                }
             }
         } else if (m_lastWindowState & Qt::WindowMinimized /*&& windowState() == Qt::WindowNoState*/) {
             if (Settings::get().isSet(Settings::PauseOnMinimize)) {
@@ -3654,33 +3656,37 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
     }
 
     Settings::get().onSetCrash();
-    if (Settings::get().isSet(Settings::ResumeFromLast)) {
-        int nCur = 0;
-        nCur = m_pEngine->playlist().current();
-        if (nCur >= 0) {
-            Settings::get().setInternalOption("playlist_pos", nCur);
+    if (m_pEngine) {
+        if (Settings::get().isSet(Settings::ResumeFromLast)) {
+            int nCur = 0;
+            nCur = m_pEngine->playlist().current();
+            if (nCur >= 0) {
+                Settings::get().setInternalOption("playlist_pos", nCur);
+            }
         }
-    }
 
-    saveVolume();
-    m_pEngine->savePlaybackPosition();
+        saveVolume();
+        m_pEngine->savePlaybackPosition();
+    }
 
     pEvent->accept();
     if (utils::check_wayland_env()) {
 #ifndef _LIBDMR_
-        if (Settings::get().isSet(Settings::ClearWhenQuit)) {
-            m_pEngine->playlist().clearPlaylist();
-        } else {
-            //persistently save current playlist
-            m_pEngine->playlist().savePlaylist();
+        if (m_pEngine) {
+            if (Settings::get().isSet(Settings::ClearWhenQuit)) {
+                m_pEngine->playlist().clearPlaylist();
+            } else {
+                //persistently save current playlist
+                m_pEngine->playlist().savePlaylist();
+            }
         }
 #endif
         // xcb close slow so add this for wayland  by xxj
         DMainWindow::closeEvent(pEvent);
-        m_pEngine->stop();
-        disconnect(m_pEngine, nullptr, nullptr, nullptr);
-        disconnect(&m_pEngine->playlist(), nullptr, nullptr, nullptr);
         if (m_pEngine) {
+            m_pEngine->stop();
+            disconnect(m_pEngine, nullptr, nullptr, nullptr);
+            disconnect(&m_pEngine->playlist(), nullptr, nullptr, nullptr);
             delete m_pEngine;
             m_pEngine = nullptr;
         }
@@ -5150,14 +5156,16 @@ MainWindow::~MainWindow()
     qInfo() << __func__;
     //Do not enter CloseEvent when exiting from the title bar menu, so add the save function here
     //powered by xxxxp
-    if (Settings::get().isSet(Settings::ResumeFromLast)) {
-        int nCur = 0;
-        nCur = m_pEngine->playlist().current();
-        if (nCur >= 0) {
-            Settings::get().setInternalOption("playlist_pos", nCur);
+    if (m_pEngine) {
+        if (Settings::get().isSet(Settings::ResumeFromLast)) {
+            int nCur = 0;
+            nCur = m_pEngine->playlist().current();
+            if (nCur >= 0) {
+                Settings::get().setInternalOption("playlist_pos", nCur);
+            }
         }
+        m_pEngine->savePlaybackPosition();
     }
-    m_pEngine->savePlaybackPosition();
 
     if (m_pEventListener) {
         this->windowHandle()->removeEventFilter(m_pEventListener);
@@ -5165,9 +5173,11 @@ MainWindow::~MainWindow()
         m_pEventListener = nullptr;
     }
 
-    if (!utils::check_wayland_env()) {
-        disconnect(m_pEngine, 0, 0, 0);
-        disconnect(&m_pEngine->playlist(), 0, 0, 0);
+    if (m_pEngine) {
+        if (!utils::check_wayland_env()) {
+            disconnect(m_pEngine, 0, 0, 0);
+            disconnect(&m_pEngine->playlist(), 0, 0, 0);
+        }
     }
 
     if (m_nLastCookie > 0) {
