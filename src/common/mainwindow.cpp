@@ -1,4 +1,4 @@
-// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// Copyright (C) 2020 - 2026, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -3503,9 +3503,18 @@ void MainWindow::play(const QList<QString> &listFiles)
         else
             m_pEngine->setBackendProperty("pause-on-start", false);
     }
+    // Defer setValue to avoid blocking the DBus event loop.
+    // DConfig::setValue() issues an internal synchronous DBus call.
+    // If called directly from openFile() (itself a DBus callback),
+    // the event loop cannot dispatch that reply while blocked here,
+    // causing a deadlock where both the caller (qdbus) and the app hang.
+    // Posting it via singleShot(0) lets the DBus METHOD_RETURN reply
+    // be sent to the caller before the write is attempted.
     if (dconfig) {
-        dconfig->setValue("PausedOnPlay", false); //reset
-        delete dconfig;
+        QTimer::singleShot(0, [dconfig]() {
+            dconfig->setValue("PausedOnPlay", false); //reset
+            delete dconfig;
+        });
     }
 #endif
 
@@ -4347,6 +4356,12 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
         }
         CompositingManager::get().setTestFlag(true);
         /*lmh0724临时规避退出崩溃问题*/
+        QApplication::quit();
+        _Exit(0);
+    } else {
+        // X11 environment - need to exit process as well
+        DMainWindow::closeEvent(pEvent);
+        m_pEngine->stop();
         QApplication::quit();
         _Exit(0);
     }

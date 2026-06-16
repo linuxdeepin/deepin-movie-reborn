@@ -45,10 +45,14 @@ for LDFILE in "$@"; do
         done
     else
         FILE_PATH="${PREFIX}/bin/$LDFILE"
+        # 将二进制文件本身写入 .install
+        if [[ -f "$FILE_PATH" || -L "$FILE_PATH" ]]; then
+            echo "$FILE_PATH" >> "${ID_VALUE}.install"
+        fi
     fi
 
     # 获取依赖库
-    DEPENDENCIES=$(ldd "$FILE_PATH" | grep "$PREFIX") || continue
+    DEPENDENCIES=$(ldd "$FILE_PATH" 2>/dev/null | grep "$PREFIX") || continue
     if [[ ! -z "$DEPENDENCIES" ]]; then
         echo "$DEPENDENCIES" | while IFS= read -r line; do
             LIB_PATH=${line##*=> }

@@ -19,8 +19,8 @@ command:
   - deepin-movie
 
 build: |
-  # 下载和安装依赖
-  apt -y install --download-only libmpv-dev libxcb1-dev libxcb-util0-dev libffmpegthumbnailer-dev libxcb-shape0-dev libxcb-ewmh-dev xcb-proto x11proto-record-dev x11-utils libxtst-dev libavcodec-dev libavformat-dev libavutil-dev libpulse-dev libdvdnav-dev libgsettings-qt-dev libva-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev qt6-base-dev qt6-base-dev-tools qt6-base-private-dev qt6-l10n-tools qt6-svg-dev qt6-tools-dev-tools qt6-tools-dev qt6-multimedia-dev libqt6sql6-sqlite libmpris-qt6-dev libqt6opengl6-dev libdtk6gui-dev libdtk6widget-dev libdtk6core-dev libgpuinfo deepin-event-log
+  # 下载构建依赖和运行时包
+  apt -y install --download-only libmpv-dev libxcb1-dev libxcb-util0-dev libffmpegthumbnailer-dev libxcb-shape0-dev libxcb-ewmh-dev xcb-proto x11proto-record-dev x11-utils libxtst-dev libavcodec-dev libavformat-dev libavutil-dev libpulse-dev libdvdnav-dev libgsettings-qt-dev libva-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev qt6-base-dev qt6-base-dev-tools qt6-base-private-dev qt6-l10n-tools qt6-svg-dev qt6-tools-dev-tools qt6-tools-dev qt6-multimedia-dev libqt6sql6-sqlite libmpris-qt6-dev libqt6opengl6-dev libdtk6gui-dev libdtk6widget-dev libdtk6core-dev libgpuinfo deepin-event-log ffmpeg pciutils mesa-utils libmpv2 libavdevice60 libavfilter9 libpostproc57 libffmpegthumbnailer4v5 libblas3 liblapack3
   # libxcb1-dev：解决构建失败
   bash ./install_dep /var/cache/apt/archives "$PREFIX" "libxcb1-dev"
 
@@ -31,8 +31,12 @@ build: |
   sed -i "s|/usr/include/gstreamer-1.0|$PREFIX/include/gstreamer-1.0|g" src/libdmr/CMakeLists.txt
 
   # 移动部分库到应用库目录，否则无法找到
-  mv ${PREFIX}/lib/${TRIPLET}/blas/libblas.* ${PREFIX}/lib/${TRIPLET}
-  mv ${PREFIX}/lib/${TRIPLET}/lapack/liblapack.* ${PREFIX}/lib/${TRIPLET}
+  if [ -d "${PREFIX}/lib/${TRIPLET}/blas" ]; then
+      mv ${PREFIX}/lib/${TRIPLET}/blas/libblas.* ${PREFIX}/lib/${TRIPLET} 2>/dev/null || true
+  fi
+  if [ -d "${PREFIX}/lib/${TRIPLET}/lapack" ]; then
+      mv ${PREFIX}/lib/${TRIPLET}/lapack/liblapack.* ${PREFIX}/lib/${TRIPLET} 2>/dev/null || true
+  fi
   ldconfig -C "$LINGLONG_LD_SO_CACHE"
 
   # 构建
@@ -50,15 +54,24 @@ build: |
   glib-compile-schemas $PREFIX/share/glib-2.0/schemas
 
   # 项目生成应用名和动态隐式加载的依赖库，ldd无法找到的其他库
+  # 注意：glxinfo是符号链接，会自动解析到架构特定文件(glxinfo.${TRIPLET})
+  # deploy_dep脚本会处理符号链接，无需显式列出架构特定版本
   LDD_FILES=(
     deepin-movie
+    ffmpeg
     lspci
     glxinfo
+    glxinfo.${TRIPLET}
     libmpv.so
     libgpuinfo.so
     libavcodec.so
     libavutil.so
     libavformat.so
+    libavdevice.so
+    libavfilter.so
+    libpostproc.so
+    libswresample.so
+    libswscale.so
     libgstreamer-1.0.so
     libgstpbutils-1.0.so
     libffmpegthumbnailer.so
@@ -70,13 +83,9 @@ build: |
 
   ID_VALUE=$(awk -F ': ' '/^  id: / {print $2}' linglong.yaml)
   find $PREFIX/bin/xprop >> "${ID_VALUE}.install"
+  find $PREFIX/share/deepin-gpuinfo/gpuinfolib.csv >> "${ID_VALUE}.install"
 
-# allow apt download in build and do apt update
 buildext:
-  apt:
-    build_depends:
-      - libc6
-    depends:
-      - ffmpeg
-      - pciutils
-      - mesa-utils
+   apt:
+     build_depends:
+       - libc6
