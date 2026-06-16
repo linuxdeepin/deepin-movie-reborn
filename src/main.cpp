@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 - 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -88,16 +88,21 @@ bool runSingleInstance()
 
     path += "/single";
     int fd = open(path.c_str(), O_WRONLY | O_CREAT, 0644);
-    int flock = lockf(fd, F_TLOCK, 0);
-
     if (fd == -1) {
         qInfo() << strerror(errno);
         return false;
     }
-    if (flock == -1) {
+
+    int flock_result = lockf(fd, F_TLOCK, 0);
+    if (flock_result == -1) {
         qInfo() << strerror(errno);
+        close(fd);
         return false;
     }
+
+    // Keep fd open: the kernel lockf() lock persists for the lifetime
+    // of the file descriptor. Leaking it here is intentional — the lock
+    // is automatically released when the process exits.
     qDebug() << "runSingleInstance end";
     return true;
 }
