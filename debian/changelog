@@ -1,3 +1,13 @@
+deepin-movie-reborn (6.5.50) unstable; urgency=medium
+
+  * chore: Update version to 6.5.50
+  * fix(linglong): move pciutils and mesa-utils to runtime dependencies
+  * chore(linglong): format depends list one item per line
+  * chore(linglong): move pciutils and mesa-utils to runtime deps
+  * fix: notification widget clips last character on first show(update)
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Wed, 17 Jun 2026 09:25:29 +0800
+
 deepin-movie-reborn (6.5.49) unstable; urgency=medium
 
   * chore: Update version to 6.5.49
