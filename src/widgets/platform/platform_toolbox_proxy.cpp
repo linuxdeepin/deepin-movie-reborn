@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 - 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -1889,7 +1889,8 @@ void Platform_ToolboxProxy::slotVolumeButtonClicked()
 void Platform_ToolboxProxy::slotFileLoaded()
 {
     qDebug() << "ThumbnailPreview slotFileLoaded";
-    m_pProgBar->slider()->setRange(0, static_cast<int>(m_pEngine->duration()));
+    if (m_pEngine->duration() != 0)
+        m_pProgBar->slider()->setRange(0, static_cast<int>(m_pEngine->duration()));
     m_pProgBar_Widget->setCurrentIndex(1);
     m_pPreviewer->setFixedSize(0, 0);
     update();
@@ -2328,7 +2329,7 @@ void Platform_ToolboxProxy::updateMovieProgress()
     auto d = m_pEngine->duration();
     auto e = m_pEngine->elapsed();
     qDebug() << "Updating movie progress - Duration:" << d << "Elapsed:" << e;
-    
+
     if (d > m_pProgBar->maximum()) {
         qDebug() << "Duration exceeds progress bar maximum, adjusting duration";
         d = m_pProgBar->maximum();
