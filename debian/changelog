@@ -1,3 +1,11 @@
+deepin-movie-reborn (6.5.51) unstable; urgency=medium
+
+  * chore: Update version to 6.5.51
+  * fix: dynamically sync progress bar range with duration
+  * fix: prevent progress bar crash when duration is zero
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Wed, 17 Jun 2026 20:54:22 +0800
+
 deepin-movie-reborn (6.5.50) unstable; urgency=medium
 
   * chore: Update version to 6.5.50
