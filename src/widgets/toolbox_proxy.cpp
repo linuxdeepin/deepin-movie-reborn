@@ -2071,8 +2071,7 @@ void ToolboxProxy::slotVolumeButtonClicked()
 void ToolboxProxy::slotFileLoaded()
 {
     qDebug() << "File loaded, updating progress bar";
-    if (m_pEngine->duration() != 0)
-        m_pProgBar->slider()->setRange(0, static_cast<int>(m_pEngine->duration()));
+    m_pProgBar->slider()->setRange(0, static_cast<int>(m_pEngine->duration()));
     m_pProgBar_Widget->setCurrentIndex(1);
     m_pPreviewer->setFixedSize(0, 0);
     update();
@@ -2610,9 +2609,8 @@ void ToolboxProxy::updateMovieProgress()
     }
     auto d = m_pEngine->duration();
     auto e = m_pEngine->elapsed();
-    if (d > m_pProgBar->maximum()) {
-        qDebug() << "d > m_pProgBar->maximum()";
-        d = m_pProgBar->maximum();
+    if (d != m_pProgBar->maximum()) {
+        m_pProgBar->slider()->setRange(0, static_cast<int>(d));
     }
     int v = 0;
     int v2 = 0;
