@@ -1,4 +1,4 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// Copyright (C) 2020 - 2026, Deepin Technology Co., Ltd. <support@deepin.org>
 // SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -2071,7 +2071,8 @@ void ToolboxProxy::slotVolumeButtonClicked()
 void ToolboxProxy::slotFileLoaded()
 {
     qDebug() << "File loaded, updating progress bar";
-    m_pProgBar->slider()->setRange(0, static_cast<int>(m_pEngine->duration()));
+    if (m_pEngine->duration() != 0)
+        m_pProgBar->slider()->setRange(0, static_cast<int>(m_pEngine->duration()));
     m_pProgBar_Widget->setCurrentIndex(1);
     m_pPreviewer->setFixedSize(0, 0);
     update();
