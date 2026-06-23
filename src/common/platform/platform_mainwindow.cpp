@@ -3518,22 +3518,15 @@ void Platform_MainWindow::slotVolumeChanged(int nVolume)
         m_pPresenter->slotvolumeChanged();
     }
 
-    static bool firstInit = false;
+    static bool firstInit = true;
     if (!firstInit) {
-        QTimer::singleShot(50, [=](){
-            if (nVolume == 0) {
-                m_pCommHintWid->updateWithMessage(tr("Mute"));
-            } else {
-                m_pCommHintWid->updateWithMessage(tr("Volume: %1%").arg(nVolume));
-            }
-        });
-        firstInit = true;
-    } else {
         if (nVolume == 0) {
             m_pCommHintWid->updateWithMessage(tr("Mute"));
         } else {
             m_pCommHintWid->updateWithMessage(tr("Volume: %1%").arg(nVolume));
         }
+    } else {
+        firstInit = false;
     }
 }
 
