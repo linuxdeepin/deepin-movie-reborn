@@ -1,3 +1,10 @@
+deepin-movie-reborn (6.5.52) unstable; urgency=medium
+
+  * chore: Update version to 6.5.52
+  * fix: add clear playlist logic for X11 on quit
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 25 Jun 2026 20:22:54 +0800
+
 deepin-movie-reborn (6.5.51) unstable; urgency=medium
 
   * chore: Update version to 6.5.51
