@@ -4360,6 +4360,16 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
         _Exit(0);
     } else {
         // X11 environment - need to exit process as well
+#ifndef _LIBDMR_
+        if (Settings::get().isSet(Settings::ClearWhenQuit)) {
+            qDebug() << "Settings::get().isSet(Settings::ClearWhenQuit) - X11";
+            m_pEngine->playlist().clearPlaylist();
+        } else {
+            qDebug() << "!Settings::get().isSet(Settings::ClearWhenQuit) - X11";
+            //persistently save current playlist
+            m_pEngine->playlist().savePlaylist();
+        }
+#endif
         DMainWindow::closeEvent(pEvent);
         m_pEngine->stop();
         QApplication::quit();
