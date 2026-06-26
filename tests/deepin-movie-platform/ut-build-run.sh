@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+# SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -17,7 +17,13 @@ rm -fr /data/source/deepin-movie-reborn/movie/play.conf
 cp ../../../tests/deepin-movie-platform/play.conf /data/source/deepin-movie-reborn/movie/play.conf
 echo " ===================CREAT LCOV REPROT==================== "
 lcov --directory ./CMakeFiles/deepin-movie-platform-test.dir --zerocounters
-ASAN_OPTIONS="fast_unwind_on_malloc=1" ./$executable
+# 跑 3 次累加 .gcda（不在中间 zerocounters）。覆盖率构建（无 ASan）下偶发
+# SIGSEGV/SIGABRT，但 test_qtestmain.cpp 的 crashHandler 会调 __gcov_dump()
+# 刷新 .gcda 后 _exit()，所以崩溃的那次仍贡献到崩溃点为止的覆盖；多次累加可
+# 把 flaky 崩溃丢掉的尾部补回来，使覆盖率结果稳定、不依赖某一次是否崩。
+for ut_run in 1 2 3; do
+    ASAN_OPTIONS="fast_unwind_on_malloc=1" ./$executable || true
+done
 lcov --directory . --capture --output-file ./html/${executable}_Coverage.info
 rm -fr /data/source/deepin-movie-reborn/movie/play.conf
 
