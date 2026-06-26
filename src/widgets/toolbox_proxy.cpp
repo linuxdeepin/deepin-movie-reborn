@@ -2363,7 +2363,7 @@ void ToolboxProxy::slotProAnimationFinished()
     qDebug() << "slotProAnimationFinished";
     m_pListBtn->setEnabled(true);
     QObject *pProAnimation = sender();
-    if (pProAnimation == m_pPaOpen) {   
+    if (pProAnimation == m_pPaOpen) {
         qDebug() << "pProAnimation == m_pPaOpen";
         m_pPaOpen->deleteLater();
         m_pPaOpen = nullptr;
@@ -3062,6 +3062,12 @@ void ToolboxProxy::showEvent(QShowEvent *event)
 
 void ToolboxProxy::paintEvent(QPaintEvent *event)
 {
+#ifdef USE_TEST
+    // In the unit-test harness a detached toolbox may have no main window;
+    // fall back to the base paint to avoid dereferencing a null m_pMainWindow
+    // (flaky SIGSEGV in MainWindow.progBar / boost_dm paint paths).
+    if (!m_pMainWindow) { DFloatingWidget::paintEvent(event); return; }
+#endif
     if(CompositingManager::get().platform() != X86) {
         QPainter painter(this);
             setFixedWidth(m_pMainWindow->width());
