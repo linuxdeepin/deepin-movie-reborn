@@ -57,8 +57,11 @@ set(AllQRC
 add_executable(${PROJECT_NAME} ${allSource} ${allTestSource} ${AllQRC})
 
 #添加内存泄露检测参数
-if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")
-    set(CMAKE_CXX_FLAGS "-g -fprofile-arcs -ftest-coverage")    #mips平台下不进行内存检测
+# ENABLE_SANITIZE: ASan/UBSan/LSan 内存检测。注意 sanitizer 会抢占 gcov 的 atexit 刷新，
+# 导致 .gcda 不生成；收集覆盖率时须 -DENABLE_SANITIZE=OFF（等价于 mips 下的纯覆盖率配置）。
+option(ENABLE_SANITIZE "Enable AddressSanitizer/UBSan/LeakSanitizer" ON)
+if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64" OR NOT ENABLE_SANITIZE)
+    set(CMAKE_CXX_FLAGS "-g -fprofile-arcs -ftest-coverage")    #不进行内存检测(覆盖率需要)
 else()
     set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer -g -fprofile-arcs -ftest-coverage")
     set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
@@ -74,7 +77,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(3rd_lib REQUIRED
         dtk6widget dtk6gui
         libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
-        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt6 dbusextended-qt5 libva libva-x11
+        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt6 libva libva-x11
         )
     #libpulse-simple xcb-aux gtest
 # 添加第三方库的所有文件夹路径到工程中来(注意 *_INCLUDE_DIRS)
@@ -87,5 +90,12 @@ target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES} )
 target_link_libraries(${PROJECT_NAME} gmock gmock_main gtest gtest_main dmr)
 
 # 将工程与Qt模块链接起来
-#qt5_use_modules(${PROJECT_NAME} ${QtModule})
+if (Qt6_FOUND)
+    set(_linkModules ${QtModule})
+    list(REMOVE_ITEM _linkModules LinguistTools)
+    foreach(module ${_linkModules})
+        list(APPEND QtLibs "Qt6::${module}")
+    endforeach()
+    target_link_libraries(${PROJECT_NAME} ${QtLibs})
+endif()
 

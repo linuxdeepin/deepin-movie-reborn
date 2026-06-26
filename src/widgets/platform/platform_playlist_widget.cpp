@@ -962,7 +962,7 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
     QTimer::singleShot(10, this, &Platform_PlaylistWidget::loadPlaylist);
 
-    connect(ActionFactory::get().playlistContextMenu(), &DMenu::aboutToShow, [ = ]() {
+    connect(ActionFactory::get().playlistContextMenu(), &DMenu::aboutToShow, this, [ = ]() {
         QTimer::singleShot(20, [ = ]() {
             if (_mouseItem) {
                 _clickedItem = _mouseItem;
@@ -970,7 +970,7 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
             }
         });
     });
-    connect(ActionFactory::get().playlistContextMenu(), &DMenu::aboutToHide, [ = ]() {
+    connect(ActionFactory::get().playlistContextMenu(), &DMenu::aboutToHide, this, [ = ]() {
         m_pClearButton->update();
         if (_mouseItem) {
             (static_cast<Platform_PlayItemWidget *>(_mouseItem))->setHovered(false);
@@ -1279,7 +1279,10 @@ void Platform_PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
     if (_playlist->itemAt(itempos)) {
         qDebug() << "itemAt";
         _mouseItem = _playlist->itemWidget(_playlist->itemAt(itempos));
-        on_item = true;
+        // itemWidget() may return null for items that have no widget attached;
+        // only treat the position as "on item" when a real widget exists, so the
+        // action-enable logic below never dereferences a null piw.
+        on_item = (_mouseItem != nullptr);
     }
 
     if (CompositingManager::get().isPadSystem()) {
@@ -1298,12 +1301,14 @@ void Platform_PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
         for (auto act : menu->actions()) {
             auto prop = static_cast<ActionFactory::ActionKind>(act->property("kind").toInt());
             bool on = true;
+            // dynamic_cast may yield a null piw (item has a non-matching widget
+            // type); guard every dereference so the menu still builds safely.
             if (prop == ActionFactory::ActionKind::PlaylistOpenItemInFM) {
-                on = on_item && piw->_pif.valid && piw->_pif.url.isLocalFile();
+                on = on_item && piw && piw->_pif.valid && piw->_pif.url.isLocalFile();
             } else if (prop == ActionFactory::ActionKind::PlaylistRemoveItem) {
                 on = on_item;
             } else if (prop == ActionFactory::ActionKind::PlaylistItemInfo) {
-                on = on_item && piw->_pif.valid;
+                on = on_item && piw && piw->_pif.valid;
             } else {
                 on = _playlist->count() > 0 ? true : false;
             }

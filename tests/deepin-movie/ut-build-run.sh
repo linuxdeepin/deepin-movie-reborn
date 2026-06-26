@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+# SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -17,7 +17,7 @@ mkdir -p report
 
 echo " ===================CREAT LCOV REPROT==================== "
 lcov --directory ./CMakeFiles/deepin-movie-test.dir --zerocounters
-ASAN_OPTIONS="fast_unwind_on_malloc=1" ./$executable
+ASAN_OPTIONS="fast_unwind_on_malloc=1" ./$executable; ec=$?; echo "==>> ${executable} 退出码=$ec (134=SIGABRT/Q_ASSERT, 139=SIGSEGV, 137=SIGKILL/OOM, 130=SIGINT, 143=SIGTERM, 0=正常)"
 lcov --directory . --capture --output-file ./html/${executable}_Coverage.info
 
 echo " =================== do filter begin ==================== "

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 ~ 2020 UnionTech Software Technology Co.,Ltd
+// Copyright (C) 2019-2026 ~ 2020 UnionTech Software Technology Co.,Ltd
 // SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -68,7 +68,7 @@ void QTestMain::testGTest()
     testing::GTEST_FLAG(output) = "xml:./report/report_deepin-movie-test.xml";
     testing::InitGoogleTest(&m_argc,m_argv);
     int ret = RUN_ALL_TESTS();
-#ifndef __mips__
+#if !defined(__mips__) && defined(__SANITIZE_ADDRESS__)
     __sanitizer_set_report_path("asan.log");
 #endif
     Q_UNUSED(ret)

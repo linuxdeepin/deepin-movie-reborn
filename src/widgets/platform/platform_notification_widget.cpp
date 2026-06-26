@@ -56,7 +56,7 @@ Platform_NotificationWidget::Platform_NotificationWidget(QWidget *parent)
     m_pTimer->setSingleShot(true);
     connect(m_pTimer, &QTimer::timeout, this, &QWidget::hide);
 
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, [=](int nType) {
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [=](int nType) {
         qDebug() << "Theme type changed to:" << nType;
         if (nType == 2) {
             m_pMsgLabel->setForegroundRole(DPalette::TextLively);

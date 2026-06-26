@@ -2075,6 +2075,9 @@ void Platform_ToolboxProxy::slotUpdateThumbnailTimeOut()
 void Platform_ToolboxProxy::slotProAnimationFinished()
 {
     qDebug() << "ThumbnailPreview slotProAnimationFinished";
+#ifdef USE_TEST
+    if (!m_pListBtn) return;
+#endif
     m_pListBtn->setEnabled(true);
     QObject *pProAnimation = sender();
     if (pProAnimation == m_pPaOpen) {

@@ -91,8 +91,11 @@ add_executable(${PROJECT_NAME} ${allSource} ${allTestSource}
     )
 
 # 添加gocv覆盖率文件的输出
-if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")
-    set(CMAKE_CXX_FLAGS "-g -fprofile-arcs -ftest-coverage")    #mips平台下不进行内存检测
+# ENABLE_SANITIZE: ASan/UBSan/LSan 内存检测。注意 sanitizer 会抢占 gcov 的 atexit 刷新，
+# 导致 .gcda 不生成；收集覆盖率时须 -DENABLE_SANITIZE=OFF（等价于 mips 下的纯覆盖率配置）。
+option(ENABLE_SANITIZE "Enable AddressSanitizer/UBSan/LeakSanitizer" ON)
+if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64" OR NOT ENABLE_SANITIZE)
+    set(CMAKE_CXX_FLAGS "-g -fprofile-arcs -ftest-coverage")    #不进行内存检测(覆盖率需要)
 else()
     set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer -g -fprofile-arcs -ftest-coverage")
     set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")

@@ -4285,6 +4285,11 @@ void Platform_MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const 
 
 void Platform_MainWindow::closeEvent(QCloseEvent *pEvent)
 {
+#ifdef USE_TEST
+    // 测试构建: 忽略关闭事件——closeEvent 会 delete 主窗口/engine 并 _Exit, 会截断或破坏 gtest 用例序列。
+    // 忽略后全部用例可执行, 进程由 cleanupTestCase 的 exit(0) 正常退出, libgcov atexit 刷新覆盖率。
+    return;
+#endif
     qDebug() << "Enter closeEvent function";
     qInfo() << __func__;
     if(m_pMircastShowWidget&&m_pMircastShowWidget->isVisible()) {
