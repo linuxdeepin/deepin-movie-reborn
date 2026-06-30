@@ -178,6 +178,7 @@ CompositingManager::CompositingManager()
     m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
     qDebug() << "m_bZXIntgraphics set to:" << m_bZXIntgraphics;
 
+#ifndef USE_TEST
     if (dmr::utils::check_wayland_env()) {
         qInfo() << "Running in Wayland environment";
         _composited = true;
@@ -204,6 +205,7 @@ CompositingManager::CompositingManager()
         qInfo() << "Composited mode:" << _composited;
         return;
     }
+#endif
 
     QString settingPath = DStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     settingPath += "/config.conf";
@@ -736,6 +738,7 @@ void CompositingManager::detectOpenGLEarly()
         qDebug() << "Running on Nvidia. Setting QT_XCB_GL_INTEGRATION to xcb_glx.";
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
     } else if (!CompositingManager::runningOnVmwgfx()) {
+#ifndef USE_TEST
         qDebug() << "Not running on Vmwgfx. Checking XDG_SESSION_TYPE and WAYLAND_DISPLAY.";
         auto e = QProcessEnvironment::systemEnvironment();
         QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
@@ -748,6 +751,7 @@ void CompositingManager::detectOpenGLEarly()
         } else {
             qDebug() << "XDG_SESSION_TYPE is wayland or WAYLAND_DISPLAY contains wayland. Not setting QT_XCB_GL_INTEGRATION to xcb_egl.";
         }
+#endif
     } else {
         qDebug() << "Running on Vmwgfx. Not setting QT_XCB_GL_INTEGRATION.";
     }

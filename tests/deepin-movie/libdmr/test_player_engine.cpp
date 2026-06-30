@@ -12,6 +12,10 @@
 #include <DSettingsDialog>
 #include <dwidgetstype.h>
 #include <QWidget>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QTemporaryDir>
 
 #include <unistd.h>
 #include <gtest/gtest.h>
@@ -43,5 +47,68 @@ TEST(PlayerEngine, movieInfo)
 
     mi = MovieInfo::parseFromFile(QFileInfo("/data/source/deepin-movie-reborn/movie/demo.mp4"), &bFlag);
 #endif
+}
+
+// Real media so isPlayableFile's FFmpeg content probe returns true.
+static const char *pe_kDemoMedia = "/data/source/deepin-movie-reborn/movie/demo.mp4";
+
+// addPlayDir: temp dir with numbered media symlinks + a non-media file
+// exercises FileFilter::filterDir, the SortByDigits digit comparator, and
+// addPlayFiles' playable / non-playable branches.
+TEST(PlayerEngine, addPlayDir_sortsAndAppends)
+{
+    PlayerEngine *engine = dApp->getMainWindow()->engine();
+    ASSERT_TRUE(engine != nullptr);
+
+    QTemporaryDir td;
+    ASSERT_TRUE(td.isValid());
+    // Digit-leading names so SortByDigits' same-position digit comparison runs
+    // (the comparator only enters the digit branch when the digit offset equals
+    // the search offset, i.e. the name starts with digits).
+    for (const char *n : {"01.mp4", "02.mp4", "10.mp4"}) {
+        ASSERT_TRUE(QFile::link(QString(pe_kDemoMedia), td.path() + "/" + n));
+    }
+    // A non-media file -> isPlayableFile false -> filtered out by addPlayFiles.
+    QFile txt(td.path() + "/readme.txt");
+    ASSERT_TRUE(txt.open(QIODevice::WriteOnly));
+    txt.close();
+
+    QList<QUrl> result = engine->addPlayDir(QDir(td.path()));
+    EXPECT_GE(result.size(), 3);  // the 3 real-media symlinks survived filtering
+}
+
+// addPlayFs: file branch, directory branch (filterDir), and the empty-valids
+// early return.
+TEST(PlayerEngine, addPlayFs_file_dir_empty_branches)
+{
+    PlayerEngine *engine = dApp->getMainWindow()->engine();
+    ASSERT_TRUE(engine != nullptr);
+
+    QTemporaryDir td;
+    ASSERT_TRUE(td.isValid());
+    ASSERT_TRUE(QFile::link(QString(pe_kDemoMedia), td.path() + "/clip.mp4"));
+    ASSERT_TRUE(QDir(td.path()).mkdir("sub"));
+    ASSERT_TRUE(QFile::link(QString(pe_kDemoMedia), td.path() + "/sub/inner.mp4"));
+    ASSERT_TRUE(QDir(td.path()).mkdir("empty"));
+
+    // file + dir entries -> non-empty valids -> addPlayFiles + finishedAddFiles.
+    engine->addPlayFs({td.path() + "/clip.mp4", td.path() + "/sub"});
+    QTest::qWait(50);
+
+    // only an empty dir -> valids empty -> early return.
+    engine->addPlayFs({td.path() + "/empty"});
+    QTest::qWait(50);
+
+    SUCCEED();
+}
+
+// play(): empty-playlist early return (no real playback triggered).
+TEST(PlayerEngine, play_emptyPlaylist_returnsEarly)
+{
+    PlayerEngine *engine = dApp->getMainWindow()->engine();
+    ASSERT_TRUE(engine != nullptr);
+    engine->playlist().clear();   // ensure empty -> play() hits the guard
+    engine->play();               // covers "no backend or empty playlist" return
+    SUCCEED();
 }
 
