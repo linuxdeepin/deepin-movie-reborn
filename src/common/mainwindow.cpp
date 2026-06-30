@@ -4845,13 +4845,13 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 
     qInfo() << __func__ << "进入mouseReleaseEvent";
 
-    if (!insideResizeArea(ev->globalPos()) && !m_bMouseMoved && (m_pPlaylist->state() != PlaylistWidget::Opened)) {
+    if (!insideResizeArea(ev->globalPos()) && !m_bMouseMoved && (!m_pPlaylist || m_pPlaylist->state() != PlaylistWidget::Opened)) {
         qDebug() << "!insideResizeArea(ev->globalPos()) && !m_bMouseMoved && (m_pPlaylist->state() != PlaylistWidget::Opened)";
         if (!insideToolsArea(ev->pos())) {
             qDebug() << "!insideToolsArea(ev->pos())";
             m_delayedMouseReleaseTimer.start(120);
         } else {
-            if (m_pEngine->state() == PlayerEngine::CoreState::Idle && !insideToolsArea(ev->pos())) {
+            if (m_pEngine && m_pEngine->state() == PlayerEngine::CoreState::Idle && !insideToolsArea(ev->pos())) {
                 qDebug() << "m_pEngine->state() == PlayerEngine::CoreState::Idle && !insideToolsArea(ev->pos())";
                 m_delayedMouseReleaseTimer.start(120);
             }
