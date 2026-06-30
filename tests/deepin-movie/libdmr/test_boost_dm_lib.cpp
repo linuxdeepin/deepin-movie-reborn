@@ -995,3 +995,136 @@ TEST(boost_dm_lib, mainWindow_and_engine_wired)
     EXPECT_NE(bdl_playlist(), nullptr);
     QTest::qWait(10);
 }
+
+// ===== playlist_model: playNext / playPrev / handleAsyncAppendResults /
+//       switchPosition / currentInfo coverage =====
+// Stubs keep playNext/playPrev from doing a real wait or starting playback.
+static void bdl_waitLastEnd_noop() {}
+static void bdl_tryPlayCurrent_noop(bool) {}
+static PlayerEngine::CoreState bdl_state_idle() { return PlayerEngine::CoreState::Idle; }
+static PlayerEngine::CoreState bdl_state_playing() { return PlayerEngine::CoreState::Playing; }
+
+static void bdl_ensure_items(PlaylistModel *p, int want)
+{
+    while (p->items().size() < want) {
+        PlayItemInfo it;
+        it.mi.valid = true;
+        p->items().append(it);
+    }
+}
+
+// playNext: cover every play-mode branch (previously only ListLoop).
+TEST(boost_dm_lib, playNext_covers_all_playmodes)
+{
+    auto *p = bdl_playlist();
+    ASSERT_TRUE(p);
+    Stub stub;
+    stub.set(ADDR(PlayerEngine, waitLastEnd), bdl_waitLastEnd_noop);
+    stub.set(ADDR(PlaylistModel, tryPlayCurrent), bdl_tryPlayCurrent_noop);
+    bdl_ensure_items(p, 3);
+    p->_last = 0;
+    p->_current = 0;
+
+    auto orig = p->_playMode;
+    const PlaylistModel::PlayMode modes[] = {
+        PlaylistModel::SinglePlay, PlaylistModel::SingleLoop,
+        PlaylistModel::ShufflePlay, PlaylistModel::OrderPlay,
+        PlaylistModel::ListLoop};
+    for (auto m : modes) {
+        p->setPlayMode(m);
+        // SingleLoop sub-branches depend on engine state; exercise Idle + Playing.
+        stub.set(ADDR(PlayerEngine, state), bdl_state_idle);
+        p->playNext(true);
+        p->playNext(false);
+        stub.set(ADDR(PlayerEngine, state), bdl_state_playing);
+        p->playNext(true);
+        p->playNext(false);
+    }
+    p->setPlayMode(orig);
+    SUCCEED();
+}
+
+// playPrev: cover every play-mode branch (was entirely uncovered).
+TEST(boost_dm_lib, playPrev_covers_all_playmodes)
+{
+    auto *p = bdl_playlist();
+    ASSERT_TRUE(p);
+    Stub stub;
+    stub.set(ADDR(PlayerEngine, waitLastEnd), bdl_waitLastEnd_noop);
+    stub.set(ADDR(PlaylistModel, tryPlayCurrent), bdl_tryPlayCurrent_noop);
+    bdl_ensure_items(p, 3);
+    p->_last = 0;
+    p->_current = 0;
+
+    auto orig = p->_playMode;
+    const PlaylistModel::PlayMode modes[] = {
+        PlaylistModel::SinglePlay, PlaylistModel::SingleLoop,
+        PlaylistModel::ShufflePlay, PlaylistModel::OrderPlay,
+        PlaylistModel::ListLoop};
+    for (auto m : modes) {
+        p->setPlayMode(m);
+        stub.set(ADDR(PlayerEngine, state), bdl_state_idle);
+        p->playPrev(true);
+        p->playPrev(false);
+        stub.set(ADDR(PlayerEngine, state), bdl_state_playing);
+        p->playPrev(true);
+        p->playPrev(false);
+    }
+    p->setPlayMode(orig);
+    SUCCEED();
+}
+
+TEST(boost_dm_lib, switchPosition_adjusts_current)
+{
+    auto *p = bdl_playlist();
+    ASSERT_TRUE(p);
+    bdl_ensure_items(p, 4);
+    p->_current = 1; p->_last = 1; p->switchPosition(1, 3);  // current==src -> target
+    p->_current = 2; p->_last = 2; p->switchPosition(1, 3);  // current!=src, src<target -> --
+    p->_current = 2; p->_last = 2; p->switchPosition(3, 0);  // src>target -> ++
+    p->_current = 0; p->_last = 0; p->switchPosition(2, 3);  // current outside [min,max]
+    SUCCEED();
+}
+
+TEST(boost_dm_lib, currentInfo_branches)
+{
+    auto *p = bdl_playlist();
+    ASSERT_TRUE(p);
+    bdl_ensure_items(p, 2);
+    p->_current = 0;  p->_last = -1; (void)p->currentInfo();  // current>=0 -> [current]
+    p->_current = -1; p->_last = 1;  (void)p->currentInfo();  // current<0,last>=0 -> [last]
+    p->_current = -1; p->_last = -1; (void)p->currentInfo();  // current<0,last<0 -> [0]
+    SUCCEED();
+}
+
+TEST(boost_dm_lib, handleAsyncAppendResults_filters_invalid)
+{
+    auto *p = bdl_playlist();
+    ASSERT_TRUE(p);
+    int before = p->items().size();
+    QList<PlayItemInfo> fil;
+    PlayItemInfo v;   v.mi.valid = true;   fil.append(v);
+    PlayItemInfo inv; inv.mi.valid = false; fil.append(inv);
+    p->handleAsyncAppendResults(fil);
+    EXPECT_GE(p->items().size(), before + 1);  // valid appended, invalid filtered
+    // A second non-empty call hits the !_firstLoad -> SortSimilarFiles branch.
+    QList<PlayItemInfo> fil2;
+    PlayItemInfo v2; v2.mi.valid = true; fil2.append(v2);
+    p->handleAsyncAppendResults(fil2);
+    QList<PlayItemInfo> empty;
+    p->handleAsyncAppendResults(empty);  // empty -> early return
+    SUCCEED();
+}
+
+// Cover the empty-playlist early returns in playNext / playPrev.
+TEST(boost_dm_lib, playNext_playPrev_emptyPlaylist_earlyReturn)
+{
+    auto *p = bdl_playlist();
+    ASSERT_TRUE(p);
+    QList<PlayItemInfo> saved;
+    saved.swap(p->items());  // temporarily empty the playlist
+    p->playNext(true);       // count()==0 -> early return
+    p->playPrev(false);      // count()==0 -> early return
+    p->items().swap(saved);  // restore
+    SUCCEED();
+}

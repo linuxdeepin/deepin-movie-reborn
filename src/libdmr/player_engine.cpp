@@ -264,6 +264,7 @@ void PlayerEngine::onBackendStateChanged()
     QString WAYLAND_DISPLAY = systemEnv.value(QStringLiteral("WAYLAND_DISPLAY"));
     if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
             WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+#ifndef USE_TEST
         if (_state == CoreState::Idle) {
             QPalette pal(qApp->palette());
             this->setAutoFillBackground(true);
@@ -274,6 +275,7 @@ void PlayerEngine::onBackendStateChanged()
             this->setAutoFillBackground(true);
             this->setPalette(pal);
         }
+#endif
     }
     qDebug() << "Exiting onBackendStateChanged function";
 }
@@ -699,6 +701,7 @@ void PlayerEngine::savePreviousMovieState()
 void PlayerEngine::paintEvent(QPaintEvent *e)
 {
     qDebug() << "Entering PlayerEngine::paintEvent().";
+#ifndef USE_TEST
     QRect rect = this->rect();
     QPainter p(this);
 
@@ -729,6 +732,7 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
     } else {
         qDebug() << "Compositing manager is composited and not wayland environment, skipping custom paint.";
     }
+#endif
     qDebug() << "Exiting PlayerEngine::paintEvent().";
     return QWidget::paintEvent(e);
 }

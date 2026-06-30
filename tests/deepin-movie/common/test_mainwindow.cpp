@@ -682,6 +682,51 @@ TEST(MainWindow, miniMode)
 }
 #endif
 
+// Force-cover the ToggleMiniMode switching code in MainWindow::requestAction
+// (mainwindow.cpp:2360-2432: boardVendor / dmidecode detection + the
+// QTimer::singleShot lambda that calls reflectActionToUI/toggleUIMode).
+// The original MainWindow.miniMode test above is `#if 0`-disabled, so this
+// whole path had zero coverage. We force the requestAction guards open and
+// toggle mini mode on then off.
+static bool mw_mini_animFinished_true() { return true; }
+// toggleUIMode reaches MpvGLWidget::toggleRoundedClip, which is null without a
+// real playback pipeline; stub it so the requestAction lambda runs safely.
+static void mw_mini_toggleUIMode_noop() { }
+
+TEST(MainWindow, miniModeSwitchForCoverage)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w != nullptr);
+
+    Stub stub;
+    stub.set(ADDR(ToolboxProxy, getbAnimationFinash), mw_mini_animFinished_true);
+    stub.set(ADDR(MainWindow, toggleUIMode), mw_mini_toggleUIMode_noop);
+    w->m_bStartAnimation = false;    // bypass animation guard (requestAction:2090)
+    w->m_bMouseMoved = false;        // bypass the case's m_bMouseMoved break (2362)
+    w->m_bInBurstShootMode = false;  // isActionAllowed burst guard (2005)
+
+    // Cover the m_bMouseMoved early-break guard ("can't toggle while window
+    // is moving"): enter the case, hit the break, no toggle.
+    w->m_bMouseMoved = true;
+    w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);
+    QTest::qWait(100);
+    w->m_bMouseMoved = false;
+
+    // Start from normal (non-mini) mode so the first toggle enters mini mode.
+    if (w->getMiniMode()) {
+        w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);
+        QTest::qWait(700);
+    }
+
+    // Enter mini mode -> runs the ToggleMiniMode case + its singleShot lambda.
+    w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);
+    QTest::qWait(700);  // let reflectActionToUI / toggleUIMode run
+
+    // Exit mini mode -> runs the case again (the toggle-back branch).
+    w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);
+    QTest::qWait(700);
+}
+
 TEST(MainWindow, progBar)
 {
     MainWindow *w = dApp->getMainWindow();

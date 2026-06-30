@@ -2401,7 +2401,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         qInfo() << "Whether special mini mode is supported? " << boardVendorFlag;
 
         int nDelayTime = 0;
-        if (m_pPlaylist->state() == PlaylistWidget::Opened) {
+        if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Opened) {
             qDebug() << "m_pPlaylist->state() == PlaylistWidget::Opened";
             requestAction(ActionFactory::TogglePlaylist);
             nDelayTime = 500;
