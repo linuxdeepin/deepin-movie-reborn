@@ -213,6 +213,65 @@ TEST(utils_ext, ValidateScreenshotPath_tilde_expansion)
 }
 
 // ---------------------------------------------------------------------------
+// Linglong path conversion — covered via real environment, no USE_TEST stubs.
+// We stub the *dependency* IsLinglongEnvironment() (legitimate unit-testing),
+// then exercise the real ConvertLinglong* code under test.
+// ---------------------------------------------------------------------------
+
+static bool utils_ext_isLinglong_true() { return true; }
+
+TEST(utils_ext, ConvertLinglongPathForPlayback_not_linglong)
+{
+    // IsLinglongEnvironment() is false in the test env -> path returned unchanged.
+    EXPECT_EQ(utils::ConvertLinglongPathForPlayback("/tmp/utils_ext_anywhere"),
+              QString("/tmp/utils_ext_anywhere"));
+}
+
+TEST(utils_ext, ConvertLinglongPathForPlayback_linglong_path_exists)
+{
+    Stub stub;
+    typedef bool (*fptr)();
+    stub.set((fptr)&utils::IsLinglongEnvironment, utils_ext_isLinglong_true);
+    // Real temp file at `path` -> QFile::exists(path) branch returns path.
+    QTemporaryFile tf;
+    ASSERT_TRUE(tf.open());
+    EXPECT_EQ(utils::ConvertLinglongPathForPlayback(tf.fileName()), tf.fileName());
+}
+
+TEST(utils_ext, ConvertLinglongPathForPlayback_linglong_neither_exists)
+{
+    Stub stub;
+    typedef bool (*fptr)();
+    stub.set((fptr)&utils::IsLinglongEnvironment, utils_ext_isLinglong_true);
+    // Neither `path` nor /run/host/rootfs+path exists -> final `return path`.
+    QString p = "/tmp/utils_ext_definitely_missing_12345";
+    EXPECT_EQ(utils::ConvertLinglongPathForPlayback(p), p);
+}
+
+TEST(utils_ext, ConvertLinglongPathForFM_not_linglong)
+{
+    EXPECT_EQ(utils::ConvertLinglongPathForFM("/run/host/rootfs/foo"),
+              QString("/run/host/rootfs/foo"));
+}
+
+TEST(utils_ext, ConvertLinglongPathForFM_linglong_starts_with_rootfs)
+{
+    Stub stub;
+    typedef bool (*fptr)();
+    stub.set((fptr)&utils::IsLinglongEnvironment, utils_ext_isLinglong_true);
+    // Pure string op: strip the /run/host/rootfs prefix.
+    EXPECT_EQ(utils::ConvertLinglongPathForFM("/run/host/rootfs/foo/bar"), QString("/foo/bar"));
+}
+
+TEST(utils_ext, ConvertLinglongPathForFM_linglong_not_starts_with_rootfs)
+{
+    Stub stub;
+    typedef bool (*fptr)();
+    stub.set((fptr)&utils::IsLinglongEnvironment, utils_ext_isLinglong_true);
+    EXPECT_EQ(utils::ConvertLinglongPathForFM("/tmp/foo"), QString("/tmp/foo"));
+}
+
+// ---------------------------------------------------------------------------
 // ElideText
 // ---------------------------------------------------------------------------
 

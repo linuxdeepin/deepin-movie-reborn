@@ -650,7 +650,9 @@ protected:
             m_bPress = !m_bPress;
             //鼠标释放时seek视频位置。
             int v = position2progress(e->pos());
-            m_pEngine->seekAbsolute(v);
+            if (m_pEngine) {
+                m_pEngine->seekAbsolute(v);
+            }
         }
 
         m_pSliderArrowUp->setVisible(m_bPress);
