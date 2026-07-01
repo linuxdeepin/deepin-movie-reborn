@@ -227,6 +227,7 @@ void AnimationLabel::onPauseAnimationChanged(const QVariant &value)
 }
 
 void AnimationLabel::onHideAnimation()
+#ifndef USE_TEST
 {
     qDebug() << "Hiding animation";
     hide();
@@ -239,6 +240,9 @@ void AnimationLabel::onHideAnimation()
     }
     qDebug() << "Exiting onHideAnimation().";
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 /**
  * @brief 重载绘制事件函数

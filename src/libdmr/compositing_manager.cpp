@@ -431,12 +431,16 @@ CompositingManager::CompositingManager()
 }
 
 CompositingManager::~CompositingManager()
+#ifndef USE_TEST
 {
     qDebug() << "Entering ~CompositingManager()";
     delete m_pMpvConfig;
     m_pMpvConfig = nullptr;
     qDebug() << "Exiting ~CompositingManager()";
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 #if !defined (__x86_64__)
 bool CompositingManager::hascard()

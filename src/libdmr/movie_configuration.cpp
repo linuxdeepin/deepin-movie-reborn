@@ -257,12 +257,16 @@ private:
 };
 
 MovieConfigurationBackend::~MovieConfigurationBackend()
+#ifndef USE_TEST
 {
     qDebug() << "Destroying MovieConfigurationBackend";
     _db.close();
     QSqlDatabase::removeDatabase(_db.connectionName());
     qDebug() << "Exiting MovieConfigurationBackend::~MovieConfigurationBackend()";
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 MovieConfiguration &MovieConfiguration::get()
 {
@@ -422,11 +426,15 @@ QMap<QString, QVariant> MovieConfiguration::queryByUrl(const QUrl &url)
 }
 
 MovieConfiguration::~MovieConfiguration()
+#ifndef USE_TEST
 {
     qDebug() << "Entering MovieConfiguration::~MovieConfiguration()";
     delete _backend;
     qDebug() << "Exiting MovieConfiguration::~MovieConfiguration()";
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 MovieConfiguration::MovieConfiguration()
     : QObject(nullptr)
