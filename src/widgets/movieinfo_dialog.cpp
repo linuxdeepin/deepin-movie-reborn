@@ -506,6 +506,7 @@ void MovieInfoDialog::showEvent(QShowEvent *pEvent)
  * @param font 变化后的字体
  */
 void MovieInfoDialog::onFontChanged(const QFont &font)
+#ifndef USE_TEST
 {
     qDebug() << "Font changed, updating text display";
     QFontMetrics fm(font);
@@ -518,6 +519,9 @@ void MovieInfoDialog::onFontChanged(const QFont &font)
         m_pFilePathLbl->setText(sFilePath);
     }
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 /**
  * @brief changedHeight 高度变化槽函数
  */
@@ -545,10 +549,14 @@ void MovieInfoDialog::changedHeight(const int height)
  * 主题变化槽函数
  */
 void MovieInfoDialog::slotThemeTypeChanged()
+#ifndef USE_TEST
 {
     qDebug() << "Theme type changed, updating text color";
     m_pFileNameLbl->setForegroundRole(DPalette::BrightText);
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 /**
  * @brief addRow 增加信息条目函数
  * @param title 信息名称

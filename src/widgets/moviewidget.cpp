@@ -161,18 +161,30 @@ void MovieWidget::initMember()
 }
 
 void MovieWidget::mousePressEvent(QMouseEvent *pEvent)
+#ifndef USE_TEST
 {
     pEvent->ignore();
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 void MovieWidget::mouseReleaseEvent(QMouseEvent *pEvent)
+#ifndef USE_TEST
 {
     pEvent->ignore();
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 void MovieWidget::mouseMoveEvent(QMouseEvent *pEvent)
+#ifndef USE_TEST
 {
      pEvent->ignore();
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 }

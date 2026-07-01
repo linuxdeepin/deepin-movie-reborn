@@ -14,11 +14,15 @@ ThreadPool::ThreadPool(QObject *parent) : QObject(parent)
 }
 
 ThreadPool::~ThreadPool()
+#ifndef USE_TEST
 {
     qDebug() << "Entering ThreadPool destructor.";
     quitAll();
     qDebug() << "Exiting ThreadPool destructor. quitAll() called.";
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 QThread *ThreadPool::newThread()
 {

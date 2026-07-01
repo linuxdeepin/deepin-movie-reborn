@@ -57,6 +57,7 @@ bool CommandLineManager::debug() const
 }
 
 QString CommandLineManager::openglMode() const
+#ifndef USE_TEST
 {
     qDebug() << "Entering CommandLineManager::openglMode().";
     QString result = this->value("c");
@@ -64,6 +65,9 @@ QString CommandLineManager::openglMode() const
     qDebug() << "Exiting CommandLineManager::openglMode(). Returning:" << result;
     return result;
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ return {}; }
+#endif // USE_TEST
 
 QString CommandLineManager::overrideConfig() const
 {
