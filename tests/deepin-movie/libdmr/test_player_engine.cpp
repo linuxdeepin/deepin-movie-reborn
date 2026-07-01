@@ -112,3 +112,35 @@ TEST(PlayerEngine, play_emptyPlaylist_returnsEarly)
     SUCCEED();
 }
 
+// loadSubtitle + selectSubtitle: needs a loaded file. Load demo.mp4, then load
+// an external .ass subtitle (covers loadSubtitle's append2ListUrl path) and
+// select subtitle track 0 (covers selectSubtitle's sid lookup). Does NOT clear
+// the shared playlist (later ToolBox tests need >=2 items).
+TEST(PlayerEngine, loadSubtitleAndSelect)
+{
+    PlayerEngine *engine = dApp->getMainWindow()->engine();
+    ASSERT_TRUE(engine != nullptr);
+    engine->addPlayFiles({QUrl::fromLocalFile(pe_kDemoMedia)});
+    engine->playByName(QUrl::fromLocalFile(pe_kDemoMedia));
+    int waited = 0;
+    while (engine->state() == PlayerEngine::CoreState::Idle && waited < 30) { QTest::qWait(100); waited++; }
+    QTest::qWait(300);
+
+    const QString ass = "/data/source/deepin-movie-reborn/movie/Hachiko.A.Dog's.Story.ass";
+    if (QFile::exists(ass)) {
+        engine->loadSubtitle(QFileInfo(ass));
+    }
+    engine->selectSubtitle(0);
+    QTest::qWait(100);
+}
+
+// isPlayableFile: a local nonexistent file hits the not-playable path that
+// emits sigInvalidFile + returns false (player_engine.cpp ~145-157). (Network
+// URLs are considered playable by default, so they don't reach this path.)
+TEST(PlayerEngine, isPlayableFile_invalid)
+{
+    PlayerEngine *engine = dApp->getMainWindow()->engine();
+    ASSERT_TRUE(engine != nullptr);
+    EXPECT_FALSE(engine->isPlayableFile(QUrl::fromLocalFile("/nonexistent/deepin-movie-probe.mp4")));
+}
+
