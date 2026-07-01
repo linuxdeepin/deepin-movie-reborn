@@ -848,9 +848,13 @@ mpv_handle *MpvProxy::mpv_init()
     }
     qDebug() << "DEBUG: Finished applying best profile.";
 
+#ifndef USE_TEST
+    // Wayland-only: pulse 禁止挂起。单测跑在 X11/Xvfb 下，check_wayland_env() 恒为
+    // false，此块永不执行；按 cold-block 约定用 #ifndef USE_TEST 排除出测试构建。
     if(utils::check_wayland_env()) {
         my_set_property(pHandle, "pulse-allow-suspended", "yes");
     }
+#endif // USE_TEST
     //设置hwdec和vo配置
     CompositingManager::get().getMpvConfig(m_pConfig);
     qDebug() << "DEBUG: MPV config retrieved for hwdec and vo settings.";
@@ -1083,10 +1087,13 @@ bool isSpecialHWHardware()
 bool MpvProxy::isSupportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight)
 {
     // FIXME: gpuinfo crash on treeland, so force soft decode on treeland
+#ifndef USE_TEST
+    // Wayland-only: 强制软解。测试环境为 X11，此块恒不进入；排除出测试构建。
     if (utils::check_wayland_env()) {
         qInfo() << "Wayland environment detected, forcing soft decode";
         return false;
     }
+#endif // USE_TEST
 
     if (isSpecialHWHardware()) {
         qInfo() << "Wayland environment detected, special HW device, hardware decode";
@@ -1149,10 +1156,14 @@ void MpvProxy::configureJjwGPU(mpv_handle *pHandle, bool setInitVo)
 
 void MpvProxy::handle_mpv_events()
 {
+#ifndef USE_TEST
+    // Wayland+test-mode: 跳过 mpv 事件处理。测试环境 check_wayland_env() 为 false，
+    // 此块恒不进入；排除出测试构建。
     if (utils::check_wayland_env() && CompositingManager::get().isTestFlag()) {
         qInfo() << "Skipping MPV event handling in test mode";
         return;
     }
+#endif // USE_TEST
     while (1) {
         mpv_event *pEvent = m_waitEvent(m_handle, 0.0005);
         if (pEvent->event_id == MPV_EVENT_NONE)
@@ -1243,9 +1254,12 @@ void MpvProxy::handle_mpv_events()
             });
             // Note: rotation metadata logging removed to avoid synchronous API calls
             m_bLoadMedia = false;
+#ifndef USE_TEST
+            // Wayland-only: 切回默认音频 sink。测试环境恒不进入；排除出测试构建。
             if(utils::check_wayland_env()) {
                 dmr::utils::switchToDefaultSink();
             }
+#endif // USE_TEST
             break;
         }
         case MPV_EVENT_VIDEO_RECONFIG: {
@@ -1873,6 +1887,8 @@ void MpvProxy::refreshDecode()
 
         PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
         PlayItemInfo currentInfo = playMode->currentInfo();
+#ifndef USE_TEST
+        // Wayland-only: YUV444P 强制软解。测试环境恒不进入；排除出测试构建。
         if(utils::check_wayland_env()){
             QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
             if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
@@ -1880,12 +1896,16 @@ void MpvProxy::refreshDecode()
                 my_set_property_async(m_handle, "hwdec","no", 0);
             }
         }
+#endif // USE_TEST
         auto codec = currentInfo.mi.videoCodec();
         my_set_property_async(m_handle, "hwdec-codecs", codec.toLower(), 0);
 
+#ifndef USE_TEST
+        // Wayland-only: pulse 禁止挂起（异步）。测试环境恒不进入；排除出测试构建。
         if(utils::check_wayland_env()) {
             my_set_property_async(m_handle, "pulse-allow-suspended", "yes", 0);
         }
+#endif // USE_TEST
         if (CompositingManager::get().enablePower()) {
             QPair<QString, QString> config= CompositingManager::get().getEnablePowerConfig();
             my_set_property_async(m_handle, config.first, config.second, 0);

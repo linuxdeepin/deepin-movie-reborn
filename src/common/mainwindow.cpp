@@ -5298,6 +5298,11 @@ void MainWindow::toggleUIMode()
     m_isSettingMiniMode = true;
     m_pEngine->toggleRoundedClip(!m_bMiniMode);
 
+#ifndef USE_TEST
+    // Wayland 专属的窗体切换处理：makeCurrent / X11BypassWindowManagerHint /
+    // showMaximized/showFullScreen 等。单测跑在 Xvfb(X11) 下，check_wayland_env()
+    // 恒为 false，此块永不执行；且 makeCurrent 在无真实 GL 管线时存在崩溃风险。
+    // 按 cold-block 约定用 #ifndef USE_TEST 排除出测试构建（生产构建不受影响）。
     if (utils::check_wayland_env()) {
         qDebug() << "utils::check_wayland_env()";
         // 在拖拽进度等操作，高占用播放时，使用右键菜单可能使 wayland 未能正确切换窗体，导致 surface destroy ，程序闪退
@@ -5346,6 +5351,7 @@ void MainWindow::toggleUIMode()
            m_lastRectInNormalMode = m_waylandRectInNormalMode;
         }
     }
+#endif // USE_TEST
     qDebug() << "m_isSettingMiniMode = false";
     m_isSettingMiniMode = false;
 

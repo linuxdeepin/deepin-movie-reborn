@@ -1414,3 +1414,446 @@ TEST(ToolBox, clearPlayList)
     w->close();
 }
 
+// isActionAllowed: pure permission logic (mainwindow.cpp ~2002-2083). Drive the
+// state flags + action kind to cover the burst / mini / shortcut branches.
+static PlayerEngine::CoreState mw_iaa_state_idle() { return PlayerEngine::CoreState::Idle; }
+static PlayerEngine::CoreState mw_iaa_state_playing() { return PlayerEngine::CoreState::Playing; }
+
+TEST(MainWindow, isActionAllowed_branches)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    bool savedBurst = w->m_bInBurstShootMode;
+    bool savedMini = w->m_bMiniMode;
+
+    // 1) burst-shoot mode disallows everything.
+    w->m_bInBurstShootMode = true;
+    EXPECT_FALSE(w->isActionAllowed(ActionFactory::Screenshot, false, false));
+    w->m_bInBurstShootMode = false;
+
+    // 2) mini mode + fromUI: some actions blocked, ToggleMiniMode allowed,
+    //    default action falls through to "allowed".
+    w->m_bMiniMode = true;
+    EXPECT_FALSE(w->isActionAllowed(ActionFactory::ToggleFullscreen, true, false));
+    EXPECT_FALSE(w->isActionAllowed(ActionFactory::TogglePlaylist, true, false));
+    EXPECT_FALSE(w->isActionAllowed(ActionFactory::BurstScreenshot, true, false));
+    EXPECT_TRUE(w->isActionAllowed(ActionFactory::ToggleMiniMode, true, false));
+    EXPECT_TRUE(w->isActionAllowed(ActionFactory::Exit, true, false));          // default -> fall through
+    // mini mode but neither fromUI nor shortcut: the mini switch is skipped.
+    EXPECT_TRUE(w->isActionAllowed(ActionFactory::Screenshot, false, false));
+    w->m_bMiniMode = false;
+
+    // 3) shortcut path, state-dependent. Engine Idle -> disallow playback actions.
+    Stub stub;
+    stub.set(ADDR(PlayerEngine, state), mw_iaa_state_idle);
+    EXPECT_FALSE(w->isActionAllowed(ActionFactory::Screenshot, false, true));
+    EXPECT_FALSE(w->isActionAllowed(ActionFactory::ToggleMiniMode, false, true));
+    EXPECT_FALSE(w->isActionAllowed(ActionFactory::MatchOnlineSubtitle, false, true));
+    EXPECT_FALSE(w->isActionAllowed(ActionFactory::BurstScreenshot, false, true));
+    EXPECT_FALSE(w->isActionAllowed(ActionFactory::MovieInfo, false, true));     // Idle -> bRet false
+    EXPECT_FALSE(w->isActionAllowed(ActionFactory::SelectSubtitle, false, true)); // no subs
+    // Engine Playing -> allow playback actions.
+    stub.set(ADDR(PlayerEngine, state), mw_iaa_state_playing);
+    EXPECT_TRUE(w->isActionAllowed(ActionFactory::Screenshot, false, true));
+    // shortcut default action -> bRet stays true -> allowed.
+    EXPECT_TRUE(w->isActionAllowed(ActionFactory::Exit, false, true));
+
+    w->m_bInBurstShootMode = savedBurst;
+    w->m_bMiniMode = savedMini;
+}
+
+// MainWindow::saveWindowGeometry (mainwindow.cpp ~6221-6232). Private (exposed via
+// the #define private public above). Lives on the close/restart path, which the
+// USE_TEST closeEvent short-circuits, so it had zero coverage. Two branches: save
+// when !m_bMiniMode, skip when mini.
+TEST(MainWindow, saveWindowGeometry_branches)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    bool savedMini = w->m_bMiniMode;
+
+    // !m_bMiniMode -> persist current geometry into the window_* internal options.
+    w->m_bMiniMode = false;
+    w->saveWindowGeometry();
+
+    // m_bMiniMode -> skip the save body entirely.
+    w->m_bMiniMode = true;
+    w->saveWindowGeometry();
+
+    w->m_bMiniMode = savedMini;
+}
+
+// MainWindow::restoreWindowGeometry (~6234-6275). Public. Drives every branch of
+// the validity/screen-bound check by seeding the window_* internal options first.
+TEST(MainWindow, restoreWindowGeometry_branches)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+    w->show();
+    QTest::qWait(20);
+
+    // Snapshot the persisted options so we can restore them afterward.
+    QVariant ov_state  = Settings::get().internalOption("window_state");
+    QVariant ov_width  = Settings::get().internalOption("window_width");
+    QVariant ov_height = Settings::get().internalOption("window_height");
+    QVariant ov_x      = Settings::get().internalOption("window_x");
+    QVariant ov_y      = Settings::get().internalOption("window_y");
+
+    auto seed = [](int width, int height, int x, int y, Qt::WindowState st) {
+        Settings::get().setInternalOption("window_width", width);
+        Settings::get().setInternalOption("window_height", height);
+        Settings::get().setInternalOption("window_x", x);
+        Settings::get().setInternalOption("window_y", y);
+        Settings::get().setInternalOption("window_state", QVariant(st));
+    };
+
+    // 1) invalid size (width<=0) -> outer if false, block skipped.
+    seed(0, 0, 10, 10, Qt::WindowNoState);
+    w->restoreWindowGeometry();
+
+    // 2) valid, in-range -> straight to setGeometry (no centering, no clamping).
+    seed(800, 600, 10, 10, Qt::WindowNoState);
+    w->restoreWindowGeometry();
+
+    // 3) negative origin -> centering branch.
+    seed(800, 600, -1, -1, Qt::WindowNoState);
+    w->restoreWindowGeometry();
+
+    // 4) overflowing origin, normal size -> clamp branch on both axes (the huge
+    //    origin is clamped *before* setGeometry, so the applied size stays 800x600;
+    //    do NOT seed a huge width/height — that would apply a ~10^10-px resize and
+    //    OOM inside updateProxyGeometry).
+    seed(800, 600, 99999, 99999, Qt::WindowNoState);
+    w->restoreWindowGeometry();
+
+    // 5) non-NoState -> setWindowState(state) path. Use WindowActive (!= NoState)
+    //    so the branch is taken without a disruptive maximize/resize.
+    seed(800, 600, 10, 10, Qt::WindowActive);
+    w->restoreWindowGeometry();
+
+    // Restore window state and the persisted options.
+    w->setWindowState(Qt::WindowNoState);
+    Settings::get().setInternalOption("window_state", ov_state);
+    Settings::get().setInternalOption("window_width", ov_width);
+    Settings::get().setInternalOption("window_height", ov_height);
+    Settings::get().setInternalOption("window_x", ov_x);
+    Settings::get().setInternalOption("window_y", ov_y);
+}
+
+// MainWindow::saveVolume (~6277-6295). Private. Drives the clamp
+// (m_nDisplayVolume>100 -> 100), the equal (skip loop) and the different (enter
+// loop, persist, watcher quits it) paths.
+TEST(MainWindow, saveVolume_branches)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    int savedDisp = w->m_nDisplayVolume;
+    QVariant ov_volume = Settings::get().internalOption("global_volume");
+
+    // equal -> displayVolume == volume: skip the write/loop body.
+    Settings::get().setInternalOption("global_volume", 50);
+    w->m_nDisplayVolume = 50;
+    w->saveVolume();
+
+    // non-clamp + different -> enter the loop; setInternalOption syncs the config
+    // file which the QFileSystemWatcher observes, quitting the nested loop.
+    Settings::get().setInternalOption("global_volume", 0);
+    w->m_nDisplayVolume = 50;
+    w->saveVolume();
+
+    // clamp branch: m_nDisplayVolume > 100 -> capped to 100; 100 != 0 -> loop.
+    Settings::get().setInternalOption("global_volume", 0);
+    w->m_nDisplayVolume = 150;
+    w->saveVolume();
+
+    // restore
+    Settings::get().setInternalOption("global_volume", ov_volume);
+    w->m_nDisplayVolume = savedDisp;
+}
+
+// MainWindow::toggleUIMode (mainwindow.cpp ~5245-5537). This is the entire
+// mini-mode switch. It had ZERO coverage because the only test that reaches it
+// (miniModeSwitchForCoverage) stubs the whole function to a no-op. The real one
+// crashes on m_pEngine->toggleRoundedClip() without a live GL pipeline, so we
+// stub just that leaf and pre-stage safe state to bypass the other hazards:
+//   - normal window state  -> skip the maximized->showNormal recursion branch
+//   - m_bWindowAbove=true  -> skip requestAction(WindowAbove) (X11 stay-on-top)
+//   - non-wayland test env -> the wayland block (makeCurrent / bypass-WM) is skipped
+// Then we drive mini-on then mini-off to cover both big branches.
+static void mw_toggleRoundedClip_noop(bool) { }
+
+TEST(MainWindow, toggleUIMode_forCoverage)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    Stub stub;
+    stub.set(ADDR(PlayerEngine, toggleRoundedClip), mw_toggleRoundedClip_noop);
+
+    // snapshot state we mutate
+    bool svMini = w->m_bMiniMode;
+    bool svAbove = w->m_bWindowAbove;
+    QRect svGeom = w->frameGeometry();
+    QRect svLastRect = w->m_lastRectInNormalMode;
+
+    // safe preconditions
+    w->setWindowState(Qt::WindowNoState);
+    w->showNormal();
+    w->m_bWindowAbove = true;          // skip requestAction(WindowAbove)
+    w->m_nStateBeforeMiniMode = 0;     // SBEM_None
+    w->setGeometry(100, 100, 800, 600);
+    QTest::qWait(40);
+
+    // enter mini mode -> covers the m_bMiniMode branch (~5385-5443)
+    w->m_bMiniMode = false;
+    w->toggleUIMode();
+    QTest::qWait(60);
+    EXPECT_TRUE(w->m_bMiniMode);
+
+    // exit mini mode -> covers the normal branch + "else Full" sub-branch (~5444-5537)
+    w->toggleUIMode();
+    QTest::qWait(60);
+    EXPECT_FALSE(w->m_bMiniMode);
+
+    // restore
+    w->m_bWindowAbove = svAbove;
+    w->m_lastRectInNormalMode = svLastRect;
+    w->m_nStateBeforeMiniMode = 0;
+    w->setWindowState(Qt::WindowNoState);
+    w->showNormal();
+    if (svGeom.isValid()) {
+        w->setGeometry(svGeom);
+    }
+    QTest::qWait(30);
+}
+
+// Extra MircastWidget / ItemWidget / ListWidget coverage (mircastwidget.cpp).
+// The existing ToolBox.mircastWidget test drives the connect/seek/state machine
+// but leaves the size-mode lambdas, convertDisplay truncation, the togglePopup
+// hide branch and a few getters cold. These use only public API plus an emitted
+// sizeModeChanged signal, so no private access is required.
+TEST(ToolBox, mircastWidgetExtra)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ToolboxProxy *toolbox = w->toolbox();
+    MircastWidget *mircastWgt = toolbox->getMircastWidget();
+    ASSERT_TRUE(mircastWgt);
+
+    // size-mode lambdas in MircastWidget / RefreButtonWidget / ListWidget /
+    // ItemWidget: fire both branches via the helper signal. Pure UI resize, the
+    // helper's actual mode is not changed by emit. Covers ~40 cold lines.
+    emit DGuiApplicationHelper::instance()->sizeModeChanged(DGuiApplicationHelper::NormalMode);
+    emit DGuiApplicationHelper::instance()->sizeModeChanged(DGuiApplicationHelper::CompactMode);
+
+    // togglePopup visible -> hide branch (the hidden -> show path is already hit).
+    mircastWgt->show();
+    QTest::qWait(20);
+    mircastWgt->togglePopup();
+    QTest::qWait(20);
+
+    // convertDisplay truncation: a very long device name takes the >TEXT_WIDTH
+    // branch in the ItemWidget ctor's convertDisplay() call.
+    MiracastDevice longDev;
+    longDev.name = QString(120, 'A');
+    longDev.uuid = "longuuid-extra";
+    QByteArray data("<root/>");
+    ItemWidget *item = mircastWgt->createListeItem(longDev, data, nullptr);
+    ASSERT_TRUE(item);
+    (void)item->getDevice();   // ItemWidget::getDevice
+    (void)item->state();       // ItemWidget::state
+
+    // mouseDoubleClickEvent -> emit connecting().
+    QMouseEvent dblClick(QEvent::MouseButtonDblClick, QPointF(5, 5), QPointF(5, 5),
+                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier,
+                         QPointingDevice::primaryPointingDevice());
+    QApplication::sendEvent(item, &dblClick);
+
+    // ListWidget getters (m_listWidget is private, so reach it via findChild).
+    ListWidget *listWgt = mircastWgt->findChild<ListWidget *>();
+    if (listWgt) {
+        (void)listWgt->currentItemIndex();
+        (void)listWgt->currentItemWidget();
+    }
+    QTest::qWait(20);
+}
+
+// MainWindow misc slots/helpers — a batch of small, previously-uncovered
+// functions. Most take their safe idle-engine path (no playback side effects).
+TEST(MainWindow, miscHelpers)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    // trivial getters / setters
+    (void)w->getMiniMode();
+    (void)w->getDisplayVolume();
+    w->setInit(true);
+    w->setInit(false);   // value changes -> emits initChanged
+
+    // window title (idle branch)
+    w->updateWindowTitle();
+
+    // geometry helpers
+    (void)w->insideToolsArea(QPoint(5, 5));
+    (void)w->insideResizeArea(QPoint(5, 5));
+    (void)w->dragMargins();
+    w->updateSizeConstraints();          // m_bMiniMode false -> 614x500
+    bool svMini = w->m_bMiniMode;
+    w->m_bMiniMode = true;
+    w->updateSizeConstraints();          // mini -> 40x40
+    w->m_bMiniMode = svMini;
+    w->LimitWindowize();
+    w->updateGeometryNotification(QSize(800, 600));
+
+    // splash / popup / unsupported hint
+    w->prepareSplashImages();
+    w->popupAdapter(QIcon(":/resources/icons/warning.svg"), QStringLiteral("hint"));
+    w->slotUnsupported();
+
+    // dbus / cdrom probes (graceful when unavailable); empty playlist -> early return
+    (void)w->cpuHardwareByDBus();
+    (void)w->probeCdromDevice();
+    w->diskRemoved(QStringLiteral("sr0"));
+
+    // music-shortcut enable state (iterates this->actions())
+    w->setMusicShortKeyState(true);
+    w->setMusicShortKeyState(false);
+
+    // system lock / property slots (engine idle -> no requestAction)
+    w->onSysLockState(QString(), QVariantMap{{QStringLiteral("Locked"), true}}, QStringList());
+    bool svLock = w->m_bStateInLock;
+    w->m_bStateInLock = true;
+    w->onSysLockState(QString(), QVariantMap{{QStringLiteral("Locked"), false}}, QStringList()); // !Locked && m_bStateInLock
+    w->m_bStateInLock = svLock;
+    w->slotProperChanged(QString(), QVariantMap{{QStringLiteral("Active"), true}}, QStringList());
+    w->lockStateChanged(true);
+    w->lockStateChanged(false);
+
+    // mpv error-log branches: message-only / do-nothing paths (engine idle).
+    // NOTE: skip the "fail+open" branch — it calls playlist().remove(current())
+    // and would shrink the shared playlist that later ToolBox tests rely on.
+    w->checkErrorMpvLogsChanged("p", "avformat_open_input() failed");
+    w->checkErrorMpvLogsChanged("p", "moov atom not found");
+    w->checkErrorMpvLogsChanged("p", "couldn't open dvd device");
+    w->checkErrorMpvLogsChanged("p", "incomplete frame data");
+    w->checkErrorMpvLogsChanged("p", "MVs not available");
+    w->checkErrorMpvLogsChanged("p", "can't open codec");
+
+    QTest::qWait(10);
+}
+
+// MainWindow::requestAction media-action cases (sound / frame ratio / subtitle
+// / track / speed). Most either have no engine-state guard or take a safe idle
+// branch; bFromUI=true skips reflectActionToUI (which would deref action lists).
+// Speed cases need state != Idle -> stub the engine. (mainwindow.cpp ~2664-2938)
+TEST(MainWindow, requestAction_mediaCases)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    Stub stub;
+    stub.set(ADDR(ToolboxProxy, getbAnimationFinash), mw_mini_animFinished_true);
+    w->m_bStartAnimation = false;
+
+    // SOUND cases (no guard; changeSoundMode is a safe property set).
+    w->requestAction(ActionFactory::ActionKind::Stereo, true);
+    w->requestAction(ActionFactory::ActionKind::LeftChannel, true);
+    w->requestAction(ActionFactory::ActionKind::RightChannel, true);
+
+    // FRAME ratio cases (setVideoAspect, safe no-op on idle).
+    w->requestAction(ActionFactory::ActionKind::DefaultFrame, true);
+    w->requestAction(ActionFactory::ActionKind::Ratio4x3Frame, true);
+    w->requestAction(ActionFactory::ActionKind::Ratio16x9Frame, true);
+    w->requestAction(ActionFactory::ActionKind::Ratio16x10Frame, true);
+    w->requestAction(ActionFactory::ActionKind::Ratio185x1Frame, true);
+    w->requestAction(ActionFactory::ActionKind::Ratio235x1Frame, true);
+
+    // subtitle / track (bFromUI=true -> skip reflectActionToUI list deref).
+    w->requestAction(ActionFactory::ActionKind::SelectTrack, true, {0});
+    w->requestAction(ActionFactory::ActionKind::SelectSubtitle, true, {0});
+    w->requestAction(ActionFactory::ActionKind::ChangeSubCodepage, true, {QString("auto")});
+    w->requestAction(ActionFactory::ActionKind::HideSubtitle, true);
+
+    // SubDelay / SubForward: idle engine -> "subs empty" hint branch.
+    w->requestAction(ActionFactory::ActionKind::SubDelay, true);
+    w->requestAction(ActionFactory::ActionKind::SubForward, true);
+
+    // (SPEED cases need a real loaded file for setPlaySpeed — stubbing state to
+    // Playing without a file SIGSEGV's inside mpv. They're already exercised by
+    // the playback tests, so skipped here.)
+
+    QTest::qWait(50);
+}
+
+// Mouse-event coverage for MainWindow (mousePressEvent / mouseMoveEvent normal
+// branch / mouseReleaseEvent delayed-timer path / mouseDoubleClickEvent). Follows
+// the existing real-event style (ToolBox.mainWindowEvent, progBar). Events are
+// delivered straight to the main window via sendEvent so they aren't swallowed
+// by child widgets (toolbox/titlebar).
+TEST(MainWindow, mouseGestures)
+{
+    MainWindow *w = dApp->getMainWindow();
+    PlayerEngine *engine = w->engine();
+    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
+    int waited = 0;
+    while (engine->state() == PlayerEngine::CoreState::Idle && waited < 30) { QTest::qWait(100); waited++; }
+    QTest::qWait(200);
+
+    // MouseButtonPress (left) at (20,20) -> mousePressEvent main path
+    QMouseEvent press(QEvent::MouseButtonPress, QPointF(20, 20), QPointF(20, 20),
+                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier, QPointingDevice::primaryPointingDevice());
+    QApplication::sendEvent(w, &press);
+
+    // MouseMove with a large delta -> mouseMoveEvent normal branch (m_bMouseMoved)
+    QMouseEvent move(QEvent::MouseMove, QPointF(300, 300), QPointF(300, 300),
+                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier, QPointingDevice::primaryPointingDevice());
+    QApplication::sendEvent(w, &move);
+
+    // MouseButtonRelease -> mouseReleaseEvent delayed-release-timer path (120ms)
+    QMouseEvent release(QEvent::MouseButtonRelease, QPointF(300, 300), QPointF(300, 300),
+                        Qt::LeftButton, Qt::NoButton, Qt::NoModifier, QPointingDevice::primaryPointingDevice());
+    QApplication::sendEvent(w, &release);
+    QTest::qWait(220);
+
+    // MouseDoubleClick while playing -> mouseDoubleClickEvent -> ToggleFullscreen
+    bool wasFs = w->isFullScreen();
+    QMouseEvent dbl(QEvent::MouseButtonDblClick, QPointF(300, 150), QPointF(300, 150),
+                    Qt::LeftButton, Qt::NoButton, Qt::NoModifier, QPointingDevice::primaryPointingDevice());
+    QApplication::sendEvent(w, &dbl);
+    QTest::qWait(400);
+    if (w->isFullScreen() != wasFs) {   // toggle back to leave the window normal
+        QApplication::sendEvent(w, &dbl);
+        QTest::qWait(400);
+    }
+}
+
+// Playback-state coverage: load an audio file so slotPlayerStateChanged takes the
+// bAudio branch (m_pMovieWidget->startPlaying / pausePlaying), which the video
+// tests don't reach. Space toggles pause to exercise the Paused+audio branch.
+TEST(MainWindow, audioPlaybackState)
+{
+    MainWindow *w = dApp->getMainWindow();
+    PlayerEngine *engine = w->engine();
+    // Keep >=2 items in the shared playlist: the later ToolBox.playListWidget
+    // test dereferences playlist->item(1), so NEVER clear() here (a 1-item list
+    // makes item(1) null -> QTest::mouseMove(0) -> Q_ASSERT aborts the whole run).
+    QList<QUrl> files;
+    files << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")
+          << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
+    engine->addPlayFiles(files);
+    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3"));
+
+    int waited = 0;
+    while (engine->state() == PlayerEngine::CoreState::Idle && waited < 30) { QTest::qWait(100); waited++; }
+    QTest::qWait(600);   // Playing + audio -> slotPlayerStateChanged -> startPlaying
+
+    // Space -> TogglePause -> slotPlayerStateChanged Paused + audio -> pausePlaying
+    QTest::keyClick(w, Qt::Key_Space, Qt::NoModifier, 100);
+    QTest::qWait(400);
+    QTest::keyClick(w, Qt::Key_Space, Qt::NoModifier, 100);
+    QTest::qWait(400);
+}
+

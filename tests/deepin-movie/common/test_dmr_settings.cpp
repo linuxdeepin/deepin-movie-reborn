@@ -399,3 +399,31 @@ TEST(dmrsettings_ext, singleton_returnsSameInstance)
     Settings &b = Settings::get();
     EXPECT_EQ(&a, &b);
 }
+
+// Decode-mode / Effect handlers (dmr_settings.cpp ~69-110). These run inside the
+// DSettings::valueChanged lambda and are otherwise cold. Trigger by setting the
+// option value (which emits valueChanged -> the lambda), then restore.
+TEST(dmrsettings_ext, decodeAndEffectHandlers)
+{
+    auto s = Settings::get().settings();
+    ASSERT_TRUE(s != nullptr);
+
+    QVariant ovEffect = s->value("base.decode.Effect");
+    QVariant ovSelect = s->value("base.decode.select");
+
+    // Effect index 1 -> OpenGL branch; index 0 -> gpu/vaapi/vdpau/xv/x11 branch.
+    if (auto opt = s->option("base.decode.Effect")) {
+        opt->setValue(1);  s->sync();  QTest::qWait(20);
+        opt->setValue(0);  s->sync();  QTest::qWait(20);
+    }
+    // decode.select = 3 -> custom decode mode branch (groups + hwdecFamily).
+    if (auto opt = s->option("base.decode.select")) {
+        opt->setValue(3);  s->sync();  QTest::qWait(20);
+    }
+
+    // restore
+    if (auto opt = s->option("base.decode.Effect"))  opt->setValue(ovEffect);
+    if (auto opt = s->option("base.decode.select"))  opt->setValue(ovSelect);
+    s->sync();
+    QTest::qWait(20);
+}
