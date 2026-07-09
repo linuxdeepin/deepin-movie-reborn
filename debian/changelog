@@ -1,3 +1,14 @@
+deepin-movie-reborn (6.5.53) unstable; urgency=medium
+
+  * chore: Update version to 6.5.53
+  * test(ut): add coverage tests and isolate cold wayland blocks from test build
+  * test(ut): add real tests for player_engine/playlist_model and isolate wayland code
+  * test(ut): add real ConvertLinglong tests and fix flaky null-deref crashes
+  * test(ut): raise deepin-movie coverage to 71% and fix run flakiness
+  * test(ut): raise platform coverage to 75%+ and fix run crashes
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 09 Jul 2026 13:12:28 +0800
+
 deepin-movie-reborn (6.5.52) unstable; urgency=medium
 
   * chore: Update version to 6.5.52
