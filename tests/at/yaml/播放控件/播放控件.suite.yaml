@@ -1,0 +1,72 @@
+name: 播放控件_suite
+app: deepin-movie
+description: ''
+module: 播放控件
+tags: []
+fast_fail: false
+env_check: []
+setup:
+- action: session_start
+  command: deepin-movie
+  wait: 3.0
+suites:
+- id: case_1637223_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: element_action
+    selector:
+      name: fullscreenButtion
+      role: push button
+    do: click
+  - action: wait
+    wait: 1.0
+  - action: element_action
+    selector:
+      name: fullscreenButtion
+      role: push button
+    do: click
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+- id: case_1637211_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: element_action
+    selector:
+      name: playlistButton
+      role: check box
+    do: click
+  - action: wait
+    wait: 1.0
+  - action: dtk_context_menu
+    selector:
+      name: playListWidget
+      role: form
+    items:
+    - 从播放列表删除
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+- id: case_1637185_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: element_action
+    selector:
+      name: volumeButton
+    do: click
+  - action: keyboard_press
+    key: m
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+teardown:
+- action: session_stop

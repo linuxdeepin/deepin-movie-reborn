@@ -1,0 +1,63 @@
+name: 设置_suite
+app: deepin-movie
+description: ''
+module: 设置
+tags: []
+fast_fail: false
+env_check: []
+setup:
+- action: session_start
+  command: deepin-movie
+  wait: 3.0
+suites:
+- id: case_1637617_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: dtk_context_menu
+    selector:
+      name: DMainWindow
+      role: frame
+    items:
+    - 影片信息
+  - action: wait
+    wait: 1.0
+  - action: keyboard_press
+    key: escape
+  assert_steps:
+  - action: assert_window
+- id: case_1637613_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: dtk_context_menu
+    selector:
+      name: DMainWindow
+      role: frame
+    items:
+    - 截图
+    - 影片截图
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+- id: case_1637611_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: dtk_context_menu
+    selector:
+      name: DMainWindow
+      role: frame
+    items:
+    - 截图
+    - 连拍截图
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+teardown:
+- action: session_stop

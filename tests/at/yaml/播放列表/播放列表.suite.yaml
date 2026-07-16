@@ -1,0 +1,51 @@
+name: 播放列表_suite
+app: deepin-movie
+description: ''
+module: 播放列表
+tags: []
+fast_fail: false
+env_check: []
+setup:
+- action: session_start
+  command: deepin-movie
+  wait: 3.0
+suites:
+- id: case_1637333_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: element_action
+    selector:
+      name: playlistButton
+      role: check box
+    do: click
+  - action: wait
+    wait: 1.0
+  - action: element_action
+    selector:
+      name: clearButton
+      role: push button
+    do: click
+  assert_steps:
+  - action: assert_window
+- id: case_1637321_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: element_action
+    selector:
+      name: playlistButton
+      role: check box
+    do: click
+  - action: wait
+    wait: 1.0
+  - action: keyboard_press
+    key: delete
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+teardown:
+- action: session_stop

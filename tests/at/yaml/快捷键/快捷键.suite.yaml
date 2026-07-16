@@ -1,0 +1,156 @@
+name: 快捷键_suite
+app: deepin-movie
+description: ''
+module: 快捷键
+tags: []
+fast_fail: false
+env_check: []
+setup:
+- action: session_start
+  command: deepin-movie
+  wait: 3.0
+suites:
+- id: case_1637659_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: keyboard_press
+    key: space
+  assert_steps:
+  - action: assert_window
+- id: case_1637655_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: keyboard_hot_key
+    key: alt+s
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+- id: case_1637645_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: keyboard_press
+    key: pageup
+  assert_steps:
+  - action: assert_window
+- id: case_1637639_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: keyboard_press
+    key: m
+  - action: wait
+    wait: 1.0
+  - action: keyboard_press
+    key: m
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+  - action: assert_window
+- id: case_1637631_s1
+  name: 启动影院
+  description: ''
+  tags: []
+  steps:
+  - action: keyboard_hot_key
+    key: ctrl+shift+/
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+- id: case_1637627_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: keyboard_hot_key
+    key: ctrl+i
+  - action: wait
+    wait: 1.0
+  - action: keyboard_press
+    key: escape
+  assert_steps:
+  - action: assert_window
+- id: case_1637571_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: dtk_context_menu
+    selector:
+      name: DMainWindow
+      role: frame
+    items:
+    - 画面
+    - 顺时针旋转
+  - action: wait
+    wait: 1.0
+  - action: dtk_context_menu
+    selector:
+      name: DMainWindow
+      role: frame
+    items:
+    - 截图
+    - 影片截图
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+- id: case_1637569_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: dtk_context_menu
+    selector:
+      name: DMainWindow
+      role: frame
+    items:
+    - 画面
+    - 下一帧
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+- id: case_1637565_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: dtk_context_menu
+    selector:
+      name: DMainWindow
+      role: frame
+    items:
+    - 画面
+    - 逆时针旋转
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+- id: case_1637551_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: dtk_context_menu
+    selector:
+      name: DMainWindow
+      role: frame
+    items:
+    - 声音
+    - 声道
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+teardown:
+- action: session_stop

@@ -1,0 +1,59 @@
+name: 播放_suite
+app: deepin-movie
+description: ''
+module: 播放
+tags: []
+fast_fail: false
+env_check: []
+setup:
+- action: session_start
+  command: deepin-movie
+  wait: 3.0
+suites:
+- id: case_1637153_s1
+  name: 打开影院
+  description: ''
+  tags: []
+  steps:
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+- id: case_1637151_s1
+  name: 打开影院
+  description: ''
+  tags: []
+  steps:
+  - action: wait
+    wait: 1.0
+  - action: keyboard_press
+    key: space
+  assert_steps:
+  - action: assert_window
+- id: case_1637147_s1
+  name: 打开影院
+  description: ''
+  tags: []
+  steps:
+  - action: wait
+    wait: 1.0
+  - action: element_action
+    selector:
+      name: playBtn
+      role: push button
+    do: click
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+- id: case_1637145_s1
+  name: 启动影院
+  description: ''
+  tags: []
+  steps:
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+teardown:
+- action: session_stop

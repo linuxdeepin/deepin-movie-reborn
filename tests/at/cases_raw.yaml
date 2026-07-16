@@ -1,0 +1,2517 @@
+metadata:
+  generated_at: '2026-07-16T09:42:24.299522'
+  source: 统信桌面操作系统-V25-用例-影院.xlsx
+cases:
+- id: case_2003953
+  name: 影院主菜单-关于
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 影院主菜单-关于
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 点击主菜单中关于菜单
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 查看关于窗口内容
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 弹出关于窗口
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 显示应用名字、版本，添加开源声明等相关信息
+    needs_accessible_name: false
+- id: case_1993455
+  name: 影院_打开文件_播放最近使用/usr/share/目录下的视频
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 影院_打开文件_播放最近使用/usr/share/目录下的视频
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 点击标题栏主菜单
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 选择“打开文件”，在左侧标签栏选择“最近使用”
+    needs_accessible_name: false
+  - step_type: action
+    description: 4. 点击该视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院可以正常打开
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 主菜单展开
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 最近使用中有/usr/share/目录下的视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 视频可以正常播放
+    needs_accessible_name: false
+- id: case_1704901
+  name: 【玲珑】【影院】卸载指定版本的玲珑应用
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】卸载指定版本的玲珑应用
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli uninstall org.deepin.movie/6.0.17
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 在终端执行命令：ll-cli info org.deepin.movie
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 【影院】玲珑指定版本的应用卸载成功
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 没有指定版本玲珑应用【影院】的应用信息
+    needs_accessible_name: false
+- id: case_1704899
+  name: 【玲珑】【影院】卸载玲珑应用
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】卸载玲珑应用
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli uninstall org.deepin.movie
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 在终端执行命令：ll-cli info org.deepin.movie
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 【影院】玲珑应用卸载成功
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 没有玲珑应用【影院】的应用信息
+    needs_accessible_name: false
+- id: case_1704897
+  name: 【玲珑】【影院】查看玲珑应用包含的文件
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】查看玲珑应用包含的文件
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli content org.deepin.movie
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 展示已安装的【影院】应用包含的文件
+    needs_accessible_name: false
+- id: case_1704895
+  name: 【玲珑】【影院】杀掉玲珑应用运行进程
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】杀掉玲珑应用运行进程
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli kill org.deepin.movie
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 终止后再次终端执行命令：ll-cli ps
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 【影院】应用进程运行被终止
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 没有显示【影院】运行
+    needs_accessible_name: false
+- id: case_1704893
+  name: 【玲珑】【影院】检查玲珑应用运行情况
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】检查玲珑应用运行情况
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli ps
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 可以查看到【影院】的运行情况，包含：App、ContainerID、Pid、Path
+    needs_accessible_name: false
+- id: case_1704891
+  name: 【玲珑】【影院】进入容器内部
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】进入容器内部
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli run org.deepin.movie --exec /bin/bash
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 进入【影院】容器内部，可以内部执行命令，例如：ls
+    needs_accessible_name: false
+- id: case_1704889
+  name: 【玲珑】【影院】更新玲珑应用指定版本
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】更新玲珑应用指定版本
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli upgrade org.deepin.movie/6.0.19
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 在终端执行命令：ll-cli run org.deepin.movie
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 【影院】升级指定版本6.0.19成功，可以使用命令查看信息：ll-cli info org.deepin.movie
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 【影院】打开运行成功，版本为升级后的版本
+    needs_accessible_name: false
+- id: case_1704887
+  name: 【玲珑】【影院】更新玲珑应用
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】更新玲珑应用
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli upgrade org.deepin.movie
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 在终端执行命令：ll-cli run org.deepin.movie
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 【影院】升级成功，默认升级到最新版本，可以使用命令查看信息：ll-cli info org.deepin.movie
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 【影院】打开运行成功，版本为升级后的版本
+    needs_accessible_name: false
+- id: case_1704885
+  name: 【玲珑】【影院】玲珑应用，基本功能测试
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】玲珑应用，基本功能测试
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 【影院】应用，双击运行后打开视屏文件进行播放
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 暂停、上一个、下一个按钮功能
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 全盘模式、迷你模式切换
+    needs_accessible_name: false
+  - step_type: action
+    description: 4. 播放模式选择
+    needs_accessible_name: false
+  - step_type: assert
+    description: 5. 影片信息检查
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 功能正常
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 功能正常
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 功能正常
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 功能正常
+    needs_accessible_name: false
+  - step_type: assert
+    description: 5. 功能正常
+    needs_accessible_name: false
+- id: case_1704883
+  name: 【玲珑】【影院】运行指定版本玲珑应用
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】运行指定版本玲珑应用
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli run org.deepin.movie/6.0.17
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 打开运行指定版本6.0.17的【影院】应用
+    needs_accessible_name: false
+- id: case_1704881
+  name: 【玲珑】【影院】运行玲珑应用
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】运行玲珑应用
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli run org.deepin.movie
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 打开运行【影院】应用
+    needs_accessible_name: false
+- id: case_1704879
+  name: 【玲珑】【影院】安装玲珑应用指定版本
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】安装玲珑应用指定版本
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli run org.deepin.movie/6.0.17
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.0'
+    needs_accessible_name: false
+- id: case_1704877
+  name: 【玲珑】【影院】安装玲珑应用
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】安装玲珑应用
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli install org.deepin.movie
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 等待一段时间后，【影院】安装完成(如果有多个版本，默认安装最高版本)，可以使用命令查看信息：ll-cli info org.deepin.movie
+    needs_accessible_name: false
+- id: case_1704875
+  name: 【玲珑】【影院】仓库玲珑应用信息
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】仓库玲珑应用信息
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli search org.deepin.movie
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 展示【影院】应用的相关信息，包含appid、name、version、arch、channel、module、description；如果版本有多个，则全部展示
+    needs_accessible_name: false
+- id: case_1704873
+  name: 【玲珑】【影院】查看玲珑应用信息
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院(#110603)
+  description: 【玲珑】【影院】查看玲珑应用信息
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在终端执行命令：ll-cli info org.deepin.movie
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 展示玲珑应用(影院)的应用信息；
+    needs_accessible_name: false
+  - step_type: assert
+    description: 'PS: 没有安装则不展示应用信息'
+    needs_accessible_name: false
+- id: case_1638099
+  name: 【影院】将一个gif录屏文件，转为mp4，使用影院播放
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/文件导入(#115689)
+  description: 【影院】将一个gif录屏文件，转为mp4，使用影院播放
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 使用截图录屏录制一个gif
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 命令行使用ffmpeg转为mp4（ffmpeg -i test.gif test.mp4）
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 使用影院播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 成功录制
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 成功转换
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 正常播放
+    needs_accessible_name: false
+- id: case_1638067
+  name: 中孚-检查影院xwininfo展示路径情况
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/其它交互(#115695)
+  description: 中孚-检查影院xwininfo展示路径情况
+  status: active
+  reason: ''
+  steps:
+  - step_type: assert
+    description: 1. 启动影院空窗口，检查信息展示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 启动影院，不播放视频，播放队列中有视频，检查信息展示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 不启动影院，在文管双击播放任意视频，检查信息展示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 播放任意视频，检查信息展示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 5. 切换播放的视频，检查信息展示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 6. 播放URL视频，检查信息展示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 7. 播放光盘中的视频，检查信息展示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 8. 迷你模式播放，检查信息展示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 9. 全屏播放视频，检查信息展示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 不展示路径（或展示一个临时路径），展示应用名称
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 不展示路径（或展示一个临时路径），展示应用名称
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 展示文件的完整绝对路径，展示应用名称
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 展示文件的完整绝对路径，展示应用名称
+    needs_accessible_name: false
+  - step_type: assert
+    description: 5. 展示文件的完整绝对路径，展示应用名称
+    needs_accessible_name: false
+  - step_type: assert
+    description: 6. 展示文件的完整绝对路径，展示应用名称
+    needs_accessible_name: false
+  - step_type: assert
+    description: 7. 展示文件的完整绝对路径，展示应用名称
+    needs_accessible_name: false
+  - step_type: assert
+    description: 8. 展示文件的完整绝对路径，展示应用名称
+    needs_accessible_name: false
+  - step_type: assert
+    description: 9. 展示文件的完整绝对路径，展示应用名称
+    needs_accessible_name: false
+- id: case_1638041
+  name: 可靠性-长时间播放视频
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/窗口显示(#115693)
+  description: 可靠性-长时间播放视频
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频12h
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 检查影院播放状态以及基本功能
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院视频播放无卡死、奔溃现象，且基本功能均正常
+    needs_accessible_name: false
+- id: case_1638023
+  name: 性能指标-1080P-29帧视频播放响应时间
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: 性能指标-1080P-29帧视频播放响应时间
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院，在主菜单中，选择打开，从点击打开开始计时，直到开始播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 正确计算出播放响应的时间
+    needs_accessible_name: false
+- id: case_1638021
+  name: 性能指标-冷启动
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: 性能指标-冷启动
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 重启计算机
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 在dock栏中，右键菜单影院，从开始点击影院开始计时，直到主界面显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 正常重启计算机
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 正确计算出冷启动的耗时
+    needs_accessible_name: false
+- id: case_1638019
+  name: 性能指标-热启动
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: 性能指标-热启动
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 先启动一次影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 在dock栏中，右键菜单影院，从开始点击影院开始计时，直到主界面显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 正常启动影院并关闭
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 正确计算出热启动的耗时
+    needs_accessible_name: false
+- id: case_1638011
+  name: '[acp2][影院]检查影院播放网络视频功能'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: '[acp2][影院]检查影院播放网络视频功能'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院，在影院界面点击右键，选择打开URL
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 输入正确的网络视频地址，点确定
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 右键点击视频界面，选择截图
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 弹出框中可以输入网络地址
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 成功播放网络视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 支持影片截图、连拍截图
+    needs_accessible_name: false
+- id: case_1638009
+  name: '[acp2][影院]播放视频时休眠'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: '[acp2][影院]播放视频时休眠'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 影院播放视频时点击休眠；
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 唤醒系统；
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 系统进入休眠状态；
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 系统唤醒后视频可以正常播放，无花屏. 死机现象；
+    needs_accessible_name: false
+- id: case_1638007
+  name: '[acp2][影院]检查外设输出音频功能'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: '[acp2][影院]检查外设输出音频功能'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 双击影片，通过影院播放高清影片
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 接上耳机
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 断开耳机
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 成功能播放影片，且画面流畅、声音正常
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 声音由外放转耳机输出，且影片继续播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 影片暂停播放
+    needs_accessible_name: false
+- id: case_1638005
+  name: '[acp2][影院]解码模式推荐'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: '[acp2][影院]解码模式推荐'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 设置影院为软解模式，播放4K影片
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 切换硬解模式后，重新打开影片
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 正常播放视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放流畅
+    needs_accessible_name: false
+- id: case_1637989
+  name: 【影院】【键盘交互】播放主界面，用tab键去切换功能按钮
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: 【影院】【键盘交互】播放主界面，用tab键去切换功能按钮
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在播放主界面，按tab键
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 当工具栏隐藏时，按tab键
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 当播放列表中只有一个文件时，按tab键
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 从上一个按钮开始到关闭按钮，从左到右方向去循环切换
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 可以唤醒工具栏
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 上一个，下一个按钮是置灰状态;从菜单按钮开始到播放列表按钮，从上到下，从左到右的方向顺序去循环切换，按钮切换顺序为：菜单->最小化->最大化->关闭->播放->进度条->全屏->音量->播放列表
+    needs_accessible_name: false
+- id: case_1637975
+  name: 【影院】【键盘交互】enter键进入下一级菜单
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: 【影院】【键盘交互】enter键进入下一级菜单
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在主菜单选项界面，按enter键
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 再按方向“↑”键和“↓”键
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 影院enter键进入打开文件夹，不选择视频点击退出
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 进入下一级菜单
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 在条目中自上而下选择条目，切换时置于选中状态，循环切换
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 影院的所有的控件都能操作点击
+    needs_accessible_name: false
+- id: case_1637963
+  name: 键盘交互-选中进度条后用“←”、“→”键
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: 键盘交互-选中进度条后用“←”、“→”键
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在播放主界面，选中进度条时，使用键盘“←”、“→”键
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 可向前向后调整进度，每按1次步阶为5秒
+    needs_accessible_name: false
+- id: case_1637961
+  name: 键盘交互-音量刻度条展开后使用“↑”、“↓”方向键调节音量
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: 键盘交互-音量刻度条展开后使用“↑”、“↓”方向键调节音量
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 播放/未播放视频时，使用tab键置于音量按钮上，再按enter键或者鼠标点击将音量刻度条弹出
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 然后使用“↑”、“↓”方向键
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 调节音量增大或者减少，每按1次步阶为5%
+    needs_accessible_name: false
+- id: case_1637931
+  name: 触控板-一指单点进度条
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/右键菜单/播放设置(#115691)
+  description: 触控板-一指单点进度条
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院，播放/暂停播放视频文件，一指单点进度条的某个点
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 鼠标移至进度条，按住触控板左键，一指左右滑动条不释放手指拖动到某个点
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 1,2.视频文件播放进度由该点开始或在该点暂停
+    needs_accessible_name: false
+- id: case_1637921
+  name: 触控板-两指单点唤出右键菜单
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/用户场景(#115663)
+  description: 触控板-两指单点唤出右键菜单
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在播放界面，两指单点触控板
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 正常唤出右键菜单
+    needs_accessible_name: false
+- id: case_1637917
+  name: 触控板-两指上下滑动调整音量
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/用户场景(#115663)
+  description: 触控板-两指上下滑动调整音量
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在播放视频界面，两指上下滑动
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 音量可以增大和减小
+    needs_accessible_name: false
+- id: case_1637911
+  name: '[core]触控屏-一指打开应用'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/用户场景(#115663)
+  description: '[core]触控屏-一指打开应用'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 一指单点启动器，在启动器菜单项中一指单点影院图标
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 一指双击桌面影院图标
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 一指单点任务栏中的影院图标
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 一指单点选中需要查看播放的视频文件，唤起右键菜单，在右键菜单中一指单点“影院”图标
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: '2.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: '3.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 1,2,3,4.影院窗口被打开
+    needs_accessible_name: false
+- id: case_1637881
+  name: '[core]触控屏-一指滑动播放界面来调节音量'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/外部交互/系统(#115701)
+  description: '[core]触控屏-一指滑动播放界面来调节音量'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院，在全屏模式下，播放/暂停播放视频文件，一指向上滑动视频画面
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 一指向下滑动视频画面
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 一指慢慢滑动，观察声音增减速度和界面音量显示
+    needs_accessible_name: false
+  - step_type: action
+    description: 4. 一指快速滑动，观察声音增减速度和界面音量显示
+    needs_accessible_name: false
+  - step_type: action
+    description: 5. 停止手势操作，观察界面显示
+    needs_accessible_name: false
+  - step_type: action
+    description: 6. 当手指移动水平距离大于垂直距离，即小于45度角（45度角为临界点）
+    needs_accessible_name: false
+  - step_type: action
+    description: 7. 当手指移动水平距离小于垂直距离，即大于45度角（45度角为临界点）
+    needs_accessible_name: false
+  - step_type: action
+    description: 8. 在非全屏模式下，播放/暂停播放视频文件，一指向下/向上滑动视频画面
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 音量增大，左上角数字提示要对应增大显示，底部工具栏隐藏
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 音量减小，左上角数字提示要对应减小显示，底部工具栏隐藏
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 声音慢慢逐渐增减，音量显示也要相对应正确显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 声音快速逐渐增减，音量显示也要相对应正确显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 5. 底部工具栏隐藏
+    needs_accessible_name: false
+  - step_type: assert
+    description: 注：音量范围：0%~200%
+    needs_accessible_name: false
+  - step_type: assert
+    description: 6. 响应为播放进度调整
+    needs_accessible_name: false
+  - step_type: assert
+    description: 7. 响应为播放音量调整
+    needs_accessible_name: false
+  - step_type: assert
+    description: 8. 为拖动影院窗口位置
+    needs_accessible_name: false
+- id: case_1637879
+  name: '[core]触控屏-一指滑动视频画面区域来调节播放进度'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/外部交互/控制中心(#115697)
+  description: '[core]触控屏-一指滑动视频画面区域来调节播放进度'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院，在全屏模式下，播放/暂停播放视频文件，一指从左向右滑动视频画面区域(整个播放界面）
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 一指从右向左滑动视频画面区域区域(整个播放界面）
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 一指慢慢滑动，观察播放进度增减速度和界面进度条提示显示
+    needs_accessible_name: false
+  - step_type: action
+    description: 4. 一指快速滑动，观察播放进度增减速度和界面进度条提示显示
+    needs_accessible_name: false
+  - step_type: action
+    description: 5. 停止手势操作，观察界面显示
+    needs_accessible_name: false
+  - step_type: action
+    description: 6. 当手指移动水平距离大于垂直距离，即小于45度角（45度角为临界点）
+    needs_accessible_name: false
+  - step_type: action
+    description: 7. 当手指移动水平距离小于垂直距离，即大于45度角（45度角为临界点）
+    needs_accessible_name: false
+  - step_type: action
+    description: 8. 在非全屏模式下，播放/暂停播放视频文件，一指左右滑动视频画面
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 一指向右滑，视频播放快进，快进以秒为单位，在此时间基础上以秒为单位递增，并且展示底部工具栏
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 一指向左滑，视频播放快退，快退以秒为单位，在此时间基础上以秒为单位递减，并且展示底部工具栏
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 进度条慢慢逐渐增减，进度条显示也要相对应正确显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 进度条快速逐渐增减，进度条显示也要相对应正确显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 5. 底部工具栏会隐藏
+    needs_accessible_name: false
+  - step_type: assert
+    description: 6. 响应为播放进度调整
+    needs_accessible_name: false
+  - step_type: assert
+    description: 7. 响应为播放音量调整
+    needs_accessible_name: false
+  - step_type: assert
+    description: 8. 为拖动影院窗口位置
+    needs_accessible_name: false
+- id: case_1637871
+  name: 触控屏-打开“自然滚动”和手指交互
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/外部交互/控制中心(#115697)
+  description: 触控屏-打开“自然滚动”和手指交互
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. “自然滚动”选项打开，打开影院，一指/两指向上下滑动
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 打开“自然滚动”对触控屏手势操作无影响
+    needs_accessible_name: false
+- id: case_1637869
+  name: 埋点-影院埋点检查
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/废弃用例(#126143)
+  description: 埋点-影院埋点检查
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 从启动器启动影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 从dock栏启动影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 从桌面启动影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 4. 双击播放视频文件启动影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 5. 在文管中预览视频文件后打开影院播放
+    needs_accessible_name: false
+  - step_type: action
+    description: 6. 播放不同格式的视频、音频、在线视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 7. 检查/var/lib/deepin/event-log中的字段
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 启动成功
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 启动成功
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 启动成功
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 启动成功并播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 5. 启动成功并播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 6. 正常播放任意视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 7. 启动次数、内容类型、播放成功、播放源、封装格式、编码格式均与操作内容一致
+    needs_accessible_name: false
+- id: case_1637801
+  name: '[core]交互-相册调用影院'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配/键盘交互(#115707)
+  description: '[core]交互-相册调用影院'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在相册选中一个/多个视频文件，双击或者右键“打开”影院
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 检查播放，暂停，拖拽进度条，删除，查看等功能
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院正常打开，并播放视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 各功能正常使用
+    needs_accessible_name: false
+- id: case_1637793
+  name: '[core]交互-播放视频进入待机'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配/键盘交互(#115707)
+  description: '[core]交互-播放视频进入待机'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院，播放一个视频文件，然后按“Ctrl+Alt+Delete"键选择待机
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 唤醒待机，查看影院播放状态
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院不退出，自动暂停播放的视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 唤醒待机后，影院继续上次播放，且无花屏等异常现象
+    needs_accessible_name: false
+- id: case_1637789
+  name: 交互-打开相机录制好的视频
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配/键盘交互(#115707)
+  description: 交互-打开相机录制好的视频
+  status: active
+  reason: ''
+  steps:
+  - step_type: assert
+    description: 1. 用相机录制一个稍短的视频，用影院从文件管理打开该视频，查看播放和显示情况
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 用相机录制一个比较长的视频（超过24小时），用影院从文件管理打开该视频，查看播放和显示情况
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 播放正常，不卡顿，声音和画面同步；时长显示正确
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放正常，不卡顿，声音和画面同步；时长显示正确
+    needs_accessible_name: false
+- id: case_1637785
+  name: '[core]交互-文件管理视频文件空格预览'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配/键盘交互(#115707)
+  description: '[core]交互-文件管理视频文件空格预览'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 选择视频文件空格
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 检查当前播放视频的效果
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 播放当前视频（mips除外）
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 无花屏，卡顿等现象
+    needs_accessible_name: false
+- id: case_1637769
+  name: '[206]数据流-以拖拽打开数据流类型文件'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配/触控屏(#115703)
+  description: '[206]数据流-以拖拽打开数据流类型文件'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在文件管理器中，选中音视频文件
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 打开影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 将选中的文件拖拽至影院窗口中心
+    needs_accessible_name: false
+  - step_type: action
+    description: 4. 将含有前置中格式文件的文件夹拖拽至影院窗口中心
+    needs_accessible_name: false
+  - step_type: action
+    description: 5. 执行步骤1-4覆盖前置条件中的所有格式
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 正常选中文件
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 正常打开
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 正常拖拽至视频窗口，并正常播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 正常拖拽至视频窗口，并正常播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 5. 均能正常播放
+    needs_accessible_name: false
+- id: case_1637767
+  name: 数据流-全屏播放视频总时长显示全为0
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配/触控屏(#115703)
+  description: 数据流-全屏播放视频总时长显示全为0
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在文件管理器中，选中音视频文件，鼠标右键，选择打开方式
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 选择影院打开
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 按快捷键alt+enter
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 查看右上角显示时长
+    needs_accessible_name: false
+  - step_type: action
+    description: 5. 执行步骤1-4覆盖前置条件中的所有格式
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 正常唤起右键菜单
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 正常打开
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 正常进入全屏
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 显示置灰工具栏显示总时长【00:00:00】
+    needs_accessible_name: false
+  - step_type: assert
+    description: 5. 工具栏均显示总时长【00:00:00】，进度置灰
+    needs_accessible_name: false
+- id: case_1637731
+  name: 数据流-不支持进度条点击快退拖动
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配/触控屏(#115703)
+  description: 数据流-不支持进度条点击快退拖动
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在文件管理器中，选中音视频文件，鼠标右键，选择打开方式
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 选择影院打开
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 在工具栏中，点击当前进度的左边
+    needs_accessible_name: false
+  - step_type: action
+    description: 4. 执行步骤1-3覆盖前置条件中的所有格式
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 正常唤起右键菜单
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 正常打开
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 无反应，左上角提示"当前视频，不支持该功能"
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 均无反应，左上角提示"当前视频，不支持该功能"
+    needs_accessible_name: false
+- id: case_1637681
+  name: '[core]格式支持-支持的音频格式'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配(#115661)
+  description: '[core]格式支持-支持的音频格式'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 支持的音频格式格式如下：
+    needs_accessible_name: false
+  - step_type: action
+    description: '*.mp3", "*.ogg", "*.wav", "*.wma",'
+    needs_accessible_name: false
+  - step_type: action
+    description: '"*.m4a", "*.aac", "*.ac3", "*.ape",'
+    needs_accessible_name: false
+  - step_type: action
+    description: '"*.flac", "*.ra", "*.mka", "*.dts", "*.opus"'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 正常播放，并且播放的时候，有动画效果背景
+    needs_accessible_name: false
+- id: case_1637659
+  name: '[065][core][acp1]快捷键-Space暂停视频播放'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配(#115661)
+  description: '[065][core][acp1]快捷键-Space暂停视频播放'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频，使用快捷键：Space
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院正常暂停视频播放
+    needs_accessible_name: false
+- id: case_1637655
+  name: 快捷键-Alt+S连拍截图
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配(#115661)
+  description: 快捷键-Alt+S连拍截图
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 播放视频，使用快捷键：Alt+S
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院显示截图成功，截图保存文件夹有当前截图文件
+    needs_accessible_name: false
+- id: case_1637645
+  name: 快捷键-pagedown切换下一个视频播放
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配(#115661)
+  description: 快捷键-pagedown切换下一个视频播放
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院。播放视频，使用快捷键：pageup
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院自动播放播放列表当前视频的上一个
+    needs_accessible_name: false
+- id: case_1637639
+  name: '[040][core][acp1]快捷键-M切换静音'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配(#115661)
+  description: '[040][core][acp1]快捷键-M切换静音'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院并播放电影，使用快捷键：M
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 再次使用M
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院自动静音，且工具栏音量图标显示静音状态
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院解除静音，且工具栏音量图标解除静音状态
+    needs_accessible_name: false
+- id: case_1637631
+  name: '[184][core]快捷键-Ctrl+Shift+？查看快捷键预览'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配(#115661)
+  description: '[184][core]快捷键-Ctrl+Shift+？查看快捷键预览'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，使用Ctrl+Shift+？
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 显示影院快捷键预览
+    needs_accessible_name: false
+- id: case_1637629
+  name: '[087][core][acp1]快捷键-F1调起帮助文档'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配(#115661)
+  description: '[087][core][acp1]快捷键-F1调起帮助文档'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，使用F1
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 调起影院帮助文档
+    needs_accessible_name: false
+- id: case_1637627
+  name: '[088][core][acp1]快捷键-Ctrl+i查看影片信息'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/适配(#115661)
+  description: '[088][core][acp1]快捷键-Ctrl+i查看影片信息'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 使用快捷键Ctrl+i
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 弹窗显示当前播放视频的影片信息
+    needs_accessible_name: false
+- id: case_1637625
+  name: '[125]快捷键-快捷键R还原倍速播放'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/设置(#115651)
+  description: '[125]快捷键-快捷键R还原倍速播放'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 使用Ctrl+right调整影院视频播放倍速
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 使用快捷键R
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院还原播放倍速，且窗口左上角提示默认倍速
+    needs_accessible_name: false
+- id: case_1637617
+  name: '[037][core][acp1]右键菜单-影片信息'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/设置(#115651)
+  description: '[037][core][acp1]右键菜单-影片信息'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 右键点击视频播放区域，选择影片信息
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 显示影片信息弹窗
+    needs_accessible_name: false
+- id: case_1637613
+  name: '[018][core][acp1]截图-前往截图文件夹'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/设置(#115651)
+  description: '[018][core][acp1]截图-前往截图文件夹'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 右键点击视频播放方区域，选择截图中的影片截图
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 再次唤起右键菜单，选择截图中的“前往截图文件夹”
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院提示截图已保存
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 跳转截图保存文件夹，显示影片截图保存的图片
+    needs_accessible_name: false
+- id: case_1637611
+  name: '[182][core]截图-连拍截图'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/设置(#115651)
+  description: '[182][core]截图-连拍截图'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 右键点击视频播放方区域，选择截图中的连拍截图
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院窗口左上角提示“正在截图，请稍候”，截图完成后，显示连拍截图保存弹窗
+    needs_accessible_name: false
+- id: case_1637609
+  name: '[132][core][acp1]截图-无影片截图显示'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/设置(#115651)
+  description: '[132][core][acp1]截图-无影片截图显示'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 右键点击视频播放区域，查看截图显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院未播放影片，截图选项默认置灰
+    needs_accessible_name: false
+- id: case_1637585
+  name: 窗口显示-播放器取消置顶
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/商业定制/中孚Xwininfo定制(#115719)
+  description: 窗口显示-播放器取消置顶
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开播放器，点击右键，勾选置顶按钮
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 勾选置顶按钮后，切换其他浏览器页面，查看系统显示
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 再次唤起影院右键菜单，点击取消置顶
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 置顶按钮被勾选
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放器一直显示在最前面
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 置顶被取消，影院窗口自动显示在原显示层级
+    needs_accessible_name: false
+- id: case_1637583
+  name: '[011][core][acp1]窗口显示-播放器置顶'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/快捷键(#115655)
+  description: '[011][core][acp1]窗口显示-播放器置顶'
+  status: active
+  reason: ''
+  steps:
+  - step_type: assert
+    description: 1. 打开播放器，点击右键，勾选置顶按钮，查看系统显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 勾选置顶按钮后，切换其他浏览器页面，查看系统显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 置顶按钮被勾选
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放器一直显示在最前面
+    needs_accessible_name: false
+- id: case_1637579
+  name: '[core]播放设置-列表循环'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/快捷键(#115655)
+  description: '[core]播放设置-列表循环'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 右键点击视频播放区域，选择播放模式中的列表循环
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 等待当前视频播放完成后，查看影院显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 等待影院播放列表最后一个视频播放完成后，查看影院显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 列表播放选项显示勾选状态
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 视频播放完成后，影院自动播放列表下一个视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 当前列表播放完成后，自动循环播放列表第一个视频
+    needs_accessible_name: false
+- id: case_1637571
+  name: 播放设置-画面旋转和截图交互
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/快捷键(#115655)
+  description: 播放设置-画面旋转和截图交互
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 右键点击视频播放区域，选择画面
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 点击顺时针旋转
+    needs_accessible_name: false
+  - step_type: action
+    description: 4. 再次唤起右键菜单选择截图中的影片截图
+    needs_accessible_name: false
+  - step_type: assert
+    description: 5. 前往截图文件夹查看保存的图片是否正常
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 显示画面选项
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 影院画面顺时针旋转90度播放视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 影院提示截图已保存
+    needs_accessible_name: false
+  - step_type: assert
+    description: 5. 影片截图保存的图片显示正常
+    needs_accessible_name: false
+- id: case_1637569
+  name: 播放设置-画面-下一帧
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/快捷键(#115655)
+  description: 播放设置-画面-下一帧
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 右键点击视频播放区域，选择画面
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 点击下一帧
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 显示画面选项
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 影院播放视频跳转下一帧，播放状态变为暂停
+    needs_accessible_name: false
+- id: case_1637565
+  name: '[193][core]播放设置-画面-逆时针旋转'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/快捷键(#115655)
+  description: '[193][core]播放设置-画面-逆时针旋转'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 右键点击视频播放区域，选择画面
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 点击逆时针旋转
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 显示画面选项
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 影院画面逆时针旋转90度播放视频
+    needs_accessible_name: false
+- id: case_1637561
+  name: 播放设置-声道设置记忆检查
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/快捷键(#115655)
+  description: 播放设置-声道设置记忆检查
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频，视频播放区域点击右键
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 选择声音中的声道，点击右声道
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 重启影院，查看声道选择以及耳机声音输出
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 右声道显示勾选状态，且影院提示右声道，插入耳机只有右耳有声音传出
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 重启后，声道显示勾选立体声，耳机左右均有声音输出
+    needs_accessible_name: false
+- id: case_1637551
+  name: '[192][core]播放设置-声道选项'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/快捷键(#115655)
+  description: '[192][core]播放设置-声道选项'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频，视频播放区域点击右键
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 选择声音中的声道，查看声道选项
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 声道选项显示：左声道、右声道、立体声
+    needs_accessible_name: false
+- id: case_1637541
+  name: 播放设置-调整字幕延迟
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/快捷键(#115655)
+  description: 播放设置-调整字幕延迟
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 拖拽字幕至影院窗口
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 使用快捷键：Shift+left，查看字幕显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 视频显示导入字幕显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 视屏字幕延迟显示
+    needs_accessible_name: false
+- id: case_1637535
+  name: '[core]播放设置-隐藏字幕'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/快捷键(#115655)
+  description: '[core]播放设置-隐藏字幕'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 拖拽字幕至影院窗口
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 右键点击播放区域，选择字幕中的隐藏字幕选项
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: '2.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 字幕隐藏，视频播放不显示字幕
+    needs_accessible_name: false
+- id: case_1637525
+  name: '[core]播放设置-字幕-查找在线字幕'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/格式(#115657)
+  description: '[core]播放设置-字幕-查找在线字幕'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放不能查找在线字幕的视频,点击字幕的查找在线字幕
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 播放能在线查找字幕的视频，点击字幕的查找在线字幕
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院提示“未找到匹配的在线字幕”
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 正常查找到在线字幕显示
+    needs_accessible_name: false
+- id: case_1637511
+  name: '[203]播放设置-自动字幕隐藏字幕'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/格式(#115657)
+  description: '[203]播放设置-自动字幕隐藏字幕'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院选择一部自带字幕的影片进行播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 唤起右键菜单，查看字幕隐藏字幕显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 隐藏字幕选项置灰
+    needs_accessible_name: false
+- id: case_1637481
+  name: '[138]倍速播放-Ctrl+Left调节倍速1.3右键菜单显示'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/格式(#115657)
+  description: '[138]倍速播放-Ctrl+Left调节倍速1.3右键菜单显示'
+  status: active
+  reason: ''
+  steps:
+  - step_type: assert
+    description: 1. 用快捷键“Ctrl+Left调节倍速播放至1.3,查看右键菜单倍速播放的显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 右键菜单倍速播放显示无任何勾选
+    needs_accessible_name: false
+- id: case_1637435
+  name: '[048]设置-勾选“鼠标滑动进度条为胶片格式”影院显示'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/打开/关闭(#115641)
+  description: '[048]设置-勾选“鼠标滑动进度条为胶片格式”影院显示'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 设置中勾选“鼠标滑动进度条为胶片格式”选项
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 退出设置，播放视频，鼠标滑动进度条，查看影院显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 设置中“进度条显示为胶片格式”显示勾选状态
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院进度条显示胶片格式
+    needs_accessible_name: false
+- id: case_1637433
+  name: 设置-鼠标滑动进度条为胶片格式选项不同架构检查
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/打开/关闭(#115641)
+  description: 设置-鼠标滑动进度条为胶片格式选项不同架构检查
+  status: active
+  reason: ''
+  steps:
+  - step_type: assert
+    description: 1. 在ARM和mips设备上，打开设置，查看“鼠标滑动进度条为胶片格式”选项
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 在ARM和mips上设置无“鼠标滑动进度条为胶片格式”选项
+    needs_accessible_name: false
+- id: case_1637429
+  name: '[030][core][acp1]设置-退出影院时清空播放列表'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/打开/关闭(#115641)
+  description: '[030][core][acp1]设置-退出影院时清空播放列表'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 在弹出的设置对话框中，勾选“退出影院时清空播放列表”
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 重启影院，查看播放列表显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 可以勾选此功能
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放列表被清空
+    needs_accessible_name: false
+- id: case_1637423
+  name: 设置-设定硬解码异常处理
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/打开/关闭(#115641)
+  description: 设置-设定硬解码异常处理
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放特殊码流视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 设置切换解码方式为硬解码
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 再次启动影院，查看设置解码方式勾选
+    needs_accessible_name: false
+  - step_type: action
+    description: 4. 再次播放特殊码流视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 视频正常播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 切换解码方式异常，影院崩溃
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 设置中解码方式默认切换至“自动选择”
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 视频正常播放
+    needs_accessible_name: false
+- id: case_1637421
+  name: '[211]设置-视频播放切换软解码'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/打开/关闭(#115641)
+  description: '[211]设置-视频播放切换软解码'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 设置中选择解码方式为软解码
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 分别选择不同格式执行步骤1、2
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 设置中软解码选项显示勾选状态
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 所有格式的视频，均能在播放过程中正常切换硬解码
+    needs_accessible_name: false
+- id: case_1637419
+  name: '[213][core]设置-设置软解码播放视频'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/打开/关闭(#115641)
+  description: '[213][core]设置-设置软解码播放视频'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 设置中选择解码方式为软解码
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 分别播放不同格式的视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 设置中软解码选项显示勾选状态
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 所有格式的视频均能正常播放，无异常情况
+    needs_accessible_name: false
+- id: case_1637417
+  name: '[210][core]设置-设置硬解码'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/打开/关闭(#115641)
+  description: '[210][core]设置-设置硬解码'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 设置中选择解码方式为硬解码
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 设置中硬解码选项显示勾选状态
+    needs_accessible_name: false
+- id: case_1637415
+  name: '[212][core]设置-默认解码方式检查'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/打开/关闭(#115641)
+  description: '[212][core]设置-默认解码方式检查'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 首次启动影院，点击主菜单设置
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 未配置【默认解码方式】配置文件，查看解码方式的默认选项
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 显示影院设置弹窗
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 解码方式默认选择“自动选择（推荐）”
+    needs_accessible_name: false
+- id: case_1637405
+  name: 【影院】【导入】拖拽多个视频文件导入
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/窗口操作/导入视频(#115727)
+  description: 【影院】【导入】拖拽多个视频文件导入
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 拖拽多个视频至影院窗口
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 查看播放列表
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院可以正常打开
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院播放当前拖拽任意一个视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 拖拽进来的视频同时添加至播放列表
+    needs_accessible_name: false
+- id: case_1637387
+  name: '[104][smoke][acp1]主菜单-打开文件-打开修改后缀为mp4的非视频文件'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/窗口操作(#115649)
+  description: '[104][smoke][acp1]主菜单-打开文件-打开修改后缀为mp4的非视频文件'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 桌面命名非视频文件为后缀mp4格式文件
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 启动影院，点击主菜单
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 选择打开文件
+    needs_accessible_name: false
+  - step_type: action
+    description: 4. 选择修改后缀的MP4文件打开
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: '2.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: '3.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 影院提示：无效文件
+    needs_accessible_name: false
+- id: case_1637363
+  name: '[112][core][acp1]主题-主题设置保存'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/窗口操作(#115649)
+  description: '[112][core][acp1]主题-主题设置保存'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 主菜单选择主题
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 选择深色色
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 重启影院，查看影院主题显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院主题显示为深色
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 重启影院主菜单主题显示勾选深色，且显示也是为深色
+    needs_accessible_name: false
+- id: case_1637357
+  name: '[038][core][acp1]主菜单-关于'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/窗口操作(#115649)
+  description: '[038][core][acp1]主菜单-关于'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 点击主菜单按钮选择"关于“
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 查看影院的版本等相关信息,显示“UOS的logo,网站为www.chinauos.com ”
+    needs_accessible_name: false
+- id: case_1637349
+  name: '[181][core]全屏-工具栏自动隐藏'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/窗口操作(#115649)
+  description: '[181][core]全屏-工具栏自动隐藏'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，全屏播放视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 不操作，播放视频5秒，查看影院窗口显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院正常全屏播放视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院全屏播放视频5秒，影院的顶部工具栏和底部工具栏会自动隐藏
+    needs_accessible_name: false
+- id: case_1637347
+  name: '[122][core][acp1]全屏-快捷键Alt+Enter进入/退出全屏'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/窗口操作(#115649)
+  description: '[122][core][acp1]全屏-快捷键Alt+Enter进入/退出全屏'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院在非全屏状态下，使用快捷键Alt+Enter
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 再次使用使用快捷键Alt+Enter
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 播放器会全屏显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放器会退出全屏
+    needs_accessible_name: false
+- id: case_1637341
+  name: '[061][smoke][acp1]迷你模式-关闭按钮退出模拟模式'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/窗口操作(#115649)
+  description: '[061][smoke][acp1]迷你模式-关闭按钮退出模拟模式'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 使用快捷键F2
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 点击模拟模式窗口的“X”
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院窗口收起，显示迷你模式
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 模拟模式窗口关闭，影院退出
+    needs_accessible_name: false
+- id: case_1637333
+  name: '[022]播放列表-清空播放列表按钮清空播放列表'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放列表(#115647)
+  description: '[022]播放列表-清空播放列表按钮清空播放列表'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频，呼出播放列表
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 点击播放列表的清空播放列表按钮
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放列表自动清空，且影院回到初始状态
+    needs_accessible_name: false
+- id: case_1637321
+  name: '[117]播放列表-快捷键Delete删除视频'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放列表(#115647)
+  description: '[117]播放列表-快捷键Delete删除视频'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院，呼出播放列表
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 选中视频，使用快捷键delete
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 选中的视频从播放列表中移除
+    needs_accessible_name: false
+- id: case_1637313
+  name: 播放列表-删除无效文件
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放列表(#115647)
+  description: 播放列表-删除无效文件
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，添加视频到播放列表
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 关闭影院，删除本地视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 启动影院，呼出播放列表，点击无效文件后面的“X”
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 播放列表显示添加的视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 本地视频正常删除
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 无效文件可以正常删除
+    needs_accessible_name: false
+- id: case_1637293
+  name: '[025][core][acp1]播放列表-在文件管理中显示'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放列表(#115647)
+  description: '[025][core][acp1]播放列表-在文件管理中显示'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院并显示播放列表，在播放列表中选择一个视频，点击右键在文件管理器中显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院调起文件管理显示视频所在的目录
+    needs_accessible_name: false
+- id: case_1637223
+  name: '[005][core][acp1]全屏-点击工具栏全屏按钮退出全屏'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放控件(#115645)
+  description: '[005][core][acp1]全屏-点击工具栏全屏按钮退出全屏'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，播放视频，点击工具栏全屏按钮
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 再次点击工具栏全屏按钮
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院窗口恢复全屏前窗口大小，且视频播放正常
+    needs_accessible_name: false
+- id: case_1637211
+  name: '[010][core][acp1]播放列表-右键菜单删除当前播放视频'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放控件(#115645)
+  description: '[010][core][acp1]播放列表-右键菜单删除当前播放视频'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院播放视频，点击工具栏的播放列表按钮
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 选择当前播放视频，右键点击从播放列表删除
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院回到初始状态
+    needs_accessible_name: false
+- id: case_1637197
+  name: 【影院】【工具栏】鼠标点击拖拽音量调节图标
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放控件(#115645)
+  description: 【影院】【工具栏】鼠标点击拖拽音量调节图标
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 播放视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 点击影院工具栏音量图标
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 鼠标点击拖拽音量条音量调节图标移动
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 视频可以正常播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 正常展开音量条
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 鼠标点击拖拽音量条音量调节图标正常调节音量
+    needs_accessible_name: false
+- id: case_1637193
+  name: '[202]音量调节-鼠标滚轮调节音量跳转频率'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放控件(#115645)
+  description: '[202]音量调节-鼠标滚轮调节音量跳转频率'
+  status: active
+  reason: ''
+  steps:
+  - step_type: assert
+    description: 1. 使用鼠标调节影院音量，查看音量跳转频率
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 鼠标滚轮滚动一下，影院音量跳转3%
+    needs_accessible_name: false
+- id: case_1637185
+  name: '[060][smoke][acp1]音量调节-解除静音'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放控件(#115645)
+  description: '[060][smoke][acp1]音量调节-解除静音'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 点击工具栏的音量按钮
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 在播放的过程中，按M键
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 软件静音后，使用滚轮调整音量大小
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院正常播放视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 软件会静音
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 静音解除，可以正常调整音量
+    needs_accessible_name: false
+- id: case_1637181
+  name: 播放控件-播放/暂停按钮hover状态显示
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放控件(#115645)
+  description: 播放控件-播放/暂停按钮hover状态显示
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，鼠标悬停“播放/暂停”按钮
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 播放视频，鼠标悬停“播放/暂停”按钮
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 播放/暂停按钮上方显示“播放”
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放/暂停按钮上方显示“暂停”
+    needs_accessible_name: false
+- id: case_1637163
+  name: '[core]导入-视频名称包含特殊字符时，拖拽导入影院播放'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: '[core]导入-视频名称包含特殊字符时，拖拽导入影院播放'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 拖拽前置条件视频至影院播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院正常启动
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院播放拖拽导入的视频
+    needs_accessible_name: false
+- id: case_1637161
+  name: 场景覆盖-mkv异常帧率视频覆盖
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: 场景覆盖-mkv异常帧率视频覆盖
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 修改视频帧率为10000,导入修改后的视频至影院播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院无异常，正常播放视频
+    needs_accessible_name: false
+- id: case_1637159
+  name: 播放-打开smb共享文件
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: 播放-打开smb共享文件
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 登录smb共享目录，直接双击共享中的视频文件
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 登录smb共享，将共享中的视频文件添加到播放列表中，再取消共享，播放列表中的文件
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 再次登录smb共享，播放列表中的文件
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 软件会自动播放视频文件
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放失败，提示：无效文件
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 文件重新添加，可以正常播放
+    needs_accessible_name: false
+- id: case_1637157
+  name: 播放-打开U盘硬盘文件
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: 播放-打开U盘硬盘文件
+  status: active
+  reason: ''
+  steps:
+  - step_type: assert
+    description: 1. 系统插入U盘，然后直接双击U盘中的视频文件，查看软件显示
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 系统插入U盘，将U盘中的视频添加到播放列表中，再拔除掉U盘，播放列表中的文件
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 再次插入U盘，并播放列表中的文件
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 系统插入硬盘，直接双击硬盘中的视频文件，查看软件显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 软件会自动播放视频文件
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 文件播放失败，软件给出提示信息：无效文件
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 文件重新添加，可以正常播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 软件会自动播放视频文件
+    needs_accessible_name: false
+- id: case_1637155
+  name: '[084][core][acp1]播放-批量导入视频播放'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: '[084][core][acp1]播放-批量导入视频播放'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，批量选择视频拖拽至影院窗口
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院播放第一个视频，其他的视频文件在播放列表中显示
+    needs_accessible_name: false
+- id: case_1637153
+  name: 【影院】【播放】初始界面-点击影院视频播放区域
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: 【影院】【播放】初始界面-点击影院视频播放区域
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 查看初始界面
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 点击视频播放区域
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院正常打开
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放区域中心展示影院图标
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 弹出文件管理器窗口，进行选择导入
+    needs_accessible_name: false
+- id: case_1637151
+  name: 【影院】【播放】初始界面-空格
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: 【影院】【播放】初始界面-空格
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 查看播放列表
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 返回初始界面，按空格键
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院正常打开，无视频播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放列表有视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 影院播放视频
+    needs_accessible_name: false
+- id: case_1637149
+  name: 【影院】【播放】拖拽视频文件到影院窗口播放
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: 【影院】【播放】拖拽视频文件到影院窗口播放
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 任意拖动一个影院支持格式的视频文件到影院中
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 查看播放列表
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院可以正常打开
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院自动播放当前视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 播放列表中新增拖入的视频
+    needs_accessible_name: false
+- id: case_1637147
+  name: 【影院】【工具栏】暂停播放
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: 【影院】【工具栏】暂停播放
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 播放视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 在影院播放的过程中，用鼠标点击播放按钮，查看系统显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 在影院播放的过程中，使用鼠标点击视屏画面，查看系统显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院可以正常打开
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 视频可以正常播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 点击按钮后，影院会自动切换到暂停状态
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 点击按钮后，影院会自动切换为暂停状态
+    needs_accessible_name: false
+- id: case_1637145
+  name: 【影院】【工具栏】点击按钮播放视频
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: 【影院】【工具栏】点击按钮播放视频
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 点击工具栏的播放按钮
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院可以正常打开
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院正常播放视频
+    needs_accessible_name: false
+- id: case_1637143
+  name: '[186][core]设置-恢复默认设置'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: '[186][core]设置-恢复默认设置'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 点击主菜单设置，设置勾选“退出影院清空播放列表”选项
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 设置点击“恢复默认”按钮，查看影院设置显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 点击“恢复默认”后，影院设置恢复默认设置
+    needs_accessible_name: false
+- id: case_1637139
+  name: '[033][core][acp1]播放-勾选“最小化时暂停”影院最小化播放'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: '[033][core][acp1]播放-勾选“最小化时暂停”影院最小化播放'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院，点击主菜单设置，勾选“最小化时暂停”选项
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 播放视频，最小化影院，查看影院播放状态
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 再次点击任务栏影院图标
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. “自动从上次停止位置播放”显示勾选状态
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 最小化影院，影院播放视频暂停
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 恢复影院窗口，影院继续播放
+    needs_accessible_name: false
+- id: case_1637127
+  name: '[190][core]设置-勾选“自动查找相似文件连续播放”选项导入视频'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: '[190][core]设置-勾选“自动查找相似文件连续播放”选项导入视频'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 打开影院，点击主菜单设置，勾选“自动查找相似文件连续播放”选项
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 导入相似视频中的一个视频，查看播放列表显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. “自动从上次停止位置播放”显示勾选状态
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院自动加载相似文件至播放列表
+    needs_accessible_name: false
+- id: case_1637119
+  name: '[smoke]播放-自动从上次停止位置播放'
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/播放(#115643)
+  description: '[smoke]播放-自动从上次停止位置播放'
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 播放视频，调节进度至任意位置
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 切换下一个视频，再切换回来
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 重启影院，点击工具栏的播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院视频正常跳转对应进度
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 视频继续切换前位置播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 视频继续重启前的位置播放
+    needs_accessible_name: false
+- id: case_1637081
+  name: 播放-当播放列表中已有100个视频后，以鼠标右键方式播放任意视频，应正常播放，不卡顿
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/临时文件(#115721)
+  description: 播放-当播放列表中已有100个视频后，以鼠标右键方式播放任意视频，应正常播放，不卡顿
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 选中任意视频文件，并鼠标右键
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 选择影院打开
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 正常弹出右键菜单
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 正常打开，不卡顿
+    needs_accessible_name: false
+- id: case_1637065
+  name: 使用inter的显卡，再次播放视频时，可正常播放
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/临时文件(#115721)
+  description: 使用inter的显卡，再次播放视频时，可正常播放
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 播放 任意视频
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 关闭影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 3. 再次打开影院
+    needs_accessible_name: false
+  - step_type: action
+    description: 4. 播放步骤1中的视频
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 可正常播放
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 可正常关闭影院
+    needs_accessible_name: false
+  - step_type: assert
+    description: 3. 可再次启动影院
+    needs_accessible_name: false
+  - step_type: assert
+    description: 4. 可正常播放
+    needs_accessible_name: false
+- id: case_1637057
+  name: 循环播放同一个视频24小时，内存不增加
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/临时文件(#115721)
+  description: 循环播放同一个视频24小时，内存不增加
+  status: active
+  reason: ''
+  steps:
+  - step_type: assert
+    description: 1. 循环播放一个视频24H，并查看内存
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 内存不增加
+    needs_accessible_name: false
+- id: case_1637043
+  name: 差异化-景嘉微显卡2D模式显示
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/临时文件(#115721)
+  description: 差异化-景嘉微显卡2D模式显示
+  status: active
+  reason: ''
+  steps:
+  - step_type: assert
+    description: 1. 景嘉微显示上检查影院窗口显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: 1. 影院窗口2D模式样式显示，显示直角
+    needs_accessible_name: false
+- id: case_1637041
+  name: 差异化-arm&mips音量条等直角显示
+  module: /V25_2500（测试部专用）/B类解耦商店应用/影院/临时文件(#115721)
+  description: 差异化-arm&mips音量条等直角显示
+  status: active
+  reason: ''
+  steps:
+  - step_type: action
+    description: 1. 启动影院，呼出音量条
+    needs_accessible_name: false
+  - step_type: action
+    description: 2. 观察影院窗口，音量条等的显示
+    needs_accessible_name: false
+  - step_type: assert
+    description: '1.'
+    needs_accessible_name: false
+  - step_type: assert
+    description: 2. 影院音量条等无圆角显示，显示直角
+    needs_accessible_name: false

@@ -1,0 +1,129 @@
+---
+class_name: VolumeSlider
+source_file: src/widgets/volumeslider.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names:
+- volumeSlider
+- slider
+- muteButton
+accessible_names:
+- slider
+- muteButton
+dtk_instantiations: []
+---
+class_name: VolumeSlider
+source_file: src/widgets/volumeslider.cpp
+base_classes: []
+is_ui_widget: false
+object_names:
+- volumeSlider
+- slider
+- muteButton
+accessible_names:
+- slider
+- muteButton
+dtk_instantiations: []
+---
+class_name: MovieInfoDialog
+source_file: src/widgets/movieinfo_dialog.cpp
+base_classes:
+- DDialog
+is_ui_widget: true
+object_names:
+- movieInfoDialog
+- movieInfoScrollArea
+- scrollAreaViewport
+- scrollContentWidget
+- filmInfoWidget
+- codecInfoWidget
+- audioInfoWidget
+- filePathLabel
+accessible_names:
+- movieInfoDialog
+- movieInfoScrollArea
+dtk_instantiations:
+- DDialog
+---
+class_name: NotificationWidget
+source_file: src/widgets/notification_widget.cpp
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names:
+- NotificationFrame
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_NotificationWidget
+source_file: src/widgets/platform/platform_notification_widget.cpp
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names:
+- NotificationFrame
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PlayItemWidget
+source_file: src/widgets/playlist_widget.cpp
+base_classes: []
+is_ui_widget: false
+object_names:
+- playItemCloseBtn
+accessible_names:
+- playItemCloseBtn
+dtk_instantiations: []
+---
+class_name: PlaylistWidget
+source_file: src/widgets/playlist_widget.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names:
+- leftWidget
+- clearButton
+- rightListWidget
+- playlist
+- fileList
+accessible_names:
+- clearButton
+dtk_instantiations: []
+---
+class_name: PlaylistWidget
+source_file: src/widgets/playlist_widget.cpp
+base_classes: []
+is_ui_widget: false
+object_names:
+- leftWidget
+- clearButton
+- rightListWidget
+- playlist
+- fileList
+accessible_names:
+- clearButton
+dtk_instantiations: []
+---
+class_name: PlayItemWidget
+source_file: src/widgets/playlist_widget.cpp
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names:
+- playItemCloseBtn
+accessible_names:
+- playItemCloseBtn
+dtk_instantiations: []
+---
+class_name: Tip
+source_file: src/widgets/tip.cpp
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names:
+- Tip
+- TipIcon
+- TipText
+accessible_names: []
+dtk_instantiations: []

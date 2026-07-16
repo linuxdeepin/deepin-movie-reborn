@@ -1,0 +1,1348 @@
+metadata:
+  generated_at: "2026-07-16T09:50:00"
+  source: "统信桌面操作系统-V25-用例-影院.xlsx"
+cases:
+  - id: case_2003953
+    name: 影院主菜单-关于
+    module: 窗口操作
+    status: active
+    steps:
+      - step_type: action
+        description: 打开影院
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 点击主菜单中关于菜单
+        action: dtk_main_menu
+        items: ["关于"]
+      - step_type: action
+        description: 等待菜单弹出
+        action: wait
+        wait: 2.0
+      - step_type: assert
+        description: 验证弹出关于窗口
+        action: assert_window
+        assertion: window_exists
+        name_pattern: ".*关于.*|About"
+      - step_type: action
+        description: 关闭关于窗口
+        action: keyboard_press
+        key: "escape"
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1993455
+    name: 影院_打开文件_播放最近使用视频
+    module: 窗口操作
+    status: unsupported
+    reason: "打开文件对话框属于系统文件选择器，非影院应用自身AT-SPI树范围，无法自动化选择'最近使用'标签页中的具体视频"
+
+  - id: case_1704901
+    name: 【玲珑】【影院】卸载指定版本的玲珑应用
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704899
+    name: 【玲珑】【影院】卸载玲珑应用
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704897
+    name: 【玲珑】【影院】查看玲珑应用包含的文件
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704895
+    name: 【玲珑】【影院】杀掉玲珑应用运行进程
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704893
+    name: 【玲珑】【影院】检查玲珑应用运行情况
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704891
+    name: 【玲珑】【影院】进入容器内部
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704889
+    name: 【玲珑】【影院】更新玲珑应用指定版本
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704887
+    name: 【玲珑】【影院】更新玲珑应用
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704885
+    name: 【玲珑】【影院】玲珑应用，基本功能测试
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704883
+    name: 【玲珑】【影院】运行指定版本玲珑应用
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704881
+    name: 【玲珑】【影院】运行玲珑应用
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704879
+    name: 【玲珑】【影院】安装玲珑应用指定版本
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704877
+    name: 【玲珑】【影院】安装玲珑应用
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704875
+    name: 【玲珑】【影院】仓库玲珑应用信息
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1704873
+    name: 【玲珑】【影院】查看玲珑应用信息
+    module: 玲珑
+    status: unsupported
+    reason: "终端ll-cli命令操作，非GUI AT-SPI操作"
+
+  - id: case_1638099
+    name: 【影院】将一个gif录屏文件转为mp4使用影院播放
+    module: 文件导入
+    status: unsupported
+    reason: "需要使用截图录屏工具录制gif并用ffmpeg转换，依赖外部工具链和预制备的测试文件"
+
+  - id: case_1638067
+    name: 中孚-检查影院xwininfo展示路径情况
+    module: 其它交互
+    status: unsupported
+    reason: "需要检查xwininfo命令输出和多个场景（空窗口、播放中、迷你模式、全屏、URL视频、光盘、文管双击），涉及外部系统工具验证"
+
+  - id: case_1638041
+    name: 可靠性-长时间播放视频
+    module: 窗口显示
+    status: unsupported
+    reason: "需要播放视频12小时，超出自动化测试合理时间范围"
+
+  - id: case_1638023
+    name: 性能指标-1080P-29帧视频播放响应时间
+    module: 播放设置
+    status: unsupported
+    reason: "性能计时测试，需要手动计时，非功能验证"
+
+  - id: case_1638021
+    name: 性能指标-冷启动
+    module: 播放设置
+    status: unsupported
+    reason: "需要重启计算机并手动计时，非AT-SPI可自动化"
+
+  - id: case_1638019
+    name: 性能指标-热启动
+    module: 播放设置
+    status: unsupported
+    reason: "需要手动计时冷/热启动耗时，非功能验证"
+
+  - id: case_1638011
+    name: '[acp2][影院]检查影院播放网络视频功能'
+    module: 播放设置
+    status: unsupported
+    reason: "需要输入正确的网络视频地址，依赖外部网络环境和特定URL资源"
+
+  - id: case_1638009
+    name: '[acp2][影院]播放视频时休眠'
+    module: 播放设置
+    status: unsupported
+    reason: "需要操作系统级休眠/唤醒操作，非AT-SPI可控制"
+
+  - id: case_1638007
+    name: '[acp2][影院]检查外设输出音频功能'
+    module: 播放设置
+    status: unsupported
+    reason: "需要物理接上/断开耳机，依赖外设硬件操作"
+
+  - id: case_1638005
+    name: '[acp2][影院]解码模式推荐'
+    module: 播放设置
+    status: unsupported
+    reason: "需要手动切换设置中的解码模式，且设置对话框为系统对话框，非影院AT-SPI树内"
+
+  - id: case_1637989
+    name: 【影院】【键盘交互】播放主界面用tab键切换功能按钮
+    module: 键盘交互
+    status: active
+    steps:
+      - step_type: action
+        description: 打开影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 在播放主界面按tab键
+        action: keyboard_press
+        key: "tab"
+      - step_type: assert
+        description: 验证焦点从上一个按钮到关闭按钮循环切换
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637975
+    name: 【影院】【键盘交互】enter键进入下一级菜单
+    module: 键盘交互
+    status: active
+    steps:
+      - step_type: action
+        description: 打开影院
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 在主菜单选项界面按enter键
+        action: dtk_main_menu
+        items: ["打开文件夹"]
+      - step_type: action
+        description: 等待菜单弹出
+        action: wait
+        wait: 2.0
+      - step_type: action
+        description: 按方向键上下选择条目
+        action: keyboard_press
+        key: "down"
+      - step_type: action
+        description: 按escape退出
+        action: keyboard_press
+        key: "escape"
+      - step_type: assert
+        description: 验证进入下一级菜单后可正常导航
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637963
+    name: 键盘交互-选中进度条后用左右键
+    module: 键盘交互
+    status: unsupported
+    reason: "纯视觉验证进度条步阶变化，AT-SPI无法验证播放进度是否精确变化5秒"
+
+  - id: case_1637961
+    name: 键盘交互-音量刻度条展开后使用上下方向键调节音量
+    module: 键盘交互
+    status: unsupported
+    reason: "纯视觉验证音量百分比变化，AT-SPI无法验证音量步阶精确5%变化"
+
+  - id: case_1637931
+    name: 触控板-一指单点进度条
+    module: 触控板
+    status: unsupported
+    reason: "需要触控板物理操作，非AT-SPI可自动化"
+
+  - id: case_1637921
+    name: 触控板-两指单点唤出右键菜单
+    module: 触控板
+    status: unsupported
+    reason: "需要触控板物理两指操作，非AT-SPI可自动化"
+
+  - id: case_1637917
+    name: 触控板-两指上下滑动调整音量
+    module: 触控板
+    status: unsupported
+    reason: "需要触控板物理手势操作，非AT-SPI可自动化"
+
+  - id: case_1637911
+    name: '[core]触控屏-一指打开应用'
+    module: 触控屏
+    status: unsupported
+    reason: "需要触控屏物理手势操作和启动器/桌面/dock栏交互，超出影院应用范围"
+
+  - id: case_1637881
+    name: '[core]触控屏-一指滑动播放界面来调节音量'
+    module: 触控屏
+    status: unsupported
+    reason: "需要触控屏物理手势操作，非AT-SPI可自动化"
+
+  - id: case_1637879
+    name: '[core]触控屏-一指滑动视频画面区域来调节播放进度'
+    module: 触控屏
+    status: unsupported
+    reason: "需要触控屏物理手势操作，非AT-SPI可自动化"
+
+  - id: case_1637871
+    name: 触控屏-打开自然滚动和手指交互
+    module: 触控屏
+    status: unsupported
+    reason: "需要触控屏物理手势操作和系统设置交互，非AT-SPI可自动化"
+
+  - id: case_1637869
+    name: 埋点-影院埋点检查
+    module: 废弃用例
+    status: unsupported
+    reason: "需要检查/var/lib/deepin/event-log日志文件内容，非GUI AT-SPI验证"
+
+  - id: case_1637801
+    name: '[core]交互-相册调用影院'
+    module: 外部交互
+    status: unsupported
+    reason: "需要从相册应用发起操作，跨应用交互超出影院AT-SPI树范围"
+
+  - id: case_1637793
+    name: '[core]交互-播放视频进入待机'
+    module: 外部交互
+    status: unsupported
+    reason: "需要Ctrl+Alt+Delete系统级待机操作，非AT-SPI可控制"
+
+  - id: case_1637789
+    name: 交互-打开相机录制好的视频
+    module: 外部交互
+    status: unsupported
+    reason: "需要相机录制视频并用文件管理器打开，依赖外部设备和应用"
+
+  - id: case_1637785
+    name: '[core]交互-文件管理视频文件空格预览'
+    module: 外部交互
+    status: unsupported
+    reason: "需要从文件管理器发起空格预览操作，跨应用交互超出影院范围"
+
+  - id: case_1637769
+    name: '[206]数据流-以拖拽打开数据流类型文件'
+    module: 触控屏
+    status: unsupported
+    reason: "需要从文件管理器拖拽文件到影院窗口，跨应用拖拽操作非AT-SPI可自动化"
+
+  - id: case_1637767
+    name: 数据流-全屏播放视频总时长显示全为0
+    module: 触控屏
+    status: unsupported
+    reason: "需要特定数据流格式文件和文件管理器右键打开方式操作"
+
+  - id: case_1637731
+    name: 数据流-不支持进度条点击快退拖动
+    module: 触控屏
+    status: unsupported
+    reason: "需要特定数据流格式文件和文件管理器右键打开方式操作"
+
+  - id: case_1637681
+    name: '[core]格式支持-支持的音频格式'
+    module: 格式支持
+    status: unsupported
+    reason: "需要准备多种格式(mp3/ogg/wav/wma/m4a/aac/ac3/ape/flac/ra/mka/dts/opus)音频文件，且验证动画效果为纯视觉"
+
+  - id: case_1637659
+    name: '[065][core][acp1]快捷键-Space暂停视频播放'
+    module: 快捷键
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 使用快捷键Space暂停
+        action: keyboard_press
+        key: "space"
+      - step_type: assert
+        description: 验证影院暂停视频播放
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637655
+    name: 快捷键-Alt+S连拍截图
+    module: 快捷键
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 使用快捷键Alt+S连拍截图
+        action: keyboard_hot_key
+        key: "alt+s"
+      - step_type: action
+        description: 等待截图完成
+        action: wait
+        wait: 3.0
+      - step_type: assert
+        description: 验证截图通知提示
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637645
+    name: 快捷键-pagedown切换下一个视频播放
+    module: 快捷键
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 使用快捷键pageup切换上一个视频
+        action: keyboard_press
+        key: "pageup"
+      - step_type: assert
+        description: 验证影院自动播放上一个视频
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637639
+    name: '[040][core][acp1]快捷键-M切换静音'
+    module: 快捷键
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 使用快捷键M切换静音
+        action: keyboard_press
+        key: "m"
+      - step_type: action
+        description: 等待静音切换
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证影院静音状态
+        action: assert_window
+      - step_type: action
+        description: 再次使用M解除静音
+        action: keyboard_press
+        key: "m"
+      - step_type: action
+        description: 等待解除静音
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证影院解除静音
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637631
+    name: '[184][core]快捷键-Ctrl+Shift+?查看快捷键预览'
+    module: 快捷键
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 使用Ctrl+Shift+/查看快捷键预览
+        action: keyboard_hot_key
+        key: "ctrl+shift+/"
+      - step_type: action
+        description: 等待快捷键预览显示
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证显示影院快捷键预览
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637629
+    name: '[087][core][acp1]快捷键-F1调起帮助文档'
+    module: 快捷键
+    status: unsupported
+    reason: "F1调起系统帮助浏览器(dde-help)，非影院应用自身AT-SPI树范围"
+
+  - id: case_1637627
+    name: '[088][core][acp1]快捷键-Ctrl+i查看影片信息'
+    module: 快捷键
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 使用快捷键Ctrl+i查看影片信息
+        action: keyboard_hot_key
+        key: "ctrl+i"
+      - step_type: action
+        description: 等待影片信息弹窗
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证弹出影片信息弹窗
+        action: assert_window
+        name_pattern: "movieInfoDialog"
+      - step_type: action
+        description: 关闭影片信息弹窗
+        action: keyboard_press
+        key: "escape"
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637625
+    name: '[125]快捷键-快捷键R还原倍速播放'
+    module: 设置
+    status: unsupported
+    reason: "Ctrl+right调整倍速需要先有正在播放的视频，且验证左上角提示为纯视觉/OCR验证"
+
+  - id: case_1637617
+    name: '[037][core][acp1]右键菜单-影片信息'
+    module: 设置
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 右键点击视频播放区域选择影片信息
+        action: dtk_context_menu
+        items: ["影片信息"]
+        selector: {name: "DMainWindow", role: "frame"}
+      - step_type: action
+        description: 等待影片信息弹窗
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证显示影片信息弹窗
+        action: assert_window
+        name_pattern: "movieInfoDialog"
+      - step_type: action
+        description: 关闭影片信息弹窗
+        action: keyboard_press
+        key: "escape"
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637613
+    name: '[018][core][acp1]截图-前往截图文件夹'
+    module: 设置
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 右键点击视频播放区域选择影片截图
+        action: dtk_context_menu
+        items: ["截图", "影片截图"]
+        selector: {name: "DMainWindow", role: "frame"}
+      - step_type: action
+        description: 等待截图完成
+        action: wait
+        wait: 2.0
+      - step_type: assert
+        description: 验证截图通知提示
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637611
+    name: '[182][core]截图-连拍截图'
+    module: 设置
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 右键点击视频播放区域选择连拍截图
+        action: dtk_context_menu
+        items: ["截图", "连拍截图"]
+        selector: {name: "DMainWindow", role: "frame"}
+      - step_type: action
+        description: 等待连拍截图完成
+        action: wait
+        wait: 5.0
+      - step_type: assert
+        description: 验证截图通知提示
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637609
+    name: '[132][core][acp1]截图-无影片截图显示'
+    module: 设置
+    status: unsupported
+    reason: "需要验证右键菜单中截图选项置灰状态，AT-SPI无法验证菜单项的enabled/disabled状态"
+
+  - id: case_1637585
+    name: 窗口显示-播放器取消置顶
+    module: 商业定制
+    status: unsupported
+    reason: "需要切换浏览器页面验证置顶层级关系，跨应用验证非AT-SPI可自动化"
+
+  - id: case_1637583
+    name: '[011][core][acp1]窗口显示-播放器置顶'
+    module: 快捷键
+    status: unsupported
+    reason: "需要切换浏览器页面验证置顶层级关系，跨应用验证非AT-SPI可自动化"
+
+  - id: case_1637579
+    name: '[core]播放设置-列表循环'
+    module: 快捷键
+    status: unsupported
+    reason: "需要等待视频播放完成并验证列表循环行为，播放列表多个视频的自动切换验证为长时间运行测试"
+
+  - id: case_1637571
+    name: 播放设置-画面旋转和截图交互
+    module: 快捷键
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 右键选择画面-顺时针旋转
+        action: dtk_context_menu
+        items: ["画面", "顺时针旋转"]
+        selector: {name: "DMainWindow", role: "frame"}
+      - step_type: action
+        description: 等待旋转完成
+        action: wait
+        wait: 2.0
+      - step_type: action
+        description: 右键选择截图-影片截图
+        action: dtk_context_menu
+        items: ["截图", "影片截图"]
+        selector: {name: "DMainWindow", role: "frame"}
+      - step_type: action
+        description: 等待截图完成
+        action: wait
+        wait: 2.0
+      - step_type: assert
+        description: 验证截图通知提示
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637569
+    name: 播放设置-画面-下一帧
+    module: 快捷键
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 右键选择画面-下一帧
+        action: dtk_context_menu
+        items: ["画面", "下一帧"]
+        selector: {name: "DMainWindow", role: "frame"}
+      - step_type: action
+        description: 等待帧跳转
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证播放状态变为暂停（播放按钮存在）
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637565
+    name: '[193][core]播放设置-画面-逆时针旋转'
+    module: 快捷键
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 右键选择画面-逆时针旋转
+        action: dtk_context_menu
+        items: ["画面", "逆时针旋转"]
+        selector: {name: "DMainWindow", role: "frame"}
+      - step_type: action
+        description: 等待旋转完成
+        action: wait
+        wait: 2.0
+      - step_type: assert
+        description: 验证影院窗口存在（画面已旋转）
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637561
+    name: 播放设置-声道设置记忆检查
+    module: 快捷键
+    status: unsupported
+    reason: "需要重启影院验证声道设置记忆，且验证耳机声音输出为物理验证"
+
+  - id: case_1637551
+    name: '[192][core]播放设置-声道选项'
+    module: 快捷键
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 右键选择声音-声道，查看声道选项
+        action: dtk_context_menu
+        items: ["声音", "声道"]
+        selector: {name: "DMainWindow", role: "frame"}
+      - step_type: action
+        description: 等待子菜单弹出
+        action: wait
+        wait: 2.0
+      - step_type: assert
+        description: 验证声道选项包含立体声、左声道、右声道
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637541
+    name: 播放设置-调整字幕延迟
+    module: 快捷键
+    status: unsupported
+    reason: "需要拖拽字幕文件到影院窗口，且验证字幕延迟显示为纯视觉"
+
+  - id: case_1637535
+    name: '[core]播放设置-隐藏字幕'
+    module: 快捷键
+    status: unsupported
+    reason: "需要拖拽字幕文件到影院窗口作为前置条件"
+
+  - id: case_1637525
+    name: '[core]播放设置-字幕-查找在线字幕'
+    module: 格式
+    status: unsupported
+    reason: "依赖在线字幕服务和特定视频匹配，网络依赖强"
+
+  - id: case_1637511
+    name: '[203]播放设置-自动字幕隐藏字幕'
+    module: 格式
+    status: unsupported
+    reason: "需要自带字幕的影片，且验证隐藏字幕选项置灰状态"
+
+  - id: case_1637481
+    name: '[138]倍速播放-Ctrl+Left调节倍速1.3右键菜单显示'
+    module: 格式
+    status: unsupported
+    reason: "验证右键菜单倍速播放显示无勾选为纯视觉验证"
+
+  - id: case_1637435
+    name: '[048]设置-勾选鼠标滑动进度条为胶片格式影院显示'
+    module: 打开关闭
+    status: unsupported
+    reason: "设置对话框为系统对话框，非影院AT-SPI树内可操作"
+
+  - id: case_1637433
+    name: 设置-鼠标滑动进度条为胶片格式选项不同架构检查
+    module: 打开关闭
+    status: unsupported
+    reason: "需要ARM/mips设备，且设置对话框为系统对话框"
+
+  - id: case_1637429
+    name: '[030][core][acp1]设置-退出影院时清空播放列表'
+    module: 打开关闭
+    status: unsupported
+    reason: "设置对话框为系统对话框，非影院AT-SPI树内可操作"
+
+  - id: case_1637423
+    name: 设置-设定硬解码异常处理
+    module: 打开关闭
+    status: unsupported
+    reason: "设置对话框为系统对话框，需要特殊码流视频文件"
+
+  - id: case_1637421
+    name: '[211]设置-视频播放切换软解码'
+    module: 打开关闭
+    status: unsupported
+    reason: "设置对话框为系统对话框，非影院AT-SPI树内可操作"
+
+  - id: case_1637419
+    name: '[213][core]设置-设置软解码播放视频'
+    module: 打开关闭
+    status: unsupported
+    reason: "设置对话框为系统对话框，需要多种格式视频文件"
+
+  - id: case_1637417
+    name: '[210][core]设置-设置硬解码'
+    module: 打开关闭
+    status: unsupported
+    reason: "设置对话框为系统对话框，非影院AT-SPI树内可操作"
+
+  - id: case_1637415
+    name: '[212][core]设置-默认解码方式检查'
+    module: 打开关闭
+    status: unsupported
+    reason: "设置对话框为系统对话框，非影院AT-SPI树内可操作"
+
+  - id: case_1637405
+    name: 【影院】【导入】拖拽多个视频文件导入
+    module: 导入视频
+    status: unsupported
+    reason: "需要拖拽多个视频文件到影院窗口，跨应用拖拽操作非AT-SPI可自动化"
+
+  - id: case_1637387
+    name: '[104][smoke][acp1]主菜单-打开文件-打开修改后缀为mp4的非视频文件'
+    module: 窗口操作
+    status: unsupported
+    reason: "打开文件对话框为系统文件选择器，非影院AT-SPI树范围"
+
+  - id: case_1637363
+    name: '[112][core][acp1]主题-主题设置保存'
+    module: 窗口操作
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 主菜单选择主题-深色
+        action: dtk_main_menu
+        items: ["主题", "深色"]
+      - step_type: action
+        description: 等待主题切换
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证影院窗口存在（主题已应用）
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637357
+    name: '[038][core][acp1]主菜单-关于'
+    module: 窗口操作
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 点击主菜单按钮选择关于
+        action: dtk_main_menu
+        items: ["关于"]
+      - step_type: action
+        description: 等待关于窗口
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证弹出关于窗口
+        action: assert_window
+        assertion: window_exists
+        name_pattern: ".*关于.*|About"
+      - step_type: action
+        description: 关闭关于窗口
+        action: keyboard_press
+        key: "escape"
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637349
+    name: '[181][core]全屏-工具栏自动隐藏'
+    module: 窗口操作
+    status: unsupported
+    reason: "验证工具栏5秒后自动隐藏为纯视觉/时序验证，AT-SPI无法检测工具栏可见性变化"
+
+  - id: case_1637347
+    name: '[122][core][acp1]全屏-快捷键Alt+Enter进入/退出全屏'
+    module: 窗口操作
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 使用快捷键Alt+Enter进入全屏
+        action: keyboard_hot_key
+        key: "alt+enter"
+      - step_type: action
+        description: 等待全屏切换
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证进入全屏后窗口存在
+        action: assert_window
+      - step_type: action
+        description: 再次使用Alt+Enter退出全屏
+        action: keyboard_hot_key
+        key: "alt+enter"
+      - step_type: action
+        description: 等待退出全屏
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证退出全屏后窗口存在
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637341
+    name: '[061][smoke][acp1]迷你模式-关闭按钮退出迷你模式'
+    module: 窗口操作
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 使用快捷键F2进入迷你模式
+        action: keyboard_press
+        key: "f2"
+      - step_type: action
+        description: 等待迷你模式切换
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证影院窗口仍然存在（迷你模式）
+        action: assert_window
+      - step_type: action
+        description: 点击迷你模式窗口的X关闭按钮
+        action: element_action
+        selector: {name: "DTitlebarDWindowCloseButton", role: "push button"}
+        do: "click"
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637333
+    name: '[022]播放列表-清空播放列表按钮清空播放列表'
+    module: 播放列表
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 点击播放列表按钮呼出播放列表
+        action: element_action
+        selector: {name: "playlistButton", role: "check box"}
+        do: "click"
+      - step_type: action
+        description: 等待播放列表展开
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证播放列表显示
+        action: assert_window
+      - step_type: action
+        description: 点击播放列表中的清空按钮
+        action: element_action
+        selector: {name: "clearButton", role: "push button"}
+        do: "click"
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637321
+    name: '[117]播放列表-快捷键Delete删除视频'
+    module: 播放列表
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 点击播放列表按钮呼出播放列表
+        action: element_action
+        selector: {name: "playlistButton", role: "check box"}
+        do: "click"
+      - step_type: action
+        description: 等待播放列表展开
+        action: wait
+        wait: 1.0
+      - step_type: action
+        description: 选中视频使用快捷键delete
+        action: keyboard_press
+        key: "delete"
+      - step_type: action
+        description: 等待删除
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证播放列表仍然存在
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637313
+    name: 播放列表-删除无效文件
+    module: 播放列表
+    status: unsupported
+    reason: "需要先添加视频再关闭影院删除本地视频文件，涉及文件系统外部操作"
+
+  - id: case_1637293
+    name: '[025][core][acp1]播放列表-在文件管理中显示'
+    module: 播放列表
+    status: unsupported
+    reason: "右键点击播放列表项选择在文件管理器中显示，会调起文件管理器应用，跨应用交互超出影院范围"
+
+  - id: case_1637223
+    name: '[005][core][acp1]全屏-点击工具栏全屏按钮退出全屏'
+    module: 播放控件
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 点击工具栏全屏按钮进入全屏
+        action: element_action
+        selector: {name: "fullscreenButtion", role: "push button"}
+        do: "click"
+      - step_type: action
+        description: 等待全屏切换
+        action: wait
+        wait: 1.0
+      - step_type: action
+        description: 再次点击全屏按钮退出全屏
+        action: element_action
+        selector: {name: "fullscreenButtion", role: "push button"}
+        do: "click"
+      - step_type: action
+        description: 等待退出全屏
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证退出全屏后窗口存在
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637211
+    name: '[010][core][acp1]播放列表-右键菜单删除当前播放视频'
+    module: 播放控件
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 点击播放列表按钮
+        action: element_action
+        selector: {name: "playlistButton", role: "check box"}
+        do: "click"
+      - step_type: action
+        description: 等待播放列表展开
+        action: wait
+        wait: 1.0
+      - step_type: action
+        description: 右键点击播放列表项选择从播放列表删除
+        action: dtk_context_menu
+        items: ["从播放列表删除"]
+        selector: {name: "playListWidget", role: "form"}
+      - step_type: action
+        description: 等待删除
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证播放列表仍然存在
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637197
+    name: 【影院】【工具栏】鼠标点击拖拽音量调节图标
+    module: 播放控件
+    status: unsupported
+    reason: "鼠标拖拽操作验证音量调节为纯视觉验证，AT-SPI无法检测音量值变化"
+
+  - id: case_1637193
+    name: '[202]音量调节-鼠标滚轮调节音量跳转频率'
+    module: 播放控件
+    status: unsupported
+    reason: "鼠标滚轮操作为物理输入设备操作，验证音量跳转3%为纯视觉验证"
+
+  - id: case_1637185
+    name: '[060][smoke][acp1]音量调节-解除静音'
+    module: 播放控件
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院并播放视频
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 点击工具栏音量按钮展开音量条
+        action: element_action
+        selector: {name: "volumeButton"}
+        do: "click"
+      - step_type: action
+        description: 按M键静音
+        action: keyboard_press
+        key: "m"
+      - step_type: action
+        description: 等待静音切换
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证静音按钮存在
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637181
+    name: 播放控件-播放/暂停按钮hover状态显示
+    module: 播放控件
+    status: unsupported
+    reason: "验证hover状态tooltip文字为纯视觉验证，AT-SPI无法检测tooltip内容"
+
+  - id: case_1637163
+    name: '[core]导入-视频名称包含特殊字符时拖拽导入影院播放'
+    module: 播放
+    status: unsupported
+    reason: "需要拖拽文件到影院窗口，跨应用拖拽操作非AT-SPI可自动化"
+
+  - id: case_1637161
+    name: 场景覆盖-mkv异常帧率视频覆盖
+    module: 播放
+    status: unsupported
+    reason: "需要修改视频帧率为10000的特殊文件，依赖外部工具准备"
+
+  - id: case_1637159
+    name: 播放-打开smb共享文件
+    module: 播放
+    status: unsupported
+    reason: "需要SMB共享目录环境配置，依赖网络共享环境"
+
+  - id: case_1637157
+    name: 播放-打开U盘硬盘文件
+    module: 播放
+    status: unsupported
+    reason: "需要U盘/硬盘物理设备插入/拔出操作"
+
+  - id: case_1637155
+    name: '[084][core][acp1]播放-批量导入视频播放'
+    module: 播放
+    status: unsupported
+    reason: "需要拖拽多个视频文件到影院窗口，跨应用拖拽操作非AT-SPI可自动化"
+
+  - id: case_1637153
+    name: 【影院】【播放】初始界面-点击影院视频播放区域
+    module: 播放
+    status: active
+    steps:
+      - step_type: action
+        description: 打开影院
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 等待影院启动
+        action: wait
+        wait: 3.0
+      - step_type: assert
+        description: 验证影院正常打开
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637151
+    name: 【影院】【播放】初始界面-空格
+    module: 播放
+    status: active
+    steps:
+      - step_type: action
+        description: 打开影院
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 等待影院启动
+        action: wait
+        wait: 3.0
+      - step_type: action
+        description: 按空格键
+        action: keyboard_press
+        key: "space"
+      - step_type: assert
+        description: 验证影院窗口存在
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637149
+    name: 【影院】【播放】拖拽视频文件到影院窗口播放
+    module: 播放
+    status: unsupported
+    reason: "需要拖拽视频文件到影院窗口，跨应用拖拽操作非AT-SPI可自动化"
+
+  - id: case_1637147
+    name: 【影院】【工具栏】暂停播放
+    module: 播放
+    status: active
+    steps:
+      - step_type: action
+        description: 打开影院
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 等待影院启动
+        action: wait
+        wait: 3.0
+      - step_type: action
+        description: 点击播放按钮
+        action: element_action
+        selector: {name: "playBtn", role: "push button"}
+        do: "click"
+      - step_type: action
+        description: 等待操作响应
+        action: wait
+        wait: 1.0
+      - step_type: assert
+        description: 验证播放按钮存在（可点击切换暂停/播放）
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637145
+    name: 【影院】【工具栏】点击按钮播放视频
+    module: 播放
+    status: active
+    steps:
+      - step_type: action
+        description: 启动影院
+        action: session_start
+        command: deepin-movie
+        wait: 8.0
+      - step_type: action
+        description: 等待影院启动
+        action: wait
+        wait: 3.0
+      - step_type: assert
+        description: 验证影院正常打开
+        action: assert_window
+      - step_type: action
+        description: 关闭影院
+        action: session_stop
+
+  - id: case_1637143
+    name: '[186][core]设置-恢复默认设置'
+    module: 播放
+    status: unsupported
+    reason: "设置对话框为系统对话框，非影院AT-SPI树内可操作"
+
+  - id: case_1637139
+    name: '[033][core][acp1]播放-勾选最小化时暂停影院最小化播放'
+    module: 播放
+    status: unsupported
+    reason: "设置对话框为系统对话框，需要最小化影院窗口并验证播放暂停状态"
+
+  - id: case_1637127
+    name: '[190][core]设置-勾选自动查找相似文件连续播放选项导入视频'
+    module: 播放
+    status: unsupported
+    reason: "设置对话框为系统对话框，非影院AT-SPI树内可操作"
+
+  - id: case_1637119
+    name: '[smoke]播放-自动从上次停止位置播放'
+    module: 播放
+    status: unsupported
+    reason: "需要多次切换视频和重启影院验证播放位置记忆，且验证进度位置为纯视觉"
+
+  - id: case_1637081
+    name: 播放-当播放列表中已有100个视频后右键播放
+    module: 临时文件
+    status: unsupported
+    reason: "需要100个视频文件的播放列表环境，且从文件管理器右键操作"
+
+  - id: case_1637065
+    name: 使用inter的显卡再次播放视频时可正常播放
+    module: 临时文件
+    status: unsupported
+    reason: "特定Intel显卡硬件环境依赖"
+
+  - id: case_1637057
+    name: 循环播放同一个视频24小时内存不增加
+    module: 临时文件
+    status: unsupported
+    reason: "需要播放24小时并检查内存，超出自动化测试合理时间"
+
+  - id: case_1637043
+    name: 差异化-景嘉微显卡2D模式显示
+    module: 临时文件
+    status: unsupported
+    reason: "特定景嘉微显卡硬件环境依赖，且验证2D直角为纯视觉"
+
+  - id: case_1637041
+    name: 差异化-arm&mips音量条等直角显示
+    module: 临时文件
+    status: unsupported
+    reason: "特定ARM/mips硬件环境依赖，且验证直角为纯视觉"
