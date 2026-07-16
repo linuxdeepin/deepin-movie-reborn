@@ -1,0 +1,39 @@
+name: 键盘交互_suite
+app: deepin-movie
+description: ''
+module: 键盘交互
+tags: []
+fast_fail: false
+env_check: []
+setup:
+- action: session_start
+  command: deepin-movie
+  wait: 3.0
+suites:
+- id: case_1637989_s1
+  name: 打开影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: keyboard_press
+    key: tab
+  assert_steps:
+  - action: assert_window
+- id: case_1637975_s1
+  name: 打开影院
+  description: ''
+  tags: []
+  steps:
+  - action: dtk_main_menu
+    items:
+    - 打开文件夹
+  - action: wait
+    wait: 1.0
+  - action: keyboard_press
+    key: down
+  - action: keyboard_press
+    key: escape
+  assert_steps:
+  - action: assert_window
+teardown:
+- action: session_stop

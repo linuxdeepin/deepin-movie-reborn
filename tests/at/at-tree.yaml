@@ -1,0 +1,8179 @@
+version: '1.0'
+app: deepin-movie
+tree:
+- role: form
+  name: Form_
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 0
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  - showing
+  - visible
+  source: runtime
+  children:
+  - role: label
+    name: Label_
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 0
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n1
+    state_labels: &id001 []
+    class_name: ''
+  - role: form
+    name: Form_
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 0
+    states:
+    - enabled
+    - sensitive
+    - showing
+    - visible
+    source: runtime
+    id: n2
+    state_labels: *id001
+    class_name: ''
+  id: n0
+  state_labels: *id001
+  class_name: ''
+- role: frame
+  name: DMainWindow
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 3
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  - showing
+  - visible
+  source: runtime
+  children:
+  - role: form
+    name: Form_
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 0
+    states:
+    - enabled
+    - sensitive
+    - showing
+    - visible
+    source: runtime
+    children:
+    - role: form
+      name: Form_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - sensitive
+      - showing
+      - visible
+      source: runtime
+      children:
+      - role: form
+        name: Form_
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 0
+        states:
+        - enabled
+        - sensitive
+        - showing
+        - visible
+        source: runtime
+        id: n6
+        state_labels: *id001
+        class_name: ''
+      id: n5
+      state_labels: *id001
+      class_name: ''
+    id: n4
+    state_labels: *id001
+    class_name: ''
+  - role: form
+    name: Form_
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 1
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: form
+      name: Form_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      children:
+      - role: label
+        name: Label_
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 0
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n9
+        state_labels: *id001
+        class_name: ''
+      - role: form
+        name: Form_
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 1
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        children:
+        - role: form
+          name: Form_
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 0
+          states:
+          - enabled
+          - sensitive
+          source: runtime
+          id: n11
+          state_labels: *id001
+          class_name: ''
+        - role: label
+          name: Label_
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 1
+          states:
+          - enabled
+          - sensitive
+          source: runtime
+          id: n12
+          state_labels: *id001
+          class_name: ''
+        id: n10
+        state_labels: *id001
+        class_name: ''
+      id: n8
+      state_labels: *id001
+      class_name: ''
+    - role: form
+      name: Form_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 1
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      id: n13
+      state_labels: *id001
+      class_name: ''
+    - role: form
+      name: Form_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 2
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      children:
+      - role: label
+        name: Label_
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 0
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n15
+        state_labels: *id001
+        class_name: ''
+      id: n14
+      state_labels: *id001
+      class_name: ''
+    id: n7
+    state_labels: *id001
+    class_name: ''
+  - role: form
+    name: Form_
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 2
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n16
+    state_labels: *id001
+    class_name: ''
+  - role: form
+    name: volumeSliderWidget
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - SetFocus
+    index_in_parent: 3
+    states:
+    - enabled
+    - focusable
+    - sensitive
+    source: runtime
+    children:
+    - role: label
+      name: Label_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      id: n18
+      state_labels: *id001
+      class_name: ''
+    - role: form
+      name: volumeSlider
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 1
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      children:
+      - role: slider
+        name: slider
+        object_name: volumeSlider
+        accessible_id: slider
+        description: ''
+        actions:
+        - Increase
+        - Decrease
+        index_in_parent: 0
+        states:
+        - enabled
+        - sensitive
+        source: static+runtime
+        id: n20
+        class_name: VolumeSlider
+        state_labels: *id001
+      id: n19
+      state_labels: *id001
+      class_name: ''
+    - role: button
+      name: muteButton
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions:
+      - Press
+      index_in_parent: 2
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      id: n21
+      state_labels: *id001
+      class_name: ''
+    id: n17
+    state_labels: *id001
+    class_name: ''
+  - role: form
+    name: Form_
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 4
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n22
+    state_labels: *id001
+    class_name: ''
+  - role: label
+    name: Label_
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 5
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: label
+      name: Label_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      id: n24
+      state_labels: *id001
+      class_name: ''
+    - role: label
+      name: Label_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 1
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      id: n25
+      state_labels: *id001
+      class_name: ''
+    id: n23
+    state_labels: *id001
+    class_name: ''
+  - role: form
+    name: NotificationFrame
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 9
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n29
+    state_labels: *id001
+    class_name: ''
+  - role: form
+    name: Form_
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 10
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n30
+    state_labels: *id001
+    class_name: ''
+  - role: form
+    name: Form_
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 11
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: label
+      name: Label_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 1
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      id: n33
+      state_labels: *id001
+      class_name: ''
+    id: n31
+    state_labels: *id001
+    class_name: ''
+  - role: form
+    name: Form_
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 14
+    states:
+    - enabled
+    - sensitive
+    - showing
+    - visible
+    source: runtime
+    id: n34
+    state_labels: *id001
+    class_name: ''
+  - role: form
+    name: titleBar
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 15
+    states:
+    - enabled
+    - sensitive
+    - showing
+    - visible
+    source: runtime
+    children:
+    - role: form
+      name: Form_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - sensitive
+      - showing
+      - visible
+      source: runtime
+      children:
+      - role: label
+        name: DTitlebarCenterArea
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 0
+        states:
+        - enabled
+        - sensitive
+        - showing
+        - visible
+        source: runtime
+        children:
+        - role: label
+          name: Label_
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 0
+          states:
+          - enabled
+          - sensitive
+          - showing
+          - visible
+          source: runtime
+          id: n38
+          state_labels: *id001
+          class_name: ''
+        id: n37
+        state_labels: *id001
+        class_name: ''
+      - role: form
+        name: DTitlebarTopHorizontalLine
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 1
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n39
+        state_labels: *id001
+        class_name: ''
+      - role: form
+        name: DTitlebarHorizontalLine
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 2
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n40
+        state_labels: *id001
+        class_name: ''
+      - role: form
+        name: DTitlebarLeftArea
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 3
+        states:
+        - enabled
+        - sensitive
+        - showing
+        - visible
+        source: runtime
+        children:
+        - role: button
+          name: DTitlebarIconLabel
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions:
+          - Press
+          index_in_parent: 0
+          states:
+          - enabled
+          - sensitive
+          - showing
+          - visible
+          source: runtime
+          id: n42
+          state_labels: *id001
+          class_name: ''
+        id: n41
+        state_labels: *id001
+        class_name: ''
+      - role: form
+        name: DTitlebarRightArea
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 4
+        states:
+        - enabled
+        - sensitive
+        - showing
+        - visible
+        source: runtime
+        children:
+        - role: form
+          name: DTitlebarButtonArea
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 0
+          states:
+          - enabled
+          - sensitive
+          - showing
+          - visible
+          source: runtime
+          children:
+          - role: button
+            name: DTitlebarDWindowOptionButton
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            - SetFocus
+            index_in_parent: 0
+            states:
+            - enabled
+            - focusable
+            - sensitive
+            - showing
+            - visible
+            source: runtime
+            id: n45
+            state_labels: *id001
+            class_name: ''
+          - role: button
+            name: DTitlebarDWindowMinButton
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            - SetFocus
+            index_in_parent: 1
+            states:
+            - enabled
+            - focusable
+            - sensitive
+            - showing
+            - visible
+            source: runtime
+            id: n46
+            state_labels: *id001
+            class_name: ''
+          - role: button
+            name: DTitlebarDWindowMaxButton
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            - SetFocus
+            index_in_parent: 2
+            states:
+            - enabled
+            - focusable
+            - sensitive
+            - showing
+            - visible
+            source: runtime
+            id: n47
+            state_labels: *id001
+            class_name: ''
+          - role: button
+            name: DTitlebarDWindowQuitFullscreenButton
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            - SetFocus
+            index_in_parent: 3
+            states:
+            - enabled
+            - focusable
+            - sensitive
+            source: runtime
+            id: n48
+            state_labels: *id001
+            class_name: ''
+          - role: button
+            name: DTitlebarDWindowCloseButton
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            - SetFocus
+            index_in_parent: 4
+            states:
+            - enabled
+            - focusable
+            - sensitive
+            - showing
+            - visible
+            source: runtime
+            id: n49
+            state_labels: *id001
+            class_name: ''
+          id: n44
+          state_labels: *id001
+          class_name: ''
+        id: n43
+        state_labels: *id001
+        class_name: ''
+      id: n36
+      state_labels: *id001
+      class_name: ''
+    id: n35
+    state_labels: *id001
+    class_name: ''
+  - role: form
+    name: bottomToolBox
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 16
+    states:
+    - enabled
+    - sensitive
+    - showing
+    - visible
+    source: runtime
+    children:
+    - role: form
+      name: Form_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - sensitive
+      - showing
+      - visible
+      source: runtime
+      id: n51
+      state_labels: *id001
+      class_name: ''
+    - role: form
+      name: bottomWidget
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 1
+      states:
+      - enabled
+      - sensitive
+      - showing
+      - visible
+      source: runtime
+      children:
+      - role: form
+        name: Form_
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 0
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n53
+        state_labels: *id001
+        class_name: ''
+      - role: form
+        name: bottomToolButtonWidget
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 1
+        states:
+        - enabled
+        - sensitive
+        - showing
+        - visible
+        source: runtime
+        children:
+        - role: label
+          name: Label_
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 0
+          states:
+          - enabled
+          - sensitive
+          - showing
+          - visible
+          source: runtime
+          id: n55
+          state_labels: *id001
+          class_name: ''
+        - role: label
+          name: Label_
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 1
+          states:
+          - enabled
+          - sensitive
+          - showing
+          - visible
+          source: runtime
+          id: n56
+          state_labels: *id001
+          class_name: ''
+        - role: layered pane
+          name: progBarWidget
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 2
+          states:
+          - enabled
+          - sensitive
+          - showing
+          - visible
+          source: runtime
+          children:
+          - role: form
+            name: Form_
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 0
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            id: n58
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: MovieProgressBarWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 1
+            states:
+            - enabled
+            - sensitive
+            - showing
+            - visible
+            source: runtime
+            children:
+            - role: slider
+              name: progBarSlider
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - SetFocus
+              - Increase
+              - Decrease
+              index_in_parent: 0
+              states:
+              - enabled
+              - focusable
+              - sensitive
+              - showing
+              - visible
+              source: runtime
+              id: n60
+              state_labels: *id001
+              class_name: ''
+            id: n59
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: Form_
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 2
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: form
+              name: Form_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n62
+              state_labels: *id001
+              class_name: ''
+            - role: form
+              name: Form_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n63
+              state_labels: *id001
+              class_name: ''
+            - role: form
+              name: indicator
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n64
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n65
+              state_labels: *id001
+              class_name: ''
+            id: n61
+            state_labels: *id001
+            class_name: ''
+          id: n57
+          state_labels: *id001
+          class_name: ''
+        - role: form
+          name: playButtonBox
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 3
+          states:
+          - enabled
+          - sensitive
+          - showing
+          - visible
+          source: runtime
+          children:
+          - role: button
+            name: prevBtn
+            object_name: ''
+            accessible_id: ''
+            description: 上一个
+            actions:
+            - Press
+            - SetFocus
+            index_in_parent: 0
+            states:
+            - enabled
+            - focusable
+            - sensitive
+            - showing
+            - visible
+            source: runtime
+            id: n67
+            state_labels: *id001
+            class_name: ''
+          - role: button
+            name: playBtn
+            object_name: ''
+            accessible_id: ''
+            description: 暂停
+            actions:
+            - Press
+            - SetFocus
+            index_in_parent: 1
+            states:
+            - enabled
+            - focusable
+            - sensitive
+            - showing
+            - visible
+            source: runtime
+            id: n68
+            state_labels: *id001
+            class_name: ''
+          - role: button
+            name: nextBtn
+            object_name: ''
+            accessible_id: ''
+            description: 下一个
+            actions:
+            - Press
+            - SetFocus
+            index_in_parent: 2
+            states:
+            - enabled
+            - focusable
+            - sensitive
+            - showing
+            - visible
+            source: runtime
+            id: n69
+            state_labels: *id001
+            class_name: ''
+          id: n66
+          state_labels: *id001
+          class_name: ''
+        - role: button
+          name: fullscreenButtion
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions:
+          - Press
+          - SetFocus
+          index_in_parent: 4
+          states:
+          - enabled
+          - focusable
+          - sensitive
+          - showing
+          - visible
+          source: runtime
+          id: n70
+          state_labels: *id001
+          class_name: ''
+        - role: button
+          name: volumeButton
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions:
+          - Press
+          - SetFocus
+          index_in_parent: 5
+          states:
+          - enabled
+          - focusable
+          - sensitive
+          - showing
+          - visible
+          source: runtime
+          id: n71
+          state_labels: *id001
+          class_name: ''
+        - role: check box
+          name: mircastButton
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions:
+          - Toggle
+          - Press
+          - SetFocus
+          index_in_parent: 6
+          states:
+          - checkable
+          - enabled
+          - focusable
+          - sensitive
+          - showing
+          - visible
+          source: runtime
+          id: n72
+          state_labels: *id001
+          class_name: ''
+        - role: check box
+          name: playlistButton
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions:
+          - Toggle
+          - Press
+          - SetFocus
+          index_in_parent: 7
+          states:
+          - checkable
+          - enabled
+          - focusable
+          - sensitive
+          - showing
+          - visible
+          source: runtime
+          id: n73
+          state_labels: *id001
+          class_name: ''
+        id: n54
+        state_labels: *id001
+        class_name: ''
+      id: n52
+      state_labels: *id001
+      class_name: ''
+    id: n50
+    state_labels: *id001
+    class_name: ''
+  - role: form
+    name: NotificationFrame
+    object_name: NotificationFrame
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 17
+    states:
+    - enabled
+    - sensitive
+    source: static+runtime
+    children:
+    - role: label
+      name: Label_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      id: n75
+      state_labels: *id001
+      class_name: ''
+    id: n74
+    class_name: Platform_NotificationWidget
+    state_labels: *id001
+  - role: form
+    name: playListWidget
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions: []
+    index_in_parent: 18
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: form
+      name: Form_
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      id: n77
+      state_labels: *id001
+      class_name: ''
+    - role: form
+      name: leftWidget
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 1
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      children:
+      - role: label
+        name: Label_
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 0
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n79
+        state_labels: *id001
+        class_name: ''
+      - role: label
+        name: Label_
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions: []
+        index_in_parent: 1
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n80
+        state_labels: *id001
+        class_name: ''
+      - role: button
+        name: clearButton
+        object_name: leftWidget
+        accessible_id: clearButton
+        description: ''
+        actions:
+        - Press
+        - SetFocus
+        index_in_parent: 2
+        states:
+        - enabled
+        - focusable
+        - sensitive
+        source: static+runtime
+        id: n81
+        class_name: PlaylistWidget
+        state_labels: *id001
+      id: n78
+      state_labels: *id001
+      class_name: ''
+    - role: form
+      name: rightListWidget
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 2
+      states:
+      - enabled
+      - sensitive
+      source: runtime
+      children:
+      - role: slider
+        name: playlist
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - SetFocus
+        index_in_parent: 0
+        states:
+        - enabled
+        - focusable
+        - sensitive
+        source: runtime
+        children:
+        - role: form
+          name: fileList
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 0
+          states:
+          - enabled
+          - sensitive
+          source: runtime
+          children:
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 0
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n86
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n87
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n88
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n89
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n90
+              state_labels: *id001
+              class_name: ''
+            id: n85
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 1
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n92
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n93
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n94
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n95
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n96
+              state_labels: *id001
+              class_name: ''
+            id: n91
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 2
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n98
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n99
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n100
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n101
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n102
+              state_labels: *id001
+              class_name: ''
+            id: n97
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 3
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n104
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n105
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n106
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n107
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n108
+              state_labels: *id001
+              class_name: ''
+            id: n103
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 4
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n110
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n111
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n112
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n113
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n114
+              state_labels: *id001
+              class_name: ''
+            id: n109
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 5
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n116
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n117
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n118
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n119
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n120
+              state_labels: *id001
+              class_name: ''
+            id: n115
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 6
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n122
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n123
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n124
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n125
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n126
+              state_labels: *id001
+              class_name: ''
+            id: n121
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 7
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n128
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n129
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n130
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n131
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n132
+              state_labels: *id001
+              class_name: ''
+            id: n127
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 8
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n134
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n135
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n136
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n137
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n138
+              state_labels: *id001
+              class_name: ''
+            id: n133
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 9
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n140
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n141
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n142
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n143
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n144
+              state_labels: *id001
+              class_name: ''
+            id: n139
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 10
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n146
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n147
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n148
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n149
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n150
+              state_labels: *id001
+              class_name: ''
+            id: n145
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 11
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n152
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n153
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n154
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n155
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n156
+              state_labels: *id001
+              class_name: ''
+            id: n151
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 12
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n158
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n159
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n160
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n161
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n162
+              state_labels: *id001
+              class_name: ''
+            id: n157
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 13
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n164
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n165
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n166
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n167
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n168
+              state_labels: *id001
+              class_name: ''
+            id: n163
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 14
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n170
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n171
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n172
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n173
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n174
+              state_labels: *id001
+              class_name: ''
+            id: n169
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 15
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n176
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n177
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n178
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n179
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n180
+              state_labels: *id001
+              class_name: ''
+            id: n175
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 16
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n182
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n183
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n184
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n185
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n186
+              state_labels: *id001
+              class_name: ''
+            id: n181
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 17
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n188
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n189
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n190
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n191
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n192
+              state_labels: *id001
+              class_name: ''
+            id: n187
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 18
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n194
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n195
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n196
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n197
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n198
+              state_labels: *id001
+              class_name: ''
+            id: n193
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 19
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n200
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n201
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n202
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n203
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n204
+              state_labels: *id001
+              class_name: ''
+            id: n199
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 20
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n206
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n207
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n208
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n209
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n210
+              state_labels: *id001
+              class_name: ''
+            id: n205
+            state_labels: *id001
+            class_name: ''
+          - role: form
+            name: playItemWidget
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions: []
+            index_in_parent: 21
+            states:
+            - enabled
+            - sensitive
+            source: runtime
+            children:
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 0
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n212
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 1
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n213
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 2
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n214
+              state_labels: *id001
+              class_name: ''
+            - role: label
+              name: Label_
+              object_name: ''
+              accessible_id: ''
+              description: ''
+              actions: []
+              index_in_parent: 3
+              states:
+              - enabled
+              - sensitive
+              source: runtime
+              id: n215
+              state_labels: *id001
+              class_name: ''
+            - role: button
+              name: playItemCloseBtn
+              object_name: playItemCloseBtn
+              accessible_id: playItemCloseBtn
+              description: ''
+              actions:
+              - Press
+              index_in_parent: 4
+              states:
+              - enabled
+              - sensitive
+              source: static+runtime
+              id: n216
+              class_name: PlayItemWidget
+              state_labels: *id001
+            id: n211
+            state_labels: *id001
+            class_name: ''
+          id: n84
+          state_labels: *id001
+          class_name: ''
+        - role: form
+          name: qt_scrollarea_hcontainer
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 1
+          states:
+          - enabled
+          - sensitive
+          source: runtime
+          id: n217
+          state_labels: *id001
+          class_name: ''
+        - role: form
+          name: qt_scrollarea_vcontainer
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 2
+          states:
+          - enabled
+          - sensitive
+          source: runtime
+          id: n218
+          state_labels: *id001
+          class_name: ''
+        id: n83
+        state_labels: *id001
+        class_name: ''
+      id: n82
+      state_labels: *id001
+      class_name: ''
+    id: n76
+    state_labels: *id001
+    class_name: ''
+  id: n3
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: DTitlebarMainMenu
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 5
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 打开文件
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n220
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 打开文件夹
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 1
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n221
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 设置
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 2
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n222
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 主题
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - ShowMenu
+    index_in_parent: 4
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: popup menu
+      name: DTitlebarThemeMenu
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - resizable
+      - sensitive
+      source: runtime
+      children:
+      - role: menu item
+        name: 浅色
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 0
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n225
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 深色
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 1
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n226
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 跟随系统
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 2
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n227
+        state_labels: *id001
+        class_name: ''
+      id: n224
+      state_labels: *id001
+      class_name: ''
+    id: n223
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 帮助
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 6
+    states: []
+    source: runtime
+    id: n228
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 关于
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 7
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n229
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 退出
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 8
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n230
+    state_labels: *id001
+    class_name: ''
+  id: n219
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: DTitlebarThemeMenu
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 0
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 浅色
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n232
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 深色
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 1
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n233
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 跟随系统
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 2
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n234
+    state_labels: *id001
+    class_name: ''
+  id: n231
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: ''
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 8
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 打开文件
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n236
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 打开文件夹
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 1
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n237
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 打开URL
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 2
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n238
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 播放光盘
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 3
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n239
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 全屏
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 5
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n240
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 迷你模式
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 6
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n241
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 置顶窗口
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 7
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n242
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 播放模式
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - ShowMenu
+    index_in_parent: 9
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: popup menu
+      name: ''
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - resizable
+      - sensitive
+      source: runtime
+      children:
+      - role: menu item
+        name: 顺序播放
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 0
+        states:
+        - checkable
+        - checked
+        - enabled
+        - sensitive
+        source: runtime
+        id: n245
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 随机播放
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 1
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n246
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 单个播放
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 2
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n247
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 单个循环
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 3
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n248
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 列表循环
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 4
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n249
+        state_labels: *id001
+        class_name: ''
+      id: n244
+      state_labels: *id001
+      class_name: ''
+    id: n243
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 倍速播放
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - ShowMenu
+    index_in_parent: 10
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: popup menu
+      name: ''
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - resizable
+      - sensitive
+      source: runtime
+      children:
+      - role: menu item
+        name: 0.5x
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 0
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n252
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 1.0x
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 1
+        states:
+        - checkable
+        - checked
+        - enabled
+        - sensitive
+        source: runtime
+        id: n253
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 1.2x
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 2
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n254
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 1.5x
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 3
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n255
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 2.0x
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 4
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n256
+        state_labels: *id001
+        class_name: ''
+      id: n251
+      state_labels: *id001
+      class_name: ''
+    id: n250
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 画面
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - ShowMenu
+    index_in_parent: 11
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: popup menu
+      name: ''
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - resizable
+      - sensitive
+      source: runtime
+      children:
+      - role: menu item
+        name: 默认
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 0
+        states:
+        - checkable
+        - checked
+        - enabled
+        - sensitive
+        source: runtime
+        id: n259
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: '4:3'
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 1
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n260
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: '16:9'
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 2
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n261
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: '16:10'
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 3
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n262
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 1.85:1
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 4
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n263
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 2.35:1
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 5
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n264
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 顺时针旋转
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 7
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n265
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 逆时针旋转
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 8
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n266
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 下一帧
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 10
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n267
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 上一帧
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 11
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n268
+        state_labels: *id001
+        class_name: ''
+      id: n258
+      state_labels: *id001
+      class_name: ''
+    id: n257
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 声音
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - ShowMenu
+    index_in_parent: 12
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: popup menu
+      name: ''
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - resizable
+      - sensitive
+      source: runtime
+      children:
+      - role: menu item
+        name: 声道
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - ShowMenu
+        index_in_parent: 0
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        children:
+        - role: popup menu
+          name: ''
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 0
+          states:
+          - enabled
+          - resizable
+          - sensitive
+          source: runtime
+          children:
+          - role: menu item
+            name: 立体声
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 0
+            states:
+            - checkable
+            - checked
+            - enabled
+            - sensitive
+            source: runtime
+            id: n273
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: 左声道
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 1
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n274
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: 右声道
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 2
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n275
+            state_labels: *id001
+            class_name: ''
+          id: n272
+          state_labels: *id001
+          class_name: ''
+        id: n271
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 音轨
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - ShowMenu
+        index_in_parent: 1
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        children:
+        - role: popup menu
+          name: ''
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 0
+          states:
+          - enabled
+          - resizable
+          - sensitive
+          source: runtime
+          children:
+          - role: menu item
+            name: 音轨1
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 0
+            states:
+            - checkable
+            - checked
+            - enabled
+            - sensitive
+            source: runtime
+            id: n278
+            state_labels: *id001
+            class_name: ''
+          id: n277
+          state_labels: *id001
+          class_name: ''
+        id: n276
+        state_labels: *id001
+        class_name: ''
+      id: n270
+      state_labels: *id001
+      class_name: ''
+    id: n269
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 字幕
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - ShowMenu
+    index_in_parent: 13
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: popup menu
+      name: ''
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - resizable
+      - sensitive
+      source: runtime
+      children:
+      - role: menu item
+        name: 载入字幕
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 0
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n281
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 查找在线字幕
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 1
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n282
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 选择字幕
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - ShowMenu
+        index_in_parent: 2
+        states: []
+        source: runtime
+        children: []
+        id: n283
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 隐藏字幕
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 3
+        states:
+        - checkable
+        source: runtime
+        id: n285
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 编码
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - ShowMenu
+        index_in_parent: 4
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        children:
+        - role: popup menu
+          name: ''
+          object_name: ''
+          accessible_id: ''
+          description: ''
+          actions: []
+          index_in_parent: 0
+          states:
+          - enabled
+          - resizable
+          - sensitive
+          source: runtime
+          children:
+          - role: menu item
+            name: Auto
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 0
+            states:
+            - checkable
+            - checked
+            - enabled
+            - sensitive
+            source: runtime
+            id: n288
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Universal (UTF-8)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 2
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n289
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Universal (UTF-16)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 3
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n290
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Universal (UTF-16BE)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 4
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n291
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Universal (UTF-16LE)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 5
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n292
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Arabic (ISO-8859-6)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 6
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n293
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Arabic (WINDOWS-1256)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 7
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n294
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Baltic (LATIN7)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 8
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n295
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Baltic (WINDOWS-1257)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 9
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n296
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Celtic (LATIN8)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 10
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n297
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Central European (WINDOWS-1250)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 11
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n298
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Cyrillic (ISO-8859-5)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 12
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n299
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Cyrillic (WINDOWS-1251)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 13
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n300
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Eastern European (ISO-8859-2)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 14
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n301
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Western Languages (WINDOWS-1252)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 15
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n302
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Greek (ISO-8859-7)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 16
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n303
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Greek (WINDOWS-1253)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 17
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n304
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Hebrew (ISO-8859-8)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 18
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n305
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Hebrew (WINDOWS-1255)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 19
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n306
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Japanese (SHIFT-JIS)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 20
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n307
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Japanese (ISO-2022-JP-2)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 21
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n308
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Korean (EUC-KR)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 22
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n309
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Korean (CP949)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 23
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n310
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Korean (ISO-2022-KR)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 24
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n311
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Nordic (LATIN6)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 25
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n312
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: North European (LATIN4)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 26
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n313
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Russian (KOI8-R)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 27
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n314
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Simplified Chinese (GBK)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 28
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n315
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Simplified Chinese (GB18030)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 29
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n316
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Simplified Chinese (ISO-2022-CN-EXT)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 30
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n317
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: South European (LATIN3)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 31
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n318
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: South-Eastern European (LATIN10)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 32
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n319
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Thai (TIS-620)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 33
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n320
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Thai (WINDOWS-874)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 34
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n321
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Traditional Chinese (EUC-TW)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 35
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n322
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Traditional Chinese (BIG5)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 36
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n323
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Traditional Chinese (BIG5-HKSCS)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 37
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n324
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Turkish (LATIN5)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 38
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n325
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Turkish (WINDOWS-1254)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 39
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n326
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Ukrainian (KOI8-U)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 40
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n327
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Vietnamese (WINDOWS-1258)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 41
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n328
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Vietnamese (VISCII)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 42
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n329
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Western European (LATIN1)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 43
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n330
+            state_labels: *id001
+            class_name: ''
+          - role: menu item
+            name: Western European (LATIN-9)
+            object_name: ''
+            accessible_id: ''
+            description: ''
+            actions:
+            - Press
+            index_in_parent: 44
+            states:
+            - checkable
+            - enabled
+            - sensitive
+            source: runtime
+            id: n331
+            state_labels: *id001
+            class_name: ''
+          id: n287
+          state_labels: *id001
+          class_name: ''
+        id: n286
+        state_labels: *id001
+        class_name: ''
+      id: n280
+      state_labels: *id001
+      class_name: ''
+    id: n279
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 截图
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - ShowMenu
+    index_in_parent: 14
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: popup menu
+      name: ''
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - resizable
+      - sensitive
+      source: runtime
+      children:
+      - role: menu item
+        name: 影片截图
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 0
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n334
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 连拍截图
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 1
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n335
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 前往截图文件夹
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 2
+        states:
+        - enabled
+        - sensitive
+        source: runtime
+        id: n336
+        state_labels: *id001
+        class_name: ''
+      id: n333
+      state_labels: *id001
+      class_name: ''
+    id: n332
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 播放列表
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 16
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n337
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 影片信息
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 17
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n338
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 设置
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 18
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n339
+    state_labels: *id001
+    class_name: ''
+  id: n235
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: ''
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 0
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 顺序播放
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - checkable
+    - checked
+    - enabled
+    - sensitive
+    source: runtime
+    id: n341
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 随机播放
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 1
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n342
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 单个播放
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 2
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n343
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 单个循环
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 3
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n344
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 列表循环
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 4
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n345
+    state_labels: *id001
+    class_name: ''
+  id: n340
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: ''
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 0
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 0.5x
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n347
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 1.0x
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 1
+    states:
+    - checkable
+    - checked
+    - enabled
+    - sensitive
+    source: runtime
+    id: n348
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 1.2x
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 2
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n349
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 1.5x
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 3
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n350
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 2.0x
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 4
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n351
+    state_labels: *id001
+    class_name: ''
+  id: n346
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: ''
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 0
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 默认
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - checkable
+    - checked
+    - enabled
+    - sensitive
+    source: runtime
+    id: n353
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: '4:3'
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 1
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n354
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: '16:9'
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 2
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n355
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: '16:10'
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 3
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n356
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 1.85:1
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 4
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n357
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 2.35:1
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 5
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n358
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 顺时针旋转
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 7
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n359
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 逆时针旋转
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 8
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n360
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 下一帧
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 10
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n361
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 上一帧
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 11
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n362
+    state_labels: *id001
+    class_name: ''
+  id: n352
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: ''
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 0
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 声道
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - ShowMenu
+    index_in_parent: 0
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: popup menu
+      name: ''
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - resizable
+      - sensitive
+      source: runtime
+      children:
+      - role: menu item
+        name: 立体声
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 0
+        states:
+        - checkable
+        - checked
+        - enabled
+        - sensitive
+        source: runtime
+        id: n366
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 左声道
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 1
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n367
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: 右声道
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 2
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n368
+        state_labels: *id001
+        class_name: ''
+      id: n365
+      state_labels: *id001
+      class_name: ''
+    id: n364
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 音轨
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - ShowMenu
+    index_in_parent: 1
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: popup menu
+      name: ''
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - resizable
+      - sensitive
+      source: runtime
+      children:
+      - role: menu item
+        name: 音轨1
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 0
+        states:
+        - checkable
+        - checked
+        - enabled
+        - sensitive
+        source: runtime
+        id: n371
+        state_labels: *id001
+        class_name: ''
+      id: n370
+      state_labels: *id001
+      class_name: ''
+    id: n369
+    state_labels: *id001
+    class_name: ''
+  id: n363
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: ''
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 0
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 立体声
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - checkable
+    - checked
+    - enabled
+    - sensitive
+    source: runtime
+    id: n373
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 左声道
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 1
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n374
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 右声道
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 2
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n375
+    state_labels: *id001
+    class_name: ''
+  id: n372
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: ''
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 0
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 音轨1
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - checkable
+    - checked
+    - enabled
+    - sensitive
+    source: runtime
+    id: n377
+    state_labels: *id001
+    class_name: ''
+  id: n376
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: ''
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 0
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 载入字幕
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n379
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 查找在线字幕
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 1
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n380
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 选择字幕
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - ShowMenu
+    index_in_parent: 2
+    states: []
+    source: runtime
+    children: []
+    id: n381
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 隐藏字幕
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 3
+    states:
+    - checkable
+    source: runtime
+    id: n383
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 编码
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - ShowMenu
+    index_in_parent: 4
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    children:
+    - role: popup menu
+      name: ''
+      object_name: ''
+      accessible_id: ''
+      description: ''
+      actions: []
+      index_in_parent: 0
+      states:
+      - enabled
+      - resizable
+      - sensitive
+      source: runtime
+      children:
+      - role: menu item
+        name: Auto
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 0
+        states:
+        - checkable
+        - checked
+        - enabled
+        - sensitive
+        source: runtime
+        id: n386
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Universal (UTF-8)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 2
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n387
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Universal (UTF-16)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 3
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n388
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Universal (UTF-16BE)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 4
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n389
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Universal (UTF-16LE)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 5
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n390
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Arabic (ISO-8859-6)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 6
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n391
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Arabic (WINDOWS-1256)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 7
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n392
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Baltic (LATIN7)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 8
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n393
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Baltic (WINDOWS-1257)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 9
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n394
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Celtic (LATIN8)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 10
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n395
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Central European (WINDOWS-1250)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 11
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n396
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Cyrillic (ISO-8859-5)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 12
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n397
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Cyrillic (WINDOWS-1251)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 13
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n398
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Eastern European (ISO-8859-2)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 14
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n399
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Western Languages (WINDOWS-1252)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 15
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n400
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Greek (ISO-8859-7)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 16
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n401
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Greek (WINDOWS-1253)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 17
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n402
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Hebrew (ISO-8859-8)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 18
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n403
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Hebrew (WINDOWS-1255)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 19
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n404
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Japanese (SHIFT-JIS)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 20
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n405
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Japanese (ISO-2022-JP-2)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 21
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n406
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Korean (EUC-KR)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 22
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n407
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Korean (CP949)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 23
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n408
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Korean (ISO-2022-KR)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 24
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n409
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Nordic (LATIN6)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 25
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n410
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: North European (LATIN4)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 26
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n411
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Russian (KOI8-R)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 27
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n412
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Simplified Chinese (GBK)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 28
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n413
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Simplified Chinese (GB18030)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 29
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n414
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Simplified Chinese (ISO-2022-CN-EXT)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 30
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n415
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: South European (LATIN3)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 31
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n416
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: South-Eastern European (LATIN10)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 32
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n417
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Thai (TIS-620)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 33
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n418
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Thai (WINDOWS-874)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 34
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n419
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Traditional Chinese (EUC-TW)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 35
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n420
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Traditional Chinese (BIG5)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 36
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n421
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Traditional Chinese (BIG5-HKSCS)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 37
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n422
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Turkish (LATIN5)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 38
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n423
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Turkish (WINDOWS-1254)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 39
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n424
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Ukrainian (KOI8-U)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 40
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n425
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Vietnamese (WINDOWS-1258)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 41
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n426
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Vietnamese (VISCII)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 42
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n427
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Western European (LATIN1)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 43
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n428
+        state_labels: *id001
+        class_name: ''
+      - role: menu item
+        name: Western European (LATIN-9)
+        object_name: ''
+        accessible_id: ''
+        description: ''
+        actions:
+        - Press
+        index_in_parent: 44
+        states:
+        - checkable
+        - enabled
+        - sensitive
+        source: runtime
+        id: n429
+        state_labels: *id001
+        class_name: ''
+      id: n385
+      state_labels: *id001
+      class_name: ''
+    id: n384
+    state_labels: *id001
+    class_name: ''
+  id: n378
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: ''
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 0
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: Auto
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - checkable
+    - checked
+    - enabled
+    - sensitive
+    source: runtime
+    id: n432
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Universal (UTF-8)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 2
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n433
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Universal (UTF-16)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 3
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n434
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Universal (UTF-16BE)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 4
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n435
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Universal (UTF-16LE)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 5
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n436
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Arabic (ISO-8859-6)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 6
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n437
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Arabic (WINDOWS-1256)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 7
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n438
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Baltic (LATIN7)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 8
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n439
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Baltic (WINDOWS-1257)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 9
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n440
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Celtic (LATIN8)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 10
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n441
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Central European (WINDOWS-1250)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 11
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n442
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Cyrillic (ISO-8859-5)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 12
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n443
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Cyrillic (WINDOWS-1251)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 13
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n444
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Eastern European (ISO-8859-2)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 14
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n445
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Western Languages (WINDOWS-1252)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 15
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n446
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Greek (ISO-8859-7)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 16
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n447
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Greek (WINDOWS-1253)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 17
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n448
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Hebrew (ISO-8859-8)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 18
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n449
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Hebrew (WINDOWS-1255)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 19
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n450
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Japanese (SHIFT-JIS)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 20
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n451
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Japanese (ISO-2022-JP-2)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 21
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n452
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Korean (EUC-KR)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 22
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n453
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Korean (CP949)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 23
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n454
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Korean (ISO-2022-KR)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 24
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n455
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Nordic (LATIN6)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 25
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n456
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: North European (LATIN4)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 26
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n457
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Russian (KOI8-R)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 27
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n458
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Simplified Chinese (GBK)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 28
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n459
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Simplified Chinese (GB18030)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 29
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n460
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Simplified Chinese (ISO-2022-CN-EXT)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 30
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n461
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: South European (LATIN3)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 31
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n462
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: South-Eastern European (LATIN10)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 32
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n463
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Thai (TIS-620)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 33
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n464
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Thai (WINDOWS-874)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 34
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n465
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Traditional Chinese (EUC-TW)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 35
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n466
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Traditional Chinese (BIG5)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 36
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n467
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Traditional Chinese (BIG5-HKSCS)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 37
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n468
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Turkish (LATIN5)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 38
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n469
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Turkish (WINDOWS-1254)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 39
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n470
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Ukrainian (KOI8-U)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 40
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n471
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Vietnamese (WINDOWS-1258)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 41
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n472
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Vietnamese (VISCII)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 42
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n473
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Western European (LATIN1)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 43
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n474
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: Western European (LATIN-9)
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 44
+    states:
+    - checkable
+    - enabled
+    - sensitive
+    source: runtime
+    id: n475
+    state_labels: *id001
+    class_name: ''
+  id: n431
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: ''
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 0
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 影片截图
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n477
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 连拍截图
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 1
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n478
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 前往截图文件夹
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 2
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n479
+    state_labels: *id001
+    class_name: ''
+  id: n476
+  state_labels: *id001
+  class_name: ''
+- role: popup menu
+  name: ''
+  object_name: ''
+  accessible_id: ''
+  description: ''
+  actions: []
+  index_in_parent: 19
+  states:
+  - enabled
+  - resizable
+  - sensitive
+  source: runtime
+  children:
+  - role: menu item
+    name: 从播放列表删除
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 0
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n481
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 清空播放列表
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 1
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n482
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 在文件管理器中显示
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 2
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n483
+    state_labels: *id001
+    class_name: ''
+  - role: menu item
+    name: 影片信息
+    object_name: ''
+    accessible_id: ''
+    description: ''
+    actions:
+    - Press
+    index_in_parent: 3
+    states:
+    - enabled
+    - sensitive
+    source: runtime
+    id: n484
+    state_labels: *id001
+    class_name: ''
+  id: n480
+  state_labels: *id001
+  class_name: ''
+- id: ''
+  name: SliderTime
+  role: panel
+  object_name: SliderTime
+  accessible_id: ''
+  source: static
+  class_name: SliderTime
+  description: ''
+  actions: &id002 []
+  index_in_parent: -1
+  states: &id003 []
+  state_labels: *id001
+- id: ''
+  name: ImageItem
+  role: panel
+  object_name: ImageItem
+  accessible_id: ''
+  source: static
+  class_name: ImageItem
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: IndicatorItem
+  role: panel
+  object_name: IndicatorItem
+  accessible_id: ''
+  source: static
+  class_name: IndicatorItem
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: PlaylistBack
+  role: panel
+  object_name: PlaylistBack
+  accessible_id: ''
+  source: static
+  class_name: PlaylistBack
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: ToolboxProxy
+  role: panel
+  object_name: ToolboxProxy
+  accessible_id: ''
+  source: static
+  class_name: ToolboxProxy
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: ViewProgBar
+  role: panel
+  object_name: ViewProgBar
+  accessible_id: ''
+  source: static
+  class_name: ViewProgBar
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: ThumbnailPreview
+  role: panel
+  object_name: ThumbnailPreview
+  accessible_id: ''
+  source: static
+  class_name: ThumbnailPreview
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: ButtonToolTip
+  role: panel
+  object_name: ButtonToolTip
+  accessible_id: ''
+  source: static
+  class_name: ButtonToolTip
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: ToolTip
+  role: panel
+  object_name: ToolTip
+  accessible_id: ''
+  source: static
+  class_name: ToolTip
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: ToolButton
+  role: panel
+  object_name: ToolButton
+  accessible_id: ''
+  source: static
+  class_name: ToolButton
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: VolumeButton
+  role: panel
+  object_name: VolumeButton
+  accessible_id: ''
+  source: static
+  class_name: VolumeButton
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: UrlDialog
+  role: panel
+  object_name: UrlDialog
+  accessible_id: ''
+  source: static
+  class_name: UrlDialog
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: IconButton
+  role: panel
+  object_name: IconButton
+  accessible_id: ''
+  source: static
+  class_name: IconButton
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: MessageWindow
+  role: panel
+  object_name: MessageWindow
+  accessible_id: ''
+  source: static
+  class_name: MessageWindow
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: MainWindow
+  role: panel
+  object_name: MainWindow
+  accessible_id: ''
+  source: static
+  class_name: MainWindow
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_IconButton
+  role: panel
+  object_name: Platform_IconButton
+  accessible_id: ''
+  source: static
+  class_name: Platform_IconButton
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_MessageWindow
+  role: panel
+  object_name: Platform_MessageWindow
+  accessible_id: ''
+  source: static
+  class_name: Platform_MessageWindow
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_MainWindow
+  role: panel
+  object_name: Platform_MainWindow
+  accessible_id: ''
+  source: static
+  class_name: Platform_MainWindow
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: AnimationLabel
+  role: panel
+  object_name: AnimationLabel
+  accessible_id: ''
+  source: static
+  class_name: AnimationLabel
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: ThumbnailFrame
+  role: panel
+  object_name: ThumbnailFrame
+  accessible_id: ''
+  source: static
+  class_name: ThumbnailFrame
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: BurstScreenshotsDialog
+  role: panel
+  object_name: BurstScreenshotsDialog
+  accessible_id: ''
+  source: static
+  class_name: BurstScreenshotsDialog
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: LineEdit
+  role: panel
+  object_name: LineEdit
+  accessible_id: ''
+  source: static
+  class_name: LineEdit
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: ExitButton
+  role: panel
+  object_name: ExitButton
+  accessible_id: ''
+  source: static
+  class_name: ExitButton
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: MircastShowWidget
+  role: panel
+  object_name: MircastShowWidget
+  accessible_id: ''
+  source: static
+  class_name: MircastShowWidget
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: ItemWidget
+  role: panel
+  object_name: ItemWidget
+  accessible_id: ''
+  source: static
+  class_name: ItemWidget
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: ListWidget
+  role: panel
+  object_name: ListWidget
+  accessible_id: ''
+  source: static
+  class_name: ListWidget
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: RefreButtonWidget
+  role: panel
+  object_name: RefreButtonWidget
+  accessible_id: ''
+  source: static
+  class_name: RefreButtonWidget
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: MircastWidget
+  role: panel
+  object_name: MircastWidget
+  accessible_id: ''
+  source: static
+  class_name: MircastWidget
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: MovieProgressIndicator
+  role: panel
+  object_name: MovieProgressIndicator
+  accessible_id: ''
+  source: static
+  class_name: MovieProgressIndicator
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: PosterFrame
+  role: panel
+  object_name: PosterFrame
+  accessible_id: ''
+  source: static
+  class_name: PosterFrame
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: InfoBottom
+  role: panel
+  object_name: InfoBottom
+  accessible_id: ''
+  source: static
+  class_name: InfoBottom
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: MovieInfoDialog
+  role: panel
+  object_name: ''
+  accessible_id: ''
+  source: static
+  class_name: MovieInfoDialog
+  children:
+  - id: ''
+    name: movieInfoDialog
+    role: panel
+    object_name: movieInfoDialog
+    accessible_id: ''
+    source: static
+    class_name: MovieInfoDialog
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  - id: ''
+    name: movieInfoScrollArea
+    role: panel
+    object_name: movieInfoScrollArea
+    accessible_id: ''
+    source: static
+    class_name: MovieInfoDialog
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  - id: ''
+    name: scrollAreaViewport
+    role: panel
+    object_name: scrollAreaViewport
+    accessible_id: ''
+    source: static
+    class_name: MovieInfoDialog
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  - id: ''
+    name: scrollContentWidget
+    role: panel
+    object_name: scrollContentWidget
+    accessible_id: ''
+    source: static
+    class_name: MovieInfoDialog
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  - id: ''
+    name: filmInfoWidget
+    role: panel
+    object_name: filmInfoWidget
+    accessible_id: ''
+    source: static
+    class_name: MovieInfoDialog
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  - id: ''
+    name: codecInfoWidget
+    role: panel
+    object_name: codecInfoWidget
+    accessible_id: ''
+    source: static
+    class_name: MovieInfoDialog
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  - id: ''
+    name: audioInfoWidget
+    role: panel
+    object_name: audioInfoWidget
+    accessible_id: ''
+    source: static
+    class_name: MovieInfoDialog
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  - id: ''
+    name: filePathLabel
+    role: panel
+    object_name: filePathLabel
+    accessible_id: ''
+    source: static
+    class_name: MovieInfoDialog
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: CloseButton
+  role: panel
+  object_name: CloseButton
+  accessible_id: ''
+  source: static
+  class_name: CloseButton
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: MovieWidget
+  role: panel
+  object_name: MovieWidget
+  accessible_id: ''
+  source: static
+  class_name: MovieWidget
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: NotificationWidget
+  role: panel
+  object_name: ''
+  accessible_id: ''
+  source: static
+  class_name: NotificationWidget
+  children:
+  - id: ''
+    name: NotificationFrame
+    role: panel
+    object_name: NotificationFrame
+    accessible_id: ''
+    source: static
+    class_name: NotificationWidget
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Backend
+  role: panel
+  object_name: Backend
+  accessible_id: ''
+  source: static
+  class_name: Backend
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: PlayerEngine
+  role: panel
+  object_name: PlayerEngine
+  accessible_id: ''
+  source: static
+  class_name: PlayerEngine
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: PlayerWidget
+  role: panel
+  object_name: PlayerWidget
+  accessible_id: ''
+  source: static
+  class_name: PlayerWidget
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_AnimationLabel
+  role: panel
+  object_name: Platform_AnimationLabel
+  accessible_id: ''
+  source: static
+  class_name: Platform_AnimationLabel
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_MovieProgressIndicator
+  role: panel
+  object_name: Platform_MovieProgressIndicator
+  accessible_id: ''
+  source: static
+  class_name: Platform_MovieProgressIndicator
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_ListPic
+  role: panel
+  object_name: Platform_ListPic
+  accessible_id: ''
+  source: static
+  class_name: Platform_ListPic
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_PlaylistWidget
+  role: panel
+  object_name: Platform_PlaylistWidget
+  accessible_id: ''
+  source: static
+  class_name: Platform_PlaylistWidget
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_PlayItemWidget
+  role: panel
+  object_name: Platform_PlayItemWidget
+  accessible_id: ''
+  source: static
+  class_name: Platform_PlayItemWidget
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_SliderTime
+  role: panel
+  object_name: Platform_SliderTime
+  accessible_id: ''
+  source: static
+  class_name: Platform_SliderTime
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_ImageItem
+  role: panel
+  object_name: Platform_ImageItem
+  accessible_id: ''
+  source: static
+  class_name: Platform_ImageItem
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_IndicatorItem
+  role: panel
+  object_name: Platform_IndicatorItem
+  accessible_id: ''
+  source: static
+  class_name: Platform_IndicatorItem
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_ToolboxProxy
+  role: panel
+  object_name: Platform_ToolboxProxy
+  accessible_id: ''
+  source: static
+  class_name: Platform_ToolboxProxy
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_ViewProgBar
+  role: panel
+  object_name: Platform_ViewProgBar
+  accessible_id: ''
+  source: static
+  class_name: Platform_ViewProgBar
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_ThumbnailPreview
+  role: panel
+  object_name: Platform_ThumbnailPreview
+  accessible_id: ''
+  source: static
+  class_name: Platform_ThumbnailPreview
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Platform_VolumeSlider
+  role: panel
+  object_name: Platform_VolumeSlider
+  accessible_id: ''
+  source: static
+  class_name: Platform_VolumeSlider
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: ListPic
+  role: panel
+  object_name: ListPic
+  accessible_id: ''
+  source: static
+  class_name: ListPic
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: DMRSlider
+  role: panel
+  object_name: DMRSlider
+  accessible_id: ''
+  source: static
+  class_name: DMRSlider
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001
+- id: ''
+  name: Tip
+  role: panel
+  object_name: ''
+  accessible_id: ''
+  source: static
+  class_name: Tip
+  children:
+  - id: ''
+    name: Tip
+    role: panel
+    object_name: Tip
+    accessible_id: ''
+    source: static
+    class_name: Tip
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  - id: ''
+    name: TipIcon
+    role: panel
+    object_name: TipIcon
+    accessible_id: ''
+    source: static
+    class_name: Tip
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  - id: ''
+    name: TipText
+    role: panel
+    object_name: TipText
+    accessible_id: ''
+    source: static
+    class_name: Tip
+    description: ''
+    actions: *id002
+    index_in_parent: -1
+    states: *id003
+    state_labels: *id001
+  description: ''
+  actions: *id002
+  index_in_parent: -1
+  states: *id003
+  state_labels: *id001

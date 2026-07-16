@@ -1,0 +1,1821 @@
+---
+class_name: QHttpResponse
+source_file: src/dlna/dlnaHttpServer/qhttpresponse.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: QHttpResponse
+source_file: src/dlna/dlnaHttpServer/qhttpresponse.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: QHttpServer
+source_file: src/dlna/dlnaHttpServer/qhttpserver.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: QHttpServer
+source_file: src/dlna/dlnaHttpServer/qhttpserver.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: DlnaContentServer
+source_file: src/dlna/dlnacontentserver.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: DlnaContentServer
+source_file: src/dlna/dlnacontentserver.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: GetDlnaXmlValue
+source_file: src/dlna/getdlnaxmlvalue.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: GetDlnaXmlValue
+source_file: src/dlna/getdlnaxmlvalue.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: CompositingManager
+source_file: src/libdmr/compositing_manager.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: CompositingManager
+source_file: src/libdmr/compositing_manager.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: FileFilter
+source_file: src/libdmr/filefilter.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: FileFilter
+source_file: src/libdmr/filefilter.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Titlebar
+source_file: src/widgets/titlebar.cpp
+base_classes:
+- DBlurEffectWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Titlebar
+source_file: src/widgets/titlebar.h
+base_classes:
+- DBlurEffectWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: SliderTime
+source_file: src/widgets/toolbox_proxy.cpp
+base_classes: []
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DArrowRectangle
+---
+class_name: ImageItem
+source_file: src/widgets/toolbox_proxy.cpp
+base_classes:
+- DLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DLabel
+---
+class_name: IndicatorItem
+source_file: src/widgets/toolbox_proxy.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PlaylistBack
+source_file: src/widgets/toolbox_proxy.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ToolboxProxy
+source_file: src/widgets/toolbox_proxy.cpp
+base_classes:
+- DFloatingWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DFloatingWidget
+---
+class_name: viewProgBarLoad
+source_file: src/widgets/toolbox_proxy.cpp
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: TooltipHandler
+source_file: src/widgets/toolbox_proxy.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: SliderTime
+source_file: src/widgets/toolbox_proxy.cpp
+base_classes:
+- DArrowRectangle
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DArrowRectangle
+---
+class_name: ViewProgBar
+source_file: src/widgets/toolbox_proxy.cpp
+base_classes:
+- DWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ThumbnailPreview
+source_file: src/widgets/toolbox_proxy.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ImageItem
+source_file: src/widgets/toolbox_proxy.h
+base_classes:
+- DLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DLabel
+---
+class_name: IndicatorItem
+source_file: src/widgets/toolbox_proxy.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PlaylistBack
+source_file: src/widgets/toolbox_proxy.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ToolboxProxy
+source_file: src/widgets/toolbox_proxy.h
+base_classes:
+- DFloatingWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: viewProgBarLoad
+source_file: src/widgets/toolbox_proxy.h
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ButtonBoxButton
+source_file: src/widgets/toolbutton.cpp
+base_classes:
+- DButtonBoxButton
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ButtonToolTip
+source_file: src/widgets/toolbutton.cpp
+base_classes:
+- DArrowRectangle
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DArrowRectangle
+---
+class_name: ToolTip
+source_file: src/widgets/toolbutton.cpp
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ToolButton
+source_file: src/widgets/toolbutton.cpp
+base_classes:
+- DIconButton
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DIconButton
+---
+class_name: VolumeButton
+source_file: src/widgets/toolbutton.cpp
+base_classes:
+- DIconButton
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DIconButton
+---
+class_name: ButtonBoxButton
+source_file: src/widgets/toolbutton.h
+base_classes:
+- DButtonBoxButton
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ButtonToolTip
+source_file: src/widgets/toolbutton.h
+base_classes:
+- DArrowRectangle
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DArrowRectangle
+---
+class_name: ToolTip
+source_file: src/widgets/toolbutton.h
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ToolButton
+source_file: src/widgets/toolbutton.h
+base_classes:
+- DIconButton
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DIconButton
+---
+class_name: VolumeButton
+source_file: src/widgets/toolbutton.h
+base_classes:
+- DIconButton
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: UrlDialog
+source_file: src/widgets/url_dialog.cpp
+base_classes:
+- DDialog
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DDialog
+---
+class_name: UrlDialog
+source_file: src/widgets/url_dialog.h
+base_classes:
+- DDialog
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: VideoBoxButton
+source_file: src/widgets/videoboxbutton.cpp
+base_classes:
+- DButtonBoxButton
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: VideoBoxButton
+source_file: src/widgets/videoboxbutton.h
+base_classes:
+- DButtonBoxButton
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: VolumeSlider
+source_file: src/widgets/volumeslider.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ThreadPool
+source_file: src/common/threadpool.cpp
+base_classes:
+- QObject
+- DMovie::DSingleton<ThreadPool>
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ThreadPool
+source_file: src/common/threadpool.h
+base_classes:
+- QObject
+- DMovie::DSingleton<ThreadPool>
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ThumbnailWorker
+source_file: src/common/thumbnail_worker.cpp
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ThumbnailWorker
+source_file: src/common/thumbnail_worker.h
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: VolumeMonitoring
+source_file: src/common/volumemonitoring.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: VolumeMonitoring
+source_file: src/common/volumemonitoring.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: org_deepin_movie_minimode
+source_file: src/configs/json/org_deepin_movie_minimode.hpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: CDlnaSoapPost
+source_file: src/dlna/cdlnasoappost.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: CDlnaSoapPost
+source_file: src/dlna/cdlnasoappost.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: CSSDPSearch
+source_file: src/dlna/cssdpsearch.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: CSSDPSearch
+source_file: src/dlna/cssdpsearch.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: QHttpConnection
+source_file: src/dlna/dlnaHttpServer/qhttpconnection.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: QHttpConnection
+source_file: src/dlna/dlnaHttpServer/qhttpconnection.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: QHttpRequest
+source_file: src/dlna/dlnaHttpServer/qhttprequest.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: QHttpRequest
+source_file: src/dlna/dlnaHttpServer/qhttprequest.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleQFrame
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleDAbstractDialog
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleQWidget
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleQLabel
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleDButtonBoxButton
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleQDialog
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleDMainWindow
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleQListWidget
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleDTitlebar
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleDListWidget
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleDMenu
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleQScrollArea
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleQSpinBox
+source_file: src/accessibility/acobjectlist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AccessibleQWidget
+source_file: src/accessible/accessiblelist.h
+base_classes:
+- QAccessibleWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MpvGLWidget
+source_file: src/backends/mpv/mpv_glwidget.cpp
+base_classes:
+- QOpenGLWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MpvGLWidget
+source_file: src/backends/mpv/mpv_glwidget.h
+base_classes:
+- QOpenGLWidget
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ActionFactory
+source_file: src/common/actions.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ActionFactory
+source_file: src/common/actions.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ApplicationAdaptor
+source_file: src/common/dbus_adpator.cpp
+base_classes:
+- QDBusAbstractAdaptor
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ApplicationAdaptor
+source_file: src/common/dbus_adpator.h
+base_classes:
+- QDBusAbstractAdaptor
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Diskcheckthread
+source_file: src/common/diskcheckthread.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Diskcheckthread
+source_file: src/common/diskcheckthread.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Settings
+source_file: src/common/dmr_settings.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Settings
+source_file: src/common/dmr_settings.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: EventMonitor
+source_file: src/common/event_monitor.cpp
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: EventMonitor
+source_file: src/common/event_monitor.h
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: IconButton
+source_file: src/common/mainwindow.cpp
+base_classes:
+- DPushButton
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MessageWindow
+source_file: src/common/mainwindow.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MainWindow
+source_file: src/common/mainwindow.cpp
+base_classes:
+- DMainWindow
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DMainWindow
+---
+class_name: MainWindowEventListener
+source_file: src/common/mainwindow.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: IconButton
+source_file: src/common/mainwindow.h
+base_classes:
+- DPushButton
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MessageWindow
+source_file: src/common/mainwindow.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MainWindow
+source_file: src/common/mainwindow.h
+base_classes:
+- DMainWindow
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: CommandLineManager
+source_file: src/common/options.cpp
+base_classes:
+- QCommandLineParser
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: CommandLineManager
+source_file: src/common/options.h
+base_classes:
+- QCommandLineParser
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_ApplicationAdaptor
+source_file: src/common/platform/platform_dbus_adpator.cpp
+base_classes:
+- QDBusAbstractAdaptor
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_ApplicationAdaptor
+source_file: src/common/platform/platform_dbus_adpator.h
+base_classes:
+- QDBusAbstractAdaptor
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_IconButton
+source_file: src/common/platform/platform_mainwindow.cpp
+base_classes:
+- DPushButton
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_MessageWindow
+source_file: src/common/platform/platform_mainwindow.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_MainWindow
+source_file: src/common/platform/platform_mainwindow.cpp
+base_classes:
+- DMainWindow
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DMainWindow
+---
+class_name: Platform_MainWindowEventListener
+source_file: src/common/platform/platform_mainwindow.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_IconButton
+source_file: src/common/platform/platform_mainwindow.h
+base_classes:
+- DPushButton
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_MessageWindow
+source_file: src/common/platform/platform_mainwindow.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_MainWindow
+source_file: src/common/platform/platform_mainwindow.h
+base_classes:
+- DMainWindow
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_ThumbnailWorker
+source_file: src/common/platform/platform_thumbnail_worker.cpp
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_ThumbnailWorker
+source_file: src/common/platform/platform_thumbnail_worker.h
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ShortcutManager
+source_file: src/common/shortcut_manager.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ShortcutManager
+source_file: src/common/shortcut_manager.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Presenter
+source_file: src/vendor/presenter.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AnimationLabel
+source_file: src/widgets/animationlabel.cpp
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: AnimationLabel
+source_file: src/widgets/animationlabel.h
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ThumbnailFrame
+source_file: src/widgets/burst_screenshots_dialog.cpp
+base_classes:
+- QLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: BurstScreenshotsDialog
+source_file: src/widgets/burst_screenshots_dialog.cpp
+base_classes:
+- DAbstractDialog
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DAbstractDialog
+---
+class_name: ThumbnailFrame
+source_file: src/widgets/burst_screenshots_dialog.h
+base_classes:
+- QLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: BurstScreenshotsDialog
+source_file: src/widgets/burst_screenshots_dialog.h
+base_classes:
+- DAbstractDialog
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: LineEdit
+source_file: src/widgets/dmr_lineedit.cpp
+base_classes:
+- QLineEdit
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: LineEdit
+source_file: src/widgets/dmr_lineedit.h
+base_classes:
+- QLineEdit
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ExitButton
+source_file: src/widgets/mircastshowwidget.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MircastShowWidget
+source_file: src/widgets/mircastshowwidget.cpp
+base_classes:
+- QGraphicsView
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ExitButton
+source_file: src/widgets/mircastshowwidget.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MircastShowWidget
+source_file: src/widgets/mircastshowwidget.h
+base_classes:
+- QGraphicsView
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ItemWidget
+source_file: src/widgets/mircastwidget.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ListWidget
+source_file: src/widgets/mircastwidget.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: RefreButtonWidget
+source_file: src/widgets/mircastwidget.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MircastWidget
+source_file: src/widgets/mircastwidget.cpp
+base_classes:
+- DFloatingWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DFloatingWidget
+---
+class_name: ItemWidget
+source_file: src/widgets/mircastwidget.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ListWidget
+source_file: src/widgets/mircastwidget.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: RefreButtonWidget
+source_file: src/widgets/mircastwidget.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MircastWidget
+source_file: src/widgets/mircastwidget.h
+base_classes:
+- DFloatingWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MovieProgressIndicator
+source_file: src/widgets/movie_progress_indicator.cpp
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MovieProgressIndicator
+source_file: src/widgets/movie_progress_indicator.h
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PosterFrame
+source_file: src/widgets/movieinfo_dialog.cpp
+base_classes:
+- QLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: InfoBottom
+source_file: src/widgets/movieinfo_dialog.cpp
+base_classes:
+- DFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ArrowLine
+source_file: src/widgets/movieinfo_dialog.cpp
+base_classes:
+- DArrowLineDrawer
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ToolTipEvent
+source_file: src/widgets/movieinfo_dialog.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: CloseButton
+source_file: src/widgets/movieinfo_dialog.cpp
+base_classes:
+- DPushButton
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PosterFrame
+source_file: src/widgets/movieinfo_dialog.h
+base_classes:
+- QLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: InfoBottom
+source_file: src/widgets/movieinfo_dialog.h
+base_classes:
+- DFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ArrowLine
+source_file: src/widgets/movieinfo_dialog.h
+base_classes:
+- DArrowLineDrawer
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MovieInfoDialog
+source_file: src/widgets/movieinfo_dialog.h
+base_classes:
+- DDialog
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MovieWidget
+source_file: src/widgets/moviewidget.cpp
+base_classes:
+- QGraphicsView
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MovieWidget
+source_file: src/widgets/moviewidget.h
+base_classes:
+- QGraphicsView
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MovieConfiguration
+source_file: src/libdmr/movie_configuration.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MovieConfigurationBackend
+source_file: src/libdmr/movie_configuration.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MovieConfiguration
+source_file: src/libdmr/movie_configuration.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: OnlineSubtitle
+source_file: src/libdmr/online_sub.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: OnlineSubtitle
+source_file: src/libdmr/online_sub.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Backend
+source_file: src/libdmr/player_backend.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Backend
+source_file: src/libdmr/player_backend.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PlayerEngine
+source_file: src/libdmr/player_engine.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PlayerEngine
+source_file: src/libdmr/player_engine.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PlayerWidget
+source_file: src/libdmr/player_widget.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PlayerWidget
+source_file: src/libdmr/player_widget.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PlaylistModel
+source_file: src/libdmr/playlist_model.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: LoadThread
+source_file: src/libdmr/playlist_model.cpp
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: GetThumbnail
+source_file: src/libdmr/playlist_model.cpp
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PersistentManager
+source_file: src/libdmr/playlist_model.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PlaylistModel
+source_file: src/libdmr/playlist_model.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: LoadThread
+source_file: src/libdmr/playlist_model.h
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: GetThumbnail
+source_file: src/libdmr/playlist_model.h
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MovieApp
+source_file: src/vendor/movieapp.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MovieApp
+source_file: src/vendor/movieapp.h
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Presenter
+source_file: src/vendor/presenter.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: NotificationWidget
+source_file: src/widgets/notification_widget.h
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_AnimationLabel
+source_file: src/widgets/platform/platform_animationlabel.cpp
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_AnimationLabel
+source_file: src/widgets/platform/platform_animationlabel.h
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_MovieProgressIndicator
+source_file: src/widgets/platform/platform_movie_progress_indicator.cpp
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_MovieProgressIndicator
+source_file: src/widgets/platform/platform_movie_progress_indicator.h
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_NotificationWidget
+source_file: src/widgets/platform/platform_notification_widget.h
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_ListPic
+source_file: src/widgets/platform/platform_playlist_widget.cpp
+base_classes:
+- QLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_PlaylistWidget
+source_file: src/widgets/platform/platform_playlist_widget.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_PlayItemTooltipHandler
+source_file: src/widgets/platform/platform_playlist_widget.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_PlayItemWidget
+source_file: src/widgets/platform/platform_playlist_widget.cpp
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_MainWindowListener
+source_file: src/widgets/platform/platform_playlist_widget.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_MouseEventListener
+source_file: src/widgets/platform/platform_playlist_widget.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_ListPic
+source_file: src/widgets/platform/platform_playlist_widget.h
+base_classes:
+- QLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_PlaylistWidget
+source_file: src/widgets/platform/platform_playlist_widget.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_SliderTime
+source_file: src/widgets/platform/platform_toolbox_proxy.cpp
+base_classes: []
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DArrowRectangle
+---
+class_name: Platform_ImageItem
+source_file: src/widgets/platform/platform_toolbox_proxy.cpp
+base_classes:
+- DLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DLabel
+---
+class_name: Platform_IndicatorItem
+source_file: src/widgets/platform/platform_toolbox_proxy.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_ToolboxProxy
+source_file: src/widgets/platform/platform_toolbox_proxy.cpp
+base_classes:
+- DFloatingWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DFloatingWidget
+---
+class_name: Platform_viewProgBarLoad
+source_file: src/widgets/platform/platform_toolbox_proxy.cpp
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_TooltipHandler
+source_file: src/widgets/platform/platform_toolbox_proxy.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_SliderTime
+source_file: src/widgets/platform/platform_toolbox_proxy.cpp
+base_classes:
+- DArrowRectangle
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DArrowRectangle
+---
+class_name: Platform_ViewProgBar
+source_file: src/widgets/platform/platform_toolbox_proxy.cpp
+base_classes:
+- DWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_ThumbnailPreview
+source_file: src/widgets/platform/platform_toolbox_proxy.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_ImageItem
+source_file: src/widgets/platform/platform_toolbox_proxy.h
+base_classes:
+- DLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DLabel
+---
+class_name: Platform_IndicatorItem
+source_file: src/widgets/platform/platform_toolbox_proxy.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_ToolboxProxy
+source_file: src/widgets/platform/platform_toolbox_proxy.h
+base_classes:
+- DFloatingWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_viewProgBarLoad
+source_file: src/widgets/platform/platform_toolbox_proxy.h
+base_classes:
+- QThread
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_VolumeSlider
+source_file: src/widgets/platform/platform_volumeslider.cpp
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Platform_VolumeSlider
+source_file: src/widgets/platform/platform_volumeslider.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ListPic
+source_file: src/widgets/playlist_widget.cpp
+base_classes:
+- QLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PlayItemTooltipHandler
+source_file: src/widgets/playlist_widget.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MainWindowListener
+source_file: src/widgets/playlist_widget.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: MouseEventListener
+source_file: src/widgets/playlist_widget.cpp
+base_classes:
+- QObject
+is_ui_widget: false
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: ListPic
+source_file: src/widgets/playlist_widget.h
+base_classes:
+- QLabel
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: PlaylistWidget
+source_file: src/widgets/playlist_widget.h
+base_classes:
+- QWidget
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: DMRSlider
+source_file: src/widgets/slider.cpp
+base_classes:
+- DSlider
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations:
+- DSlider
+---
+class_name: DMRSlider
+source_file: src/widgets/slider.h
+base_classes:
+- DSlider
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []
+---
+class_name: Tip
+source_file: src/widgets/tip.h
+base_classes:
+- QFrame
+is_ui_widget: true
+object_names: []
+accessible_names: []
+dtk_instantiations: []

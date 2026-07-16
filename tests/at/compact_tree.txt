@@ -1,0 +1,543 @@
+n0 | role: form | name: Form_ | object_name: 
+n1 | role: label | name: Label_ | object_name:  | parent: n0
+n2 | role: form | name: Form_ | object_name:  | parent: n0
+n3 | role: frame | name: DMainWindow | object_name: 
+n4 | role: form | name: Form_ | object_name:  | parent: n3
+n5 | role: form | name: Form_ | object_name:  | parent: n3 > n4
+n6 | role: form | name: Form_ | object_name:  | parent: n3 > n4 > n5
+n7 | role: form | name: Form_ | object_name:  | parent: n3
+n8 | role: form | name: Form_ | object_name:  | parent: n3 > n7
+n9 | role: label | name: Label_ | object_name:  | parent: n3 > n7 > n8
+n10 | role: form | name: Form_ | object_name:  | parent: n3 > n7 > n8
+n11 | role: form | name: Form_ | object_name:  | parent: n3 > n7 > n8 > n10
+n12 | role: label | name: Label_ | object_name:  | parent: n3 > n7 > n8 > n10
+n13 | role: form | name: Form_ | object_name:  | parent: n3 > n7
+n14 | role: form | name: Form_ | object_name:  | parent: n3 > n7
+n15 | role: label | name: Label_ | object_name:  | parent: n3 > n7 > n14
+n16 | role: form | name: Form_ | object_name:  | parent: n3
+n17 | role: form | name: volumeSliderWidget | object_name:  | parent: n3
+n18 | role: label | name: Label_ | object_name:  | parent: n3 > n17
+n19 | role: form | name: volumeSlider | object_name:  | parent: n3 > n17
+n20 | role: slider | name: slider | object_name: volumeSlider | parent: n3 > n17 > n19
+n21 | role: button | name: muteButton | object_name:  | parent: n3 > n17
+n22 | role: form | name: Form_ | object_name:  | parent: n3
+n23 | role: label | name: Label_ | object_name:  | parent: n3
+n24 | role: label | name: Label_ | object_name:  | parent: n3 > n23
+n25 | role: label | name: Label_ | object_name:  | parent: n3 > n23
+n29 | role: form | name: NotificationFrame | object_name:  | parent: n3
+n30 | role: form | name: Form_ | object_name:  | parent: n3
+n31 | role: form | name: Form_ | object_name:  | parent: n3
+n33 | role: label | name: Label_ | object_name:  | parent: n3 > n31
+n34 | role: form | name: Form_ | object_name:  | parent: n3
+n35 | role: form | name: titleBar | object_name:  | parent: n3
+n36 | role: form | name: Form_ | object_name:  | parent: n3 > n35
+n37 | role: label | name: DTitlebarCenterArea | object_name:  | parent: n3 > n35 > n36
+n38 | role: label | name: Label_ | object_name:  | parent: n3 > n35 > n36 > n37
+n39 | role: form | name: DTitlebarTopHorizontalLine | object_name:  | parent: n3 > n35 > n36
+n40 | role: form | name: DTitlebarHorizontalLine | object_name:  | parent: n3 > n35 > n36
+n41 | role: form | name: DTitlebarLeftArea | object_name:  | parent: n3 > n35 > n36
+n42 | role: button | name: DTitlebarIconLabel | object_name:  | parent: n3 > n35 > n36 > n41
+n43 | role: form | name: DTitlebarRightArea | object_name:  | parent: n3 > n35 > n36
+n44 | role: form | name: DTitlebarButtonArea | object_name:  | parent: n3 > n35 > n36 > n43
+n45 | role: button | name: DTitlebarDWindowOptionButton | object_name:  | parent: n3 > n35 > n36 > n43 > n44
+n46 | role: button | name: DTitlebarDWindowMinButton | object_name:  | parent: n3 > n35 > n36 > n43 > n44
+n47 | role: button | name: DTitlebarDWindowMaxButton | object_name:  | parent: n3 > n35 > n36 > n43 > n44
+n48 | role: button | name: DTitlebarDWindowQuitFullscreenButton | object_name:  | parent: n3 > n35 > n36 > n43 > n44
+n49 | role: button | name: DTitlebarDWindowCloseButton | object_name:  | parent: n3 > n35 > n36 > n43 > n44
+n50 | role: form | name: bottomToolBox | object_name:  | parent: n3
+n51 | role: form | name: Form_ | object_name:  | parent: n3 > n50
+n52 | role: form | name: bottomWidget | object_name:  | parent: n3 > n50
+n53 | role: form | name: Form_ | object_name:  | parent: n3 > n50 > n52
+n54 | role: form | name: bottomToolButtonWidget | object_name:  | parent: n3 > n50 > n52
+n55 | role: label | name: Label_ | object_name:  | parent: n3 > n50 > n52 > n54
+n56 | role: label | name: Label_ | object_name:  | parent: n3 > n50 > n52 > n54
+n57 | role: layered pane | name: progBarWidget | object_name:  | parent: n3 > n50 > n52 > n54
+n58 | role: form | name: Form_ | object_name:  | parent: n3 > n50 > n52 > n54 > n57
+n59 | role: form | name: MovieProgressBarWidget | object_name:  | parent: n3 > n50 > n52 > n54 > n57
+n60 | role: slider | name: progBarSlider | object_name:  | parent: n3 > n50 > n52 > n54 > n57 > n59
+n61 | role: form | name: Form_ | object_name:  | parent: n3 > n50 > n52 > n54 > n57
+n62 | role: form | name: Form_ | object_name:  | parent: n3 > n50 > n52 > n54 > n57 > n61
+n63 | role: form | name: Form_ | object_name:  | parent: n3 > n50 > n52 > n54 > n57 > n61
+n64 | role: form | name: indicator | object_name:  | parent: n3 > n50 > n52 > n54 > n57 > n61
+n65 | role: label | name: Label_ | object_name:  | parent: n3 > n50 > n52 > n54 > n57 > n61
+n66 | role: form | name: playButtonBox | object_name:  | parent: n3 > n50 > n52 > n54
+n67 | role: button | name: prevBtn | object_name:  | parent: n3 > n50 > n52 > n54 > n66
+n68 | role: button | name: playBtn | object_name:  | parent: n3 > n50 > n52 > n54 > n66
+n69 | role: button | name: nextBtn | object_name:  | parent: n3 > n50 > n52 > n54 > n66
+n70 | role: button | name: fullscreenButtion | object_name:  | parent: n3 > n50 > n52 > n54
+n71 | role: button | name: volumeButton | object_name:  | parent: n3 > n50 > n52 > n54
+n72 | role: check box | name: mircastButton | object_name:  | parent: n3 > n50 > n52 > n54
+n73 | role: check box | name: playlistButton | object_name:  | parent: n3 > n50 > n52 > n54
+n74 | role: form | name: NotificationFrame | object_name: NotificationFrame | parent: n3
+n75 | role: label | name: Label_ | object_name:  | parent: n3 > n74
+n76 | role: form | name: playListWidget | object_name:  | parent: n3
+n77 | role: form | name: Form_ | object_name:  | parent: n3 > n76
+n78 | role: form | name: leftWidget | object_name:  | parent: n3 > n76
+n79 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n78
+n80 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n78
+n81 | role: button | name: clearButton | object_name: leftWidget | parent: n3 > n76 > n78
+n82 | role: form | name: rightListWidget | object_name:  | parent: n3 > n76
+n83 | role: slider | name: playlist | object_name:  | parent: n3 > n76 > n82
+n84 | role: form | name: fileList | object_name:  | parent: n3 > n76 > n82 > n83
+n85 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n86 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n85
+n87 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n85
+n88 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n85
+n89 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n85
+n90 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n85
+n91 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n92 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n91
+n93 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n91
+n94 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n91
+n95 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n91
+n96 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n91
+n97 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n98 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n97
+n99 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n97
+n100 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n97
+n101 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n97
+n102 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n97
+n103 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n104 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n103
+n105 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n103
+n106 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n103
+n107 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n103
+n108 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n103
+n109 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n110 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n109
+n111 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n109
+n112 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n109
+n113 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n109
+n114 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n109
+n115 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n116 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n115
+n117 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n115
+n118 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n115
+n119 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n115
+n120 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n115
+n121 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n122 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n121
+n123 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n121
+n124 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n121
+n125 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n121
+n126 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n121
+n127 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n128 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n127
+n129 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n127
+n130 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n127
+n131 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n127
+n132 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n127
+n133 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n134 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n133
+n135 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n133
+n136 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n133
+n137 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n133
+n138 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n133
+n139 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n140 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n139
+n141 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n139
+n142 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n139
+n143 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n139
+n144 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n139
+n145 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n146 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n145
+n147 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n145
+n148 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n145
+n149 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n145
+n150 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n145
+n151 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n152 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n151
+n153 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n151
+n154 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n151
+n155 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n151
+n156 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n151
+n157 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n158 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n157
+n159 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n157
+n160 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n157
+n161 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n157
+n162 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n157
+n163 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n164 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n163
+n165 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n163
+n166 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n163
+n167 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n163
+n168 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n163
+n169 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n170 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n169
+n171 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n169
+n172 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n169
+n173 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n169
+n174 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n169
+n175 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n176 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n175
+n177 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n175
+n178 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n175
+n179 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n175
+n180 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n175
+n181 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n182 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n181
+n183 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n181
+n184 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n181
+n185 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n181
+n186 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n181
+n187 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n188 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n187
+n189 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n187
+n190 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n187
+n191 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n187
+n192 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n187
+n193 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n194 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n193
+n195 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n193
+n196 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n193
+n197 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n193
+n198 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n193
+n199 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n200 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n199
+n201 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n199
+n202 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n199
+n203 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n199
+n204 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n199
+n205 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n206 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n205
+n207 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n205
+n208 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n205
+n209 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n205
+n210 | role: button | name: playItemCloseBtn | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n205
+n211 | role: form | name: playItemWidget | object_name:  | parent: n3 > n76 > n82 > n83 > n84
+n212 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n211
+n213 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n211
+n214 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n211
+n215 | role: label | name: Label_ | object_name:  | parent: n3 > n76 > n82 > n83 > n84 > n211
+n216 | role: button | name: playItemCloseBtn | object_name: playItemCloseBtn | parent: n3 > n76 > n82 > n83 > n84 > n211
+n217 | role: form | name: qt_scrollarea_hcontainer | object_name:  | parent: n3 > n76 > n82 > n83
+n218 | role: form | name: qt_scrollarea_vcontainer | object_name:  | parent: n3 > n76 > n82 > n83
+n219 | role: popup menu | name: DTitlebarMainMenu | object_name: 
+n220 | role: menu item | name: 打开文件 | object_name:  | parent: n219
+n221 | role: menu item | name: 打开文件夹 | object_name:  | parent: n219
+n222 | role: menu item | name: 设置 | object_name:  | parent: n219
+n223 | role: menu item | name: 主题 | object_name:  | parent: n219
+n224 | role: popup menu | name: DTitlebarThemeMenu | object_name:  | parent: n219 > n223
+n225 | role: menu item | name: 浅色 | object_name:  | parent: n219 > n223 > n224
+n226 | role: menu item | name: 深色 | object_name:  | parent: n219 > n223 > n224
+n227 | role: menu item | name: 跟随系统 | object_name:  | parent: n219 > n223 > n224
+n228 | role: menu item | name: 帮助 | object_name:  | parent: n219
+n229 | role: menu item | name: 关于 | object_name:  | parent: n219
+n230 | role: menu item | name: 退出 | object_name:  | parent: n219
+n231 | role: popup menu | name: DTitlebarThemeMenu | object_name: 
+n232 | role: menu item | name: 浅色 | object_name:  | parent: n231
+n233 | role: menu item | name: 深色 | object_name:  | parent: n231
+n234 | role: menu item | name: 跟随系统 | object_name:  | parent: n231
+n235 | role: popup menu | name:  | object_name: 
+n236 | role: menu item | name: 打开文件 | object_name:  | parent: n235
+n237 | role: menu item | name: 打开文件夹 | object_name:  | parent: n235
+n238 | role: menu item | name: 打开URL | object_name:  | parent: n235
+n239 | role: menu item | name: 播放光盘 | object_name:  | parent: n235
+n240 | role: menu item | name: 全屏 | object_name:  | parent: n235
+n241 | role: menu item | name: 迷你模式 | object_name:  | parent: n235
+n242 | role: menu item | name: 置顶窗口 | object_name:  | parent: n235
+n243 | role: menu item | name: 播放模式 | object_name:  | parent: n235
+n244 | role: popup menu | name:  | object_name:  | parent: n235 > n243
+n245 | role: menu item | name: 顺序播放 | object_name:  | parent: n235 > n243 > n244
+n246 | role: menu item | name: 随机播放 | object_name:  | parent: n235 > n243 > n244
+n247 | role: menu item | name: 单个播放 | object_name:  | parent: n235 > n243 > n244
+n248 | role: menu item | name: 单个循环 | object_name:  | parent: n235 > n243 > n244
+n249 | role: menu item | name: 列表循环 | object_name:  | parent: n235 > n243 > n244
+n250 | role: menu item | name: 倍速播放 | object_name:  | parent: n235
+n251 | role: popup menu | name:  | object_name:  | parent: n235 > n250
+n252 | role: menu item | name: 0.5x | object_name:  | parent: n235 > n250 > n251
+n253 | role: menu item | name: 1.0x | object_name:  | parent: n235 > n250 > n251
+n254 | role: menu item | name: 1.2x | object_name:  | parent: n235 > n250 > n251
+n255 | role: menu item | name: 1.5x | object_name:  | parent: n235 > n250 > n251
+n256 | role: menu item | name: 2.0x | object_name:  | parent: n235 > n250 > n251
+n257 | role: menu item | name: 画面 | object_name:  | parent: n235
+n258 | role: popup menu | name:  | object_name:  | parent: n235 > n257
+n259 | role: menu item | name: 默认 | object_name:  | parent: n235 > n257 > n258
+n260 | role: menu item | name: 4:3 | object_name:  | parent: n235 > n257 > n258
+n261 | role: menu item | name: 16:9 | object_name:  | parent: n235 > n257 > n258
+n262 | role: menu item | name: 16:10 | object_name:  | parent: n235 > n257 > n258
+n263 | role: menu item | name: 1.85:1 | object_name:  | parent: n235 > n257 > n258
+n264 | role: menu item | name: 2.35:1 | object_name:  | parent: n235 > n257 > n258
+n265 | role: menu item | name: 顺时针旋转 | object_name:  | parent: n235 > n257 > n258
+n266 | role: menu item | name: 逆时针旋转 | object_name:  | parent: n235 > n257 > n258
+n267 | role: menu item | name: 下一帧 | object_name:  | parent: n235 > n257 > n258
+n268 | role: menu item | name: 上一帧 | object_name:  | parent: n235 > n257 > n258
+n269 | role: menu item | name: 声音 | object_name:  | parent: n235
+n270 | role: popup menu | name:  | object_name:  | parent: n235 > n269
+n271 | role: menu item | name: 声道 | object_name:  | parent: n235 > n269 > n270
+n272 | role: popup menu | name:  | object_name:  | parent: n235 > n269 > n270 > n271
+n273 | role: menu item | name: 立体声 | object_name:  | parent: n235 > n269 > n270 > n271 > n272
+n274 | role: menu item | name: 左声道 | object_name:  | parent: n235 > n269 > n270 > n271 > n272
+n275 | role: menu item | name: 右声道 | object_name:  | parent: n235 > n269 > n270 > n271 > n272
+n276 | role: menu item | name: 音轨 | object_name:  | parent: n235 > n269 > n270
+n277 | role: popup menu | name:  | object_name:  | parent: n235 > n269 > n270 > n276
+n278 | role: menu item | name: 音轨1 | object_name:  | parent: n235 > n269 > n270 > n276 > n277
+n279 | role: menu item | name: 字幕 | object_name:  | parent: n235
+n280 | role: popup menu | name:  | object_name:  | parent: n235 > n279
+n281 | role: menu item | name: 载入字幕 | object_name:  | parent: n235 > n279 > n280
+n282 | role: menu item | name: 查找在线字幕 | object_name:  | parent: n235 > n279 > n280
+n283 | role: menu item | name: 选择字幕 | object_name:  | parent: n235 > n279 > n280
+n285 | role: menu item | name: 隐藏字幕 | object_name:  | parent: n235 > n279 > n280
+n286 | role: menu item | name: 编码 | object_name:  | parent: n235 > n279 > n280
+n287 | role: popup menu | name:  | object_name:  | parent: n235 > n279 > n280 > n286
+n288 | role: menu item | name: Auto | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n289 | role: menu item | name: Universal (UTF-8) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n290 | role: menu item | name: Universal (UTF-16) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n291 | role: menu item | name: Universal (UTF-16BE) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n292 | role: menu item | name: Universal (UTF-16LE) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n293 | role: menu item | name: Arabic (ISO-8859-6) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n294 | role: menu item | name: Arabic (WINDOWS-1256) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n295 | role: menu item | name: Baltic (LATIN7) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n296 | role: menu item | name: Baltic (WINDOWS-1257) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n297 | role: menu item | name: Celtic (LATIN8) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n298 | role: menu item | name: Central European (WINDOWS-1250) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n299 | role: menu item | name: Cyrillic (ISO-8859-5) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n300 | role: menu item | name: Cyrillic (WINDOWS-1251) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n301 | role: menu item | name: Eastern European (ISO-8859-2) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n302 | role: menu item | name: Western Languages (WINDOWS-1252) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n303 | role: menu item | name: Greek (ISO-8859-7) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n304 | role: menu item | name: Greek (WINDOWS-1253) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n305 | role: menu item | name: Hebrew (ISO-8859-8) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n306 | role: menu item | name: Hebrew (WINDOWS-1255) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n307 | role: menu item | name: Japanese (SHIFT-JIS) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n308 | role: menu item | name: Japanese (ISO-2022-JP-2) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n309 | role: menu item | name: Korean (EUC-KR) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n310 | role: menu item | name: Korean (CP949) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n311 | role: menu item | name: Korean (ISO-2022-KR) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n312 | role: menu item | name: Nordic (LATIN6) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n313 | role: menu item | name: North European (LATIN4) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n314 | role: menu item | name: Russian (KOI8-R) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n315 | role: menu item | name: Simplified Chinese (GBK) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n316 | role: menu item | name: Simplified Chinese (GB18030) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n317 | role: menu item | name: Simplified Chinese (ISO-2022-CN-EXT) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n318 | role: menu item | name: South European (LATIN3) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n319 | role: menu item | name: South-Eastern European (LATIN10) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n320 | role: menu item | name: Thai (TIS-620) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n321 | role: menu item | name: Thai (WINDOWS-874) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n322 | role: menu item | name: Traditional Chinese (EUC-TW) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n323 | role: menu item | name: Traditional Chinese (BIG5) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n324 | role: menu item | name: Traditional Chinese (BIG5-HKSCS) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n325 | role: menu item | name: Turkish (LATIN5) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n326 | role: menu item | name: Turkish (WINDOWS-1254) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n327 | role: menu item | name: Ukrainian (KOI8-U) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n328 | role: menu item | name: Vietnamese (WINDOWS-1258) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n329 | role: menu item | name: Vietnamese (VISCII) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n330 | role: menu item | name: Western European (LATIN1) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n331 | role: menu item | name: Western European (LATIN-9) | object_name:  | parent: n235 > n279 > n280 > n286 > n287
+n332 | role: menu item | name: 截图 | object_name:  | parent: n235
+n333 | role: popup menu | name:  | object_name:  | parent: n235 > n332
+n334 | role: menu item | name: 影片截图 | object_name:  | parent: n235 > n332 > n333
+n335 | role: menu item | name: 连拍截图 | object_name:  | parent: n235 > n332 > n333
+n336 | role: menu item | name: 前往截图文件夹 | object_name:  | parent: n235 > n332 > n333
+n337 | role: menu item | name: 播放列表 | object_name:  | parent: n235
+n338 | role: menu item | name: 影片信息 | object_name:  | parent: n235
+n339 | role: menu item | name: 设置 | object_name:  | parent: n235
+n340 | role: popup menu | name:  | object_name: 
+n341 | role: menu item | name: 顺序播放 | object_name:  | parent: n340
+n342 | role: menu item | name: 随机播放 | object_name:  | parent: n340
+n343 | role: menu item | name: 单个播放 | object_name:  | parent: n340
+n344 | role: menu item | name: 单个循环 | object_name:  | parent: n340
+n345 | role: menu item | name: 列表循环 | object_name:  | parent: n340
+n346 | role: popup menu | name:  | object_name: 
+n347 | role: menu item | name: 0.5x | object_name:  | parent: n346
+n348 | role: menu item | name: 1.0x | object_name:  | parent: n346
+n349 | role: menu item | name: 1.2x | object_name:  | parent: n346
+n350 | role: menu item | name: 1.5x | object_name:  | parent: n346
+n351 | role: menu item | name: 2.0x | object_name:  | parent: n346
+n352 | role: popup menu | name:  | object_name: 
+n353 | role: menu item | name: 默认 | object_name:  | parent: n352
+n354 | role: menu item | name: 4:3 | object_name:  | parent: n352
+n355 | role: menu item | name: 16:9 | object_name:  | parent: n352
+n356 | role: menu item | name: 16:10 | object_name:  | parent: n352
+n357 | role: menu item | name: 1.85:1 | object_name:  | parent: n352
+n358 | role: menu item | name: 2.35:1 | object_name:  | parent: n352
+n359 | role: menu item | name: 顺时针旋转 | object_name:  | parent: n352
+n360 | role: menu item | name: 逆时针旋转 | object_name:  | parent: n352
+n361 | role: menu item | name: 下一帧 | object_name:  | parent: n352
+n362 | role: menu item | name: 上一帧 | object_name:  | parent: n352
+n363 | role: popup menu | name:  | object_name: 
+n364 | role: menu item | name: 声道 | object_name:  | parent: n363
+n365 | role: popup menu | name:  | object_name:  | parent: n363 > n364
+n366 | role: menu item | name: 立体声 | object_name:  | parent: n363 > n364 > n365
+n367 | role: menu item | name: 左声道 | object_name:  | parent: n363 > n364 > n365
+n368 | role: menu item | name: 右声道 | object_name:  | parent: n363 > n364 > n365
+n369 | role: menu item | name: 音轨 | object_name:  | parent: n363
+n370 | role: popup menu | name:  | object_name:  | parent: n363 > n369
+n371 | role: menu item | name: 音轨1 | object_name:  | parent: n363 > n369 > n370
+n372 | role: popup menu | name:  | object_name: 
+n373 | role: menu item | name: 立体声 | object_name:  | parent: n372
+n374 | role: menu item | name: 左声道 | object_name:  | parent: n372
+n375 | role: menu item | name: 右声道 | object_name:  | parent: n372
+n376 | role: popup menu | name:  | object_name: 
+n377 | role: menu item | name: 音轨1 | object_name:  | parent: n376
+n378 | role: popup menu | name:  | object_name: 
+n379 | role: menu item | name: 载入字幕 | object_name:  | parent: n378
+n380 | role: menu item | name: 查找在线字幕 | object_name:  | parent: n378
+n381 | role: menu item | name: 选择字幕 | object_name:  | parent: n378
+n383 | role: menu item | name: 隐藏字幕 | object_name:  | parent: n378
+n384 | role: menu item | name: 编码 | object_name:  | parent: n378
+n385 | role: popup menu | name:  | object_name:  | parent: n378 > n384
+n386 | role: menu item | name: Auto | object_name:  | parent: n378 > n384 > n385
+n387 | role: menu item | name: Universal (UTF-8) | object_name:  | parent: n378 > n384 > n385
+n388 | role: menu item | name: Universal (UTF-16) | object_name:  | parent: n378 > n384 > n385
+n389 | role: menu item | name: Universal (UTF-16BE) | object_name:  | parent: n378 > n384 > n385
+n390 | role: menu item | name: Universal (UTF-16LE) | object_name:  | parent: n378 > n384 > n385
+n391 | role: menu item | name: Arabic (ISO-8859-6) | object_name:  | parent: n378 > n384 > n385
+n392 | role: menu item | name: Arabic (WINDOWS-1256) | object_name:  | parent: n378 > n384 > n385
+n393 | role: menu item | name: Baltic (LATIN7) | object_name:  | parent: n378 > n384 > n385
+n394 | role: menu item | name: Baltic (WINDOWS-1257) | object_name:  | parent: n378 > n384 > n385
+n395 | role: menu item | name: Celtic (LATIN8) | object_name:  | parent: n378 > n384 > n385
+n396 | role: menu item | name: Central European (WINDOWS-1250) | object_name:  | parent: n378 > n384 > n385
+n397 | role: menu item | name: Cyrillic (ISO-8859-5) | object_name:  | parent: n378 > n384 > n385
+n398 | role: menu item | name: Cyrillic (WINDOWS-1251) | object_name:  | parent: n378 > n384 > n385
+n399 | role: menu item | name: Eastern European (ISO-8859-2) | object_name:  | parent: n378 > n384 > n385
+n400 | role: menu item | name: Western Languages (WINDOWS-1252) | object_name:  | parent: n378 > n384 > n385
+n401 | role: menu item | name: Greek (ISO-8859-7) | object_name:  | parent: n378 > n384 > n385
+n402 | role: menu item | name: Greek (WINDOWS-1253) | object_name:  | parent: n378 > n384 > n385
+n403 | role: menu item | name: Hebrew (ISO-8859-8) | object_name:  | parent: n378 > n384 > n385
+n404 | role: menu item | name: Hebrew (WINDOWS-1255) | object_name:  | parent: n378 > n384 > n385
+n405 | role: menu item | name: Japanese (SHIFT-JIS) | object_name:  | parent: n378 > n384 > n385
+n406 | role: menu item | name: Japanese (ISO-2022-JP-2) | object_name:  | parent: n378 > n384 > n385
+n407 | role: menu item | name: Korean (EUC-KR) | object_name:  | parent: n378 > n384 > n385
+n408 | role: menu item | name: Korean (CP949) | object_name:  | parent: n378 > n384 > n385
+n409 | role: menu item | name: Korean (ISO-2022-KR) | object_name:  | parent: n378 > n384 > n385
+n410 | role: menu item | name: Nordic (LATIN6) | object_name:  | parent: n378 > n384 > n385
+n411 | role: menu item | name: North European (LATIN4) | object_name:  | parent: n378 > n384 > n385
+n412 | role: menu item | name: Russian (KOI8-R) | object_name:  | parent: n378 > n384 > n385
+n413 | role: menu item | name: Simplified Chinese (GBK) | object_name:  | parent: n378 > n384 > n385
+n414 | role: menu item | name: Simplified Chinese (GB18030) | object_name:  | parent: n378 > n384 > n385
+n415 | role: menu item | name: Simplified Chinese (ISO-2022-CN-EXT) | object_name:  | parent: n378 > n384 > n385
+n416 | role: menu item | name: South European (LATIN3) | object_name:  | parent: n378 > n384 > n385
+n417 | role: menu item | name: South-Eastern European (LATIN10) | object_name:  | parent: n378 > n384 > n385
+n418 | role: menu item | name: Thai (TIS-620) | object_name:  | parent: n378 > n384 > n385
+n419 | role: menu item | name: Thai (WINDOWS-874) | object_name:  | parent: n378 > n384 > n385
+n420 | role: menu item | name: Traditional Chinese (EUC-TW) | object_name:  | parent: n378 > n384 > n385
+n421 | role: menu item | name: Traditional Chinese (BIG5) | object_name:  | parent: n378 > n384 > n385
+n422 | role: menu item | name: Traditional Chinese (BIG5-HKSCS) | object_name:  | parent: n378 > n384 > n385
+n423 | role: menu item | name: Turkish (LATIN5) | object_name:  | parent: n378 > n384 > n385
+n424 | role: menu item | name: Turkish (WINDOWS-1254) | object_name:  | parent: n378 > n384 > n385
+n425 | role: menu item | name: Ukrainian (KOI8-U) | object_name:  | parent: n378 > n384 > n385
+n426 | role: menu item | name: Vietnamese (WINDOWS-1258) | object_name:  | parent: n378 > n384 > n385
+n427 | role: menu item | name: Vietnamese (VISCII) | object_name:  | parent: n378 > n384 > n385
+n428 | role: menu item | name: Western European (LATIN1) | object_name:  | parent: n378 > n384 > n385
+n429 | role: menu item | name: Western European (LATIN-9) | object_name:  | parent: n378 > n384 > n385
+n431 | role: popup menu | name:  | object_name: 
+n432 | role: menu item | name: Auto | object_name:  | parent: n431
+n433 | role: menu item | name: Universal (UTF-8) | object_name:  | parent: n431
+n434 | role: menu item | name: Universal (UTF-16) | object_name:  | parent: n431
+n435 | role: menu item | name: Universal (UTF-16BE) | object_name:  | parent: n431
+n436 | role: menu item | name: Universal (UTF-16LE) | object_name:  | parent: n431
+n437 | role: menu item | name: Arabic (ISO-8859-6) | object_name:  | parent: n431
+n438 | role: menu item | name: Arabic (WINDOWS-1256) | object_name:  | parent: n431
+n439 | role: menu item | name: Baltic (LATIN7) | object_name:  | parent: n431
+n440 | role: menu item | name: Baltic (WINDOWS-1257) | object_name:  | parent: n431
+n441 | role: menu item | name: Celtic (LATIN8) | object_name:  | parent: n431
+n442 | role: menu item | name: Central European (WINDOWS-1250) | object_name:  | parent: n431
+n443 | role: menu item | name: Cyrillic (ISO-8859-5) | object_name:  | parent: n431
+n444 | role: menu item | name: Cyrillic (WINDOWS-1251) | object_name:  | parent: n431
+n445 | role: menu item | name: Eastern European (ISO-8859-2) | object_name:  | parent: n431
+n446 | role: menu item | name: Western Languages (WINDOWS-1252) | object_name:  | parent: n431
+n447 | role: menu item | name: Greek (ISO-8859-7) | object_name:  | parent: n431
+n448 | role: menu item | name: Greek (WINDOWS-1253) | object_name:  | parent: n431
+n449 | role: menu item | name: Hebrew (ISO-8859-8) | object_name:  | parent: n431
+n450 | role: menu item | name: Hebrew (WINDOWS-1255) | object_name:  | parent: n431
+n451 | role: menu item | name: Japanese (SHIFT-JIS) | object_name:  | parent: n431
+n452 | role: menu item | name: Japanese (ISO-2022-JP-2) | object_name:  | parent: n431
+n453 | role: menu item | name: Korean (EUC-KR) | object_name:  | parent: n431
+n454 | role: menu item | name: Korean (CP949) | object_name:  | parent: n431
+n455 | role: menu item | name: Korean (ISO-2022-KR) | object_name:  | parent: n431
+n456 | role: menu item | name: Nordic (LATIN6) | object_name:  | parent: n431
+n457 | role: menu item | name: North European (LATIN4) | object_name:  | parent: n431
+n458 | role: menu item | name: Russian (KOI8-R) | object_name:  | parent: n431
+n459 | role: menu item | name: Simplified Chinese (GBK) | object_name:  | parent: n431
+n460 | role: menu item | name: Simplified Chinese (GB18030) | object_name:  | parent: n431
+n461 | role: menu item | name: Simplified Chinese (ISO-2022-CN-EXT) | object_name:  | parent: n431
+n462 | role: menu item | name: South European (LATIN3) | object_name:  | parent: n431
+n463 | role: menu item | name: South-Eastern European (LATIN10) | object_name:  | parent: n431
+n464 | role: menu item | name: Thai (TIS-620) | object_name:  | parent: n431
+n465 | role: menu item | name: Thai (WINDOWS-874) | object_name:  | parent: n431
+n466 | role: menu item | name: Traditional Chinese (EUC-TW) | object_name:  | parent: n431
+n467 | role: menu item | name: Traditional Chinese (BIG5) | object_name:  | parent: n431
+n468 | role: menu item | name: Traditional Chinese (BIG5-HKSCS) | object_name:  | parent: n431
+n469 | role: menu item | name: Turkish (LATIN5) | object_name:  | parent: n431
+n470 | role: menu item | name: Turkish (WINDOWS-1254) | object_name:  | parent: n431
+n471 | role: menu item | name: Ukrainian (KOI8-U) | object_name:  | parent: n431
+n472 | role: menu item | name: Vietnamese (WINDOWS-1258) | object_name:  | parent: n431
+n473 | role: menu item | name: Vietnamese (VISCII) | object_name:  | parent: n431
+n474 | role: menu item | name: Western European (LATIN1) | object_name:  | parent: n431
+n475 | role: menu item | name: Western European (LATIN-9) | object_name:  | parent: n431
+n476 | role: popup menu | name:  | object_name: 
+n477 | role: menu item | name: 影片截图 | object_name:  | parent: n476
+n478 | role: menu item | name: 连拍截图 | object_name:  | parent: n476
+n479 | role: menu item | name: 前往截图文件夹 | object_name:  | parent: n476
+n480 | role: popup menu | name:  | object_name: 
+n481 | role: menu item | name: 从播放列表删除 | object_name:  | parent: n480
+n482 | role: menu item | name: 清空播放列表 | object_name:  | parent: n480
+n483 | role: menu item | name: 在文件管理器中显示 | object_name:  | parent: n480
+n484 | role: menu item | name: 影片信息 | object_name:  | parent: n480
+ | role: panel | name: SliderTime | object_name: SliderTime
+ | role: panel | name: ImageItem | object_name: ImageItem
+ | role: panel | name: IndicatorItem | object_name: IndicatorItem
+ | role: panel | name: PlaylistBack | object_name: PlaylistBack
+ | role: panel | name: ToolboxProxy | object_name: ToolboxProxy
+ | role: panel | name: ViewProgBar | object_name: ViewProgBar
+ | role: panel | name: ThumbnailPreview | object_name: ThumbnailPreview
+ | role: panel | name: ButtonToolTip | object_name: ButtonToolTip
+ | role: panel | name: ToolTip | object_name: ToolTip
+ | role: panel | name: ToolButton | object_name: ToolButton
+ | role: panel | name: VolumeButton | object_name: VolumeButton
+ | role: panel | name: UrlDialog | object_name: UrlDialog
+ | role: panel | name: IconButton | object_name: IconButton
+ | role: panel | name: MessageWindow | object_name: MessageWindow
+ | role: panel | name: MainWindow | object_name: MainWindow
+ | role: panel | name: Platform_IconButton | object_name: Platform_IconButton
+ | role: panel | name: Platform_MessageWindow | object_name: Platform_MessageWindow
+ | role: panel | name: Platform_MainWindow | object_name: Platform_MainWindow
+ | role: panel | name: AnimationLabel | object_name: AnimationLabel
+ | role: panel | name: ThumbnailFrame | object_name: ThumbnailFrame
+ | role: panel | name: BurstScreenshotsDialog | object_name: BurstScreenshotsDialog
+ | role: panel | name: LineEdit | object_name: LineEdit
+ | role: panel | name: ExitButton | object_name: ExitButton
+ | role: panel | name: MircastShowWidget | object_name: MircastShowWidget
+ | role: panel | name: ItemWidget | object_name: ItemWidget
+ | role: panel | name: ListWidget | object_name: ListWidget
+ | role: panel | name: RefreButtonWidget | object_name: RefreButtonWidget
+ | role: panel | name: MircastWidget | object_name: MircastWidget
+ | role: panel | name: MovieProgressIndicator | object_name: MovieProgressIndicator
+ | role: panel | name: PosterFrame | object_name: PosterFrame
+ | role: panel | name: InfoBottom | object_name: InfoBottom
+ | role: panel | name: MovieInfoDialog | object_name: 
+ | role: panel | name: movieInfoDialog | object_name: movieInfoDialog
+ | role: panel | name: movieInfoScrollArea | object_name: movieInfoScrollArea
+ | role: panel | name: scrollAreaViewport | object_name: scrollAreaViewport
+ | role: panel | name: scrollContentWidget | object_name: scrollContentWidget
+ | role: panel | name: filmInfoWidget | object_name: filmInfoWidget
+ | role: panel | name: codecInfoWidget | object_name: codecInfoWidget
+ | role: panel | name: audioInfoWidget | object_name: audioInfoWidget
+ | role: panel | name: filePathLabel | object_name: filePathLabel
+ | role: panel | name: CloseButton | object_name: CloseButton
+ | role: panel | name: MovieWidget | object_name: MovieWidget
+ | role: panel | name: NotificationWidget | object_name: 
+ | role: panel | name: NotificationFrame | object_name: NotificationFrame
+ | role: panel | name: Backend | object_name: Backend
+ | role: panel | name: PlayerEngine | object_name: PlayerEngine
+ | role: panel | name: PlayerWidget | object_name: PlayerWidget
+ | role: panel | name: Platform_AnimationLabel | object_name: Platform_AnimationLabel
+ | role: panel | name: Platform_MovieProgressIndicator | object_name: Platform_MovieProgressIndicator
+ | role: panel | name: Platform_ListPic | object_name: Platform_ListPic
+ | role: panel | name: Platform_PlaylistWidget | object_name: Platform_PlaylistWidget
+ | role: panel | name: Platform_PlayItemWidget | object_name: Platform_PlayItemWidget
+ | role: panel | name: Platform_SliderTime | object_name: Platform_SliderTime
+ | role: panel | name: Platform_ImageItem | object_name: Platform_ImageItem
+ | role: panel | name: Platform_IndicatorItem | object_name: Platform_IndicatorItem
+ | role: panel | name: Platform_ToolboxProxy | object_name: Platform_ToolboxProxy
+ | role: panel | name: Platform_ViewProgBar | object_name: Platform_ViewProgBar
+ | role: panel | name: Platform_ThumbnailPreview | object_name: Platform_ThumbnailPreview
+ | role: panel | name: Platform_VolumeSlider | object_name: Platform_VolumeSlider
+ | role: panel | name: ListPic | object_name: ListPic
+ | role: panel | name: DMRSlider | object_name: DMRSlider
+ | role: panel | name: Tip | object_name: 
+ | role: panel | name: Tip | object_name: Tip
+ | role: panel | name: TipIcon | object_name: TipIcon
+ | role: panel | name: TipText | object_name: TipText

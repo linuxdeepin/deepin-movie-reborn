@@ -1,0 +1,1458 @@
+elements:
+  DMainWindow:
+    name: DMainWindow
+    role: frame
+  DTitlebarDWindowCloseButton:
+    name: DTitlebarDWindowCloseButton
+    role: push button
+  playlistButton:
+    name: playlistButton
+    role: check box
+  clearButton:
+    name: clearButton
+    role: push button
+  fullscreenButtion:
+    name: fullscreenButtion
+    role: push button
+  playListWidget:
+    name: playListWidget
+    role: form
+  volumeButton:
+    name: volumeButton
+  playBtn:
+    name: playBtn
+    role: push button
+  n0:
+    name: Form_
+    role: form
+  n1:
+    name: Label_
+    role: label
+  n2:
+    name: Form_
+    role: form
+  n3:
+    name: DMainWindow
+    role: frame
+  n4:
+    name: Form_
+    role: form
+  n5:
+    name: Form_
+    role: form
+  n6:
+    name: Form_
+    role: form
+  n7:
+    name: Form_
+    role: form
+  n8:
+    name: Form_
+    role: form
+  n9:
+    name: Label_
+    role: label
+  n10:
+    name: Form_
+    role: form
+  n11:
+    name: Form_
+    role: form
+  n12:
+    name: Label_
+    role: label
+  n13:
+    name: Form_
+    role: form
+  n14:
+    name: Form_
+    role: form
+  n15:
+    name: Label_
+    role: label
+  n16:
+    name: Form_
+    role: form
+  n17:
+    name: volumeSliderWidget
+    role: form
+  n18:
+    name: Label_
+    role: label
+  n19:
+    name: volumeSlider
+    role: form
+  n20:
+    name: slider
+    role: slider
+  n21:
+    name: muteButton
+    role: button
+  n22:
+    name: Form_
+    role: form
+  n23:
+    name: Label_
+    role: label
+  n24:
+    name: Label_
+    role: label
+  n25:
+    name: Label_
+    role: label
+  n29:
+    name: NotificationFrame
+    role: form
+  n30:
+    name: Form_
+    role: form
+  n31:
+    name: Form_
+    role: form
+  n33:
+    name: Label_
+    role: label
+  n34:
+    name: Form_
+    role: form
+  n35:
+    name: titleBar
+    role: form
+  n36:
+    name: Form_
+    role: form
+  n37:
+    name: DTitlebarCenterArea
+    role: label
+  n38:
+    name: Label_
+    role: label
+  n39:
+    name: DTitlebarTopHorizontalLine
+    role: form
+  n40:
+    name: DTitlebarHorizontalLine
+    role: form
+  n41:
+    name: DTitlebarLeftArea
+    role: form
+  n42:
+    name: DTitlebarIconLabel
+    role: button
+  n43:
+    name: DTitlebarRightArea
+    role: form
+  n44:
+    name: DTitlebarButtonArea
+    role: form
+  n45:
+    name: DTitlebarDWindowOptionButton
+    role: button
+  n46:
+    name: DTitlebarDWindowMinButton
+    role: button
+  n47:
+    name: DTitlebarDWindowMaxButton
+    role: button
+  n48:
+    name: DTitlebarDWindowQuitFullscreenButton
+    role: button
+  n49:
+    name: DTitlebarDWindowCloseButton
+    role: button
+  n50:
+    name: bottomToolBox
+    role: form
+  n51:
+    name: Form_
+    role: form
+  n52:
+    name: bottomWidget
+    role: form
+  n53:
+    name: Form_
+    role: form
+  n54:
+    name: bottomToolButtonWidget
+    role: form
+  n55:
+    name: Label_
+    role: label
+  n56:
+    name: Label_
+    role: label
+  n57:
+    name: progBarWidget
+    role: layered pane
+  n58:
+    name: Form_
+    role: form
+  n59:
+    name: MovieProgressBarWidget
+    role: form
+  n60:
+    name: progBarSlider
+    role: slider
+  n61:
+    name: Form_
+    role: form
+  n62:
+    name: Form_
+    role: form
+  n63:
+    name: Form_
+    role: form
+  n64:
+    name: indicator
+    role: form
+  n65:
+    name: Label_
+    role: label
+  n66:
+    name: playButtonBox
+    role: form
+  n67:
+    name: prevBtn
+    role: button
+  n68:
+    name: playBtn
+    role: button
+  n69:
+    name: nextBtn
+    role: button
+  n70:
+    name: fullscreenButtion
+    role: button
+  n71:
+    name: volumeButton
+    role: button
+  n72:
+    name: mircastButton
+    role: check box
+  n73:
+    name: playlistButton
+    role: check box
+  n74:
+    name: NotificationFrame
+    role: form
+  n75:
+    name: Label_
+    role: label
+  n76:
+    name: playListWidget
+    role: form
+  n77:
+    name: Form_
+    role: form
+  n78:
+    name: leftWidget
+    role: form
+  n79:
+    name: Label_
+    role: label
+  n80:
+    name: Label_
+    role: label
+  n81:
+    name: clearButton
+    role: button
+  n82:
+    name: rightListWidget
+    role: form
+  n83:
+    name: playlist
+    role: slider
+  n84:
+    name: fileList
+    role: form
+  n85:
+    name: playItemWidget
+    role: form
+  n86:
+    name: Label_
+    role: label
+  n87:
+    name: Label_
+    role: label
+  n88:
+    name: Label_
+    role: label
+  n89:
+    name: Label_
+    role: label
+  n90:
+    name: playItemCloseBtn
+    role: button
+  n91:
+    name: playItemWidget
+    role: form
+  n92:
+    name: Label_
+    role: label
+  n93:
+    name: Label_
+    role: label
+  n94:
+    name: Label_
+    role: label
+  n95:
+    name: Label_
+    role: label
+  n96:
+    name: playItemCloseBtn
+    role: button
+  n97:
+    name: playItemWidget
+    role: form
+  n98:
+    name: Label_
+    role: label
+  n99:
+    name: Label_
+    role: label
+  n100:
+    name: Label_
+    role: label
+  n101:
+    name: Label_
+    role: label
+  n102:
+    name: playItemCloseBtn
+    role: button
+  n103:
+    name: playItemWidget
+    role: form
+  n104:
+    name: Label_
+    role: label
+  n105:
+    name: Label_
+    role: label
+  n106:
+    name: Label_
+    role: label
+  n107:
+    name: Label_
+    role: label
+  n108:
+    name: playItemCloseBtn
+    role: button
+  n109:
+    name: playItemWidget
+    role: form
+  n110:
+    name: Label_
+    role: label
+  n111:
+    name: Label_
+    role: label
+  n112:
+    name: Label_
+    role: label
+  n113:
+    name: Label_
+    role: label
+  n114:
+    name: playItemCloseBtn
+    role: button
+  n115:
+    name: playItemWidget
+    role: form
+  n116:
+    name: Label_
+    role: label
+  n117:
+    name: Label_
+    role: label
+  n118:
+    name: Label_
+    role: label
+  n119:
+    name: Label_
+    role: label
+  n120:
+    name: playItemCloseBtn
+    role: button
+  n121:
+    name: playItemWidget
+    role: form
+  n122:
+    name: Label_
+    role: label
+  n123:
+    name: Label_
+    role: label
+  n124:
+    name: Label_
+    role: label
+  n125:
+    name: Label_
+    role: label
+  n126:
+    name: playItemCloseBtn
+    role: button
+  n127:
+    name: playItemWidget
+    role: form
+  n128:
+    name: Label_
+    role: label
+  n129:
+    name: Label_
+    role: label
+  n130:
+    name: Label_
+    role: label
+  n131:
+    name: Label_
+    role: label
+  n132:
+    name: playItemCloseBtn
+    role: button
+  n133:
+    name: playItemWidget
+    role: form
+  n134:
+    name: Label_
+    role: label
+  n135:
+    name: Label_
+    role: label
+  n136:
+    name: Label_
+    role: label
+  n137:
+    name: Label_
+    role: label
+  n138:
+    name: playItemCloseBtn
+    role: button
+  n139:
+    name: playItemWidget
+    role: form
+  n140:
+    name: Label_
+    role: label
+  n141:
+    name: Label_
+    role: label
+  n142:
+    name: Label_
+    role: label
+  n143:
+    name: Label_
+    role: label
+  n144:
+    name: playItemCloseBtn
+    role: button
+  n145:
+    name: playItemWidget
+    role: form
+  n146:
+    name: Label_
+    role: label
+  n147:
+    name: Label_
+    role: label
+  n148:
+    name: Label_
+    role: label
+  n149:
+    name: Label_
+    role: label
+  n150:
+    name: playItemCloseBtn
+    role: button
+  n151:
+    name: playItemWidget
+    role: form
+  n152:
+    name: Label_
+    role: label
+  n153:
+    name: Label_
+    role: label
+  n154:
+    name: Label_
+    role: label
+  n155:
+    name: Label_
+    role: label
+  n156:
+    name: playItemCloseBtn
+    role: button
+  n157:
+    name: playItemWidget
+    role: form
+  n158:
+    name: Label_
+    role: label
+  n159:
+    name: Label_
+    role: label
+  n160:
+    name: Label_
+    role: label
+  n161:
+    name: Label_
+    role: label
+  n162:
+    name: playItemCloseBtn
+    role: button
+  n163:
+    name: playItemWidget
+    role: form
+  n164:
+    name: Label_
+    role: label
+  n165:
+    name: Label_
+    role: label
+  n166:
+    name: Label_
+    role: label
+  n167:
+    name: Label_
+    role: label
+  n168:
+    name: playItemCloseBtn
+    role: button
+  n169:
+    name: playItemWidget
+    role: form
+  n170:
+    name: Label_
+    role: label
+  n171:
+    name: Label_
+    role: label
+  n172:
+    name: Label_
+    role: label
+  n173:
+    name: Label_
+    role: label
+  n174:
+    name: playItemCloseBtn
+    role: button
+  n175:
+    name: playItemWidget
+    role: form
+  n176:
+    name: Label_
+    role: label
+  n177:
+    name: Label_
+    role: label
+  n178:
+    name: Label_
+    role: label
+  n179:
+    name: Label_
+    role: label
+  n180:
+    name: playItemCloseBtn
+    role: button
+  n181:
+    name: playItemWidget
+    role: form
+  n182:
+    name: Label_
+    role: label
+  n183:
+    name: Label_
+    role: label
+  n184:
+    name: Label_
+    role: label
+  n185:
+    name: Label_
+    role: label
+  n186:
+    name: playItemCloseBtn
+    role: button
+  n187:
+    name: playItemWidget
+    role: form
+  n188:
+    name: Label_
+    role: label
+  n189:
+    name: Label_
+    role: label
+  n190:
+    name: Label_
+    role: label
+  n191:
+    name: Label_
+    role: label
+  n192:
+    name: playItemCloseBtn
+    role: button
+  n193:
+    name: playItemWidget
+    role: form
+  n194:
+    name: Label_
+    role: label
+  n195:
+    name: Label_
+    role: label
+  n196:
+    name: Label_
+    role: label
+  n197:
+    name: Label_
+    role: label
+  n198:
+    name: playItemCloseBtn
+    role: button
+  n199:
+    name: playItemWidget
+    role: form
+  n200:
+    name: Label_
+    role: label
+  n201:
+    name: Label_
+    role: label
+  n202:
+    name: Label_
+    role: label
+  n203:
+    name: Label_
+    role: label
+  n204:
+    name: playItemCloseBtn
+    role: button
+  n205:
+    name: playItemWidget
+    role: form
+  n206:
+    name: Label_
+    role: label
+  n207:
+    name: Label_
+    role: label
+  n208:
+    name: Label_
+    role: label
+  n209:
+    name: Label_
+    role: label
+  n210:
+    name: playItemCloseBtn
+    role: button
+  n211:
+    name: playItemWidget
+    role: form
+  n212:
+    name: Label_
+    role: label
+  n213:
+    name: Label_
+    role: label
+  n214:
+    name: Label_
+    role: label
+  n215:
+    name: Label_
+    role: label
+  n216:
+    name: playItemCloseBtn
+    role: button
+  n217:
+    name: qt_scrollarea_hcontainer
+    role: form
+  n218:
+    name: qt_scrollarea_vcontainer
+    role: form
+  n219:
+    name: DTitlebarMainMenu
+    role: popup menu
+  n220:
+    name: 打开文件
+    role: menu item
+  n221:
+    name: 打开文件夹
+    role: menu item
+  n222:
+    name: 设置
+    role: menu item
+  n223:
+    name: 主题
+    role: menu item
+  n224:
+    name: DTitlebarThemeMenu
+    role: popup menu
+  n225:
+    name: 浅色
+    role: menu item
+  n226:
+    name: 深色
+    role: menu item
+  n227:
+    name: 跟随系统
+    role: menu item
+  n228:
+    name: 帮助
+    role: menu item
+  n229:
+    name: 关于
+    role: menu item
+  n230:
+    name: 退出
+    role: menu item
+  n231:
+    name: DTitlebarThemeMenu
+    role: popup menu
+  n232:
+    name: 浅色
+    role: menu item
+  n233:
+    name: 深色
+    role: menu item
+  n234:
+    name: 跟随系统
+    role: menu item
+  n235:
+    name: ''
+    role: popup menu
+  n236:
+    name: 打开文件
+    role: menu item
+  n237:
+    name: 打开文件夹
+    role: menu item
+  n238:
+    name: 打开URL
+    role: menu item
+  n239:
+    name: 播放光盘
+    role: menu item
+  n240:
+    name: 全屏
+    role: menu item
+  n241:
+    name: 迷你模式
+    role: menu item
+  n242:
+    name: 置顶窗口
+    role: menu item
+  n243:
+    name: 播放模式
+    role: menu item
+  n244:
+    name: ''
+    role: popup menu
+  n245:
+    name: 顺序播放
+    role: menu item
+  n246:
+    name: 随机播放
+    role: menu item
+  n247:
+    name: 单个播放
+    role: menu item
+  n248:
+    name: 单个循环
+    role: menu item
+  n249:
+    name: 列表循环
+    role: menu item
+  n250:
+    name: 倍速播放
+    role: menu item
+  n251:
+    name: ''
+    role: popup menu
+  n252:
+    name: 0.5x
+    role: menu item
+  n253:
+    name: 1.0x
+    role: menu item
+  n254:
+    name: 1.2x
+    role: menu item
+  n255:
+    name: 1.5x
+    role: menu item
+  n256:
+    name: 2.0x
+    role: menu item
+  n257:
+    name: 画面
+    role: menu item
+  n258:
+    name: ''
+    role: popup menu
+  n259:
+    name: 默认
+    role: menu item
+  n260:
+    name: '4:3'
+    role: menu item
+  n261:
+    name: '16:9'
+    role: menu item
+  n262:
+    name: '16:10'
+    role: menu item
+  n263:
+    name: 1.85:1
+    role: menu item
+  n264:
+    name: 2.35:1
+    role: menu item
+  n265:
+    name: 顺时针旋转
+    role: menu item
+  n266:
+    name: 逆时针旋转
+    role: menu item
+  n267:
+    name: 下一帧
+    role: menu item
+  n268:
+    name: 上一帧
+    role: menu item
+  n269:
+    name: 声音
+    role: menu item
+  n270:
+    name: ''
+    role: popup menu
+  n271:
+    name: 声道
+    role: menu item
+  n272:
+    name: ''
+    role: popup menu
+  n273:
+    name: 立体声
+    role: menu item
+  n274:
+    name: 左声道
+    role: menu item
+  n275:
+    name: 右声道
+    role: menu item
+  n276:
+    name: 音轨
+    role: menu item
+  n277:
+    name: ''
+    role: popup menu
+  n278:
+    name: 音轨1
+    role: menu item
+  n279:
+    name: 字幕
+    role: menu item
+  n280:
+    name: ''
+    role: popup menu
+  n281:
+    name: 载入字幕
+    role: menu item
+  n282:
+    name: 查找在线字幕
+    role: menu item
+  n283:
+    name: 选择字幕
+    role: menu item
+  n285:
+    name: 隐藏字幕
+    role: menu item
+  n286:
+    name: 编码
+    role: menu item
+  n287:
+    name: ''
+    role: popup menu
+  n288:
+    name: Auto
+    role: menu item
+  n289:
+    name: Universal (UTF-8)
+    role: menu item
+  n290:
+    name: Universal (UTF-16)
+    role: menu item
+  n291:
+    name: Universal (UTF-16BE)
+    role: menu item
+  n292:
+    name: Universal (UTF-16LE)
+    role: menu item
+  n293:
+    name: Arabic (ISO-8859-6)
+    role: menu item
+  n294:
+    name: Arabic (WINDOWS-1256)
+    role: menu item
+  n295:
+    name: Baltic (LATIN7)
+    role: menu item
+  n296:
+    name: Baltic (WINDOWS-1257)
+    role: menu item
+  n297:
+    name: Celtic (LATIN8)
+    role: menu item
+  n298:
+    name: Central European (WINDOWS-1250)
+    role: menu item
+  n299:
+    name: Cyrillic (ISO-8859-5)
+    role: menu item
+  n300:
+    name: Cyrillic (WINDOWS-1251)
+    role: menu item
+  n301:
+    name: Eastern European (ISO-8859-2)
+    role: menu item
+  n302:
+    name: Western Languages (WINDOWS-1252)
+    role: menu item
+  n303:
+    name: Greek (ISO-8859-7)
+    role: menu item
+  n304:
+    name: Greek (WINDOWS-1253)
+    role: menu item
+  n305:
+    name: Hebrew (ISO-8859-8)
+    role: menu item
+  n306:
+    name: Hebrew (WINDOWS-1255)
+    role: menu item
+  n307:
+    name: Japanese (SHIFT-JIS)
+    role: menu item
+  n308:
+    name: Japanese (ISO-2022-JP-2)
+    role: menu item
+  n309:
+    name: Korean (EUC-KR)
+    role: menu item
+  n310:
+    name: Korean (CP949)
+    role: menu item
+  n311:
+    name: Korean (ISO-2022-KR)
+    role: menu item
+  n312:
+    name: Nordic (LATIN6)
+    role: menu item
+  n313:
+    name: North European (LATIN4)
+    role: menu item
+  n314:
+    name: Russian (KOI8-R)
+    role: menu item
+  n315:
+    name: Simplified Chinese (GBK)
+    role: menu item
+  n316:
+    name: Simplified Chinese (GB18030)
+    role: menu item
+  n317:
+    name: Simplified Chinese (ISO-2022-CN-EXT)
+    role: menu item
+  n318:
+    name: South European (LATIN3)
+    role: menu item
+  n319:
+    name: South-Eastern European (LATIN10)
+    role: menu item
+  n320:
+    name: Thai (TIS-620)
+    role: menu item
+  n321:
+    name: Thai (WINDOWS-874)
+    role: menu item
+  n322:
+    name: Traditional Chinese (EUC-TW)
+    role: menu item
+  n323:
+    name: Traditional Chinese (BIG5)
+    role: menu item
+  n324:
+    name: Traditional Chinese (BIG5-HKSCS)
+    role: menu item
+  n325:
+    name: Turkish (LATIN5)
+    role: menu item
+  n326:
+    name: Turkish (WINDOWS-1254)
+    role: menu item
+  n327:
+    name: Ukrainian (KOI8-U)
+    role: menu item
+  n328:
+    name: Vietnamese (WINDOWS-1258)
+    role: menu item
+  n329:
+    name: Vietnamese (VISCII)
+    role: menu item
+  n330:
+    name: Western European (LATIN1)
+    role: menu item
+  n331:
+    name: Western European (LATIN-9)
+    role: menu item
+  n332:
+    name: 截图
+    role: menu item
+  n333:
+    name: ''
+    role: popup menu
+  n334:
+    name: 影片截图
+    role: menu item
+  n335:
+    name: 连拍截图
+    role: menu item
+  n336:
+    name: 前往截图文件夹
+    role: menu item
+  n337:
+    name: 播放列表
+    role: menu item
+  n338:
+    name: 影片信息
+    role: menu item
+  n339:
+    name: 设置
+    role: menu item
+  n340:
+    name: ''
+    role: popup menu
+  n341:
+    name: 顺序播放
+    role: menu item
+  n342:
+    name: 随机播放
+    role: menu item
+  n343:
+    name: 单个播放
+    role: menu item
+  n344:
+    name: 单个循环
+    role: menu item
+  n345:
+    name: 列表循环
+    role: menu item
+  n346:
+    name: ''
+    role: popup menu
+  n347:
+    name: 0.5x
+    role: menu item
+  n348:
+    name: 1.0x
+    role: menu item
+  n349:
+    name: 1.2x
+    role: menu item
+  n350:
+    name: 1.5x
+    role: menu item
+  n351:
+    name: 2.0x
+    role: menu item
+  n352:
+    name: ''
+    role: popup menu
+  n353:
+    name: 默认
+    role: menu item
+  n354:
+    name: '4:3'
+    role: menu item
+  n355:
+    name: '16:9'
+    role: menu item
+  n356:
+    name: '16:10'
+    role: menu item
+  n357:
+    name: 1.85:1
+    role: menu item
+  n358:
+    name: 2.35:1
+    role: menu item
+  n359:
+    name: 顺时针旋转
+    role: menu item
+  n360:
+    name: 逆时针旋转
+    role: menu item
+  n361:
+    name: 下一帧
+    role: menu item
+  n362:
+    name: 上一帧
+    role: menu item
+  n363:
+    name: ''
+    role: popup menu
+  n364:
+    name: 声道
+    role: menu item
+  n365:
+    name: ''
+    role: popup menu
+  n366:
+    name: 立体声
+    role: menu item
+  n367:
+    name: 左声道
+    role: menu item
+  n368:
+    name: 右声道
+    role: menu item
+  n369:
+    name: 音轨
+    role: menu item
+  n370:
+    name: ''
+    role: popup menu
+  n371:
+    name: 音轨1
+    role: menu item
+  n372:
+    name: ''
+    role: popup menu
+  n373:
+    name: 立体声
+    role: menu item
+  n374:
+    name: 左声道
+    role: menu item
+  n375:
+    name: 右声道
+    role: menu item
+  n376:
+    name: ''
+    role: popup menu
+  n377:
+    name: 音轨1
+    role: menu item
+  n378:
+    name: ''
+    role: popup menu
+  n379:
+    name: 载入字幕
+    role: menu item
+  n380:
+    name: 查找在线字幕
+    role: menu item
+  n381:
+    name: 选择字幕
+    role: menu item
+  n383:
+    name: 隐藏字幕
+    role: menu item
+  n384:
+    name: 编码
+    role: menu item
+  n385:
+    name: ''
+    role: popup menu
+  n386:
+    name: Auto
+    role: menu item
+  n387:
+    name: Universal (UTF-8)
+    role: menu item
+  n388:
+    name: Universal (UTF-16)
+    role: menu item
+  n389:
+    name: Universal (UTF-16BE)
+    role: menu item
+  n390:
+    name: Universal (UTF-16LE)
+    role: menu item
+  n391:
+    name: Arabic (ISO-8859-6)
+    role: menu item
+  n392:
+    name: Arabic (WINDOWS-1256)
+    role: menu item
+  n393:
+    name: Baltic (LATIN7)
+    role: menu item
+  n394:
+    name: Baltic (WINDOWS-1257)
+    role: menu item
+  n395:
+    name: Celtic (LATIN8)
+    role: menu item
+  n396:
+    name: Central European (WINDOWS-1250)
+    role: menu item
+  n397:
+    name: Cyrillic (ISO-8859-5)
+    role: menu item
+  n398:
+    name: Cyrillic (WINDOWS-1251)
+    role: menu item
+  n399:
+    name: Eastern European (ISO-8859-2)
+    role: menu item
+  n400:
+    name: Western Languages (WINDOWS-1252)
+    role: menu item
+  n401:
+    name: Greek (ISO-8859-7)
+    role: menu item
+  n402:
+    name: Greek (WINDOWS-1253)
+    role: menu item
+  n403:
+    name: Hebrew (ISO-8859-8)
+    role: menu item
+  n404:
+    name: Hebrew (WINDOWS-1255)
+    role: menu item
+  n405:
+    name: Japanese (SHIFT-JIS)
+    role: menu item
+  n406:
+    name: Japanese (ISO-2022-JP-2)
+    role: menu item
+  n407:
+    name: Korean (EUC-KR)
+    role: menu item
+  n408:
+    name: Korean (CP949)
+    role: menu item
+  n409:
+    name: Korean (ISO-2022-KR)
+    role: menu item
+  n410:
+    name: Nordic (LATIN6)
+    role: menu item
+  n411:
+    name: North European (LATIN4)
+    role: menu item
+  n412:
+    name: Russian (KOI8-R)
+    role: menu item
+  n413:
+    name: Simplified Chinese (GBK)
+    role: menu item
+  n414:
+    name: Simplified Chinese (GB18030)
+    role: menu item
+  n415:
+    name: Simplified Chinese (ISO-2022-CN-EXT)
+    role: menu item
+  n416:
+    name: South European (LATIN3)
+    role: menu item
+  n417:
+    name: South-Eastern European (LATIN10)
+    role: menu item
+  n418:
+    name: Thai (TIS-620)
+    role: menu item
+  n419:
+    name: Thai (WINDOWS-874)
+    role: menu item
+  n420:
+    name: Traditional Chinese (EUC-TW)
+    role: menu item
+  n421:
+    name: Traditional Chinese (BIG5)
+    role: menu item
+  n422:
+    name: Traditional Chinese (BIG5-HKSCS)
+    role: menu item
+  n423:
+    name: Turkish (LATIN5)
+    role: menu item
+  n424:
+    name: Turkish (WINDOWS-1254)
+    role: menu item
+  n425:
+    name: Ukrainian (KOI8-U)
+    role: menu item
+  n426:
+    name: Vietnamese (WINDOWS-1258)
+    role: menu item
+  n427:
+    name: Vietnamese (VISCII)
+    role: menu item
+  n428:
+    name: Western European (LATIN1)
+    role: menu item
+  n429:
+    name: Western European (LATIN-9)
+    role: menu item
+  n431:
+    name: ''
+    role: popup menu
+  n432:
+    name: Auto
+    role: menu item
+  n433:
+    name: Universal (UTF-8)
+    role: menu item
+  n434:
+    name: Universal (UTF-16)
+    role: menu item
+  n435:
+    name: Universal (UTF-16BE)
+    role: menu item
+  n436:
+    name: Universal (UTF-16LE)
+    role: menu item
+  n437:
+    name: Arabic (ISO-8859-6)
+    role: menu item
+  n438:
+    name: Arabic (WINDOWS-1256)
+    role: menu item
+  n439:
+    name: Baltic (LATIN7)
+    role: menu item
+  n440:
+    name: Baltic (WINDOWS-1257)
+    role: menu item
+  n441:
+    name: Celtic (LATIN8)
+    role: menu item
+  n442:
+    name: Central European (WINDOWS-1250)
+    role: menu item
+  n443:
+    name: Cyrillic (ISO-8859-5)
+    role: menu item
+  n444:
+    name: Cyrillic (WINDOWS-1251)
+    role: menu item
+  n445:
+    name: Eastern European (ISO-8859-2)
+    role: menu item
+  n446:
+    name: Western Languages (WINDOWS-1252)
+    role: menu item
+  n447:
+    name: Greek (ISO-8859-7)
+    role: menu item
+  n448:
+    name: Greek (WINDOWS-1253)
+    role: menu item
+  n449:
+    name: Hebrew (ISO-8859-8)
+    role: menu item
+  n450:
+    name: Hebrew (WINDOWS-1255)
+    role: menu item
+  n451:
+    name: Japanese (SHIFT-JIS)
+    role: menu item
+  n452:
+    name: Japanese (ISO-2022-JP-2)
+    role: menu item
+  n453:
+    name: Korean (EUC-KR)
+    role: menu item
+  n454:
+    name: Korean (CP949)
+    role: menu item
+  n455:
+    name: Korean (ISO-2022-KR)
+    role: menu item
+  n456:
+    name: Nordic (LATIN6)
+    role: menu item
+  n457:
+    name: North European (LATIN4)
+    role: menu item
+  n458:
+    name: Russian (KOI8-R)
+    role: menu item
+  n459:
+    name: Simplified Chinese (GBK)
+    role: menu item
+  n460:
+    name: Simplified Chinese (GB18030)
+    role: menu item
+  n461:
+    name: Simplified Chinese (ISO-2022-CN-EXT)
+    role: menu item
+  n462:
+    name: South European (LATIN3)
+    role: menu item
+  n463:
+    name: South-Eastern European (LATIN10)
+    role: menu item
+  n464:
+    name: Thai (TIS-620)
+    role: menu item
+  n465:
+    name: Thai (WINDOWS-874)
+    role: menu item
+  n466:
+    name: Traditional Chinese (EUC-TW)
+    role: menu item
+  n467:
+    name: Traditional Chinese (BIG5)
+    role: menu item
+  n468:
+    name: Traditional Chinese (BIG5-HKSCS)
+    role: menu item
+  n469:
+    name: Turkish (LATIN5)
+    role: menu item
+  n470:
+    name: Turkish (WINDOWS-1254)
+    role: menu item
+  n471:
+    name: Ukrainian (KOI8-U)
+    role: menu item
+  n472:
+    name: Vietnamese (WINDOWS-1258)
+    role: menu item
+  n473:
+    name: Vietnamese (VISCII)
+    role: menu item
+  n474:
+    name: Western European (LATIN1)
+    role: menu item
+  n475:
+    name: Western European (LATIN-9)
+    role: menu item
+  n476:
+    name: ''
+    role: popup menu
+  n477:
+    name: 影片截图
+    role: menu item
+  n478:
+    name: 连拍截图
+    role: menu item
+  n479:
+    name: 前往截图文件夹
+    role: menu item
+  n480:
+    name: ''
+    role: popup menu
+  n481:
+    name: 从播放列表删除
+    role: menu item
+  n482:
+    name: 清空播放列表
+    role: menu item
+  n483:
+    name: 在文件管理器中显示
+    role: menu item
+  n484:
+    name: 影片信息
+    role: menu item

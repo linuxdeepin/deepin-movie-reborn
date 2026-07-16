@@ -1,0 +1,87 @@
+name: 窗口操作_suite
+app: deepin-movie
+description: ''
+module: 窗口操作
+tags: []
+fast_fail: false
+env_check: []
+setup:
+- action: session_start
+  command: deepin-movie
+  wait: 3.0
+suites:
+- id: case_2003953_s1
+  name: 打开影院
+  description: ''
+  tags: []
+  steps:
+  - action: dtk_main_menu
+    items:
+    - 关于
+  - action: wait
+    wait: 1.0
+  - action: keyboard_press
+    key: escape
+  assert_steps:
+  - action: assert_window
+- id: case_1637363_s1
+  name: 启动影院
+  description: ''
+  tags: []
+  steps:
+  - action: dtk_main_menu
+    items:
+    - 主题
+    - 深色
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+- id: case_1637357_s1
+  name: 启动影院
+  description: ''
+  tags: []
+  steps:
+  - action: dtk_main_menu
+    items:
+    - 关于
+  - action: wait
+    wait: 1.0
+  - action: keyboard_press
+    key: escape
+  assert_steps:
+  - action: assert_window
+- id: case_1637347_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: keyboard_hot_key
+    key: alt+enter
+  - action: wait
+    wait: 1.0
+  - action: keyboard_hot_key
+    key: alt+enter
+  - action: wait
+    wait: 1.0
+  assert_steps:
+  - action: assert_window
+  - action: assert_window
+- id: case_1637341_s1
+  name: 启动影院并播放视频
+  description: ''
+  tags: []
+  steps:
+  - action: keyboard_press
+    key: f2
+  - action: wait
+    wait: 1.0
+  - action: element_action
+    selector:
+      name: DTitlebarDWindowCloseButton
+      role: push button
+    do: click
+  assert_steps:
+  - action: assert_window
+teardown:
+- action: session_stop
