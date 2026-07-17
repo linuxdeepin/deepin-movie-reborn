@@ -12,6 +12,7 @@ Type=Application
 X-Deepin-ManualID=deepin-movie
 X-Deepin-TurboType=dtkwidget
 X-Deepin-Vendor=deepin
+X-Deepin-Singleton=true
 
 # Translations:
 # Do not manually modify!
