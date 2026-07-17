@@ -1444,7 +1444,8 @@ void MpvProxy::refreshDecode()
 
         // 设置芯瞳显卡硬解
         if(utils::isSietiumGPUPresent()) {
-            my_set_property(m_handle, "hwdec", "vaapi-copy");
+            my_set_property(m_handle, "hwdec", "vaapi");
+            my_set_property(m_handle, "vo", "gpu");
         }
 
         if (!CompositingManager::get().composited()) {
@@ -1517,7 +1518,8 @@ void MpvProxy::refreshDecode()
 
         // 设置芯瞳显卡硬解
         if(utils::isSietiumGPUPresent()) {
-            my_set_property(m_handle, "hwdec", "vaapi-copy");
+            my_set_property(m_handle, "hwdec", "vaapi");
+            my_set_property(m_handle, "vo", "gpu");
         }
 
         PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();

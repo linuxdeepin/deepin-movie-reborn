@@ -328,6 +328,10 @@ CompositingManager::CompositingManager()
     if (QFile::exists("/sys/bus/pci/drivers/ljmcore"))
         _composited = false;
 
+    // 芯瞳显卡走 wid 模式，由 mpv 自主创建 GL context 渲染
+    if (utils::isSietiumGPUPresent())
+        _composited = false;
+
     if (m_setSpecialControls)
         _composited = false;
 
