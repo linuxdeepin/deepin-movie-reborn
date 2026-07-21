@@ -160,22 +160,22 @@ CompositingManager::CompositingManager()
         qInfo() << "Special controls set for 550 series:" << m_setSpecialControls;
     }
 
-    bool isI915 = false;
-    qDebug() << "Starting DRM card existence check for i915.";
+    bool hasSpecialDriver = false;
+    qDebug() << "Starting DRM card existence check for i915/arise/cx4/zx/cx.";
     for (int id = 0; id <= 10; id++) {
         if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
         if (is_device_viable(id)) {
-            qDebug() << "Device" << id << "is viable. Checking for i915/arise drivers.";
-            vector<string> drivers = {"i915", "arise"};
-            isI915 = is_card_exists(id, drivers);
-            qDebug() << "is_card_exists for device" << id << "returned:" << isI915;
+            qDebug() << "Device" << id << "is viable. Checking for i915/arise/cx4/zx/cx drivers.";
+            vector<string> drivers = {"i915", "arise", "cx4", "zx", "cx"};
+            hasSpecialDriver = is_card_exists(id, drivers);
+            qDebug() << "is_card_exists for device" << id << "returned:" << hasSpecialDriver;
             break;
         }
     }
-    if (isI915) {
-        qInfo() << "Detected i915 graphics";
+    if (hasSpecialDriver) {
+        qInfo() << "Detected i915/arise/cx4/zx/cx graphics";
     }
-    m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
+    m_bZXIntgraphics = hasSpecialDriver ? hasSpecialDriver : m_bZXIntgraphics;
     qDebug() << "m_bZXIntgraphics set to:" << m_bZXIntgraphics;
 
 #ifndef USE_TEST
