@@ -1,3 +1,14 @@
+deepin-movie-reborn (6.5.54) unstable; urgency=medium
+
+  * chore: Update version to 6.5.54
+  * fix(driver): extend detection for zx/cx series graphics drivers
+  * chore(ci): update actions/checkout to v7 and enable unsafe PR checkout
+  * fix: remove deepin prefix from Chinese translations in desktop file
+  * fix: add X-Deepin-Singleton flag to desktop file
+  * test(at): add AT-SPI test suite for deepin-movie (29 active cases)
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Wed, 22 Jul 2026 15:33:16 +0800
+
 deepin-movie-reborn (6.5.53) unstable; urgency=medium
 
   * chore: Update version to 6.5.53
