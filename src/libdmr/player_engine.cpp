@@ -1353,6 +1353,7 @@ QVariant PlayerEngine::getBackendProperty(const QString &name)
 }
 
 void PlayerEngine::toggleRoundedClip(bool roundClip)
+#ifndef USE_TEST
 {
     qDebug() << "Enter toggleRoundedClip function";
     MpvProxy* pMpvProxy = nullptr;
@@ -1365,6 +1366,9 @@ void PlayerEngine::toggleRoundedClip(bool roundClip)
     // }
     qDebug() << "Exiting toggleRoundedClip function";
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 bool PlayerEngine::currFileIsAudio()
 {
