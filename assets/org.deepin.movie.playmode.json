@@ -21,6 +21,16 @@
           "description": "Whether to use special video output",
           "permissions": "readwrite",
           "visibility": "private"
+      },
+      "VoName": {
+          "value": "",
+          "serial": 0,
+          "flags": ["global"],
+          "name": "The name of the video output engine",
+          "name[zh_CN]": "视频输出引擎名称",
+          "description": "The name of the video output engine",
+          "permissions": "readwrite",
+          "visibility": "private"
       }
   }
 }

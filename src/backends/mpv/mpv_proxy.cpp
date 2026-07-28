@@ -547,7 +547,12 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "修改音视频同步模式";
             my_set_property(pHandle, "video-sync", "desync");
         }
-        if (!utils::isJjwGPUPresent() && !mtfi.exists()) {
+        // 检测特殊机型，使用配置的 VO 渲染
+        if (CompositingManager::get().shouldUseSpecialVo()) {
+            QString voName = CompositingManager::get().getSpecialVoName();
+            my_set_property(pHandle, "vo", voName.toUtf8().constData());
+            m_sInitVo = voName;
+        } else if (!utils::isJjwGPUPresent() && !mtfi.exists()) {
             if(CompositingManager::get().property("directRendering").toBool()) {
                 qDebug() << "DEBUG: Loongarch: Direct rendering enabled. Setting vo to gpu,x11.";
                 my_set_property(pHandle, "vo", "gpu,x11");
@@ -566,7 +571,12 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(pHandle, "vo", "gpu,x11");
         m_sInitVo = "gpu,x11";
 #elif defined (__aarch64__)
-        if (!utils::isJjwGPUPresent()) { //2.1.1景嘉微
+        // 检测特殊机型，使用配置的 VO 渲染
+        if (CompositingManager::get().shouldUseSpecialVo()) {
+            QString voName = CompositingManager::get().getSpecialVoName();
+            my_set_property(pHandle, "vo", voName.toUtf8().constData());
+            m_sInitVo = voName;
+        } else if (!utils::isJjwGPUPresent()) { //2.1.1景嘉微
             qDebug() << "DEBUG: AARCH64: No Jingjiawei GPU detected. Setting vo to x11,gpu,xv.";
             my_set_property(pHandle, "vo", "gpu,xv,x11");
             m_sInitVo = "gpu,xv,x11";
