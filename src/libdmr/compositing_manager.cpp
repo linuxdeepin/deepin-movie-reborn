@@ -151,6 +151,7 @@ CompositingManager::CompositingManager()
     setProperty("directRendering", isDriverLoaded); //是否支持直接渲染
     qInfo() << "Driver loaded status:" << isDriverLoaded;
     softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
+    detectSpecialVoFromConfig(); // 检测特殊机型（仅决定渲染策略）
     qDebug() << "softDecodeCheck() called.";
 
     // 检测是否为 AMD 550 系列显卡，若为则走vaapi
@@ -696,6 +697,37 @@ bool CompositingManager::isSpecialControls()
     return result;
 }
 
+void CompositingManager::detectSpecialVoFromConfig()
+{
+#ifdef DTKCORE_CLASS_DConfigFile
+    DConfig *dconfig = DConfig::create("org.deepin.movie", "org.deepin.movie.playmode");
+    if (dconfig && dconfig->isValid()) {
+        const QStringList &keys = dconfig->keyList();
+        if (keys.contains("IsSpecialVo") && dconfig->value("IsSpecialVo").toInt() == 1) {
+            if (keys.contains("VoName")) {
+                QString voName = dconfig->value("VoName").toString().trimmed();
+                if (!voName.isEmpty()) {
+                    m_bUseSpecialVo = true;
+                    m_specialVoName = voName;
+                    qInfo() << "Detected special VO from dconfig, vo:" << m_specialVoName;
+                }
+            }
+        }
+    }
+    delete dconfig;
+#endif
+}
+
+bool CompositingManager::shouldUseSpecialVo()
+{
+    return m_bUseSpecialVo;
+}
+
+QString CompositingManager::getSpecialVoName()
+{
+    return m_specialVoName.isEmpty() ? QString("gpu") : m_specialVoName;
+}
+
 void CompositingManager::detectOpenGLEarly()
 {
     qDebug() << "Entering CompositingManager::detectOpenGLEarly()";
@@ -1081,6 +1113,8 @@ void CompositingManager::initMember()
 
     m_bZXIntgraphics = false;
     m_bHasCard = false;
+    m_bUseSpecialVo = false;
+    m_specialVoName.clear();
     qDebug() << "Exiting initMember()";
 }
 
