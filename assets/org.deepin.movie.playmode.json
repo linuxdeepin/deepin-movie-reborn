@@ -1,0 +1,16 @@
+{
+  "magic": "dsg.config.meta",
+  "version": "1.0",
+  "contents": {
+      "HwdecName": {
+          "value": "",
+          "serial": 0,
+          "flags": ["global"],
+          "name": "The name of the hardware decoding engine",
+          "name[zh_CN]": "硬件解码引擎名称",
+          "description": "The name of the hardware decoding engine",
+          "permissions": "readwrite",
+          "visibility": "private"
+      }
+  }
+}
