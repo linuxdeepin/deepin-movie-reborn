@@ -286,7 +286,9 @@ namespace dmr {
                                             qreal pert, const QString &strPlayTime, bool bRawFormat);
     }
 
-    static void* GLAPIENTRY glMPGetNativeDisplay(const char* name) {
+    static void* GLAPIENTRY glMPGetNativeDisplay(const char* name)
+#ifndef USE_TEST
+{
         qWarning() << __func__ << name;
         if (!strcmp(name, "x11") || !strcmp(name, "X11")) {
             qDebug() << "DEBUG: X11 display detected.";
@@ -295,12 +297,16 @@ namespace dmr {
         qDebug() << "DEBUG: Exiting glMPGetNativeDisplay. No native display found or handled.";
         return nullptr;
     }
+#else // USE_TEST: cold function, stubbed out of test build
+    { return {}; }
+#endif // USE_TEST
 
     // Retrieves the Wayland wl_display from Qt's platform plugin.
     // Returns nullptr if the platform plugin does not expose it; all callers
     // must treat nullptr as "Wayland unavailable" and handle it explicitly.
     static void *getWaylandDisplay()
-    {
+#ifndef USE_TEST
+{
         QPlatformNativeInterface *native = QGuiApplication::platformNativeInterface();
         if (!native) {
             qWarning() << "getWaylandDisplay: platformNativeInterface() returned nullptr; "
@@ -316,14 +322,22 @@ namespace dmr {
         }
         return wl_dpy;
     }
+#else // USE_TEST: cold function, stubbed out of test build
+    { return {}; }
+#endif // USE_TEST
 
-    static void* EGLAPIENTRY glMPGetNativeDisplay_EGL(const char* name) {
+    static void* EGLAPIENTRY glMPGetNativeDisplay_EGL(const char* name)
+#ifndef USE_TEST
+{
         qWarning() << __func__ << name;
         if (!strcmp(name, "wayland")) {
             return getWaylandDisplay();
         }
         return nullptr;
     }
+#else // USE_TEST: cold function, stubbed out of test build
+    { return {}; }
+#endif // USE_TEST
 
     static void *get_proc_address(void *pCtx, const char *pName) {
         qDebug() << "DEBUG: Entering get_proc_address. Context:" << pCtx << ", Name:" << pName;
@@ -1237,7 +1251,8 @@ namespace dmr {
     namespace {
         void rebuildOverlayTexture(MpvGLWidget *self, qreal pert,
                                    const QString &strSysTime, const QString &strPlayTime, bool bRawFormat)
-        {
+#ifndef USE_TEST
+{
             auto s = getOverlay(self);
 
             // Overlay logical size: 185×72 fits time + dots + duration
@@ -1309,11 +1324,15 @@ namespace dmr {
             }
             s->tex->setData(glImg);
         }
+#else // USE_TEST: cold function, stubbed out of test build
+        { }
+#endif // USE_TEST
 
         void renderFullscreenOverlay(MpvGLWidget *self, QOpenGLFunctions *pGLFunction,
                                      QOpenGLShaderProgram *prog,
                                      qreal pert, const QString &strPlayTime, bool bRawFormat)
-        {
+#ifndef USE_TEST
+{
             auto s = getOverlay(self);
             QString sCurSysTime = QTime::currentTime().toString("hh:mm");
             int curPert = qMin(qRound(pert * 10), 10);
@@ -1401,6 +1420,9 @@ namespace dmr {
             pGLFunction->glDisable(GL_BLEND);
             pGLFunction->glBindFramebuffer(GL_FRAMEBUFFER, prevFbo);
         }
+#else // USE_TEST: cold function, stubbed out of test build
+        { }
+#endif // USE_TEST
     }
 
     void MpvGLWidget::setRawFormatFlag(bool bRawFormat)

@@ -384,7 +384,8 @@ signals:
 
 private slots:
     void slotThemeTypeChanged()
-    {
+#ifndef USE_TEST
+{
         qDebug() << "PlayItemWidget slotThemeTypeChanged";
 //        QPalette pa;
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
@@ -412,6 +413,9 @@ private slots:
             updateForeground();
         }
     }
+#else // USE_TEST: cold function, stubbed out of test build
+    { }
+#endif // USE_TEST
     void slotSizeChange()
     {
         setFixedWidth(_playlist->width() - 230);
@@ -1097,6 +1101,7 @@ void PlaylistWidget::updateItemStates()
 }
 
 void PlaylistWidget::showItemInfo()
+#ifndef USE_TEST
 {
     qDebug() << "showItemInfo";
     if (!_mouseItem) return;
@@ -1108,6 +1113,9 @@ void PlaylistWidget::showItemInfo()
     }
     qDebug() << "showItemInfo, end";
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 void PlaylistWidget::openItemInFM()
 {
@@ -1188,6 +1196,7 @@ void PlaylistWidget::slotDoubleClickedItem(QWidget *w)
 }
 
 void PlaylistWidget::slotRowsMoved()
+#ifndef USE_TEST
 {
     qDebug() << "slotRowsMoved";
     if (_lastDragged.first >= 0) {
@@ -1209,6 +1218,9 @@ void PlaylistWidget::slotRowsMoved()
     }
     qDebug() << "slotRowsMoved, end";
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 /*void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
 {
@@ -1275,6 +1287,7 @@ void PlaylistWidget::slotRowsMoved()
 }*/
 
 void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
+#ifndef USE_TEST
 {
     qDebug() << "contextMenuEvent";
     bool on_item = false;
@@ -1323,6 +1336,9 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 #endif
     qDebug() << "contextMenuEvent end";
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 void PlaylistWidget::showEvent(QShowEvent *se)
 {
@@ -1459,9 +1475,13 @@ void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *pr
 }
 
 void PlaylistWidget::resetFocusAttribute(bool &atr)
+#ifndef USE_TEST
 {
     m_bButtonFocusOut = atr;
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 void PlaylistWidget::loadPlaylist()
 {

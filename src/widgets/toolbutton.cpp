@@ -168,6 +168,7 @@ void VolumeButton::leaveEvent(QEvent *ev)
 }
 
 void VolumeButton::wheelEvent(QWheelEvent *we)
+#ifndef USE_TEST
 {
     qDebug() << "Entering VolumeButton::wheelEvent()";
     //qInfo() << we->angleDelta() << we->modifiers() << we->buttons();
@@ -186,6 +187,9 @@ void VolumeButton::wheelEvent(QWheelEvent *we)
 
     qDebug() << "Exiting VolumeButton::wheelEvent()";
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 //tab键焦点移出时同鼠标移出，响应自动隐藏
 void VolumeButton::focusOutEvent(QFocusEvent *ev)

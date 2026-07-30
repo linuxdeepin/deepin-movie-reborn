@@ -504,6 +504,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
 }
 
 MovieInfo PlaylistModel::parseFromFileByQt(const QFileInfo &fi, bool *ok)
+#ifndef USE_TEST
 {
     qDebug() << "Entering PlaylistModel::parseFromFileByQt() with file:" << fi.filePath();
     struct MovieInfo mi;
@@ -518,6 +519,9 @@ MovieInfo PlaylistModel::parseFromFileByQt(const QFileInfo &fi, bool *ok)
     qDebug() << "Exiting PlaylistModel::parseFromFileByQt().";
     return mi;
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ return {}; }
+#endif // USE_TEST
 
 bool PlayItemInfo::refresh()
 {
@@ -1659,10 +1663,14 @@ int PlaylistModel::size() const
 }
 
 const PlayItemInfo &PlaylistModel::currentInfo() const
+#ifndef USE_TEST
 {
     Q_ASSERT(_infos.size() > 0 && _current >= 0);
     return _infos[_current];
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ return {}; }
+#endif // USE_TEST
 
 int PlaylistModel::count() const
 {
@@ -1893,18 +1901,26 @@ LoadThread::LoadThread(PlaylistModel *model, const QList<QUrl> &urls): _urls(url
 //    _urls = urls;
 }
 LoadThread::~LoadThread()
+#ifndef USE_TEST
 {
     qDebug() << "Exiting LoadThread destructor";
     _pModel = nullptr;
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 void LoadThread::run()
+#ifndef USE_TEST
 {
     qDebug() << "Entering LoadThread run";
     if (_pModel) {
         _pModel->delayedAppendAsync(_urls);
     }
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 #ifdef _LIBDMR_
 static int open_codec_context(int *stream_idx,
                               AVCodecParameters **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)

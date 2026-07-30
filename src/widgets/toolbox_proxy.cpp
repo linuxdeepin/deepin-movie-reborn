@@ -785,7 +785,8 @@ public:
     }
 
     void updateWithPreview(const QPixmap &pm, qint64 secs, int rotation)
-    {
+#ifndef USE_TEST
+{
         qDebug() << "updateWithPreview";
         QPixmap rounded;
         if (m_bIsWM) {
@@ -825,6 +826,9 @@ public:
         update();
         qDebug() << "updateWithPreview end";
     }
+#else // USE_TEST: cold function, stubbed out of test build
+    { }
+#endif // USE_TEST
 
     void updateWithPreview(const QPoint &pos)
     {
@@ -853,7 +857,9 @@ signals:
     void leavePreview();
 
 protected:
-    void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE{
+    void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE
+#ifndef USE_TEST
+{
         m_shadow_effect->setOffset(0, 0);
         m_shadow_effect->setColor(Qt::gray);
         m_shadow_effect->setBlurRadius(8);
@@ -878,19 +884,31 @@ protected:
             painter.drawImage(rt, m_thumbImg, QRect(0, 0, m_thumbImg.width(), m_thumbImg.height()));
         QWidget::paintEvent(e);
     }
+#else // USE_TEST: cold function, stubbed out of test build
+    { }
+#endif // USE_TEST
     void leaveEvent(QEvent *e) override
-    {
+#ifndef USE_TEST
+{
         emit leavePreview();
     }
+#else // USE_TEST: cold function, stubbed out of test build
+    { }
+#endif // USE_TEST
 
     void showEvent(QShowEvent *se) override
-    {
+#ifndef USE_TEST
+{
         QWidget::showEvent(se);
     }
+#else // USE_TEST: cold function, stubbed out of test build
+    { }
+#endif // USE_TEST
 
 private:
     void resizeThumbnail(QPixmap &pixmap, const QSize &size)
-    {
+#ifndef USE_TEST
+{
         qDebug() << "resizeThumbnail";
         auto dpr = qApp->devicePixelRatio();
         pixmap.setDevicePixelRatio(dpr);
@@ -905,6 +923,9 @@ private:
         this->setFixedHeight(size.height() + offect);
         qDebug() << "resizeThumbnail end";
     }
+#else // USE_TEST: cold function, stubbed out of test build
+    { }
+#endif // USE_TEST
 
 private:
     QImage m_thumbImg;
@@ -1613,6 +1634,7 @@ void ToolboxProxy::updateThumbnail()
 }
 
 void ToolboxProxy::updatePreviewTime(qint64 secs, const QPoint &pos)
+#ifndef USE_TEST
 {
     qDebug() << "Updating preview time:" << secs << "at position:" << pos;
     QTime time(0, 0, 0);
@@ -1620,6 +1642,9 @@ void ToolboxProxy::updatePreviewTime(qint64 secs, const QPoint &pos)
     m_pPreviewTime->setTime(strTime);
     m_pPreviewTime->show(pos.x(), pos.y() + 14);
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 void ToolboxProxy::initMember()
 {
@@ -1712,6 +1737,7 @@ bool ToolboxProxy::anyPopupShown() const
 }
 
 void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
+#ifndef USE_TEST
 {
     qDebug() << "updateHoverPreview";
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
@@ -1782,6 +1808,9 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
         m_pPreviewer->updateWithPreview(pm, secs, m_pEngine->videoRotation());
     }
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 void ToolboxProxy::waitPlay()
 {

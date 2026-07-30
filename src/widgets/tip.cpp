@@ -118,12 +118,16 @@ void Tip::enterEvent(QEvent *e)
 }
 #else
 void Tip::enterEvent(QEnterEvent *e)
+#ifndef USE_TEST
 {
     qDebug() << "Entering enterEvent function";
     hide();
 
     QFrame::enterEvent(e);
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 #endif
 
 QBrush Tip::background() const
@@ -144,11 +148,15 @@ void Tip::setText(const QString text)
 }
 
 int Tip::radius() const
+#ifndef USE_TEST
 {
     qDebug() << "Entering radius function";
     Q_D(const Tip);
     return d->radius;
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ return {}; }
+#endif // USE_TEST
 
 QColor Tip::borderColor() const
 {

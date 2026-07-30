@@ -1857,3 +1857,50 @@ TEST(MainWindow, audioPlaybackState)
     QTest::qWait(400);
 }
 
+
+// requestAction slotUnsupported branches (ToggleMute/VolumeUp/VolumeDown/SubDelay
+// /SubForward): only reached when playing a raw-format, non-audio stream. Play
+// test.264 (raw H.264) so isRawFormat() && !currFileIsAudio() -> slotUnsupported.
+TEST(MainWindow, rawStreamUnsupportedActions)
+{
+    MainWindow *w = dApp->getMainWindow();
+    PlayerEngine *engine = w->engine();
+    // demo.mp4 keeps the shared playlist at >=2 items for later ToolBox tests.
+    engine->addPlayFiles({QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"),
+                          QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/test.264")});
+    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/test.264"));
+    int waited = 0;
+    while (engine->state() == PlayerEngine::CoreState::Idle && waited < 30) { QTest::qWait(100); waited++; }
+    QTest::qWait(300);
+
+    Stub stub;
+    stub.set(ADDR(ToolboxProxy, getbAnimationFinash), mw_mini_animFinished_true);
+    w->m_bStartAnimation = false;
+
+    // raw-format + non-audio -> each takes the slotUnsupported() branch.
+    w->requestAction(ActionFactory::ActionKind::ToggleMute, true);
+    w->requestAction(ActionFactory::ActionKind::VolumeUp, true);
+    w->requestAction(ActionFactory::ActionKind::VolumeDown, true);
+    w->requestAction(ActionFactory::ActionKind::SubDelay, true);
+    w->requestAction(ActionFactory::ActionKind::SubForward, true);
+    QTest::qWait(50);
+}
+
+// MainWindow media-related slots (slotUrlpause / slotMuteChanged / slotVolumeChanged
+// / slotFontChanged / slotWMChanged / slotFocusWindowChanged). Public/protected
+// slots exposed via the macro; all are safe direct calls (guarded / hint-only).
+TEST(MainWindow, miscSlots)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    w->slotUrlpause(true);     // "Buffering..." hint branch
+    w->slotUrlpause(false);
+    w->slotMuteChanged(true);  // engine setMute + "Mute" hint
+    w->slotMuteChanged(false); // "Volume: x%" hint
+    w->slotVolumeChanged(50);  // changeVolume + presenter + hint
+    w->slotFontChanged(QFont());   // font-metrics relayout
+    w->slotWMChanged();        // sync WM flag to blur state
+    w->slotFocusWindowChanged();   // suspend/resume tools by focus
+    QTest::qWait(50);
+}

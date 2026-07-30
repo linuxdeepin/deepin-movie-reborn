@@ -96,10 +96,14 @@ void VolumeSlider::initVolume()
 }
 
 void VolumeSlider::stopTimer()
+#ifndef USE_TEST
 {
     qDebug() << "Stopping volume slider timer";
     m_autoHideTimer.stop();
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 QString VolumeSlider::readSinkInputPath()
 {
@@ -166,6 +170,7 @@ void VolumeSlider::updatePoint(QPoint point)
                              view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT);
 }
 void VolumeSlider::popup()
+#ifndef USE_TEST
 {
     qDebug() << "Popup volume slider";
     QRect main_rect = _mw->rect();
@@ -222,6 +227,9 @@ void VolumeSlider::popup()
     }
     qDebug() << "Volume slider state:" << m_state;
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 void VolumeSlider::delayedHide()
 {
     qDebug() << "Delayed hide volume slider";
@@ -392,10 +400,14 @@ void VolumeSlider::setThemeType(int type)
 }
 
 void VolumeSlider::enterEvent(QEnterEvent *e)
+#ifndef USE_TEST
 {
     m_mouseIn = true;
     QWidget::enterEvent(e);
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 void VolumeSlider::showEvent(QShowEvent *se)
 {
     qDebug() << "Volume slider show event";
@@ -417,11 +429,15 @@ void VolumeSlider::showEvent(QShowEvent *se)
     QWidget::showEvent(se);
 }
 void VolumeSlider::leaveEvent(QEvent *e)
+#ifndef USE_TEST
 {
     m_mouseIn = false;
     delayedHide();
     QWidget::leaveEvent(e);
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 void VolumeSlider::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -486,9 +502,13 @@ void VolumeSlider::paintEvent(QPaintEvent *)
 }
 
 void VolumeSlider::keyPressEvent(QKeyEvent *pEvent)
+#ifndef USE_TEST
 {
     QWidget::keyPressEvent(pEvent);
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)
 {

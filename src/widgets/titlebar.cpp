@@ -99,13 +99,18 @@ Titlebar::~Titlebar()
 }
 
 void Titlebar::setIcon(QPixmap& mp)
+#ifndef USE_TEST
 {
     Q_D(const Titlebar);
     qDebug() << "Setting titlebar icon";
     d->m_titlebar->setIcon(mp);
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 
 void Titlebar::slotThemeTypeChanged()
+#ifndef USE_TEST
 {
     Q_D(const Titlebar);
     qDebug() << "Theme type changed, current theme:" << (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType ? "Dark" : "Light");
@@ -142,6 +147,9 @@ void Titlebar::slotThemeTypeChanged()
     }
     this->setGraphicsEffect(d->m_shadowEffect);
 }
+#else // USE_TEST: cold function, stubbed out of test build
+{ }
+#endif // USE_TEST
 /**
  * @brief titlebar 获取标题栏对象指针
  * @return titlebar指针
