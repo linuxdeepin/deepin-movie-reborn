@@ -1,3 +1,12 @@
+deepin-movie-reborn (6.5.55) unstable; urgency=medium
+
+  * chore: Update version to 6.5.55
+  * feat: add VoName dconfig for video output engine name
+  * feat: add IsSpecialVo dconfig for special video output toggle
+  * feat: add HwdecName dconfig for hardware decoding engine name
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 30 Jul 2026 15:15:27 +0800
+
 deepin-movie-reborn (6.5.54) unstable; urgency=medium
 
   * chore: Update version to 6.5.54
