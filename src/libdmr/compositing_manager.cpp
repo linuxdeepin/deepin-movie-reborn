@@ -183,8 +183,7 @@ static bool detect550Series()
                 QString deviceIdStr = deviceId.mid(2);
                 // Match with lspci format: vendor:device
                 if ((vendorIdStr == "1002" && deviceIdStr == "699f") ||
-                    (vendorIdStr == "1002" && deviceIdStr == "6987") ||
-                    (vendorIdStr == "6766" && deviceIdStr == "3d02")) {
+                    (vendorIdStr == "1002" && deviceIdStr == "6987")) {
                     qInfo() << "Detected 550 series GPU" << vendorId << deviceId;
                     return true;
                 }
