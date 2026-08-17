@@ -116,7 +116,7 @@ protected:
     QWidget                   *m_pMainWindow;             ///主窗口指针
     QPixmap                    m_pixmap;                  ///当前动画显示的图像
     QString                    m_sFileName;               ///动画当前显示的图像文件
-    bool                       m_bIsWM;
+    bool                       m_bIsWM = false;
 };
 
 #endif  // Platform_ANIMATIONLABEL_H
