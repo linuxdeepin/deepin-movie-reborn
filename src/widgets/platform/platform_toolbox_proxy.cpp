@@ -1128,7 +1128,7 @@ void Platform_ToolboxProxy::setup()
     m_pVolBtn->setObjectName(VOLUME_BUTTON);
     m_pVolBtn->setAccessibleName(VOLUME_BUTTON);
 
-    m_pVolSlider = new Platform_VolumeSlider(m_pMainWindow, m_pMainWindow);
+    m_pVolSlider = new Platform_VolumeSlider(m_pMainWindow, m_pVolBtn, m_pMainWindow);
     m_pVolSlider->setObjectName(VOLUME_SLIDER_WIDGET);
 
     connect(m_pVolBtn, &VolumeButton ::sigUnsupported, this, &Platform_ToolboxProxy::sigUnsupported);
@@ -2679,9 +2679,9 @@ void Platform_ToolboxProxy::initThumbThread()
  * @brief updateSliderPoint 非x86平台下更新音量条控件位置
  * @param point 传入主窗口左上角顶点在屏幕的位置
  */
-void Platform_ToolboxProxy::updateSliderPoint(QPoint &point)
+void Platform_ToolboxProxy::updateSliderPoint()
 {
-    m_pVolSlider->updatePoint(point);
+    m_pVolSlider->updatePoint();
 }
 
 /**
