@@ -15,6 +15,7 @@
 
 #include "platform_animationlabel.h"
 #include "mainwindow.h"
+#include "utility.h"
 #include <DWindowManagerHelper>
 #include <DForeignWindow>
 
@@ -55,6 +56,9 @@ void Platform_AnimationLabel::pauseAnimation()
     else
         setFixedSize(100, 100);
     if(!isShowPopup()) return;
+    // 全屏绕过合成器期间，顶层 Tool 动效窗口的半透明背景会失效为黑块，
+    // 显示动效前临时取消主窗口的绕过合成器，使半透明背景能被合成器正常混合。
+    setMainWindowBypassCompositor(false);
     m_pPlayAnimationGroup->start();
     if(!isVisible()) {
         show();
@@ -74,6 +78,8 @@ void Platform_AnimationLabel::playAnimation()
     else
         setFixedSize(100, 100);
     if(!isShowPopup()) return;
+    // 同 pauseAnimation：显示动效前临时取消主窗口的绕过合成器。
+    setMainWindowBypassCompositor(false);
     m_pPauseAnimationGroup->start();
     if(!isVisible()) {
         show();
@@ -83,6 +89,22 @@ void Platform_AnimationLabel::playAnimation()
 void Platform_AnimationLabel::setWM(bool isWM)
 {
     m_bIsWM = isWM;
+}
+
+/**
+ * @brief 显示/隐藏动效期间临时切换主窗口的"绕过合成器"状态
+ * @param bypass true 恢复绕过合成器（全屏功耗优化），false 临时取消以使半透明动效正常混合
+ *
+ * 仅在主窗口处于全屏时生效：非全屏时主窗口本就未设置绕过合成器，无需改动，
+ * 避免给非全屏窗口错误地设置该属性。Wayland 下 setBypassCompositor 自身会直接返回。
+ */
+void Platform_AnimationLabel::setMainWindowBypassCompositor(bool bypass)
+{
+    if (!m_pMainWindow || !m_pMainWindow->isFullScreen())
+        return;
+    if (QWindow *window = m_pMainWindow->windowHandle()) {
+        Utility::setBypassCompositor(static_cast<quint32>(window->winId()), bypass);
+    }
 }
 
 /**
@@ -257,6 +279,8 @@ void Platform_AnimationLabel::onHideAnimation()
     if(m_pMainWindow) {
         m_pMainWindow->update();
     }
+    // 动效隐藏后，若主窗口仍处于全屏则恢复绕过合成器，继续享受功耗优化。
+    setMainWindowBypassCompositor(true);
 }
 
 /**

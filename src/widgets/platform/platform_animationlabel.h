@@ -67,6 +67,11 @@ private:
      * @return true为显示
      */
     bool isShowPopup();
+    /**
+     * @brief 显示/隐藏动效期间临时切换主窗口的"绕过合成器"状态
+     * @param bypass true 恢复绕过合成器，false 临时取消以使半透明动效正常混合
+     */
+    void setMainWindowBypassCompositor(bool bypass);
 
 public slots:
     /**

@@ -30,6 +30,7 @@ AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow)
 {
     initMember(pMainWindow);
     setAttribute(Qt::WA_TransparentForMouseEvents);
+    setAttribute(Qt::WA_TranslucentBackground, true);
 
     resize(200, 200);
 }
