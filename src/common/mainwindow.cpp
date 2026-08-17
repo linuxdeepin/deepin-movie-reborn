@@ -1032,6 +1032,14 @@ MainWindow::MainWindow(QWidget *parent)
     m_pDVDHintWid->setAnchorPoint(QPoint(30, 58));
     m_pDVDHintWid->hide();
 
+    // 未检测到显卡驱动时提示用户将使用软件渲染（PMS-337305）
+    QTimer::singleShot(0, this, [this]() {
+        if (!CompositingManager::get().property("directRendering").toBool()) {
+            m_pCommHintWid->updateWithMessage(
+                tr("No graphics driver detected, software rendering will be used"));
+        }
+    });
+
 #ifdef USE_DXCB
     m_pEventListener = new MainWindowEventListener(this);
     this->windowHandle()->installEventFilter(m_pEventListener);
