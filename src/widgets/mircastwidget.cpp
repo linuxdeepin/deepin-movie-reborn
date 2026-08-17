@@ -13,6 +13,8 @@
 #include "../accessibility/ac-deepin-movie-define.h"
 
 #include <QVBoxLayout>
+#include <QPainter>
+#include <QPainterPath>
 #include <QListWidget>
 #include <QAbstractListModel>
 #include <QNetworkReply>
@@ -30,14 +32,17 @@
 using namespace dmr;
 
 MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
-: DFloatingWidget(mainWindow), m_pEngine(pEngine)
+: QWidget(mainWindow), m_pEngine(pEngine)
 {
     setAttribute(Qt::WA_NoMousePropagation, true);//鼠标事件不进入父窗口
     if(!CompositingManager::get().composited())
         setAttribute(Qt::WA_NativeWindow);
     qRegisterMetaType<DlnaPositionInfo>("DlnaPositionInfo");
     setFixedSize(MIRCASTWIDTH + 14, MIRCASTHEIGHT + 12);
-    setFramRadius(8);
+    // 使用掩码将窗口裁剪为圆角，不依赖 ARGB 透明合成，避免在透明合成不可用的平台（如兆芯 KX-6000 C-960）出现四周白边
+    QPainterPath mircastMaskPath;
+    mircastMaskPath.addRoundedRect(rect(), 8, 8);
+    setMask(QRegion(mircastMaskPath.toFillPolygon().toPolygon()));
     m_bIsToggling = false;
     m_mircastState = Idel;
     m_nPlayStatus = MircastWidget::NoState;
@@ -54,10 +59,12 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     connect(&m_mircastTimeOut, &QTimer::timeout, this, &MircastWidget::slotMircastTimeout);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(1, 0, 0, 0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
     setLayout(mainLayout);
-    setContentsMargins(0, 0, 0, 0);
+    // 原 DFloatingWidget 通过 Polish 事件设置阴影边距作为内容边距；改基类为 QWidget 后自行设置内边距，
+    // 使 240×188 的内容在 254×200 的圆角面板中居中（去掉阴影边距）
+    setContentsMargins(7, 6, 7, 6);
 
     QWidget *topWdiget = new QWidget(this);
     topWdiget->setFixedHeight(40);
@@ -185,6 +192,25 @@ void MircastWidget::seekMircast(int nSec)
         slotSeekMircast(nSeek);
     }
 }
+/**
+ * @brief paintEvent 自绘不透明圆角面板，替代 DFloatingWidget 的 ARGB 软阴影装饰
+ */
+void MircastWidget::paintEvent(QPaintEvent *pEvent)
+{
+    Q_UNUSED(pEvent);
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(palette().window());
+    painter.drawRoundedRect(rect(), 8, 8);
+
+    // 细边框保留浮层观感，替代原 ARGB 软阴影
+    painter.setBrush(Qt::NoBrush);
+    painter.setPen(QPen(palette().window().color().darker(110), 1));
+    painter.drawRoundedRect(QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5), 8, 8);
+}
+
 /**
  * @brief togglePopup 工具栏投屏窗口显示与隐藏
  */

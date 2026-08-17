@@ -10,7 +10,7 @@
 #define _MIRCASTWIDGET_H
 
 #include <DWidget>
-#include <DFloatingWidget>
+#include <QWidget>
 #include <DLabel>
 #include <DSpinner>
 
@@ -129,7 +129,7 @@ private:
     DLabel   *m_refreBtn;
 };
 
-class MircastWidget: public DFloatingWidget
+class MircastWidget: public QWidget
 {
     Q_OBJECT
 public:
@@ -188,6 +188,9 @@ public:
     RefreButtonWidget *getRefreshBtn() {return m_refreshBtn;}
     void setMircastState(MircastState state) {m_mircastState = state;}
     void setMircastPlayState(MircastPlayState state) {m_nPlayStatus = state;}
+
+protected:
+    void paintEvent(QPaintEvent *pEvent) override;
 public slots:
     /**
      * @brief togglePopup 工具栏投屏窗口显示与隐藏
