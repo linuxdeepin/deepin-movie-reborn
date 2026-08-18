@@ -262,8 +262,18 @@ void Presenter::slotseek(qlonglong Offset)
 void Presenter::slotstop()
 {
     qDebug() << "MPRIS: Stop requested";
-    if (_mw)
+    if (_mw) {
+        // 标记主动停止，阻止 slotStateChanged 在进入 Idle 时自动播放下一首 (PMS #373999)
+        // 仅在引擎非 Idle 时置位：引擎已停止时再次 Stop 不会产生 Idle 状态变化，
+        // 标志若不被消费会残留并影响下一次自然播完的自动连播
+        if (_mw->engine()->state() != PlayerEngine::CoreState::Idle) {
+            _mw->engine()->getplaylist()->setStopRequestedByUser(true);
+        }
         _mw->engine()->stop();
-    else
+    } else {
+        if (_platform_mw->engine()->state() != PlayerEngine::CoreState::Idle) {
+            _platform_mw->engine()->getplaylist()->setStopRequestedByUser(true);
+        }
         _platform_mw->engine()->stop();
+    }
 }
