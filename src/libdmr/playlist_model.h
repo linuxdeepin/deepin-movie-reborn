@@ -157,6 +157,13 @@ public:
         ListLoop,
     };
 
+    /**
+     * @brief 标记本次停止为主动触发（如 MPRIS Stop / 媒体键 FN+F8）。
+     *        slotStateChanged 进入 Idle 时检测到该标志则跳过自动播放下一首，
+     *        并保留当前列表项以便用户重新播放（PMS #373999）。
+     */
+    void setStopRequestedByUser(bool on) { _stopRequestedByUser = on; }
+
     void stop();
 
     PlayMode playMode() const;
@@ -275,6 +282,7 @@ private:
     QQueue<UrlList> _pendingAppendReq;
 
     bool _userRequestingItem {false};
+    bool _stopRequestedByUser {false};  ///< 主动触发的停止，不自动播放下一首
 
     PlayerEngine *_engine {nullptr};
 

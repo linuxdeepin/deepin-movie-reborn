@@ -547,6 +547,12 @@ void PlaylistModel::slotStateChanged()
         break;
 
     case PlayerEngine::Idle:
+        if (_stopRequestedByUser) {
+            // 主动触发的停止（如 MPRIS Stop / FN+F8 媒体键）：不自动播放下一首，
+            // 保留当前列表项以便用户重新播放 (PMS #373999)
+            _stopRequestedByUser = false;
+            break;
+        }
         if (!_userRequestingItem) {
             stop();
             //WINID方式渲染结束时，保证gpu渲染资源的正常释放与切换，延时5ms执行下部视频的播放
@@ -909,6 +915,8 @@ void PlaylistModel::stop()
 void PlaylistModel::tryPlayCurrent(bool next)
 {
     qInfo() << __func__;
+    // 新的播放请求开始，清除主动停止标志，避免标志残留导致下一次自然播完不连播
+    _stopRequestedByUser = false;
     auto &pif = _infos[_current];
     if (pif.refresh()) {
         qInfo() << pif.url.fileName() << "changed";
@@ -1447,7 +1455,9 @@ void PlaylistModel::changeCurrent(int pos)
         items().insert(pos, pif);
         emit updateDuration();
     } else {
-        if (_current == pos) {
+        // 引擎已处于 Idle（如主动停止/自然播完后）时允许重播当前项；
+        // 仅在播放/暂停中重复点击同一项时忽略，避免重启正在播放的视频
+        if (_current == pos && _engine->state() != PlayerEngine::Idle) {
             return;
         }
     }
