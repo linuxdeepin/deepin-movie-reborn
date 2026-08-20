@@ -168,10 +168,18 @@ void MpvProxy::initGpuInfoFuns()
     QString path = QLibraryInfo::location(QLibraryInfo::LibrariesPath)+ QDir::separator() + "libgpuinfo.so";
     if(!QFileInfo(path).exists()) {
         m_gpuInfo = NULL;
+        m_gpuInfoVo = NULL;
         return;
     }
     QLibrary mpvLibrary(libPath("libgpuinfo.so"));
     m_gpuInfo = reinterpret_cast<void *>(mpvLibrary.resolve("vdp_Iter_decoderInfo"));
+    m_gpuInfoVo = reinterpret_cast<const char* (*)(void)>(mpvLibrary.resolve("gpuinfo_get_vo"));
+    if (m_gpuInfo && m_gpuInfoVo) {
+        qInfo() << "GPU info functions initialized successfully";
+    } else {
+        qWarning() << "GPU info functions initialized error, m_gpuInfo:" << (m_gpuInfo != nullptr)
+                   << ", m_gpuInfoVo:" << (m_gpuInfoVo != nullptr);
+    }
 }
 
 void MpvProxy::firstInit()
@@ -377,9 +385,12 @@ mpv_handle *MpvProxy::mpv_init()
         QFileInfo X100GPU("/dev/x100gpu");
         QFileInfo X100VPU("/dev/vxd0");
         QFileInfo mtfi("/dev/mtgpu.0");
+        //标记特殊机型/平台逻辑是否已决定vo，用于gpuinfo兜底判断
+        bool voSetBySpecial = false;
         //2.1.1景嘉微
         if (utils::isJjwGPUPresent()) {
             configureJjwGPU(pHandle, true);
+            voSetBySpecial = true;
         } else if (QFile::exists("/dev/csmcore")) { //2.1.2中船重工
             my_set_property(pHandle, "vo", "xv,x11");
             my_set_property(pHandle, "hwdec", "auto");
@@ -387,9 +398,11 @@ mpv_handle *MpvProxy::mpv_init()
                 my_set_property(pHandle, "wid", m_pParentWidget->winId());
             }
             m_sInitVo = "xv,x11";
+            voSetBySpecial = true;
         }  else if (X100GPU.exists() && X100VPU.exists()) {
             my_set_property(m_handle, "hwdec", "ftomx-copy");
             my_set_property(m_handle, "vo", "gpu");
+            voSetBySpecial = true;
         } else if (CompositingManager::get().isOnlySoftDecode()) {//2.1.3 鲲鹏920 || 曙光+英伟达 || 浪潮
             my_set_property(pHandle, "hwdec", "no");
         } else if (utils::check_wayland_env() && isSpecialHWHardware()) {
@@ -470,6 +483,7 @@ mpv_handle *MpvProxy::mpv_init()
                 my_set_property(pHandle, "vo", "gpu");
                 m_sInitVo = "gpu";
             }
+            voSetBySpecial = true;
         }
 #endif
 
@@ -477,6 +491,7 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(pHandle, "vo", "vaapi");
             my_set_property(pHandle, "hwdec", "vaapi");
             m_sInitVo = "vaapi";
+            voSetBySpecial = true;
         }
 
         if (QFile::exists("/usr/local/ctyun/clink/Mirror/Registry/Default") && !QFile::exists("/dev/mtgpu.0")) {
@@ -491,12 +506,26 @@ mpv_handle *MpvProxy::mpv_init()
         if ( innodir.exists()) {
             my_set_property(pHandle, "vo", "gpu,x11");
             m_sInitVo = "gpu,x11";
+            voSetBySpecial = true;
         }
 
         if (CompositingManager::get().isSpecialControls()) {
             my_set_property(pHandle, "hwdec", "vaapi");
             my_set_property(pHandle, "vo", "vaapi");
             m_sInitVo = "vaapi";
+            voSetBySpecial = true;
+        }
+
+        // gpuinfo VO 兜底：仅在特殊机型逻辑未决定vo且dconfig未配置时使用gpuinfo数据库推荐
+        if (m_gpuInfoVo && !voSetBySpecial
+                && !CompositingManager::get().shouldUseSpecialVo()
+                && CompositingManager::get().enablePower() <= 0) {
+            const char *vo = m_gpuInfoVo();
+            if (vo && vo[0] != '\0') {
+                qInfo() << "gpuinfo recommended vo:" << vo;
+                my_set_property(pHandle, "vo", vo);
+                m_sInitVo = vo;
+            }
         }
     } else if (DecodeMode::HARDWARE == m_decodeMode) { //3.设置硬解
         QFileInfo X100GPU("/dev/x100gpu");
@@ -1613,6 +1642,7 @@ void MpvProxy::initMember()
     m_freeNodecontents = nullptr;
     m_pConfig = nullptr;
     m_gpuInfo = nullptr;
+    m_gpuInfoVo = nullptr;
 }
 
 void MpvProxy::play()
