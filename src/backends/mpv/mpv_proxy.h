@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -432,6 +432,7 @@ private:
     mpvinitialize m_initialize;
     mpv_freeNode_contents m_freeNodecontents;
     void *m_gpuInfo; //解码探测函数指针
+    const char* (*m_gpuInfoVo)(void); //gpuinfo_get_vo函数指针
 
 
     MpvHandle m_handle;                    //mpv句柄
