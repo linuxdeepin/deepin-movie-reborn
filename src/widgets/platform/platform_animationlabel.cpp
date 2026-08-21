@@ -15,6 +15,7 @@
 
 #include "platform_animationlabel.h"
 #include "mainwindow.h"
+#include "utils.h"
 #include <DWindowManagerHelper>
 #include <DForeignWindow>
 
@@ -35,11 +36,7 @@ Platform_AnimationLabel::Platform_AnimationLabel(QWidget *parent, QWidget *pMain
     setAttribute(Qt::WA_TranslucentBackground, true);
     hide();
 
-    if(m_bIsWM){
-        resize(200, 200);
-    } else {
-        resize(100, 100);
-    }
+    resize(200, 200);
 }
 
 /**
@@ -50,10 +47,7 @@ void Platform_AnimationLabel::pauseAnimation()
     if (m_pPauseAnimationGroup && m_pPauseAnimationGroup->state() == QAbstractAnimation::Running)
         m_pPauseAnimationGroup->stop();
 
-    if (m_bIsWM)
-        setFixedSize(200, 200);
-    else
-        setFixedSize(100, 100);
+    setFixedSize(200, 200);
     if(!isShowPopup()) return;
     m_pPlayAnimationGroup->start();
     if(!isVisible()) {
@@ -69,10 +63,7 @@ void Platform_AnimationLabel::playAnimation()
     if (m_pPlayAnimationGroup && m_pPlayAnimationGroup->state() == QAbstractAnimation::Running)
         m_pPlayAnimationGroup->stop();
 
-    if (m_bIsWM)
-        setFixedSize(200, 200);
-    else
-        setFixedSize(100, 100);
+    setFixedSize(200, 200);
     if(!isShowPopup()) return;
     m_pPauseAnimationGroup->start();
     if(!isVisible()) {
@@ -227,11 +218,15 @@ bool Platform_AnimationLabel::isShowPopup()
  */
 void Platform_AnimationLabel::onPlayAnimationChanged(const QVariant &value)
 {
-    if (m_bIsWM) {
+#if defined(__aarch64__) || defined(__mips__) || defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64__)
+    if (m_bIsWM || utils::check_wayland_env()) {
         m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
     } else {
         m_sFileName = QString(":/resources/icons/stop_new/%1.png").arg(value.toInt());
     }
+#else
+    m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
+#endif
     m_pixmap = QPixmap(m_sFileName);
     update();
 }
@@ -242,11 +237,15 @@ void Platform_AnimationLabel::onPlayAnimationChanged(const QVariant &value)
  */
 void Platform_AnimationLabel::onPauseAnimationChanged(const QVariant &value)
 {
-    if (m_bIsWM) {
+#if defined(__aarch64__) || defined(__mips__) || defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64__)
+    if (m_bIsWM || utils::check_wayland_env()) {
         m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
     } else {
         m_sFileName = QString(":/resources/icons/start_new/%1.png").arg(value.toInt());
     }
+#else
+    m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
+#endif
     m_pixmap = QPixmap(m_sFileName);
     update();
 }
