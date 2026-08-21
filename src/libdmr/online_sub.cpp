@@ -114,8 +114,11 @@ void OnlineSubtitle::subtitlesDownloadComplete()
 
 QString OnlineSubtitle::findAvailableName(const QString &tmpl, int id)
 {
-    QString name_tmpl = tmpl;
-    int i = tmpl.lastIndexOf('.');
+    QString name_tmpl = QFileInfo(tmpl).fileName();
+    if (name_tmpl.isEmpty() || name_tmpl == "." || name_tmpl == "..") {
+        return QString();
+    }
+    int i = name_tmpl.lastIndexOf('.');
     if (i >= 0) {
         name_tmpl.replace(i, 1, "[%1].");
     } else {
@@ -130,7 +133,7 @@ QString OnlineSubtitle::findAvailableName(const QString &tmpl, int id)
         }
         c++;
     } while (c < (1 << 16));
-    return tmpl;
+    return QString();
 }
 
 void OnlineSubtitle::replyReceived(QNetworkReply *reply)
@@ -278,11 +281,7 @@ void OnlineSubtitle::downloadSubtitles()
 
     for (auto &sub : _subs) {
         QNetworkRequest req;
-        //QUrl url(sub.link.toUtf8());
-        auto s = sub.link;
-        s.replace("https://", "http://");
-        QUrl url(s);
-        url.setScheme("http");
+        QUrl url(sub.link);
         req.setUrl(url);
 
         auto *reply = _nam->get(req);
