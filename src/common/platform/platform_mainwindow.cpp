@@ -4517,6 +4517,14 @@ void Platform_MainWindow::toggleUIMode()
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
             setWindowState(windowState() | Qt::WindowFullScreen);
+            //同步全屏菜单 QAction checked，与窗口全屏状态一致
+            QList<QAction *> fullscreenActs = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::ToggleFullscreen);
+            for (auto *pAct : fullscreenActs) {
+                bool bOld = pAct->isEnabled();
+                pAct->setEnabled(false);
+                pAct->setChecked(true);
+                pAct->setEnabled(bOld);
+            }
         } else {
             if (m_pToolbox->listBtn()->isChecked()) {
                 m_pToolbox->listBtn()->setChecked(false);
