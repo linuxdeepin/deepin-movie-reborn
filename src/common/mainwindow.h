@@ -566,6 +566,7 @@ private:
     QProcess *m_pShortcutViewProcess;
     int m_nDisplayVolume;                            ///记录播放音量
     bool m_bIsFree;                                  ///播放器是否空闲，和IDel的定义不同
+    bool m_bNoGpuDriverPrompted {false};            ///无显卡驱动时的一次性提示标记
     static int m_nRetryTimes;                        ///播放失败后重试次数
     //add by heyi 解决触屏右键菜单bug
     int m_nLastPressX;                               ///左键按下时保存的点

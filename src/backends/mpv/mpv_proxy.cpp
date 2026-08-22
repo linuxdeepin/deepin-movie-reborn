@@ -431,8 +431,13 @@ mpv_handle *MpvProxy::mpv_init()
         m_sInitVo = "gpu,x11";
 #elif defined (__aarch64__)
         if (!utils::isJjwGPUPresent()) { //2.1.1景嘉微
-            my_set_property(pHandle, "vo", "gpu,xv,x11");
-            m_sInitVo = "gpu,xv,x11";
+            if (!CompositingManager::get().hascard()) {
+                my_set_property(pHandle, "vo", "x11");
+                m_sInitVo = "x11";
+            } else {
+                my_set_property(pHandle, "vo", "gpu,xv,x11");
+                m_sInitVo = "gpu,xv,x11";
+            }
         }
 #else
         //去除9200显卡适配

@@ -3481,6 +3481,12 @@ void MainWindow::slotFileLoaded()
     }
     this->resizeByConstraints();
     m_bIsFree = true;
+#if !defined (__x86_64__)
+    if (!m_bNoGpuDriverPrompted && !CompositingManager::get().hascard()) {
+        m_bNoGpuDriverPrompted = true;
+        m_pCommHintWid->updateWithMessage(tr("No graphics card driver detected. Software decoding will be used, which may affect playback experience."));
+    }
+#endif
 }
 
 void MainWindow::slotUrlpause(bool bStatus)
