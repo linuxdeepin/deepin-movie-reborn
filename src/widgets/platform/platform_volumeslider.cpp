@@ -360,8 +360,8 @@ void Platform_VolumeSlider::showEvent(QShowEvent *se)
     int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
-        x += 50;
-        y += 30;
+        y = y + TOOLBOX_HEIGHT * (1- 0.66);
+        x = x + (TOOLBOX_BUTTON_WIDTH * 3 * (1 - 0.66) - 6);
     }
 #endif
     QPoint p = _mw->mapToGlobal(QPoint(0, 0));
@@ -380,7 +380,46 @@ void Platform_VolumeSlider::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     QColor bgColor = this->palette().background().color();
-    painter.fillRect(rect(), bgColor);
+    if(CompositingManager::get().platform() != Platform::X86) {
+        QRect rect = this->rect();
+                rect.setTopLeft(QPoint(1, 1));
+                rect.setSize(QSize(VOLSLIDER_WIDTH - 2, VOLSLIDER_HEIGHT - 2));
+                painter.fillRect(rect, bgColor);
+    } else {
+        double dRation = this->height() * 1.0 / VOLSLIDER_HEIGHT;
+        const qreal radius = 20 * dRation;
+        const qreal triHeight = 30 * dRation;
+        const qreal height = this->height() - triHeight;
+        const qreal width = this->width();
+
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+
+        QPainterPath pathRect;
+        pathRect.moveTo(radius, 0);
+        pathRect.lineTo(width - radius, 0);
+        pathRect.arcTo(QRectF(QPointF(width - 2 * radius, 0), QPointF(width, 2 * radius)), 90.0, -90.0);
+        pathRect.lineTo(width, height);
+        pathRect.lineTo(0, height);
+        pathRect.lineTo(0, radius);
+        pathRect.arcTo(QRectF(QPointF(0, 0), QPointF(2 * radius, 2 * radius)), 180.0, -90.0);
+
+        qreal radius1 = radius / 2;
+        QPainterPath pathTriangle;
+        pathTriangle.moveTo(0, height - radius1);
+        pathTriangle.arcTo(QRectF(QPointF(0, height - radius1), QSizeF(2 * radius1, 2 * radius1)), 180, 60);
+        pathTriangle.lineTo(width / 2, this->height());
+        qreal radius2 = radius / 4;
+        pathTriangle.arcTo(QRectF(QPointF(width / 2 - radius2, this->height() - radius2 * 2 - 2), QSizeF(2 * radius2, 2 * radius2)), 220, 130);
+        pathTriangle.lineTo(width / 2, height);
+
+        painter.fillPath(pathRect, bgColor);
+        painter.fillPath(pathTriangle, bgColor);
+
+        painter.translate(width, 0);
+        painter.scale(-1, 1);
+
+        painter.fillPath(pathTriangle, bgColor);
+    }
 }
 
 void Platform_VolumeSlider::keyPressEvent(QKeyEvent *pEvent)
