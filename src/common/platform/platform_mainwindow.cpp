@@ -4517,6 +4517,10 @@ void Platform_MainWindow::toggleUIMode()
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
             setWindowState(windowState() | Qt::WindowFullScreen);
+            QList<QAction *> fullscreenActs = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::ToggleFullscreen);
+            if (!fullscreenActs.isEmpty() && fullscreenActs[0]) {
+                fullscreenActs[0]->setChecked(true);
+            }
         } else {
             if (m_pToolbox->listBtn()->isChecked()) {
                 m_pToolbox->listBtn()->setChecked(false);
