@@ -1356,14 +1356,17 @@ void PlaylistWidget::togglePopup(bool isShortcut)
  * 基于 MainWindow::updateProxyGeometry所设置的初始状态 以及 是否是紧凑模式 定位PlaylistWidget的起始位置和终止位置。
 */
     QRect fixed;
-    if(CompositingManager::get().platform() == X86) {
-        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height + 10)),
-                      view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
+#ifndef __sw_64__
+    fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height + 5)),
+                  view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+    if (utils::check_wayland_env()) {
+        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height)),
+                      view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
     }
-    else {
-        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height + 10) + 5),
-                      view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
-    }
+#else
+    fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height - 1)),
+                  view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+#endif
 
     QRect shrunk = fixed;
     shrunk.setHeight(0);

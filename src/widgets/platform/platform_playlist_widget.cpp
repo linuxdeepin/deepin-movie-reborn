@@ -1355,9 +1355,17 @@ void Platform_PlaylistWidget::togglePopup(bool isShortcut)
 #endif
 
     QRect fixed;
-    // y坐标下移5个像素点,避免播放列表上部超出toolbox范围
-    fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height + 10) + 5),
-                  view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
+#ifndef __sw_64__
+    fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height + 5)),
+                  view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+    if (utils::check_wayland_env()) {
+        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height)),
+                      view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+    }
+#else
+    fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + toolbox_height - 1)),
+                  view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+#endif
 
     QRect shrunk = fixed;
     shrunk.setHeight(0);
