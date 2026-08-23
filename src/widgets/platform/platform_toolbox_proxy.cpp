@@ -1239,6 +1239,7 @@ void Platform_ToolboxProxy::setup()
         m_pNextBtn->setFixedSize(26, 33);
         m_pFullScreenBtn->setIconSize(QSize(24, 24));
         m_pFullScreenBtn->setFixedSize(33, 33);
+        m_pVolBtn->setIconSize(QSize(24, 24));
         m_pVolBtn->setFixedSize(33, 33);
         m_pMircastBtn->setIconSize(QSize(16, 16));
         m_pMircastBtn->setFixedSize(33, 33);
@@ -1259,6 +1260,7 @@ void Platform_ToolboxProxy::setup()
             m_pNextBtn->setFixedSize(40, 50);
             m_pFullScreenBtn->setIconSize(QSize(36, 36));
             m_pFullScreenBtn->setFixedSize(50, 50);
+            m_pVolBtn->setIconSize(QSize(36, 36));
             m_pVolBtn->setFixedSize(50, 50);
             m_pMircastBtn->setIconSize(QSize(24, 24));
             m_pMircastBtn->setFixedSize(50, 50);
@@ -1276,6 +1278,7 @@ void Platform_ToolboxProxy::setup()
             m_pNextBtn->setFixedSize(26, 33);
             m_pFullScreenBtn->setIconSize(QSize(24, 24));
             m_pFullScreenBtn->setFixedSize(33, 33);
+            m_pVolBtn->setIconSize(QSize(24, 24));
             m_pVolBtn->setFixedSize(33, 33);
             m_pMircastBtn->setIconSize(QSize(16, 16));
             m_pMircastBtn->setFixedSize(33, 33);
