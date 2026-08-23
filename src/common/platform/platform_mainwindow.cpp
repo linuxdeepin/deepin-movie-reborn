@@ -1447,7 +1447,8 @@ void Platform_MainWindow::animatePlayState()
                     m_pAnimationlabel->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
                 }
             }
-            m_pAnimationlabel->pauseAnimation();
+            if (isActiveWindow())
+                m_pAnimationlabel->pauseAnimation();
         }
 }
 
@@ -3416,7 +3417,8 @@ void Platform_MainWindow::slotPlayerStateChanged()
     PlayerEngine *pEngine = dynamic_cast<PlayerEngine *>(sender());
     if (!pEngine) return;
     setInit(pEngine->state() != PlayerEngine::Idle);
-    resumeToolsWindow();
+    if (isActiveWindow())
+        resumeToolsWindow();
     updateWindowTitle();
 
     // delayed checking if engine is still idle, in case other videos are schedulered (next/prev req)
