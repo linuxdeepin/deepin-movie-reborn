@@ -1436,7 +1436,7 @@ void Platform_MainWindow::animatePlayState()
     }
 
     if (!m_bInBurstShootMode && m_pEngine->state() == PlayerEngine::CoreState::Paused
-            && !m_bMiniMode && !m_pMircastShowWidget->isVisible()) {
+            && !m_bMiniMode && !m_pMircastShowWidget->isVisible() && isActiveWindow()) {
             if (CompositingManager::get().platform() == Platform::X86) {
                 m_pAnimationlabel->resize(100, 100);
             } else {
@@ -3416,7 +3416,8 @@ void Platform_MainWindow::slotPlayerStateChanged()
     PlayerEngine *pEngine = dynamic_cast<PlayerEngine *>(sender());
     if (!pEngine) return;
     setInit(pEngine->state() != PlayerEngine::Idle);
-    resumeToolsWindow();
+    if (isActiveWindow())
+        resumeToolsWindow();
     updateWindowTitle();
 
     // delayed checking if engine is still idle, in case other videos are schedulered (next/prev req)
