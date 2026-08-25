@@ -250,8 +250,13 @@ CompositingManager::CompositingManager()
                 }
         file.close();
         qDebug() << "Parsed config: decodeSelect =" << decodeSelect << ", effectValue =" << effectValue;
+        const bool isLegacyMpvEffect = (effectValue == 2);
+        if (effectValue == 2) {
+            qWarning() << "Migrating legacy base.decode.Effect value 2 to 0";
+            effectValue = 0;
+        }
         // Effect only applies when in Customize mode (select == 3)
-        if (decodeSelect == 3 && effectValue > 0) {
+        if (decodeSelect == 3 && (effectValue == 1 || isLegacyMpvEffect)) {
             _composited = (effectValue == 1);
             qDebug() << "Composited mode set from config file value:" << _composited;
             m_pMpvConfig = new QMap<QString, QString>;
@@ -1218,4 +1223,3 @@ PlayerOptionList CompositingManager::getBestProfile()
 
 #undef C2Q
 }
-

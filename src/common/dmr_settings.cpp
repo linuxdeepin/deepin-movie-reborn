@@ -56,6 +56,33 @@ Settings::Settings()
     m_pSettings->setBackend(pBackend);
     qDebug() << "DSettings backend set.";
 
+    auto normalizeOptionIndex = [this](const QString &key, int legacyValue = -1) {
+        auto option = m_pSettings->option(key);
+        if (!option)
+            return 0;
+
+        int value = m_pSettings->getOption(key).toInt();
+        int normalizedValue = value;
+        const QStringList items = option->data("items").toStringList();
+
+        if (legacyValue >= 0 && normalizedValue == legacyValue)
+            normalizedValue = 0;
+        if (items.isEmpty() || normalizedValue < 0 || normalizedValue >= items.size())
+            normalizedValue = 0;
+
+        if (normalizedValue != value) {
+            qWarning() << "Reset invalid setting index" << key << "from" << value << "to" << normalizedValue;
+            m_pSettings->setOption(key, normalizedValue);
+        }
+
+        return normalizedValue;
+    };
+
+    // Older versions stored MPV as Effect index 2. Current settings use 0.
+    normalizeOptionIndex("base.decode.Effect", 2);
+    normalizeOptionIndex("base.decode.Videoout");
+    normalizeOptionIndex("base.decode.Decodemode");
+
     connect(m_pSettings, &DSettings::valueChanged,
     [ = ](const QString & key, const QVariant & value) {
         qDebug() << "DSettings value changed signal received. Key:" << key << ", Value:" << value.toString();
@@ -84,7 +111,10 @@ Settings::Settings()
         } else if (key.startsWith("base.decode.Effect")) {
             qInfo() << "Effect mode changed to:" << value.toInt();
             auto effectFamily = m_pSettings->option("base.decode.Effect");
-            int index = value.toInt();
+            Q_UNUSED(effectFamily)
+            int index = normalizeOptionIndex("base.decode.Effect", 2);
+            if (index != value.toInt())
+                return;
             auto voFamily = m_pSettings->option("base.decode.Videoout");
             qDebug() << "Effect mode index:" << index;
 
@@ -115,7 +145,19 @@ Settings::Settings()
             }
             qInfo() << "Video output changed to index:" << value.toInt();
             auto videoFamily = m_pSettings->option("base.decode.Videoout");
-            QString vo = videoFamily.data()->data("items").toStringList().at(value.toInt());
+            if (!videoFamily) {
+                qWarning() << "Video output family option not found!";
+                return;
+            }
+            int voIndex = normalizeOptionIndex("base.decode.Videoout");
+            if (voIndex != value.toInt())
+                return;
+            const QStringList voItems = videoFamily->data("items").toStringList();
+            if (voItems.isEmpty()) {
+                qWarning() << "Video output item list is empty.";
+                return;
+            }
+            QString vo = voItems.at(voIndex);
             qDebug() << "Selected video output:" << vo;
             
             auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
@@ -246,7 +288,7 @@ Settings::Settings()
                << "vdpau"
                << "xv"
                << "x11";
-        int effectIndex = m_pSettings->getOption("base.decode.Effect").toInt();
+        int effectIndex = normalizeOptionIndex("base.decode.Effect", 2);
         qDebug() << "X11: Current effectIndex:" << effectIndex;
         auto hwdecFamily = m_pSettings->option("base.decode.Decodemode");
 
@@ -276,10 +318,18 @@ Settings::Settings()
                                                              << "x11");
             }
 
-            int voValue = m_pSettings->getOption("base.decode.Videoout").toInt();
-
             auto videoFamily = m_pSettings->option("base.decode.Videoout");
-            QString vo = videoFamily.data()->data("items").toStringList().at(voValue);
+            if (!videoFamily) {
+                qWarning() << "X11: Video output family option not found!";
+                return;
+            }
+            int voValue = normalizeOptionIndex("base.decode.Videoout");
+            const QStringList voItems = videoFamily->data("items").toStringList();
+            if (voItems.isEmpty()) {
+                qWarning() << "X11: Video output item list is empty.";
+                return;
+            }
+            QString vo = voItems.at(voValue);
             if (vo.contains("vaapi")) {
                 auto decodeFamily = m_pSettings->option("base.decode.Decodemode");
                 if (decodeFamily)
