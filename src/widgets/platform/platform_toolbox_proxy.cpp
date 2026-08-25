@@ -2565,8 +2565,17 @@ void Platform_ToolboxProxy::setVolSliderHide()
 
 void Platform_ToolboxProxy::setButtonTooltipHide()
 {
+    // 隐藏按钮内部自带的悬浮提示
     m_pListBtn->hideToolTip();
     m_pFullScreenBtn->hideToolTip();
+    // 隐藏全屏/列表按钮上独立悬浮显示的提示文字（ButtonToolTip）
+    // 该提示只在鼠标 leaved 事件时才隐藏，切全屏等场景必须主动关闭，否则部分机型概率会残留不消失
+    if (m_pFullScreenBtnTip && m_pFullScreenBtnTip->isVisible()) {
+        m_pFullScreenBtnTip->hide();
+    }
+    if (m_pListBtnTip && m_pListBtnTip->isVisible()) {
+        m_pListBtnTip->hide();
+    }
 }
 
 void Platform_ToolboxProxy::initToolTip()

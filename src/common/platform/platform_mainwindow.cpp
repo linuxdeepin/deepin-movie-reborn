@@ -2225,6 +2225,8 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         //音量条控件打开时全屏位置异常，全屏时关掉音量条
         m_pAnimationlabel->hide();
         m_pToolbox->closeAnyPopup();
+        //全屏/退出全屏前后强制关闭工具栏按钮的悬浮提示，避免提示文字残留不消失
+        m_pToolbox->setButtonTooltipHide();
 
         if (isFullScreen()) {
             // 取消全屏前，先取消绕过合成器
