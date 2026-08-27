@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -38,7 +38,7 @@ Platform_AnimationLabel::Platform_AnimationLabel(QWidget *parent, QWidget *pMain
     if(m_bIsWM){
         resize(200, 200);
     } else {
-        resize(100, 100);
+        resize(kNonWMSize, kNonWMSize);
     }
 }
 
@@ -53,7 +53,7 @@ void Platform_AnimationLabel::pauseAnimation()
     if (m_bIsWM)
         setFixedSize(200, 200);
     else
-        setFixedSize(100, 100);
+        setFixedSize(kNonWMSize, kNonWMSize);
     if(!isShowPopup()) return;
     m_pPlayAnimationGroup->start();
     if(!isVisible()) {
@@ -72,7 +72,7 @@ void Platform_AnimationLabel::playAnimation()
     if (m_bIsWM)
         setFixedSize(200, 200);
     else
-        setFixedSize(100, 100);
+        setFixedSize(kNonWMSize, kNonWMSize);
     if(!isShowPopup()) return;
     m_pPauseAnimationGroup->start();
     if(!isVisible()) {
