@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -583,7 +583,8 @@ private:
     MircastShowWidget *m_pMircastShowWidget;          ///投屏展示界面
     qint64 m_nFullscreenTime;                         ///全屏操作间隔时间
     QDBusInterface *m_pWMDBus {nullptr};              ///窗口特效dbus接口
-    bool m_bIsWM {true};                              ///是否开启窗口特效
+    bool m_bIsWM {true};                              ///是否开启窗口特效（全屏绕过合成器期间会被临时置为false）
+    bool m_bRealIsWM {true};                          ///真实的窗口特效状态，用于退出全屏后恢复m_bIsWM
     bool m_bMaximized;                                ///全屏前最大化窗口记录
     bool m_bLocked{true};
     bool m_bShowTime {false};                         ///全屏显示影片时间信息

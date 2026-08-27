@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -27,6 +27,8 @@ class Platform_AnimationLabel : public QFrame
     Q_PROPERTY(int fps READ fps WRITE setFps)
 
 public:
+    static const int kNonWMSize = 80;  ///无合成器(非WM)模式下动画控件尺寸
+
     /**
      * @brief AnimationLabel构造函数
      * @param parent 父窗口

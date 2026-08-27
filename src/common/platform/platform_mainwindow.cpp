@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -1108,7 +1108,8 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
 
     m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher", "/com/deepin/WMSwitcher", "com.deepin.WMSwitcher", QDBusConnection::sessionBus());
     QDBusReply<QString> reply_string = m_pWMDBus->call("CurrentWM");
-    m_bIsWM = reply_string.value().contains("deepin wm");
+    m_bRealIsWM = reply_string.value().contains("deepin wm");
+    m_bIsWM = m_bRealIsWM;
     m_pCommHintWid->setWM(m_bIsWM);
     connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
 
@@ -1118,7 +1119,8 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     if (CompositingManager::get().platform() != Platform::X86 && m_bIsWM) {
         m_pAnimationlabel->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
     } else {
-        m_pAnimationlabel->setGeometry(width() / 2 - 100, height() / 2, 100, 100);
+        int nS = Platform_AnimationLabel::kNonWMSize;
+        m_pAnimationlabel->setGeometry(width() / 2 - nS / 2, height() / 2 - nS / 2, nS, nS);
     }
     m_pPopupWid = new Platform_MessageWindow(this);
     m_pPopupWid->hide();
@@ -1438,10 +1440,10 @@ void Platform_MainWindow::animatePlayState()
     if (!m_bInBurstShootMode && m_pEngine->state() == PlayerEngine::CoreState::Paused
             && !m_bMiniMode && !m_pMircastShowWidget->isVisible()) {
             if (CompositingManager::get().platform() == Platform::X86) {
-                m_pAnimationlabel->resize(100, 100);
+                m_pAnimationlabel->resize(Platform_AnimationLabel::kNonWMSize, Platform_AnimationLabel::kNonWMSize);
             } else {
                 if (!m_bIsWM) {
-                    m_pAnimationlabel->resize(100, 100);
+                    m_pAnimationlabel->resize(Platform_AnimationLabel::kNonWMSize, Platform_AnimationLabel::kNonWMSize);
                 } else {
                     m_pAnimationlabel->resize(200, 200);
                     m_pAnimationlabel->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
@@ -2234,6 +2236,11 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
                 Utility::setBypassCompositor(windowHandle()->winId(), false);
             }
 
+            // 取消绕过合成器后，恢复真实的窗口特效状态，使暂停/播放控件重新使用合成器渲染效果
+            m_bIsWM = m_bRealIsWM;
+            m_pAnimationlabel->setWM(m_bIsWM);
+            m_pCommHintWid->setWM(m_bIsWM);
+
             setWindowState(windowState() & ~Qt::WindowFullScreen);
 
             if (m_bMaximized) {
@@ -2254,6 +2261,10 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
             if (!m_pToolbox->getbAnimationFinash())
                 return;
             m_bMaximized = isMaximized();  // 记录全屏前是否是最大化窗口
+            // 全屏后绕过合成器，窗口透明/动画效果失效，切换为非WM模式使暂停/播放控件正常显示
+            m_bIsWM = false;
+            m_pAnimationlabel->setWM(m_bIsWM);
+            m_pCommHintWid->setWM(m_bIsWM);
             mipsShowFullScreen();
             if (m_pProgIndicator && isFullScreen()) {
                 QRect screenGeo = windowHandle()->screen()->geometry();
@@ -2637,10 +2648,10 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
                 //startPlayStateAnimation(true);
                 if (!m_bMiniMode) {
                     if (CompositingManager::get().platform() == Platform::X86) {
-                        m_pAnimationlabel->resize(100, 100);
+                        m_pAnimationlabel->resize(Platform_AnimationLabel::kNonWMSize, Platform_AnimationLabel::kNonWMSize);
                     } else {
                         if (!m_bIsWM) {
-                            m_pAnimationlabel->resize(100, 100);
+                            m_pAnimationlabel->resize(Platform_AnimationLabel::kNonWMSize, Platform_AnimationLabel::kNonWMSize);
                         } else {
                             m_pAnimationlabel->resize(200, 200);
                             m_pAnimationlabel->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
@@ -3299,10 +3310,10 @@ void Platform_MainWindow::checkWarningMpvLogsChanged(const QString sPrefix, cons
             //startPlayStateAnimation(true);
             if (!m_bMiniMode) {
                 if (CompositingManager::get().platform() == Platform::X86) {
-                    m_pAnimationlabel->resize(100, 100);
+                    m_pAnimationlabel->resize(Platform_AnimationLabel::kNonWMSize, Platform_AnimationLabel::kNonWMSize);
                 } else {
                     if (!m_bIsWM) {
-                        m_pAnimationlabel->resize(100, 100);
+                        m_pAnimationlabel->resize(Platform_AnimationLabel::kNonWMSize, Platform_AnimationLabel::kNonWMSize);
                     } else {
                         m_pAnimationlabel->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
                     }
@@ -3535,13 +3546,17 @@ void Platform_MainWindow::slotVolumeChanged(int nVolume)
 void Platform_MainWindow::slotWMChanged(QString msg)
 {
     if (msg.contains("deepin metacity")) {
-        m_bIsWM = false;
+        m_bRealIsWM = false;
     } else {
-        m_bIsWM = true;
+        m_bRealIsWM = true;
     }
 
-    m_pAnimationlabel->setWM(m_bIsWM);
-    m_pCommHintWid->setWM(m_bIsWM);
+    //全屏期间绕过合成器，暂停/播放控件需保持非WM模式显示，退出全屏后再恢复真实状态
+    if (!isFullScreen()) {
+        m_bIsWM = m_bRealIsWM;
+        m_pAnimationlabel->setWM(m_bIsWM);
+        m_pCommHintWid->setWM(m_bIsWM);
+    }
 }
 
 void Platform_MainWindow::mircastSuccess(QString name)
