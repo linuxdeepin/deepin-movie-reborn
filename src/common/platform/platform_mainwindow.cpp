@@ -4699,8 +4699,12 @@ void Platform_MainWindow::lockStateChanged(bool bLock)
 {
     qInfo() << __func__ << bLock;
     //锁屏时隐藏并抑制左上角提示，避免提示显示在锁屏界面之上
-    m_pCommHintWid->setLocked(bLock);
-    m_pDVDHintWid->setLocked(bLock);
+    if (m_pCommHintWid) {
+        m_pCommHintWid->setLocked(bLock);
+    }
+    if (m_pDVDHintWid) {
+        m_pDVDHintWid->setLocked(bLock);
+    }
     //锁屏退出投屏
     if(bLock && m_pMircastShowWidget && m_pMircastShowWidget->isVisible()) {
         slotExitMircast();
@@ -4892,11 +4896,6 @@ void Platform_MainWindow::setMusicShortKeyState(bool bState)
 
 void Platform_MainWindow::onSysLockState(QString, QVariantMap key2value, QStringList)
 {
-    //同步系统锁屏状态到提示控件，兜底保证锁屏期间不显示提示
-    const bool bLock = key2value.value("Locked").value<bool>();
-    m_pCommHintWid->setLocked(bLock);
-    m_pDVDHintWid->setLocked(bLock);
-
     if (m_bStartSleep) {
         m_bStateInLock = true;       //如果进入了休眠状态后进入锁屏,则默认执行了暂停操作
     }
@@ -4913,6 +4912,14 @@ void Platform_MainWindow::onSysLockState(QString, QVariantMap key2value, QString
 void Platform_MainWindow::slotProperChanged(QString, QVariantMap key2value, QStringList)
 {
     qInfo() << __func__ << key2value;
+    //同步系统锁屏状态到提示控件，兜底保证锁屏期间不显示提示
+    const bool bLock = key2value.value("Locked").value<bool>();
+    if (m_pCommHintWid) {
+        m_pCommHintWid->setLocked(bLock);
+    }
+    if (m_pDVDHintWid) {
+        m_pDVDHintWid->setLocked(bLock);
+    }
     if (key2value.value("Active").value<bool>() && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
         m_pEngine->seekAbsolute(m_pEngine->elapsed());
     }
