@@ -133,6 +133,11 @@ void Platform_NotificationWidget::syncPosition(QRect rect)
  */
 void Platform_NotificationWidget::popup(const QString &msg, bool flag)
 {
+    //锁屏期间不显示任何提示，避免显示在锁屏界面之上
+    if (m_bLocked) {
+        return;
+    }
+
     m_pMainLayout->setContentsMargins(14, 4, 14, 4);
     if (m_pMainLayout->indexOf(m_pMsgLabel) == -1) {
         m_pMainLayout->addWidget(m_pMsgLabel);
@@ -314,6 +319,7 @@ void Platform_NotificationWidget::initMember()
     m_pAnchor = ANCHOR_NONE;
     m_nAnchorDist = 10;
     m_bIsWheel = true;
+    m_bLocked = false;
 }
 
 }
