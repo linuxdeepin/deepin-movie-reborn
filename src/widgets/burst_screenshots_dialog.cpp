@@ -17,8 +17,8 @@ namespace dmr {
 * @brief BurstScreenshotsDialog 构造函数
 * @param strPlayItemInfo 播放项信息
 */
-BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo &PlayItemInfo)
-    : DAbstractDialog(nullptr)
+BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo &PlayItemInfo, QWidget *parent)
+    : DAbstractDialog(parent)
 {
     MovieInfo strMovieInfo = PlayItemInfo.mi;
 

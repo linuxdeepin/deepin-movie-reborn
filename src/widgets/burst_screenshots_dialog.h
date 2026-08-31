@@ -55,8 +55,9 @@ public:
     /**
      * @brief BurstScreenshotsDialog 构造函数
      * @param strPlayItemInfo 播放项信息
+     * @param parent 父窗口
      */
-    explicit BurstScreenshotsDialog(const PlayItemInfo &strPlayItemInfo);
+    explicit BurstScreenshotsDialog(const PlayItemInfo &strPlayItemInfo, QWidget *parent = nullptr);
     /**
      * @brief updateWithFrames 更新截图图像
      * @param frames 截图图像

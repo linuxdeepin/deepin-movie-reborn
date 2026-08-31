@@ -2867,7 +2867,7 @@ void Platform_MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestam
         }
 
         int nRet = -1;
-        BurstScreenshotsDialog burstScreenshotsDialog(m_pEngine->playlist().currentInfo());
+        BurstScreenshotsDialog burstScreenshotsDialog(m_pEngine->playlist().currentInfo(), this);
         burstScreenshotsDialog.updateWithFrames(m_listBurstShoots);
 #ifdef USE_TEST
         burstScreenshotsDialog.show();
