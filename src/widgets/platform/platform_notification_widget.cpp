@@ -141,6 +141,39 @@ void Platform_NotificationWidget::popup(const QString &msg, bool flag)
     m_pMsgLabel->setText(msg);
 
     if (flag) {
+            //按当前锚点与内容计算控件期望显示的矩形，用于重叠检测
+            //(不能直接使用this->geometry():popup()时尚未resize/定位,该值可能是0x0或残留的旧位置)
+            QRect msgRect;
+            {
+                const QSize contentSize(m_pMsgLabel->sizeHint().width()
+                                        + m_pMainLayout->contentsMargins().left()
+                                        + m_pMainLayout->contentsMargins().right(),
+                                        height());
+                switch (m_pAnchor) {
+                case ANCHOR_BOTTOM: {
+                    const QRect geom = m_pMainWindow->geometry();
+                    msgRect.setSize(contentSize);
+                    msgRect.moveTopLeft(QPoint(geom.center().x() - contentSize.width() / 2,
+                                               geom.bottom() - m_nAnchorDist - contentSize.height()));
+                    break;
+                }
+                case ANCHOR_NONE: {
+                    const QRect geom = m_pMainWindow->geometry();
+                    msgRect.setSize(contentSize);
+                    msgRect.moveCenter(geom.center());
+                    break;
+                }
+                case ANCHOR_NORTH_WEST: {
+                    msgRect.setSize(contentSize);
+                    msgRect.moveTopLeft(m_pMainWindow->mapToGlobal(m_anchorPoint));
+                    break;
+                }
+                default:
+                    Q_UNREACHABLE();
+                    break;
+                }
+            }
+
             QList<WId> currentApplicationWindowList;
             const QWindowList &list = qApp->allWindows();
 
@@ -167,7 +200,6 @@ void Platform_NotificationWidget::popup(const QString &msg, bool flag)
                     continue;
                 }
                 if (DForeignWindow *w = DForeignWindow::fromWinId(wid)) {
-                    QRect msgRect = this->geometry();
                     if (w) {
                         QRect wRect = w->geometry();
                         if (msgRect.x() < wRect.x() + wRect.width() &&
