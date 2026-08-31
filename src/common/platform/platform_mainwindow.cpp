@@ -3866,8 +3866,7 @@ void Platform_MainWindow::resizeEvent(QResizeEvent *pEvent)
     m_pMircastShowWidget->resize(rect().size());
     m_pMircastShowWidget->move(0, 0);
 
-    QPoint relativePoint = mapToGlobal(QPoint(0, 0));
-    m_pToolbox->updateSliderPoint(relativePoint);
+    m_pToolbox->updateSliderPoint();
     if(m_bMiniMode) { //迷你模式显示与半屏模式处理
         int nScreenHeight = QApplication::desktop()->availableGeometry().height();
         QRect rt = rect();
@@ -3913,8 +3912,7 @@ void Platform_MainWindow::moveEvent(QMoveEvent *pEvent)
     qInfo() << __func__ << "进入moveEvent";
     QWidget::moveEvent(pEvent);
     m_pCommHintWid->syncPosition();
-    QPoint relativePoint = mapToGlobal(QPoint(0, 0));
-    m_pToolbox->updateSliderPoint(relativePoint);
+    m_pToolbox->updateSliderPoint();
     updateGeometryNotification(geometry().size());
 }
 

@@ -25,6 +25,8 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 
+class VolumeButton;
+
 class Platform_VolumeSlider: public QWidget
 {
     Q_OBJECT
@@ -40,14 +42,14 @@ signals:
     void sigMuteStateChanged(bool bMute);
 
 public:
-    Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *parent);
+    Platform_VolumeSlider(Platform_MainWindow *mw, VolumeButton *volBtn, QWidget *parent);
     ~Platform_VolumeSlider();
 
     State state() const {return m_state;}
     void initVolume();   //初始化音量
     void stopTimer();
     void popup();        //弹起音量条
-    void updatePoint(QPoint point);
+    void updatePoint();
     bool getsliderstate();
     int getVolume();   //获取当前实际音量
     void changeVolume(int nVolume);    //改变控件音量
@@ -77,11 +79,14 @@ private:
 //    void setAudioVolume(int volume);   //回设dock栏应用音量
     void setMute(bool muted);          //回设dock栏应用静音状态
 
+    QRect sliderRectFromButton() const;  //按音量按钮在主窗口中的实际位置计算音量条矩形(本地坐标)
+
 private:
     DToolButton *m_pBtnChangeMute {nullptr};
     DLabel *m_pLabShowVolume {nullptr};
     DSlider *m_slider;
     Platform_MainWindow *_mw;
+    VolumeButton *m_pVolBtn {nullptr};   //音量按钮，用于锚定音量条位置
     QTimer m_autoHideTimer;
     bool m_bIsMute {false};
     bool m_bFinished {false};
