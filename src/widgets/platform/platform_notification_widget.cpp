@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -231,6 +231,11 @@ void Platform_NotificationWidget::popup(const QString &msg, bool flag)
  */
 void Platform_NotificationWidget::updateWithMessage(const QString &newMsg, bool flag)
 {
+    //锁屏期间不显示任何提示，避免显示在锁屏界面之上
+    if (m_bLocked) {
+        return;
+    }
+
     if (m_pIconLabel) {
         m_pIconLabel->setVisible(false);
     }
