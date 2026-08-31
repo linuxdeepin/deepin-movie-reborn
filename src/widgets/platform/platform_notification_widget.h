@@ -53,6 +53,11 @@ public:
     void setAnchorPoint(const QPoint& p) { m_anchorPoint = p; }
 
     void setWM(bool isWM) { m_bIsWM = isWM; }
+    /**
+     * @brief setLocked 设置锁屏状态，锁屏期间不显示任何提示
+     * @param locked 是否锁屏
+     */
+    void setLocked(bool locked) { m_bLocked = locked; if (locked) hide(); }
 
 public slots:
     /**
@@ -111,6 +116,7 @@ private:
     QPoint m_anchorPoint;         ///控件位置点
     bool m_bIsWheel;              ///
     bool m_bIsWM;
+    bool m_bLocked;               ///锁屏期间不显示提示
 };
 
 }
