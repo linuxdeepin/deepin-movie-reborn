@@ -4483,6 +4483,9 @@ void MainWindow::toggleUIMode()
         hide();
         if (isFullScreen()) {
             m_nStateBeforeMiniMode |= SBEM_Fullscreen;
+            if (windowHandle()) {
+                Utility::setBypassCompositor(windowHandle()->winId(), false);
+            }
             this->setWindowState(Qt::WindowNoState);
             setFocus();
             if (m_pFullScreenTimeLabel) {

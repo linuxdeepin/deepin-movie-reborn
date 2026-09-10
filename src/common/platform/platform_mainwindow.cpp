@@ -4472,6 +4472,9 @@ void Platform_MainWindow::toggleUIMode()
         hide();
         if (isFullScreen()) {
             m_nStateBeforeMiniMode |= SBEM_Fullscreen;
+            if (windowHandle()) {
+                Utility::setBypassCompositor(windowHandle()->winId(), false);
+            }
             this->setWindowState(Qt::WindowNoState);
         } else if (isMaximized()) {
             m_nStateBeforeMiniMode |= SBEM_Maximized;
