@@ -4483,6 +4483,9 @@ void MainWindow::toggleUIMode()
         hide();
         if (isFullScreen()) {
             m_nStateBeforeMiniMode |= SBEM_Fullscreen;
+            if (windowHandle()) {
+                Utility::setBypassCompositor(windowHandle()->winId(), false);
+            }
             this->setWindowState(Qt::WindowNoState);
             setFocus();
             if (m_pFullScreenTimeLabel) {
@@ -4554,6 +4557,9 @@ void MainWindow::toggleUIMode()
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
             setWindowState(windowState() | Qt::WindowFullScreen);
+            if (windowHandle()) {
+                Utility::setBypassCompositor(windowHandle()->winId(), true);
+            }
             if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
                 if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
                     int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();

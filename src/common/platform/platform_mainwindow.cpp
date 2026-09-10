@@ -4472,6 +4472,9 @@ void Platform_MainWindow::toggleUIMode()
         hide();
         if (isFullScreen()) {
             m_nStateBeforeMiniMode |= SBEM_Fullscreen;
+            if (windowHandle()) {
+                Utility::setBypassCompositor(windowHandle()->winId(), false);
+            }
             this->setWindowState(Qt::WindowNoState);
         } else if (isMaximized()) {
             m_nStateBeforeMiniMode |= SBEM_Maximized;
@@ -4534,6 +4537,9 @@ void Platform_MainWindow::toggleUIMode()
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
             setWindowState(windowState() | Qt::WindowFullScreen);
+            if (windowHandle()) {
+                Utility::setBypassCompositor(windowHandle()->winId(), true);
+            }
         } else {
             if (m_pToolbox->listBtn()->isChecked()) {
                 m_pToolbox->listBtn()->setChecked(false);
