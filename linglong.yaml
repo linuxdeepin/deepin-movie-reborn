@@ -85,6 +85,11 @@ build: |
   find $PREFIX/bin/xprop >> "${ID_VALUE}.install"
   find $PREFIX/share/deepin-gpuinfo/gpuinfolib.csv >> "${ID_VALUE}.install"
 
+permissions:
+  binds:
+    - source: /var/log
+      destination: /var/log
+
 buildext:
    apt:
      build_depends:
