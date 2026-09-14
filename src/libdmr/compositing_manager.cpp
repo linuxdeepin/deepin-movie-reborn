@@ -360,7 +360,7 @@ CompositingManager::CompositingManager()
     if (mtfi.exists()) {
         qDebug() << "MT GPU detected.";
         //判断是否安装核外驱动  因为mt显卡 不能通过opengl渲染
-        QDir mtdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"musa");
+        QDir mtdir(QLibraryInfo::path(QLibraryInfo::LibrariesPath) +QDir::separator() +"musa");
         if ( mtdir.exists()) {
            _composited = false;
            qDebug() << "MT GPU detected and musa driver exists, _composited set to false.";
