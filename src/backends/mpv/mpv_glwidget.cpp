@@ -1044,7 +1044,17 @@ namespace dmr {
             qWarning() << "Light texture not created in paintGL";
             return;
         }
-        
+
+        // Fix: ensure FBO size matches current devicePixelRatio
+        // On Wayland, screen scale changes don't trigger resizeGL(),
+        // so the FBO can become stale while paintGL() uses the new dpr.
+        if (m_bUseCustomFBO && m_pFbo) {
+            auto expectedSize = size() * qApp->devicePixelRatio();
+            if (m_pFbo->size() != expectedSize) {
+                updateMovieFbo();
+            }
+        }
+
         if (m_bPlaying) {
             qDebug() << "Rendering video frame";
             qreal dpr = qApp->devicePixelRatio();
