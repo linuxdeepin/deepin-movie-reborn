@@ -586,7 +586,7 @@ mpv_handle *MpvProxy::mpv_init()
         QFileInfo sjmfi("/dev/jmgpu");
         bool jmflag = false;
         if (sjmfi.exists()) {
-            QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
+            QDir jmdir(QLibraryInfo::path(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
             if(jmdir.exists())
             {
                 jmflag=true;
@@ -1141,8 +1141,8 @@ int MpvProxy::getDecodeProbeValue(const QString sDecodeName)
 
 void MpvProxy::configureJjwGPU(mpv_handle *pHandle, bool setInitVo)
 {
-    QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) + QDir::separator() + "mwv206"); //判断是否安装核外驱动
-    QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) + QDir::separator() + "mwv207");
+    QDir sdir(QLibraryInfo::path(QLibraryInfo::LibrariesPath) + QDir::separator() + "mwv206"); //判断是否安装核外驱动
+    QDir jmdir(QLibraryInfo::path(QLibraryInfo::LibrariesPath) + QDir::separator() + "mwv207");
     QString jjwPath = utils::getJjwGPUPath();
     QString vo = m_sInitVo;
 
@@ -1720,7 +1720,7 @@ void MpvProxy::refreshDecode()
             //去除9200显卡适配
             bool jmflag =false;
             if (utils::isJjwGPUPresent()) {
-                QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
+                QDir jmdir(QLibraryInfo::path(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
                 if(jmdir.exists())
                 {
                     jmflag=true;
@@ -2101,7 +2101,7 @@ void MpvProxy::play()
 
     // Jingjiawei GPU special handling - use async to avoid deadlock
     if (utils::getJjwGPUPath() == "/dev/mwv206_0") {
-        QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206");
+        QDir sdir(QLibraryInfo::path(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206");
         QString sCodec = pEngine->playlist().currentInfo().mi.videoCodec();
         if(sdir.exists() && sCodec.contains("avs2", Qt::CaseInsensitive)) {
             qWarning() << "Using SoftCodec because of codec (async)";

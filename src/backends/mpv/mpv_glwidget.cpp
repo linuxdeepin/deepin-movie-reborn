@@ -744,7 +744,7 @@ namespace dmr {
             return;
         }
 
-        auto desiredSize = size() * qApp->devicePixelRatio();
+        auto desiredSize = size() * devicePixelRatioF();
         qDebug() << "Updating movie FBO with size:" << desiredSize;
 
         if (m_pFbo) {
@@ -1047,7 +1047,13 @@ namespace dmr {
         
         if (m_bPlaying) {
             qDebug() << "Rendering video frame";
-            qreal dpr = qApp->devicePixelRatio();
+
+            // Use the widget's own DPR. qApp->devicePixelRatio() returns the highest
+            // screen scale in the session (e.g. 2.0) which does not necessarily match
+            // the scale of the screen this window is on (e.g. 1.25), inflating every
+            // size derived from it.
+            qreal dpr = devicePixelRatioF();
+
             QSize scaled = size() * dpr;
             int nFlip = 1;
 
@@ -1081,6 +1087,13 @@ namespace dmr {
                 m_renderContexRender(m_pRenderCtx, params);
 
                 m_pFbo->release();
+
+                // mpv leaves its own viewport (sized for the custom FBO) behind;
+                // reset it to Qt's widget viewport, otherwise the blend pass below
+                // gets clipped to the bottom-left corner of Qt's framebuffer.
+                pGLFunction->glViewport(0, 0,
+                        static_cast<GLint>(width() * dpr),
+                        static_cast<GLint>(height() * dpr));
 
                 {
                     QOpenGLVertexArrayObject::Binder vaoBind(&m_vaoBlend);
