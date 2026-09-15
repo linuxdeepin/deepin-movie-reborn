@@ -42,6 +42,7 @@ LIBS += -LSYSTEMLIBDIR -lffmpegthumbnailer
 LIBS += -LSYSTEMLIBDIR -lavformat
 LIBS += -LSYSTEMLIBDIR -lavutil
 LIBS += -LSYSTEMLIBDIR -lavcodec
+LIBS += -LSYSTEMLIBDIR -lswscale
 
 LIBS += -L$$BUILD_DIST/lib/ -llibdmr
 
@@ -59,6 +60,7 @@ HEADERS += common/actions.h \
            common/singleton.h \
            common/threadpool.h \
            common/thumbnail_worker.h \
+           common/precise_thumbnail.h \
            common/utility.h \
            common/volumemonitoring.h \
            vendor/movieapp.h \
@@ -101,6 +103,7 @@ SOURCES += main.cpp \
            common/shortcut_manager.cpp \
            common/threadpool.cpp \
            common/thumbnail_worker.cpp \
+           common/precise_thumbnail.cpp \
            common/utility_x11.cpp \
            common/volumemonitoring.cpp\
            vendor/movieapp.cpp \
