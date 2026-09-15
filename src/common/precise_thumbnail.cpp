@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -76,6 +76,14 @@ QPixmap PreciseThumbnail::generate(const QUrl &url, int secs, const QSize &thumb
 
     AVPacket *pkt = av_packet_alloc();
     AVFrame *frame = av_frame_alloc();
+    if (!pkt || !frame) {
+        qWarning() << "PreciseThumbnail: failed to allocate packet/frame";
+        av_packet_free(&pkt);
+        av_frame_free(&frame);
+        avcodec_free_context(&codecCtx);
+        avformat_close_input(&fmtCtx);
+        return pm;
+    }
     bool found = false;
     int64_t targetUs = static_cast<int64_t>(secs) * AV_TIME_BASE;
     AVRational timeBase = fmtCtx->streams[videoStream]->time_base;

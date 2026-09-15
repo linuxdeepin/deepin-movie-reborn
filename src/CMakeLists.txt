@@ -35,7 +35,7 @@ if (Qt6_FOUND)
     pkg_check_modules(DRM REQUIRED IMPORTED_TARGET libdrm)
     # IMPORTED_TARGET failed to work for some of libs under flatpak env
     # pkg_check_modules(Other REQUIRED  gsettings-qt)
-    pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavcodec libavformat libswscale)
+    pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavcodec libavformat libswscale libavutil)
 
     qt6_add_resources(RCS ../assets/resources.qrc)
     qt6_add_resources(RCS ../assets/icons/theme-icons.qrc)
