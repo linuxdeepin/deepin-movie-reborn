@@ -15,12 +15,20 @@ package:
 base: org.deepin.base/25.2.2
 runtime: org.deepin.runtime.dtk/6.7.0
 
+# deepin-gpuinfo 源码：官方 sources 方式引入（git + commit 固定版本，构建可复现）
+sources:
+  - kind: git
+    url:  https://gerrit.uniontech.com/deepin-gpuinfo
+    commit: faafe34cdc9428f1979344bb8c07f38e6683cc2b
+    name: deepin-gpuinfo
+
 command:
   - deepin-movie
 
 build: |
   # 下载构建依赖和运行时包
-  apt -y install --download-only libmpv-dev libxcb1-dev libxcb-util0-dev libffmpegthumbnailer-dev libxcb-shape0-dev libxcb-ewmh-dev xcb-proto x11proto-record-dev x11-utils libxtst-dev libavcodec-dev libavformat-dev libavutil-dev libpulse-dev libdvdnav-dev libgsettings-qt-dev libva-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev qt6-base-dev qt6-base-dev-tools qt6-base-private-dev qt6-l10n-tools qt6-svg-dev qt6-tools-dev-tools qt6-tools-dev qt6-multimedia-dev libqt6sql6-sqlite libmpris-qt6-dev libqt6opengl6-dev libdtk6gui-dev libdtk6widget-dev libdtk6core-dev libgpuinfo deepin-event-log ffmpeg pciutils mesa-utils libmpv2 libavdevice60 libavfilter9 libpostproc57 libffmpegthumbnailer4v5 libblas3 liblapack3
+  #   另外新增其编译所需：libpciaccess-dev libvdpau-dev libdrm-dev libx11-dev libwayland-dev）
+  apt -y install --download-only libmpv-dev libxcb1-dev libxcb-util0-dev libffmpegthumbnailer-dev libxcb-shape0-dev libxcb-ewmh-dev xcb-proto x11proto-record-dev x11-utils libxtst-dev libavcodec-dev libavformat-dev libavutil-dev libpulse-dev libdvdnav-dev libgsettings-qt-dev libva-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev qt6-base-dev qt6-base-dev-tools qt6-base-private-dev qt6-l10n-tools qt6-svg-dev qt6-tools-dev-tools qt6-tools-dev qt6-multimedia-dev libqt6sql6-sqlite libmpris-qt6-dev libqt6opengl6-dev libdtk6gui-dev libdtk6widget-dev libdtk6core-dev deepin-event-log ffmpeg pciutils mesa-utils libmpv2 libavdevice60 libavfilter9 libpostproc57 libffmpegthumbnailer4v5 libblas3 liblapack3 libpciaccess-dev libvdpau-dev libdrm-dev libx11-dev libwayland-dev
   # libxcb1-dev：解决构建失败
   bash ./install_dep /var/cache/apt/archives "$PREFIX" "libxcb1-dev"
 
@@ -29,6 +37,30 @@ build: |
   sed -i "s|/usr/include/gstreamer-1.0|$PREFIX/include/gstreamer-1.0|g" src/CMakeLists.txt
   sed -i "s|/usr/include/glib-2.0|/runtime/include/glib-2.0|g" src/libdmr/CMakeLists.txt
   sed -i "s|/usr/include/gstreamer-1.0|$PREFIX/include/gstreamer-1.0|g" src/libdmr/CMakeLists.txt
+
+  # ================= 从源码构建 libgpuinfo =================
+  # 源码来自上方 sources 段
+  GPUINFO_SRC=""
+  for d in /project/linglong/sources/deepin-gpuinfo /project/sources/deepin-gpuinfo /source/deepin-gpuinfo; do
+      if [ -f "$d/CMakeLists.txt" ]; then GPUINFO_SRC="$d"; break; fi
+  done
+  if [ -z "$GPUINFO_SRC" ]; then
+      GPUINFO_SRC=$(find /project -maxdepth 4 -path "*deepin-gpuinfo*/CMakeLists.txt" 2>/dev/null | head -1 | xargs -r dirname)
+  fi
+  if [ ! -f "$GPUINFO_SRC/CMakeLists.txt" ]; then
+      echo "ERROR: 未找到 deepin-gpuinfo 源码，sources 拉取失败？检查构建机 gerrit 访问权限" >&2
+      exit 1
+  fi
+  echo ">>> libgpuinfo 源码: $GPUINFO_SRC (commit: $(git -C $GPUINFO_SRC rev-parse --short HEAD 2>/dev/null || echo unknown))"
+  cd /project
+  cmake -B /tmp/gpuinfo-build -S "$GPUINFO_SRC" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX
+  cmake --build /tmp/gpuinfo-build --target gpuinfo -j`nproc`
+  # 安装到与原 libgpuinfo deb 解包完全相同的位置（deploy_dep 与 install 文件依赖这些路径）
+  install -d -m 0755 $PREFIX/lib/${TRIPLET} $PREFIX/share/deepin-gpuinfo
+  install -m 0755 /tmp/gpuinfo-build/src/libgpuinfo/libgpuinfo.so.0.1.0 $PREFIX/lib/${TRIPLET}/
+  ln -sf libgpuinfo.so.0.1.0 $PREFIX/lib/${TRIPLET}/libgpuinfo.so.0.1
+  ln -sf libgpuinfo.so.0.1   $PREFIX/lib/${TRIPLET}/libgpuinfo.so
+  install -m 0644 "$GPUINFO_SRC/config/gpuinfolib.csv" $PREFIX/share/deepin-gpuinfo/gpuinfolib.csv
 
   # 移动部分库到应用库目录，否则无法找到
   if [ -d "${PREFIX}/lib/${TRIPLET}/blas" ]; then
@@ -41,14 +73,15 @@ build: |
 
   # 构建
   VERSION=$(head -1 debian/changelog | awk -F'[()]' '{print $2}')
-  cmake -B build ${conf_args} \
+  # 用独立目录 build-linglong 构建，避免与宿主机 build/ 的 CMakeCache 冲突
+  cmake -B build-linglong ${conf_args} \
         -DSYSTEMD_USER_UNIT_DIR=${PREFIX}/lib/systemd/user \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=${PREFIX} \
         -DCMAKE_INSTALL_LIBDIR=${PREFIX}/lib/${TRIPLET} \
         -DVERSION=${VERSION}
-  cmake --build build -j`nproc`
-  cmake --build build --target install > install.log 2>&1
+  cmake --build build-linglong -j`nproc`
+  cmake --build build-linglong --target install > install.log 2>&1
 
   # 解决GIO运行问题： Settings schema xxx is not installed
   glib-compile-schemas $PREFIX/share/glib-2.0/schemas
