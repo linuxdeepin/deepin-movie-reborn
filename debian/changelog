@@ -1,3 +1,13 @@
+deepin-movie-reborn (6.5.58) unstable; urgency=medium
+
+  * chore: Update version to 6.5.58
+  * feat(packaging): fetch deepin-gpuinfo via sources and build from source
+  * fix(packaging): use official sources with fixed commit for deepin-gpuinfo
+  * fix(mpv): use widget DPR and reset viewport to fix cropped video at fractional scaling
+  * fix: add /var/log readonly bind permission in linglong.yaml
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 17 Sep 2026 17:19:10 +0800
+
 deepin-movie-reborn (6.5.57) unstable; urgency=medium
 
   * fix(mpv): force hwdec=vaapi for wmv on inno-codec GPUs
