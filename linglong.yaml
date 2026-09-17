@@ -20,7 +20,6 @@ sources:
   - kind: git
     url:  https://gerrit.uniontech.com/deepin-gpuinfo
     commit: faafe34cdc9428f1979344bb8c07f38e6683cc2b
-    name: deepin-gpuinfo
 
 command:
   - deepin-movie
@@ -53,6 +52,8 @@ build: |
   fi
   echo ">>> libgpuinfo 源码: $GPUINFO_SRC (commit: $(git -C $GPUINFO_SRC rev-parse --short HEAD 2>/dev/null || echo unknown))"
   cd /project
+  # 增量构建会复用容器 /tmp，旧 CMakeCache 可能指向旧源码路径，先清理
+  rm -rf /tmp/gpuinfo-build
   cmake -B /tmp/gpuinfo-build -S "$GPUINFO_SRC" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX
   cmake --build /tmp/gpuinfo-build --target gpuinfo -j`nproc`
   # 安装到与原 libgpuinfo deb 解包完全相同的位置（deploy_dep 与 install 文件依赖这些路径）
