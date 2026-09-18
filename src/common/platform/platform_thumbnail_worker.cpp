@@ -156,7 +156,8 @@ QPixmap Platform_ThumbnailWorker::genThumb(const QUrl &url, int secs)
 
     QTime d(0, 0, 0);
     d = d.addSecs(secs);
-    strcpy(m_pCharTime, d.toString("hh:mm:ss").toLatin1().data());
+    strncpy(m_pCharTime, d.toString("hh:mm:ss").toLatin1().data(), 19);
+    m_pCharTime[19] = '\0';
     m_video_thumbnailer->seek_time = m_pCharTime;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     
