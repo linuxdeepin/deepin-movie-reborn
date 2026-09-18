@@ -9,6 +9,7 @@
 #include <QTcpSocket>
 #include <QVariant>
 #include <QDebug>
+#include <QScopedPointer>
 
 #include "qhttpconnection.h"
 
@@ -85,8 +86,14 @@ void QHttpServer::newConnection()
     Q_ASSERT(m_tcpServer);
 
     while (m_tcpServer->hasPendingConnections()) {
-        QHttpConnection *connection =
-            new QHttpConnection(m_tcpServer->nextPendingConnection(), this);
+        QTcpSocket *socket = m_tcpServer->nextPendingConnection();
+        if (!socket) {
+            qWarning() << "QHttpServer: nextPendingConnection() returned nullptr";
+            break;
+        }
+        QScopedPointer<QTcpSocket> socketGuard(socket);
+        QHttpConnection *connection = new QHttpConnection(socket, this);
+        socketGuard.take();
         connect(connection, SIGNAL(newRequest(QHttpRequest *, QHttpResponse *)), this,
                 SIGNAL(newRequest(QHttpRequest *, QHttpResponse *)));
     }
