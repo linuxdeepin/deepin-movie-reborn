@@ -42,6 +42,7 @@ LIBS += -LSYSTEMLIBDIR -lffmpegthumbnailer
 LIBS += -LSYSTEMLIBDIR -lavformat
 LIBS += -LSYSTEMLIBDIR -lavutil
 LIBS += -LSYSTEMLIBDIR -lavcodec
+LIBS += -LSYSTEMLIBDIR -lswscale
 
 LIBS += -L$$BUILD_DIST/lib/ -llibdmr
 

@@ -35,7 +35,7 @@ if (Qt6_FOUND)
     pkg_check_modules(DRM REQUIRED IMPORTED_TARGET libdrm)
     # IMPORTED_TARGET failed to work for some of libs under flatpak env
     # pkg_check_modules(Other REQUIRED  gsettings-qt)
-    pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavcodec)
+    pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavcodec libswscale)
 
     qt6_add_resources(RCS ../assets/resources.qrc)
     qt6_add_resources(RCS ../assets/icons/theme-icons.qrc)
@@ -138,7 +138,7 @@ else()
     pkg_check_modules(Other REQUIRED gsettings-qt)
 
     # make linglong build success
-    pkg_check_modules(3rd REQUIRED libavformat mpv libavcodec libffmpegthumbnailer gstreamer-1.0 glib-2.0)
+    pkg_check_modules(3rd REQUIRED libavformat mpv libavcodec libswscale libffmpegthumbnailer gstreamer-1.0 glib-2.0)
     include_directories(${3rd_INCLUDE_DIRS})
 
     qt5_add_resources(RCS ../assets/resources.qrc)

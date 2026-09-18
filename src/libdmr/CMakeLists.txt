@@ -11,7 +11,7 @@ add_definitions(-D_LIBDMR_)
 remove_definitions(-D_MOVIE_USE_)
 
 pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gstreamer-1.0 glib-2.0)
-pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavcodec libavformat)
+pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavcodec libavformat libswscale)
 
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 
