@@ -7,7 +7,7 @@ version: "1"
 package:
   id: org.deepin.movie
   name: "deepin-movie"
-  version: 6.5.58.1
+  version: 6.5.59.1
   kind: app
   description: |
     movie for deepin os.
@@ -19,7 +19,7 @@ runtime: org.deepin.runtime.dtk/6.7.0
 sources:
   - kind: git
     url:  https://gerrit.uniontech.com/deepin-gpuinfo
-    commit: faafe34cdc9428f1979344bb8c07f38e6683cc2b
+    commit: 59ba03551485cf5dab468169bcb46af0e864eccc
 
 command:
   - deepin-movie
