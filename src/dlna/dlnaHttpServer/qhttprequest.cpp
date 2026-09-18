@@ -91,10 +91,8 @@ void QHttpRequest::storeBody()
 QString QHttpRequest::MethodToString(HttpMethod method)
 {
     qDebug() << "Entering MethodToString function";
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     int index = staticMetaObject.indexOfEnumerator("HttpMethod");
     return staticMetaObject.enumerator(index).valueToKey(method);
-#endif
 }
 
 void QHttpRequest::appendBody(const QByteArray &body)
