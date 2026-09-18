@@ -331,19 +331,19 @@ FileFilter::MediaType FileFilter::typeJudgeByFFmpeg(const QUrl &url)
 
 FileFilter::MediaType FileFilter::typeJudgeByGst(const QUrl &url)
 {
-    char *uri = nullptr;
-    uri = new char[200];
-
     m_miType = MediaType::Other;
 
     QString strMimeType = m_mimeDB.mimeTypeForUrl(url).name();
 
     if (!strMimeType.startsWith("audio/") && !strMimeType.startsWith("video/")) {
-        delete []uri;
         return MediaType::Other;
     }
 
-    uri = strcpy(uri, url.toString().toUtf8().constData());
+    QByteArray urlBytes = url.toString().toUtf8();
+    int urlLen = urlBytes.size();
+    char *uri = new char[urlLen + 1];
+    memcpy(uri, urlBytes.constData(), urlLen);
+    uri[urlLen] = '\0';
 
     if (!g_mvideo_gst_discoverer_discover_uri_async (m_pDiscoverer, uri)) {
       qInfo() << "Failed to start discovering URI " << uri;
