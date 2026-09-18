@@ -613,8 +613,11 @@ int main(int argc, char *argv[])
             mw.restoreWindowGeometry();
 
         int ret = app->exec();
-        if (ret == 2)
-            execv( app->applicationFilePath().toUtf8().data(), nullptr);
+        if (ret == 2) {
+            QByteArray appPath = app->applicationFilePath().toUtf8();
+            char *argv[] = { appPath.data(), nullptr };
+            execv(argv[0], argv);
+        }
 
         qInfo() << "Application exit code:" << ret;
         return ret;
@@ -647,8 +650,11 @@ int main(int argc, char *argv[])
         QDBusConnection::sessionBus().registerObject("/", &platform_mw);
         getDecodeConfigInfo();
         int ret = app->exec();
-        if (ret == 2)
-            execv( app->applicationFilePath().toUtf8().data(), nullptr);
+        if (ret == 2) {
+            QByteArray appPath = app->applicationFilePath().toUtf8();
+            char *argv[] = { appPath.data(), nullptr };
+            execv(argv[0], argv);
+        }
 
         qInfo() << "Application exit code:" << ret;
         return ret;
