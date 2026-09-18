@@ -40,6 +40,7 @@ ActionFactory &ActionFactory::get()
 #define DEF_ACTION_GROUP(NAME, KD, GROUP) do { \
         QPointer<QAction> pAct = pMenu->addAction((NAME)); \
         pAct->setProperty("kind", KD); \
+        pAct->setActionGroup(GROUP); \
         m_listContextMenuActions.append(pAct); \
     } while (0)
 #define DEF_ACTION_CHECKED_GROUP(NAME, KD, GROUP) do { \
