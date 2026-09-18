@@ -443,8 +443,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
         }
     }
 
-    auto th = new ToolTipEvent(this);
     if (tipLst.size() > 1) {
+        auto th = new ToolTipEvent(this);
         DLabel *pFilePathLbl = tipLst.at(3);
         pFilePathLbl->setObjectName("filePathLabel");
         auto codeLabel = m_titleList.at(5);
