@@ -443,7 +443,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
         }
     }
 
-    auto th = new ToolTipEvent(this);
     if (tipLst.size() > 1) {
         DLabel *pFilePathLbl = tipLst.at(3);
         pFilePathLbl->setObjectName("filePathLabel");
@@ -464,6 +463,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 #endif
         t->setProperty("for", QVariant::fromValue<QWidget *>(pFilePathLbl));
         pFilePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
+        auto th = new ToolTipEvent(this);
         pFilePathLbl->installEventFilter(th);
         qDebug() << "Tooltip initialized for file path label";
     }
