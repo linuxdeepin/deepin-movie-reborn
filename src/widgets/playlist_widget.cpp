@@ -1701,6 +1701,8 @@ bool PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
                 return true;
             }
             break;
+        default:
+            break;
         }
     } else if (obj == _playlist) {
         switch (event->type()) {
