@@ -329,7 +329,7 @@ public:
      * @brief updateSliderPoint 非x86平台下更新音量条控件位置
      * @param point 传入主窗口左上角顶点在屏幕的位置
      */
-    void updateSliderPoint(QPoint &point);
+    void updateSliderPoint();
     /**
      * @brief volumeUp 鼠标滚轮增加音量
      */

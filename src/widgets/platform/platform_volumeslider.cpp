@@ -5,20 +5,21 @@
 
 #include "platform_volumeslider.h"
 #include "platform_toolbox_proxy.h"
+#include "toolbutton.h"
 #include "dbusutils.h"
 
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 
-Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *parent)
-    : QWidget(parent), _mw(mw)
+Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, VolumeButton *volBtn, QWidget *parent)
+    : QWidget(parent), _mw(mw), m_pVolBtn(volBtn)
 {
-    if (CompositingManager::get().platform() != Platform::X86) {
-        setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
-    } else {
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-    }
+    // 作为主窗口的子控件（本地坐标定位），而非顶层 ToolTip/Tool 窗口，
+    // 避免在 wid（非合成）模式下 _mw->mapToGlobal(QPoint(0,0)) 与工具栏实际屏位
+    // 错位导致音量条漂移；与 Platform_ToolboxProxy 一致使用原生子窗口 + raise() 保证 z-order。
+    setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
+    setAttribute(Qt::WA_NativeWindow);
     m_iStep = 0;
     m_bIsWheel = false;
     m_nVolume = 100;
@@ -146,12 +147,29 @@ void Platform_VolumeSlider::setMute(bool muted)
     return;
 }
 
-void Platform_VolumeSlider::updatePoint(QPoint point)
+// 依据音量按钮在主窗口中的实际位置计算音量条矩形（主窗口本地坐标）。
+// - X 锚定音量按钮水平居中：消除原 width 硬编码偏移在紧凑模式/布局变化下的失配；
+// - Y 与工具栏同源的高度公式：保持竖直位置不变，且不再依赖 mapToGlobal 锚点。
+QRect Platform_VolumeSlider::sliderRectFromButton() const
 {
-    QRect main_rect = _mw->rect();
-    QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
-    m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
-                             view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT);
+    QPoint btnTopLeft = m_pVolBtn->mapTo(_mw, QPoint(0, 0));
+    int x = btnTopLeft.x() + (TOOLBOX_BUTTON_WIDTH - VOLSLIDER_WIDTH) / 2;
+
+    int toolboxH = TOOLBOX_HEIGHT;
+#ifdef DTKWIDGET_CLASS_DSizeMode
+    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
+        toolboxH = TOOLBOX_DSIZEMODE_HEIGHT;
+    }
+#endif
+    int y = _mw->rect().marginsRemoved(QMargins(1, 1, 1, 1)).height() - toolboxH - VOLSLIDER_HEIGHT;
+
+    return QRect(x, y, VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
+}
+
+void Platform_VolumeSlider::updatePoint()
+{
+    // 主窗口本地坐标系内定位，不再经 _mw->mapToGlobal(QPoint(0,0)) 锚点
+    m_point = sliderRectFromButton().topLeft();
     // 控件顶点更新后，同步移动控件到正确位置
     move(m_point);
 }
@@ -205,10 +223,11 @@ void Platform_VolumeSlider::popup()
 void Platform_VolumeSlider::delayedHide()
 {
     const int nGap = 18;   // 音量条和音量按钮之间的间距
-    QRect adRect = QRect(m_point + QPoint(6, VOLSLIDER_HEIGHT), m_point + QPoint(6 + VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT + nGap));
+    // 音量条现为子控件，hit-test 在控件本地坐标系内进行
+    QRect adRect(6, VOLSLIDER_HEIGHT, VOLSLIDER_WIDTH, nGap);
 
     m_mouseIn = false;
-    if(adRect.contains(QCursor::pos())){
+    if(adRect.contains(mapFromGlobal(QCursor::pos()))){
         DUtil::TimerSingleShot(2000, [=]() {
             if (!m_mouseIn)
                 hide();
@@ -353,20 +372,11 @@ void Platform_VolumeSlider::enterEvent(QEvent *e)
 }
 void Platform_VolumeSlider::showEvent(QShowEvent *se)
 {
-    QRect main_rect = _mw->rect();
-    QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
-
-    int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
-    int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
-#ifdef DTKWIDGET_CLASS_DSizeMode
-    if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
-        x += 50;
-        y += 30;
-    }
-#endif
-    QPoint p = _mw->mapToGlobal(QPoint(0, 0));
-    QRect end(x + p.x(), y + p.y(), VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
+    // 主窗口本地坐标定位（锚定音量按钮 + 工具栏同源高度公式），不再 mapToGlobal
+    QRect end = sliderRectFromButton();
+    m_point = end.topLeft();
     setGeometry(end);
+    raise();  // 子控件需置顶，避免被视频原生子窗口/工具栏遮挡
 
     QWidget::showEvent(se);
 }
