@@ -5869,6 +5869,9 @@ void Platform_MainWindow::setMusicShortKeyState(bool bState)
         case ActionFactory::NextFrame:
         case ActionFactory::PreviousFrame:
             action->setEnabled(bState);
+            break;
+        default:
+            break;
         }
     }
     qDebug() << "Exiting setMusicShortKeyState function";
