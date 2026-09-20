@@ -199,7 +199,7 @@ public:
 
         setToolTip(_pif.mi.title);
         auto th = new Platform_PlayItemTooltipHandler(this);
-        auto t = new Tip(QPixmap(), _pif.mi.title, nullptr);
+        auto t = new Tip(QPixmap(), _pif.mi.title, this);
         t->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint);
         t->setText(_pif.mi.title);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -1645,6 +1645,8 @@ bool Platform_PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
                 //如果播放列表为空，清空按钮上的焦点不向后传递
                 return true;
             }
+            break;
+        default:
             break;
         }
     } else if (obj == _playlist) {
