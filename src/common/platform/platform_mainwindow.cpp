@@ -4540,6 +4540,11 @@ void Platform_MainWindow::toggleUIMode()
             if (windowHandle()) {
                 Utility::setBypassCompositor(windowHandle()->winId(), true);
             }
+            // 同步全屏 QAction checkbox 状态
+            QList<QAction *> fullscreenActs = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::ToggleFullscreen);
+            if (!fullscreenActs.isEmpty()) {
+                fullscreenActs[0]->setChecked(true);
+            }
         } else {
             if (m_pToolbox->listBtn()->isChecked()) {
                 m_pToolbox->listBtn()->setChecked(false);
