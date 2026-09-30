@@ -826,7 +826,7 @@ mpv_handle *MpvProxy::mpv_init()
     qDebug() << "DEBUG: MPV wakeup callback set and has_mpv_events connected.";
     if (m_initialize(pHandle) < 0) {
         qCritical() << "CRITICAL: MPV initialization failed.";
-        std::runtime_error("mpv init failed");
+        throw std::runtime_error("mpv init failed");
     }
     qDebug() << "DEBUG: MPV initialization successful. Loading profile.";
 
@@ -975,8 +975,10 @@ void MpvProxy::setState(PlayState state)
     qInfo() << "Setting play state to:" << static_cast<int>(state);
     bool bRawFormat = false;
 
-    if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
-        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+    auto *pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
+    auto *pPlaylist = pEngine ? pEngine->getplaylist() : nullptr;
+    if (pPlaylist && 0 < pPlaylist->size()) {
+        PlayItemInfo currentInfo = pPlaylist->currentInfo();
         bRawFormat = currentInfo.mi.isRawFormat();
     }
 
@@ -1683,7 +1685,8 @@ void MpvProxy::slotStateChanged()
 void MpvProxy::refreshDecode()
 {
     QList<QString> canHwTypes;
-    auto playlist = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
+    auto *pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
+    auto playlist = pEngine ? pEngine->getplaylist() : nullptr;
     if (!playlist || playlist->size() <= 0) return;
 
     // Check if there's a valid current item and file
@@ -1748,8 +1751,9 @@ void MpvProxy::refreshDecode()
             }
 #endif
             if(utils::check_wayland_env()){
-                PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
-                QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
+                auto *pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
+                PlaylistModel *playMode = pEngine ? pEngine->getplaylist() : nullptr;
+                QVariant varPixfmt = playMode ? playMode->property(currentInfo.mi.filePath.toUtf8()) : QVariant();
                 if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
                     isSoftCodec = true;
                     qWarning() << "Using SoftCodec because of format";
@@ -1771,7 +1775,9 @@ void MpvProxy::refreshDecode()
             QFileInfo X100GPU("/dev/x100gpu");
             QFileInfo X100VPU("/dev/vxd0");
             if (utils::isJjwGPUPresent()) {
-                PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+                auto *pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
+                auto *pPlaylist = pEngine ? pEngine->getplaylist() : nullptr;
+                PlayItemInfo currentInfo = pPlaylist ? pPlaylist->currentInfo() : PlayItemInfo();
                 auto codec = currentInfo.mi.videoCodec();
                 if (codec.toLower().contains("mpeg2") || codec.toLower().contains("mpeg4")) {
                     qWarning() << "Using SoftCodec because of codec";
@@ -1922,12 +1928,13 @@ void MpvProxy::refreshDecode()
             }
         }
 
-        PlaylistModel *playMode = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist();
-        PlayItemInfo currentInfo = playMode->currentInfo();
+        auto *pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
+        PlaylistModel *playMode = pEngine ? pEngine->getplaylist() : nullptr;
+        PlayItemInfo currentInfo = playMode ? playMode->currentInfo() : PlayItemInfo();
 #ifndef USE_TEST
         // Wayland-only: YUV444P 强制软解。测试环境恒不进入；排除出测试构建。
         if(utils::check_wayland_env()){
-            QVariant varPixfmt = playMode->property(currentInfo.mi.filePath.toUtf8());
+            QVariant varPixfmt = playMode ? playMode->property(currentInfo.mi.filePath.toUtf8()) : QVariant();
             if(varPixfmt.isValid() && varPixfmt.toInt() == AV_PIX_FMT_YUV444P) {
                 qWarning() << "Using SoftCodec because of format";
                 my_set_property_async(m_handle, "hwdec","no", 0);
@@ -2587,8 +2594,10 @@ qint64 MpvProxy::duration() const
 {
     bool bRawFormat = false;
 
-    if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
-        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+    auto *pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
+    auto *pPlaylist = pEngine ? pEngine->getplaylist() : nullptr;
+    if (pPlaylist && 0 < pPlaylist->size()) {
+        PlayItemInfo currentInfo = pPlaylist->currentInfo();
         bRawFormat = currentInfo.mi.isRawFormat();
     }
 
