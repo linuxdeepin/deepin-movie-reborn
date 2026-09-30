@@ -3389,6 +3389,18 @@ void MainWindow::handleSettings(DSettingsDialog *dsd)
     Settings::get().settings()->sync();
 }
 
+// findChild() may return nullptr (missing option / factory not registered),
+// and the parent() may be missing or not a QWidget; check before hiding/showing.
+static void setFrameVisible(QWidget *frame, bool visible)
+{
+    if (frame == nullptr || frame->parent() == nullptr) {
+        return;
+    }
+    if (auto *parentWidget = dynamic_cast<QWidget *>(frame->parent())) {
+        parentWidget->setVisible(visible);
+    }
+}
+
 DSettingsDialog *MainWindow::initSettings()
 {
     qDebug() << "initSettings";
@@ -3418,8 +3430,10 @@ DSettingsDialog *MainWindow::initSettings()
     // press is responded by reset button
     QPushButton *pPushButton = m_pDSettingDilog->findChild<QPushButton *>("SettingsContentReset");
     qDebug() << "pPushButton";
-    pPushButton->setDefault(false);
-    pPushButton->setAutoDefault(false);
+    if (pPushButton) {
+        pPushButton->setDefault(false);
+        pPushButton->setAutoDefault(false);
+    }
 
     int decodeType = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
     if (decodeType != 3) {
@@ -3427,9 +3441,9 @@ DSettingsDialog *MainWindow::initSettings()
         QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
         QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
         QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-        dynamic_cast<QWidget*>(effectFrame->parent())->hide();
-        dynamic_cast<QWidget*>(videoFrame->parent())->hide();
-        dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
+        setFrameVisible(effectFrame, false);
+        setFrameVisible(videoFrame, false);
+        setFrameVisible(decodeFrame, false);
     } else {
         qDebug() << "decodeType == 3";
         if (utils::check_wayland_env()) {
@@ -3437,10 +3451,12 @@ DSettingsDialog *MainWindow::initSettings()
             QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
             QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
             QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-            dynamic_cast<QWidget*>(effectFrame->parent())->hide();
-            dynamic_cast<QWidget*>(videoFrame->parent())->hide();
-            dynamic_cast<QWidget*>(decodeFrame->parent())->show();
-            dynamic_cast<QWidget*>(decodeFrame)->setEnabled(true);
+            setFrameVisible(effectFrame, false);
+            setFrameVisible(videoFrame, false);
+            setFrameVisible(decodeFrame, true);
+            if (decodeFrame) {
+                decodeFrame->setEnabled(true);
+            }
         }
     }
 
@@ -3463,9 +3479,9 @@ DSettingsDialog *MainWindow::initSettings()
                 QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
                 QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
                 QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                dynamic_cast<QWidget*>(effectFrame->parent())->hide();
-                dynamic_cast<QWidget*>(videoFrame->parent())->hide();
-                dynamic_cast<QWidget*>(decodeFrame->parent())->hide();
+                setFrameVisible(effectFrame, false);
+                setFrameVisible(videoFrame, false);
+                setFrameVisible(decodeFrame, false);
             } else {
                 qDebug() << "decodeType == 3";
                 if (utils::check_wayland_env()) {
@@ -3473,16 +3489,16 @@ DSettingsDialog *MainWindow::initSettings()
                     QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
                     QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
                     QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                    dynamic_cast<QWidget*>(effectFrame->parent())->hide();
-                    dynamic_cast<QWidget*>(videoFrame->parent())->hide();
-                    dynamic_cast<QWidget*>(decodeFrame->parent())->show();
+                    setFrameVisible(effectFrame, false);
+                    setFrameVisible(videoFrame, false);
+                    setFrameVisible(decodeFrame, true);
                 } else {
                     QWidget *effectFrame = m_pDSettingDilog->findChild<QWidget*>("effectOptionFrame");
                     QWidget *videoFrame = m_pDSettingDilog->findChild<QWidget*>("videoOutOptionFrame");
                     QWidget *decodeFrame = m_pDSettingDilog->findChild<QWidget*>("decodeOptionFrame");
-                    dynamic_cast<QWidget*>(effectFrame->parent())->show();
-                    dynamic_cast<QWidget*>(videoFrame->parent())->show();
-                    dynamic_cast<QWidget*>(decodeFrame->parent())->show();
+                    setFrameVisible(effectFrame, true);
+                    setFrameVisible(videoFrame, true);
+                    setFrameVisible(decodeFrame, true);
                 }
             }
         }
@@ -3944,6 +3960,10 @@ void MainWindow::my_setStayOnTop(const QWidget *pWidget, bool bOn)
     Q_ASSERT(pWidget);
 
     const auto display = QX11Info::display();
+    if (display == nullptr) {
+        qWarning() << "my_setStayOnTop: no X11 display available, skip";
+        return;
+    }
     const auto screen = QX11Info::appScreen();
 
     const auto wmStateAtom = XInternAtom(display, kAtomNameWmState, false);
