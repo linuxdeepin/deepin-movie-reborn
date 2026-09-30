@@ -2842,14 +2842,16 @@ bool Platform_ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
 
     if(CompositingManager::get().platform() == Platform::X86) {
         if (obj == m_pListBtn) {
-            QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(ev);
-            if (ev->type() == QEvent::MouseButtonRelease && mouseEvent->button() == Qt::RightButton) {
-                qDebug() << "Right click on list button - Current state:" << m_pPlaylist->state();
-                if (m_pPlaylist->state() == Platform_PlaylistWidget::State::Opened && m_pListBtn->isChecked()) {
-                    m_pListBtn->setChecked(!m_pListBtn->isChecked());
-                }
-                if (m_pPlaylist->state() == Platform_PlaylistWidget::State::Closed && !m_pListBtn->isChecked()) {
-                    m_pListBtn->setChecked(!m_pListBtn->isChecked());
+            if (ev->type() == QEvent::MouseButtonRelease) {
+                auto *mouseEvent = static_cast<QMouseEvent *>(ev);
+                if (mouseEvent->button() == Qt::RightButton) {
+                    qDebug() << "Right click on list button - Current state:" << m_pPlaylist->state();
+                    if (m_pPlaylist->state() == Platform_PlaylistWidget::State::Opened && m_pListBtn->isChecked()) {
+                        m_pListBtn->setChecked(!m_pListBtn->isChecked());
+                    }
+                    if (m_pPlaylist->state() == Platform_PlaylistWidget::State::Closed && !m_pListBtn->isChecked()) {
+                        m_pListBtn->setChecked(!m_pListBtn->isChecked());
+                    }
                 }
             }
         }
