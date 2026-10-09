@@ -30,6 +30,7 @@
 #include <QMap>
 
 #include "stub/stub.h"
+#include "stub/addr_any.h"
 
 using namespace dmr;
 
@@ -421,7 +422,7 @@ TEST(utils_ext, videoIndex2str_known)
     EXPECT_EQ(utils::videoIndex2str(0), QString("none"));
     EXPECT_EQ(utils::videoIndex2str(1), QString("mpeg1video"));
     EXPECT_EQ(utils::videoIndex2str(2), QString("mpeg2video"));
-    EXPECT_EQ(utils::videoIndex2str(28), QString("h264"));
+    EXPECT_EQ(utils::videoIndex2str(27), QString("h264"));   // AV_CODEC_ID_H264=27（28 是 indeo3）
 }
 
 TEST(utils_ext, videoIndex2str_out_of_range_returns_empty)
@@ -751,4 +752,153 @@ TEST(utils_ext, InhibitPower_returns_uint_no_crash)
     // Existing test_dmr.cpp calls UnInhibitPower(20) with an arbitrary cookie;
     // mirror that to cover the no-op path.
     utils::UnInhibitPower(20);
+}
+
+// runPipeProcess
+
+// 简单命令 + 空 filter：返回全部输出行
+TEST(utils_ext, runPipeProcess_SimpleCommandReturnsLines)
+{
+    QStringList out = utils::runPipeProcess(QStringLiteral("echo hello"), QString());
+    ASSERT_FALSE(out.isEmpty());
+    EXPECT_EQ(QStringLiteral("hello"), out.first());
+}
+
+// filter 大小写不敏感匹配
+TEST(utils_ext, runPipeProcess_FilterMatchesCaseInsensitive)
+{
+    QStringList out = utils::runPipeProcess(QStringLiteral("echo Hello"), QStringLiteral("hel"));
+    ASSERT_FALSE(out.isEmpty());
+    EXPECT_EQ(QStringLiteral("Hello"), out.first());
+}
+
+// shell 元字符（|;&$`\）被拒绝：返回空列表
+TEST(utils_ext, runPipeProcess_RejectsShellMetacharacters)
+{
+    EXPECT_TRUE(utils::runPipeProcess(QStringLiteral("echo hi | cat"), QString()).isEmpty());
+    EXPECT_TRUE(utils::runPipeProcess(QStringLiteral("echo hi; cat"), QString()).isEmpty());
+    EXPECT_TRUE(utils::runPipeProcess(QStringLiteral("echo $(id)"), QString()).isEmpty());
+}
+
+// 空命令：返回空列表
+TEST(utils_ext, runPipeProcess_EmptyCommandReturnsEmpty)
+{
+    EXPECT_TRUE(utils::runPipeProcess(QString(), QString()).isEmpty());
+}
+
+// filter 无匹配行：返回空列表
+TEST(utils_ext, runPipeProcess_NoFilterMatchReturnsEmpty)
+{
+    EXPECT_TRUE(utils::runPipeProcess(QStringLiteral("echo hello"), QStringLiteral("zzz_nomatch")).isEmpty());
+}
+
+// IsLinglongEnvironment / ConvertLinglongPathForPlayback
+
+// IsLinglongEnvironment：无 LINGLONG_APPID 的默认测试环境返回 false
+TEST(utils_ext, IsLinglongEnvironment_DefaultFalse)
+{
+    EXPECT_FALSE(utils::IsLinglongEnvironment());
+}
+
+// ConvertLinglongPathForPlayback：非玲珑环境原样返回路径
+TEST(utils_ext, ConvertLinglongPathForPlayback_NonLinglongPassthrough)
+{
+    const QString path = "/tmp/some_path_b5.mp4";
+    EXPECT_EQ(path, utils::ConvertLinglongPathForPlayback(path));
+}
+
+// Time2str / stringDistance / SysUtils::libExist / SysUtils::libPath
+
+// stringDistance 为 utils.cpp 内 static（内部链接）符号，
+// 参照 detect550Series 模式经 AddrAny 从 SHT_SYMTAB 解析。
+typedef int (*ut_stringDistance_fn)(const QString &, const QString &);
+static ut_stringDistance_fn ut_resolveStringDistance()
+{
+    // PIE：AddrAny 返回链接时 VA，需加运行时加载基址
+    AddrAny anyBase;
+    std::map<std::string, void *> baseResult;
+    anyBase.get_global_func_addr_symtab("dmr::utils::runPipeProcess", baseResult);
+    if (baseResult.empty()) {
+        return nullptr;
+    }
+    intptr_t base = reinterpret_cast<intptr_t>(&dmr::utils::runPipeProcess)
+                    - reinterpret_cast<intptr_t>(baseResult.begin()->second);
+
+    AddrAny any;
+    std::map<std::string, void *> result;
+    any.get_local_func_addr_symtab("stringDistance\\(.*\\)$", result);
+    if (result.empty()) {
+        return nullptr;
+    }
+    return reinterpret_cast<ut_stringDistance_fn>(
+        reinterpret_cast<char *>(result.begin()->second) + base);
+}
+
+// Time2str：0 秒 → 00:00:00
+TEST(utils_ext, Time2str_ZeroReturnsMidnight)
+{
+    EXPECT_EQ(QString("00:00:00"), utils::Time2str(0));
+}
+
+// Time2str：时分秒各一位进位
+TEST(utils_ext, Time2str_HourMinSec)
+{
+    EXPECT_EQ(QString("01:01:01"), utils::Time2str(3661));
+}
+
+// Time2str：一天边界前
+TEST(utils_ext, Time2str_BeforeDayBoundary)
+{
+    EXPECT_EQ(QString("23:59:59"), utils::Time2str(86399));
+}
+
+// Time2str：超过一天时小时数叠加天数
+TEST(utils_ext, Time2str_OverDayAddsHours)
+{
+    EXPECT_EQ(QString("25:00:00"), utils::Time2str(90000));
+}
+
+// stringDistance：空串与串距离为长度
+TEST(utils_ext, stringDistance_EmptyVsNonEmpty)
+{
+    ut_stringDistance_fn fn = ut_resolveStringDistance();
+    ASSERT_NE(nullptr, fn);
+    EXPECT_EQ(3, fn(QString(), QString("abc")));
+    EXPECT_EQ(4, fn(QString("abcd"), QString()));
+}
+
+// stringDistance：经典编辑距离 kitten→sitting = 3
+TEST(utils_ext, stringDistance_ClassicCase)
+{
+    ut_stringDistance_fn fn = ut_resolveStringDistance();
+    ASSERT_NE(nullptr, fn);
+    EXPECT_EQ(3, fn(QString("kitten"), QString("sitting")));
+}
+
+// stringDistance：相同串距离为 0
+TEST(utils_ext, stringDistance_EqualStrings)
+{
+    ut_stringDistance_fn fn = ut_resolveStringDistance();
+    ASSERT_NE(nullptr, fn);
+    EXPECT_EQ(0, fn(QString("same"), QString("same")));
+}
+
+// SysUtils::libExist：系统库可加载
+TEST(utils_ext, libExist_ExistingLibReturnsTrue)
+{
+    EXPECT_TRUE(SysUtils::libExist("c"));   // libc.so.6
+}
+
+// SysUtils::libExist：不存在的库返回 false（走 libPath 备选路径后仍失败）
+TEST(utils_ext, libExist_NonExistentReturnsFalse)
+{
+    EXPECT_FALSE(SysUtils::libExist("ut_no_such_lib_xyz123"));
+}
+
+// SysUtils::libPath：返回非空库目录
+TEST(utils_ext, libPath_ReturnsNonEmptyDir)
+{
+    QString path = SysUtils::libPath("libc.so.6");
+    EXPECT_FALSE(path.isEmpty());
+    EXPECT_TRUE(path.contains("lib"));
 }
