@@ -373,6 +373,13 @@ CompositingManager::CompositingManager()
         qDebug() << "ljmcore driver detected, _composited set to false.";
     }
 
+    //判断Fantasy显卡不能通过opengl渲染
+    qDebug() << "Checking for Fantasy GPU.";
+    if (utils::isFantasyGPUPresent()) {
+        _composited = false;
+        qDebug() << "Fantasy GPU detected, _composited set to false.";
+    }
+
     if (m_setSpecialControls)
         _composited = false;
 

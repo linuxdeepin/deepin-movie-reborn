@@ -67,6 +67,12 @@ void switchToDefaultSink();
 bool isSietiumGPUPresent();
 
 /**
+ * @brief 检测是否存在Fantasy显卡
+ * @return 如果存在Fantasy显卡返回true，否则返回false
+ */
+bool isFantasyGPUPresent();
+
+/**
  * @brief 检测是否存在jjw显卡
  * @return 如果存在jjw显卡返回true，否则返回false
  */

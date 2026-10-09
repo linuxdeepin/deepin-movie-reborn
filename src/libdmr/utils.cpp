@@ -884,6 +884,16 @@ bool isSietiumGPUPresent()
     return output.contains("Sietium", Qt::CaseInsensitive);
 }
 
+// 判断是否为Fantasy显卡
+bool isFantasyGPUPresent()
+{
+    QProcess process;
+    process.start("lspci");
+    process.waitForFinished();
+    QString output = process.readAllStandardOutput();
+    return output.contains("Fantasy", Qt::CaseInsensitive);
+}
+
 bool isJjwGPUPresent()
 {
     QString jjwPath = getJjwGPUPath();
