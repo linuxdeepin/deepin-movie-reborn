@@ -143,6 +143,7 @@ pkg_check_modules(3rd_lib REQUIRED
         libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
         xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt6 libva libva-x11
         gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0 libdrm
+        libavformat libavcodec libswscale libavutil
         )
     #libpulse-simple xcb-aux gtest
 # 添加第三方库的所有文件夹路径到工程中来(注意 *_INCLUDE_DIRS)
