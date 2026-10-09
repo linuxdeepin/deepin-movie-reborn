@@ -73,6 +73,12 @@ bool isSietiumGPUPresent();
 bool isJjwGPUPresent();
 
 /**
+ * @brief 检测是否存在Fantasy显卡
+ * @return 如果存在Fantasy显卡返回true，否则返回false
+ */
+bool isFantasyGPUPresent();
+
+/**
  * @brief 获取jjw显卡设备路径
  * @return 返回存在的设备路径，如果都不存在则返回空字符串
  */

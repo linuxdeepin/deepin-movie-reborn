@@ -891,6 +891,16 @@ bool isJjwGPUPresent()
     return jjwPath == "/dev/mwv206_0" || jjwPath == "/dev/jmgpu" || jjwPath == "mwv207d";
 }
 
+// 判断是否为Fantasy显卡
+bool isFantasyGPUPresent()
+{
+    QProcess process;
+    process.start("lspci");
+    process.waitForFinished();
+    QString output = process.readAllStandardOutput();
+    return output.contains("Fantasy", Qt::CaseInsensitive);
+}
+
 QString getJjwGPUPath()
 {
     // jm72
