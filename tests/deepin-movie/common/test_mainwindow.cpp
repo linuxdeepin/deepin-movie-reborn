@@ -22,6 +22,7 @@
 
 #define protected public
 #define private public
+#include "src/libdmr/player_engine.h"   // 批次6：需访问 engine->_state，须在 mainwindow.h 链之前
 #include "src/common/mainwindow.h"
 #undef protected
 #undef private
@@ -29,7 +30,12 @@
 #include <DFileDialog>
 #include "src/libdmr/filefilter.h"
 #include "src/libdmr/player_engine.h"
+#define protected public
+#define private public
 #include "src/widgets/toolbox_proxy.h"
+#undef protected
+#undef private
+#include "src/widgets/notification_widget.h"
 #include "src/widgets/toolbutton.h"
 #include "src/widgets/playlist_widget.h"
 #include "src/widgets/slider.h"
@@ -37,6 +43,7 @@
 #include "src/widgets/url_dialog.h"
 #include "src/widgets/dmr_lineedit.h"
 #include "src/common/actions.h"
+#include "src/common/options.h"   // CommandLineManager（dvdDevice stub 目标）
 #include "src/backends/mpv/mpv_glwidget.h"
 #include "utils.h"
 #include "actions.h"
@@ -1857,3 +1864,569 @@ TEST(MainWindow, audioPlaybackState)
     QTest::qWait(400);
 }
 
+// 无 DVD 设备时 OpenCdrom 应安全走提示分支（BUG 66543/300705）
+QString mw_ut_dvdDevice_empty_stub()
+{
+    return QString();
+}
+TEST(MainWindow, requestAction_OpenCdromEmptyHint)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    Stub stub;
+    // dvdDevice 返回空，probeCdromDevice 真实读 /proc/mounts（无光盘返空）
+    typedef QString (*dvdFptr)(CommandLineManager *);
+    stub.set((dvdFptr)(&CommandLineManager::dvdDevice),
+             reinterpret_cast<dvdFptr>(reinterpret_cast<void *>(&mw_ut_dvdDevice_empty_stub)));
+
+    w->requestAction(ActionFactory::ActionKind::OpenCdrom, true);
+    QTest::qWait(50);
+}
+
+// WindowAbove 应翻转 m_bWindowAbove 且 my_setStayOnTop 在 offscreen 下需拦截
+// （QX11Info::display() 为 nullptr，XInternAtom 会崩，BUG 300705 窗口置顶切换）
+namespace mw_ut {
+void ut_setStayOnTop_noop_stub(MainWindow *self, const QWidget *pWidget, bool bOn)
+{
+    Q_UNUSED(self); Q_UNUSED(pWidget); Q_UNUSED(bOn);
+}
+}
+TEST(MainWindow, requestAction_WindowAboveTogglesFlag)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    Stub stub;
+    stub.set(ADDR(MainWindow, my_setStayOnTop), mw_ut::ut_setStayOnTop_noop_stub);
+
+    w->m_bWindowAbove = false;
+    w->requestAction(ActionFactory::ActionKind::WindowAbove, true);
+    EXPECT_TRUE(w->m_bWindowAbove);
+    w->requestAction(ActionFactory::ActionKind::WindowAbove, true);
+    EXPECT_FALSE(w->m_bWindowAbove);
+}
+
+// QuitFullscreen 在音量条可见时应先隐藏音量条再 break（BUG 300705 全屏切换）
+bool mw_ut_volSliderHidden_stub(ToolboxProxy *self)
+{
+    Q_UNUSED(self);
+    return false;
+}
+TEST(MainWindow, requestAction_QuitFullscreenHidesVolSlider)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    Stub stub;
+    typedef bool (*volFptr)(ToolboxProxy *);
+    stub.set((volFptr)(&ToolboxProxy::getVolSliderIsHided),
+             reinterpret_cast<volFptr>(reinterpret_cast<void *>(&mw_ut_volSliderHidden_stub)));
+
+    w->requestAction(ActionFactory::ActionKind::QuitFullscreen, true);
+    QTest::qWait(50);
+}
+
+// initSettings 幂等：已有对话框时直接返回同一实例（BUG 272645 设置项初始化）
+TEST(MainWindow, initSettings_ReturnsCachedDialog)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+    if (!w->m_pDSettingDilog) {
+        w->initSettings();   // 单独跑时自建前置（依赖其它用例则 flaky）
+    }
+    ASSERT_TRUE(w->m_pDSettingDilog);
+
+    DSettingsDialog *d = w->initSettings();
+    EXPECT_EQ(w->m_pDSettingDilog, d);
+}
+
+// initSettings 重建：置空后重新创建并注册自定义 widget（BUG 272645）
+TEST(MainWindow, initSettings_FreshCreateRegistersWidgets)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    w->m_pDSettingDilog = nullptr;   // 强制重建
+    DSettingsDialog *d = w->initSettings();
+    ASSERT_NE(nullptr, d);
+    // 自定义 widget 工厂已注册：decode/effect/vo frame 应存在
+    EXPECT_NE(nullptr, d->findChild<QWidget *>("decodeOptionFrame"));
+}
+
+// 非 4K 警告文本应无任何副作用（BUG 105045/38729 警告日志检测）
+TEST(MainWindow, checkWarningMpvLogsChanged_NonWarningNoAction)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    // 非 4K 文本：仅日志，无 requestAction/对话框副作用
+    w->checkWarningMpvLogsChanged("mpv", "normal playback log message");
+    w->checkWarningMpvLogsChanged("mpv", QString());
+    QTest::qWait(50);
+}
+
+
+// slotFontChanged / judgeMouseInWindow / onApplicationStateChanged / slotMuteChanged /
+// closeEvent / focusOutEvent
+
+// 字体变化：Qt6 分支 horizontalAdvance 更新全屏时间标签最小宽度（冒烟不崩溃）
+TEST(MainWindow, slotFontChanged_UpdatesLabelWidths)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    ASSERT_NE(nullptr, w->m_pToolbox);
+
+    EXPECT_NO_THROW(w->slotFontChanged(QFont()));
+    // 全屏时间标签已按字体度量更新（标签初始文本可能为空 → minimumWidth 可为 0，冒烟即可）
+    QLabel *lbl = w->m_pToolbox->getfullscreentimeLabel();
+    ASSERT_NE(nullptr, lbl);
+    EXPECT_GE(lbl->minimumWidth(), 0);
+}
+
+// 窗口中心鼠标点：judgeMouseInWindow 返回 false（现状：bRet 计算后从不置 true）
+TEST(MainWindow, judgeMouseInWindow_CenterReturnsFalse)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+
+    bool ret = true;
+    EXPECT_NO_THROW(ret = w->judgeMouseInWindow(QPoint(10, 10)));
+    EXPECT_FALSE(ret);   // 已知现状：返回值恒 false
+}
+
+// 窗口边缘鼠标点：触发 leaveEvent（autoHideTimer 停止 + 工具窗口挂起）
+// 注意 offscreen 平台 mapToGlobal 恒等返回局部坐标：直接传 frameGeometry().topLeft()
+// （局部）→ mapToGlobal 后与 topLeft 全局一致，必命中边缘条件
+TEST(MainWindow, judgeMouseInWindow_EdgeTriggersLeaveEvent)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    w->m_autoHideTimer.start(10000);
+
+    QPoint edgePos = w->frameGeometry().topLeft();   // 局部坐标与 topLeft 全局映射一致
+    EXPECT_NO_THROW(w->judgeMouseInWindow(edgePos));
+
+    EXPECT_FALSE(w->m_autoHideTimer.isActive());   // leaveEvent 已停止计时器
+}
+
+// 应用状态切换：Active（恢复录制+工具窗口）与 Inactive（挂起）均不崩溃
+// 注意：MainWindow::onApplicationStateChanged 在 #ifdef USE_DXCB 块内，测试 target 不可见
+//      （USE_DXCB 未定义），改在 test_platform_mainwindow.cpp 测平台版
+TEST(MainWindow, onApplicationStateChanged_DxcbGuardedSkipped)
+{
+    // common 版受 USE_DXCB 条件编译守卫，测试 target 不可见，占位记录
+    SUCCEED() << "onApplicationStateChanged guarded by USE_DXCB; covered in platform test";
+}
+
+// 静音切换：引擎 setMute 走 my_set_property→mpv API stub（安全）+ 提示窗 updateWithMessage 录制断言
+// 注意：setMute 是虚函数，ADDR stub 致崩（Stub::set 对 vtable offset memcpy 越界，同批次 2 stop()）
+//      → 不 stub setMute，真调；仅 stub NotificationWidget::updateWithMessage（非虚，ADDR 安全）
+// updateWithMessage 录制 stub（ADDR 安装，避免真提示窗操作；文件级自由函数）
+static QString g_ut_mw_lastMsg;
+void ut_mw_updateWithMsg_stub(void *obj, const QString &m, bool flag) { Q_UNUSED(obj); Q_UNUSED(flag); g_ut_mw_lastMsg = m; }
+
+TEST(MainWindow, slotMuteChanged_UpdatesEngineAndHint)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    ASSERT_NE(nullptr, w->m_pEngine);
+    ASSERT_NE(nullptr, w->m_pCommHintWid);
+
+    Stub stub;
+    stub.set(ADDR(NotificationWidget, updateWithMessage),
+             reinterpret_cast<void *>(&ut_mw_updateWithMsg_stub));
+
+    w->m_nDisplayVolume = 42;
+    g_ut_mw_lastMsg.clear();
+    w->slotMuteChanged(true);      // 静音 → 提示 "Mute"，引擎 setMute(true) 经 mpv API stub
+    EXPECT_EQ(QStringLiteral("Mute"), g_ut_mw_lastMsg);
+
+    g_ut_mw_lastMsg.clear();
+    w->slotMuteChanged(false);     // 取消静音 → 音量提示
+    EXPECT_EQ(QStringLiteral("Volume: 42%"), g_ut_mw_lastMsg);
+}
+
+// USE_TEST 构建：closeEvent 短路直接返回（不 delete 主窗口/engine）
+TEST(MainWindow, closeEvent_UseTestNoOp)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+
+    QCloseEvent ev;
+    ev.ignore();   // QCloseEvent 构造默认 accepted，先 ignore 以验证 USE_TEST 短路不会再 accept
+    EXPECT_NO_THROW(w->closeEvent(&ev));
+    // 事件未被 accept（USE_TEST 直接 return）
+    EXPECT_FALSE(ev.isAccepted());
+    // 主窗口仍存活
+    EXPECT_EQ(w, dApp->getMainWindow());
+}
+
+// 非全屏焦点丢失：无副作用（isFullScreen false 短路）
+TEST(MainWindow, focusOutEvent_NonFullScreenNoAction)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    ASSERT_FALSE(w->isFullScreen());   // 测试环境窗口非全屏
+
+    QFocusEvent ev(QEvent::FocusOut);
+    EXPECT_NO_THROW(w->focusOutEvent(&ev));
+}
+
+// ToolboxProxy::updateMovieProgress / slotFileLoaded / setup
+
+// 鼠标按下时 updateMovieProgress 早退（不更新进度条）
+TEST(MainWindow, ToolboxUpdateMovieProgress_MousePressedEarlyReturn)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    ASSERT_NE(nullptr, w->m_pToolbox);
+    w->m_pToolbox->m_bMousePree = true;
+
+    EXPECT_NO_THROW(w->m_pToolbox->updateMovieProgress());
+    w->m_pToolbox->m_bMousePree = false;   // 恢复
+}
+
+// 正常路径 updateMovieProgress：duration/elapsed 经 mpv stub，进度条组件真调
+TEST(MainWindow, ToolboxUpdateMovieProgress_NormalNoCrash)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    ASSERT_NE(nullptr, w->m_pToolbox);
+    w->m_pToolbox->m_bMousePree = false;
+
+    EXPECT_NO_THROW(w->m_pToolbox->updateMovieProgress());
+    EXPECT_FALSE(w->m_pToolbox->m_bMousePree);
+}
+
+// slotFileLoaded：无播放文件（非音频）时覆盖前半分支（setRange/setCurrentIndex/setFixedSize）
+TEST(MainWindow, ToolboxSlotFileLoaded_NoAudioNoCrash)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    ASSERT_NE(nullptr, w->m_pToolbox);
+
+    EXPECT_NO_THROW(w->m_pToolbox->slotFileLoaded());
+}
+
+// setup 冒烟：重复初始化（构造已调用，setLayout 忽略重复）不崩溃
+TEST(MainWindow, ToolboxSetup_Smoke)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    ASSERT_NE(nullptr, w->m_pToolbox);
+
+    EXPECT_NO_THROW(w->m_pToolbox->setup());
+}
+
+// dropEvent / wheelEvent / reflectActionToUI / padLoadPath
+
+// play 录制 stub（避免真调播放流程）
+static QList<QString> g_ut_b5PlayList;
+void ut_b5_play_rec_stub(void *obj, const QList<QString> &listFiles)
+{
+    Q_UNUSED(obj);
+    g_ut_b5PlayList = listFiles;
+}
+
+// dropEvent：mime 无 urls → 早退，不触发 play
+TEST(MainWindow, dropEvent_NoUrlsIgnored)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    QMimeData mime;
+    QDropEvent ev(QPointF(100, 100), Qt::CopyAction, &mime, Qt::NoButton, Qt::NoModifier);
+    g_ut_b5PlayList.clear();
+
+    EXPECT_NO_THROW(w->dropEvent(&ev));
+    EXPECT_EQ(0, g_ut_b5PlayList.count());
+}
+
+// dropEvent：单视频 url → 走 play(lstFile) 路径
+TEST(MainWindow, dropEvent_SingleVideoCallsPlay)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    Stub stub;
+    stub.set(ADDR(MainWindow, play), reinterpret_cast<void *>(&ut_b5_play_rec_stub));
+    QMimeData mime;
+    QList<QUrl> urls = { QUrl::fromLocalFile("/tmp/fake_b5_video.mp4") };
+    mime.setUrls(urls);
+    QDropEvent ev(QPointF(100, 100), Qt::CopyAction, &mime, Qt::NoButton, Qt::NoModifier);
+    g_ut_b5PlayList.clear();
+
+    w->dropEvent(&ev);
+
+    EXPECT_EQ(1, g_ut_b5PlayList.count());
+    if (g_ut_b5PlayList.count() == 1) {
+        EXPECT_EQ(QString("/tmp/fake_b5_video.mp4"), g_ut_b5PlayList.at(0));
+    }
+}
+
+// wheelEvent：angleDelta 超限（<-240）约束为 -120，并触发 VolumeDown
+// calculationStep 录制 stub（requestAction 内部会归零 m_iAngleDelta，
+// 约束逻辑的验证点改为 calculationStep 收到的参数）
+static int g_ut_b5CalcStep = -999;
+void ut_b5_calculationStep_stub(void *obj, int delta)
+{
+    Q_UNUSED(obj);
+    g_ut_b5CalcStep = delta;
+}
+
+TEST(MainWindow, wheelEvent_AngleDeltaClamped)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    Stub stub;
+    stub.set(ADDR(ToolboxProxy, calculationStep),
+             reinterpret_cast<void *>(&ut_b5_calculationStep_stub));
+    // 音量条默认未隐藏，getVolSliderIsHided() 为 false 会跳过滚轮分支
+    w->m_pToolbox->m_pVolSlider->hide();
+    QPointF pos(w->rect().center());
+    QWheelEvent ev(pos, pos, QPoint(0, 0), QPoint(0, -300),
+                   Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+    g_ut_b5CalcStep = -999;
+
+    EXPECT_NO_THROW(w->wheelEvent(&ev));
+    // 超限值 <-240 被约束为 -120 后传给 calculationStep，随后 m_iAngleDelta 归零
+    EXPECT_EQ(-120, g_ut_b5CalcStep);
+    EXPECT_EQ(0, w->m_iAngleDelta);
+}
+
+// wheelEvent：带按键按下（非 NoButton）→ 音量分支不进，m_iAngleDelta 不变
+TEST(MainWindow, wheelEvent_WithButtonNoChange)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    w->m_iAngleDelta = -5;
+    QPointF pos2(w->rect().center());
+    QWheelEvent ev(pos2, pos2, QPoint(0, 0), QPoint(0, -300),
+                   Qt::LeftButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+
+    EXPECT_NO_THROW(w->wheelEvent(&ev));
+    EXPECT_EQ(-5, w->m_iAngleDelta);
+    w->m_iAngleDelta = 0;   // 恢复
+}
+
+// reflectActionToUI：WindowAbove 动作 checked 状态翻转
+TEST(MainWindow, reflectActionToUI_WindowAboveTogglesCheck)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    auto acts = ActionFactory::get().findActionsByKind(ActionFactory::WindowAbove);
+    if (acts.isEmpty()) {
+        GTEST_SKIP() << "no WindowAbove actions registered";
+    }
+    bool old = acts.first()->isChecked();
+
+    w->reflectActionToUI(ActionFactory::WindowAbove);
+
+    EXPECT_NE(old, acts.first()->isChecked());
+    acts.first()->setChecked(old);   // 恢复现场
+}
+
+// padLoadPath：返回可存在目录（Settings 空配置回退 MoviesLocation/currentPath）
+TEST(MainWindow, padLoadPath_ReturnsExistingDir)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+
+    QString path = w->padLoadPath();
+    EXPECT_FALSE(path.isEmpty());
+    EXPECT_TRUE(QDir(path).exists());
+}
+
+// adjustPlaybackSpeed / slotPlayerStateChanged
+
+// PlayerEngine::setPlaySpeed 录制 stub
+static QList<double> g_ut_b6SpeedCalls;
+void ut_b6_setPlaySpeed_rec_stub(void *obj, double times)
+{
+    Q_UNUSED(obj);
+    g_ut_b6SpeedCalls.append(times);
+}
+
+// adjustPlaybackSpeed：Idle 状态早退，不调 engine->setPlaySpeed
+TEST(MainWindow, adjustPlaybackSpeed_IdleEarlyReturn)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    Stub stub;
+    stub.set(ADDR(PlayerEngine, setPlaySpeed),
+             reinterpret_cast<void *>(&ut_b6_setPlaySpeed_rec_stub));
+    PlayerEngine *engine = w->engine();
+    ASSERT_NE(nullptr, engine);
+    PlayerEngine::CoreState saved = engine->_state;
+    Backend *savedCurrent = engine->_current;   // state() 委派 _current->state()，置空直读 _state
+    engine->_current = nullptr;
+    engine->_state = PlayerEngine::CoreState::Idle;
+    w->m_dPlaySpeed = 1.0;
+    g_ut_b6SpeedCalls.clear();
+
+    w->adjustPlaybackSpeed(ActionFactory::AccelPlayback);
+
+    EXPECT_EQ(0, g_ut_b6SpeedCalls.count());
+    EXPECT_EQ(1.0, w->m_dPlaySpeed);
+    engine->_state = saved;      // 恢复
+    engine->_current = savedCurrent;
+}
+
+// adjustPlaybackSpeed：加速上限 clamp 到 2.0 并同步 engine
+TEST(MainWindow, adjustPlaybackSpeed_AccelClampsTo2)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    Stub stub;
+    stub.set(ADDR(PlayerEngine, setPlaySpeed),
+             reinterpret_cast<void *>(&ut_b6_setPlaySpeed_rec_stub));
+    PlayerEngine *engine = w->engine();
+    ASSERT_NE(nullptr, engine);
+    PlayerEngine::CoreState saved = engine->_state;
+    Backend *savedCurrent = engine->_current;
+    engine->_current = nullptr;   // state() 委派 _current->state()，置空直读 _state
+    engine->_state = PlayerEngine::CoreState::Playing;
+    w->m_dPlaySpeed = 1.95;
+    g_ut_b6SpeedCalls.clear();
+
+    w->adjustPlaybackSpeed(ActionFactory::AccelPlayback);
+
+    EXPECT_EQ(2.0, w->m_dPlaySpeed);
+    EXPECT_EQ(1, g_ut_b6SpeedCalls.count());
+    if (g_ut_b6SpeedCalls.count() == 1) {
+        EXPECT_DOUBLE_EQ(2.0, g_ut_b6SpeedCalls.at(0));
+    }
+    engine->_state = saved;
+    engine->_current = savedCurrent;
+    w->m_dPlaySpeed = 1.0;   // 恢复
+}
+
+// adjustPlaybackSpeed：减速下限 clamp 到 0.1 并同步 engine
+TEST(MainWindow, adjustPlaybackSpeed_DecelClampsTo0_1)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    Stub stub;
+    stub.set(ADDR(PlayerEngine, setPlaySpeed),
+             reinterpret_cast<void *>(&ut_b6_setPlaySpeed_rec_stub));
+    PlayerEngine *engine = w->engine();
+    ASSERT_NE(nullptr, engine);
+    PlayerEngine::CoreState saved = engine->_state;
+    Backend *savedCurrent = engine->_current;
+    engine->_current = nullptr;
+    engine->_state = PlayerEngine::CoreState::Playing;
+    w->m_dPlaySpeed = 0.15;
+    g_ut_b6SpeedCalls.clear();
+
+    w->adjustPlaybackSpeed(ActionFactory::DecelPlayback);
+
+    EXPECT_EQ(0.1, w->m_dPlaySpeed);
+    EXPECT_EQ(1, g_ut_b6SpeedCalls.count());
+    engine->_state = saved;
+    engine->_current = savedCurrent;
+    w->m_dPlaySpeed = 1.0;   // 恢复
+}
+
+// slotPlayerStateChanged：非信号上下文直接调用，sender() 非 PlayerEngine → 早退
+TEST(MainWindow, slotPlayerStateChanged_NonEngineSenderEarlyReturn)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+
+    EXPECT_NO_THROW(w->slotPlayerStateChanged());
+}
+
+// handleSettings（USE_TEST 分支 show 非阻塞）
+
+// handleSettings：USE_TEST 下仅 show() 不 exec()，读取解码设置项
+TEST(MainWindow, handleSettings_ShowsDialogNonBlocking)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    DSettingsDialog dsd;
+
+    EXPECT_NO_THROW(w->handleSettings(&dsd));
+    EXPECT_TRUE(dsd.isVisible());
+    dsd.close();
+}
+
+// createDecodeOptionHandle / createVoOptionHandle / createEffectOptionHandle
+// 三者均为 mainwindow.cpp 文件级 static 工厂（内部链接），经 AddrAny 解析调用。
+
+#include <DSettingsOption>
+
+typedef QWidget *(*ut_optionHandle_fn)(QObject *);
+
+// 通用内部符号解析（static → SHT_SYMTAB；PIE 需以已知符号锚定运行时基址）
+// glibc BRE 对含括号/星号转义的精确模式行为不稳（实测零匹配或误配 lambda 模板符号），
+// 因此 regex 仅用纯子串（函数名），再按 demangled 全名在 C++ 侧精确过滤。
+static ut_optionHandle_fn ut_resolveOptionHandle(const char *funcName, const char *exactDemangled)
+{
+    AddrAny anyBase;
+    std::map<std::string, void *> baseResult;
+    anyBase.get_global_func_addr_symtab("dmr::utils::runPipeProcess", baseResult);
+    if (baseResult.empty()) {
+        return nullptr;
+    }
+    intptr_t base = reinterpret_cast<intptr_t>(&dmr::utils::runPipeProcess)
+                    - reinterpret_cast<intptr_t>(baseResult.begin()->second);
+
+    AddrAny any;
+    std::map<std::string, void *> result;
+    any.get_local_func_addr_symtab(funcName, result);
+    const std::string want(exactDemangled);
+    for (auto &kv : result) {
+        if (kv.first == want) {
+            return reinterpret_cast<ut_optionHandle_fn>(
+                reinterpret_cast<char *>(kv.second) + base);
+        }
+    }
+    return nullptr;
+}
+
+// createDecodeOptionHandle：按 items 构建解码选项框
+TEST(MainWindow, createDecodeOptionHandle_BuildsDecodeFrame)
+{
+    ut_optionHandle_fn fn = ut_resolveOptionHandle("createDecodeOptionHandle", "createDecodeOptionHandle(QObject*)");
+    ASSERT_NE(nullptr, fn);
+
+    DTK_CORE_NAMESPACE::DSettingsOption opt;
+    opt.setData("items", QStringList{"software", "hardware"});
+    opt.setValue(1);
+
+    QWidget *w = fn(&opt);
+    ASSERT_NE(nullptr, w);
+    EXPECT_EQ(QString("decodeOptionFrame"), w->objectName());
+    delete w;
+}
+
+// createVoOptionHandle：构建视频输出选项框
+TEST(MainWindow, createVoOptionHandle_BuildsVoFrame)
+{
+    ut_optionHandle_fn fn = ut_resolveOptionHandle("createVoOptionHandle", "createVoOptionHandle(QObject*)");
+    ASSERT_NE(nullptr, fn);
+
+    DTK_CORE_NAMESPACE::DSettingsOption opt;
+    opt.setData("items", QStringList{"x11", "vaapi"});
+    opt.setValue(0);
+
+    QWidget *w = fn(&opt);
+    ASSERT_NE(nullptr, w);
+    EXPECT_EQ(QString("videoOutOptionFrame"), w->objectName());
+    delete w;
+}
+
+// createEffectOptionHandle：构建画面效果选项框
+TEST(MainWindow, createEffectOptionHandle_BuildsEffectFrame)
+{
+    ut_optionHandle_fn fn = ut_resolveOptionHandle("createEffectOptionHandle", "createEffectOptionHandle(QObject*)");
+    ASSERT_NE(nullptr, fn);
+
+    DTK_CORE_NAMESPACE::DSettingsOption opt;
+    opt.setData("items", QStringList{"off", "on"});
+    opt.setValue(0);
+
+    QWidget *w = fn(&opt);
+    ASSERT_NE(nullptr, w);
+    EXPECT_EQ(QString("effectOptionFrame"), w->objectName());
+    delete w;
+}

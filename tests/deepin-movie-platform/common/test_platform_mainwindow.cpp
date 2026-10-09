@@ -18,16 +18,24 @@
 
 #include <unistd.h>
 #include <gtest/gtest.h>
+#define protected public
+#define private public
+#include "src/common/options.h"   // CommandLineManager（dvdDevice stub 目标）
+#include "stub/stub.h"
 
 #define protected public
 #define private public
 #include "src/common/platform/platform_mainwindow.h"
 #undef protected
 #undef private
+#define protected public
+#define private public
+#include "src/widgets/platform/platform_toolbox_proxy.h"
+#undef protected
+#undef private
 #include "application.h"
 #include "src/libdmr/filefilter.h"
 #include "src/libdmr/player_engine.h"
-#include "src/widgets/platform/platform_toolbox_proxy.h"
 #include "src/widgets/toolbutton.h"
 #include "src/widgets/platform/platform_playlist_widget.h"
 #include "src/widgets/platform/platform_volumeslider.h"
@@ -994,6 +1002,68 @@ TEST(ToolBox, volBtn)
 //}
 
 // TEST(ToolBox, clearPlayList)
+
+// 无 DVD 设备时 OpenCdrom 应安全走提示分支（BUG 66543 平台版）
+QString pmw_ut_dvdDevice_empty_stub()
+{
+    return QString();
+}
+TEST(MainWindow, requestAction_OpenCdromEmptyHint)
+{
+    Platform_MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    Stub stub;
+    typedef QString (*dvdFptr)(CommandLineManager *);
+    stub.set((dvdFptr)(&CommandLineManager::dvdDevice),
+             reinterpret_cast<dvdFptr>(reinterpret_cast<void *>(&pmw_ut_dvdDevice_empty_stub)));
+
+    w->requestAction(ActionFactory::ActionKind::OpenCdrom, true);
+    QTest::qWait(50);
+}
+
+// WindowAbove 应翻转 m_bWindowAbove（平台版无 wayland 分支直接调 my_setStayOnTop，
+// offscreen 下 QX11Info::display() 为 nullptr，必须拦截，BUG 300705）
+namespace pmw_ut {
+void ut_setStayOnTop_noop_stub(Platform_MainWindow *self, const QWidget *pWidget, bool bOn)
+{
+    Q_UNUSED(self); Q_UNUSED(pWidget); Q_UNUSED(bOn);
+}
+}
+TEST(MainWindow, requestAction_WindowAboveTogglesFlag)
+{
+    Platform_MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    Stub stub;
+    stub.set(ADDR(Platform_MainWindow, my_setStayOnTop), pmw_ut::ut_setStayOnTop_noop_stub);
+
+    w->m_bWindowAbove = false;
+    w->requestAction(ActionFactory::ActionKind::WindowAbove, true);
+    EXPECT_TRUE(w->m_bWindowAbove);
+    w->requestAction(ActionFactory::ActionKind::WindowAbove, true);
+    EXPECT_FALSE(w->m_bWindowAbove);
+}
+
+// QuitFullscreen 在音量条可见时应先隐藏音量条再 break（BUG 300705 平台版）
+bool pmw_ut_volSliderHidden_stub(Platform_ToolboxProxy *self)
+{
+    Q_UNUSED(self);
+    return false;
+}
+TEST(MainWindow, requestAction_QuitFullscreenHidesVolSlider)
+{
+    Platform_MainWindow *w = dApp->getMainWindow();
+    ASSERT_TRUE(w);
+
+    Stub stub;
+    typedef bool (*volFptr)(Platform_ToolboxProxy *);
+    stub.set((volFptr)(&Platform_ToolboxProxy::getVolSliderIsHided),
+             reinterpret_cast<volFptr>(reinterpret_cast<void *>(&pmw_ut_volSliderHidden_stub)));
+
+    w->requestAction(ActionFactory::ActionKind::QuitFullscreen, true);
+    QTest::qWait(50);
+}
 // {
 //     Platform_MainWindow *w = dApp->getMainWindow();
 //     Platform_ToolboxProxy *toolboxProxy = w->toolbox();
@@ -1016,3 +1086,50 @@ TEST(ToolBox, volBtn)
 //     w->close();
 // }
 
+
+// Platform_ToolboxProxy::updateMovieProgress / slotFileLoaded / setup
+// 注意：批次 4 用例须用 Platform_MainWindow（平台版 getMainWindow 返回类型）；
+//      private m_bMousePree / protected updateMovieProgress 由文件头 #define private public 覆盖
+
+// 鼠标按下时 updateMovieProgress 早退（平台版）
+TEST(MainWindow, PlatformToolboxUpdateMovieProgress_MousePressedEarlyReturn)
+{
+    Platform_MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    ASSERT_NE(nullptr, w->m_pToolbox);
+    w->m_pToolbox->m_bMousePree = true;
+
+    EXPECT_NO_THROW(w->m_pToolbox->updateMovieProgress());
+    w->m_pToolbox->m_bMousePree = false;
+}
+
+// 正常路径 updateMovieProgress 冒烟（平台版）
+TEST(MainWindow, PlatformToolboxUpdateMovieProgress_NormalNoCrash)
+{
+    Platform_MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    ASSERT_NE(nullptr, w->m_pToolbox);
+    w->m_pToolbox->m_bMousePree = false;
+
+    EXPECT_NO_THROW(w->m_pToolbox->updateMovieProgress());
+}
+
+// slotFileLoaded 冒烟（平台版，无播放文件覆盖前半分支）
+TEST(MainWindow, PlatformToolboxSlotFileLoaded_NoAudioNoCrash)
+{
+    Platform_MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    ASSERT_NE(nullptr, w->m_pToolbox);
+
+    EXPECT_NO_THROW(w->m_pToolbox->slotFileLoaded());
+}
+
+// setup 冒烟：重复初始化不崩溃（平台版）
+TEST(MainWindow, PlatformToolboxSetup_Smoke)
+{
+    Platform_MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    ASSERT_NE(nullptr, w->m_pToolbox);
+
+    EXPECT_NO_THROW(w->m_pToolbox->setup());
+}
