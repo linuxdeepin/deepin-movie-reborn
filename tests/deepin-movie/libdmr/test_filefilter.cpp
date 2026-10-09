@@ -12,6 +12,7 @@
 #include "application.h"
 #include "filefilter.h"
 #include "stub/stub.h"
+#include "ut_sample_media.h"
 using namespace dmr;
 
 // ---------------------------------------------------------------------------
@@ -370,4 +371,49 @@ TEST(filefilter_ext, mainWindowAccessible)
     MainWindow *w = dApp->getMainWindow();
     EXPECT_NE(w, nullptr);
     QTest::qWait(10);
+}
+
+// typeJudgeByFFmpeg
+
+#include <QFileInfo>
+
+// 生成测试视频（ffmpeg testsrc，1 秒 h264 mp4），唯一临时路径，仅生成一次
+static QString ffext_ensureSampleVideo()
+{
+    return ut_ensureSampleMedia();
+}
+
+// 注意：FileFilter 构造私有（单例），MediaType 为 class 内默认 private 枚举；
+// 通过 instance() 获取对象，auto 接收返回值绕过枚举可见性，用整数值断言
+//（Audio=0, Video=1, Subtitle=2, Other=3）
+
+// typeJudgeByFFmpeg：m3u8（mime 含 mpegurl）直接返回 Other，不进 ffmpeg 探测
+TEST(filefilter_ext, typeJudgeByFFmpeg_MpegurlReturnsOther)
+{
+    FileFilter *ff = FileFilter::instance();
+    ASSERT_NE(nullptr, ff);
+    auto t = ff->typeJudgeByFFmpeg(QUrl::fromLocalFile("/tmp/fake_b5.m3u8"));
+    EXPECT_EQ(3, static_cast<int>(t));   // Other
+}
+
+// typeJudgeByFFmpeg：文件不存在 → avformat_open_input 失败 → Other
+TEST(filefilter_ext, typeJudgeByFFmpeg_NonExistFileReturnsOther)
+{
+    FileFilter *ff = FileFilter::instance();
+    ASSERT_NE(nullptr, ff);
+    auto t = ff->typeJudgeByFFmpeg(QUrl::fromLocalFile("/tmp/nonexistent_b5_xyz.mp4"));
+    EXPECT_EQ(3, static_cast<int>(t));   // Other
+}
+
+// typeJudgeByFFmpeg：有效视频文件 → Video
+TEST(filefilter_ext, typeJudgeByFFmpeg_VideoFileReturnsVideo)
+{
+    const QString path = ffext_ensureSampleVideo();
+    if (!QFileInfo::exists(path)) {
+        GTEST_SKIP() << "ffmpeg generated sample not available";
+    }
+    FileFilter *ff = FileFilter::instance();
+    ASSERT_NE(nullptr, ff);
+    auto t = ff->typeJudgeByFFmpeg(QUrl::fromLocalFile(path));
+    EXPECT_EQ(1, static_cast<int>(t));   // Video
 }

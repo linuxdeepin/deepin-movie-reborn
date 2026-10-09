@@ -25,6 +25,7 @@
 #include "player_engine.h"
 #include "compositing_manager.h"
 #include "movie_configuration.h"
+#include "ut_sample_media.h"
 
 TEST(PlayerEngine, playerEngine)
 {
@@ -50,13 +51,19 @@ TEST(PlayerEngine, movieInfo)
 }
 
 // Real media so isPlayableFile's FFmpeg content probe returns true.
-static const char *pe_kDemoMedia = "/data/source/deepin-movie-reborn/movie/demo.mp4";
+// 样例媒体：旧机器硬编码路径（/data/source/...）在当前环境不存在，
+// 改用运行时生成的唯一临时样例（ffmpeg testsrc）
+static QString pe_ensureDemoMedia()
+{
+    return ut_ensureSampleMedia();
+}
 
 // addPlayDir: temp dir with numbered media symlinks + a non-media file
 // exercises FileFilter::filterDir, the SortByDigits digit comparator, and
 // addPlayFiles' playable / non-playable branches.
 TEST(PlayerEngine, addPlayDir_sortsAndAppends)
 {
+    const QString pe_kDemoMedia = pe_ensureDemoMedia();
     PlayerEngine *engine = dApp->getMainWindow()->engine();
     ASSERT_TRUE(engine != nullptr);
 
@@ -81,6 +88,7 @@ TEST(PlayerEngine, addPlayDir_sortsAndAppends)
 // early return.
 TEST(PlayerEngine, addPlayFs_file_dir_empty_branches)
 {
+    const QString pe_kDemoMedia = pe_ensureDemoMedia();
     PlayerEngine *engine = dApp->getMainWindow()->engine();
     ASSERT_TRUE(engine != nullptr);
 
@@ -118,6 +126,7 @@ TEST(PlayerEngine, play_emptyPlaylist_returnsEarly)
 // the shared playlist (later ToolBox tests need >=2 items).
 TEST(PlayerEngine, loadSubtitleAndSelect)
 {
+    const QString pe_kDemoMedia = pe_ensureDemoMedia();
     PlayerEngine *engine = dApp->getMainWindow()->engine();
     ASSERT_TRUE(engine != nullptr);
     engine->addPlayFiles({QUrl::fromLocalFile(pe_kDemoMedia)});
