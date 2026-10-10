@@ -1483,8 +1483,8 @@ void MainWindow::onMonitorMotionNotify(int nX, int nY)
 bool MainWindow::judgeMouseInWindow(QPoint pos)
 {
     qDebug() << "judgeMouseInWindow";
-    bool bRet = false;
     QRect rect = frameGeometry();
+    bool bRet = rect.contains(pos);
     QPoint topLeft = rect.topLeft();
     QPoint bottomRight = rect.bottomRight();
     pos = mapToGlobal(pos);
