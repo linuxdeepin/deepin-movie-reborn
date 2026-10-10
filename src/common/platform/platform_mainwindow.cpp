@@ -1580,8 +1580,8 @@ void Platform_MainWindow::onMonitorMotionNotify(int nX, int nY)
 bool Platform_MainWindow::judgeMouseInWindow(QPoint pos)
 {
     qDebug() << "Platform_MainWindow judgeMouseInWindow";
-    bool bRet = false;
     QRect rect = frameGeometry();
+    bool bRet = rect.contains(pos);
     QPoint topLeft = rect.topLeft();
     QPoint bottomRight = rect.bottomRight();
     pos = mapToGlobal(pos);
