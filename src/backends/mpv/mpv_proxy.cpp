@@ -799,7 +799,8 @@ mpv_handle *MpvProxy::mpv_init()
     m_observeProperty(pHandle, 0, "aid", MPV_FORMAT_NODE);
     m_observeProperty(pHandle, 0, "dwidth", MPV_FORMAT_NODE);
     m_observeProperty(pHandle, 0, "dheight", MPV_FORMAT_NODE);
-    qDebug() << "DEBUG: MPV properties observed (time-pos, pause, mute, volume, sid, aid, dwidth, dheight).";
+    m_observeProperty(pHandle, 0, "track-list", MPV_FORMAT_NONE);
+    qDebug() << "DEBUG: MPV properties observed (time-pos, pause, mute, volume, sid, aid, dwidth, dheight, track-list).";
 
     // because of vpu, we need to implement playlist w/o mpv
     //m_observeProperty(pHandle, 0, "playlist-pos", MPV_FORMAT_NONE);
@@ -1390,6 +1391,11 @@ void MpvProxy::processPropertyChange(const QString &name)
         QTimer::singleShot(0, this, [this]() {
             qInfo() << "paused-for-cache" << m_cachedPausedForCache;
             emit urlpause(m_cachedPausedForCache);
+        });
+    } else if (name == "track-list") {
+        QTimer::singleShot(50, this, [this]() {
+            updatePlayingMovieInfo();
+            emit tracksChanged();
         });
     }
 }
