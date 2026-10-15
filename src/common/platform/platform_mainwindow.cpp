@@ -1145,6 +1145,7 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &Platform_MainWindow::checkOnlineSubtitle);
     connect(m_pEngine, &PlayerEngine::mpvErrorLogsChanged, this, &Platform_MainWindow::checkErrorMpvLogsChanged);
     connect(m_pEngine, &PlayerEngine::mpvWarningLogsChanged, this, &Platform_MainWindow::checkWarningMpvLogsChanged);
+    connect(m_pEngine, &PlayerEngine::sigHDRDetected, this, &Platform_MainWindow::slotHDRDetected);
     connect(m_pEngine, &PlayerEngine::urlpause, this, &Platform_MainWindow::slotUrlpause);
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::newProcessInstance, this, [ = ] {
         this->activateWindow();
@@ -3479,6 +3480,32 @@ void Platform_MainWindow::slotFileLoaded()
     m_platform_nRetryTimes = 0;
     this->resizeByConstraints();
     m_bIsFree = true;
+}
+
+void Platform_MainWindow::slotHDRDetected()
+{
+    qInfo() << "slotHDRDetected: HDR video detected, show unsupported dialog";
+
+    requestAction(ActionFactory::TogglePause);
+    DDialog *pDialog = new DDialog;
+    pDialog->setFixedWidth(440);
+    QImage icon = utils::LoadHiDPIImage(":/resources/icons/warning.svg");
+    QPixmap pix = QPixmap::fromImage(icon);
+    pDialog->setIcon(QIcon(pix));
+    pDialog->setMessage(tr("HDR is not supported"));
+    pDialog->addButton(tr("OK"), true, DDialog::ButtonRecommend);
+    QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
+    effect->setOffset(0, 4);
+    effect->setColor(QColor(0, 145, 255, 76));
+    effect->setBlurRadius(4);
+    pDialog->getButton(0)->setFixedWidth(340);
+    pDialog->getButton(0)->setGraphicsEffect(effect);
+#ifndef USE_TEST
+    pDialog->exec();
+#else
+    pDialog->show();
+    pDialog->deleteLater();
+#endif
 }
 
 void Platform_MainWindow::slotUrlpause(bool bStatus)
