@@ -52,6 +52,15 @@
 | <img src="../common/play_normal.svg" class="inline" /> | 開始播放影片      | <img src="../common/suspend_normal.svg" class="inline" /> | 暫停播放影片   |
 | <img src="../common/zoom_in_normal.svg" class="inline" /> | 全螢幕播放          | <img src="../common/zoom_out_normal.svg" class="inline" /> |  退出全螢幕      |
 | <img src="../common/volume_normal.svg" class="inline" /> | 調節音量       |<img src="../common/episodes_normal.svg" class="inline" />|呼出/隱藏播放列表|
+| <img src="../common/cast-24.svg" class="inline" /> | 影片投屏 | | |
+
+單擊工具欄中的 ![movie](../common/cast-24.svg) 可以進行影片投屏：
+
+1. 在電影界面，單擊 ![movie](../common/cast-24.svg)。
+2. 進入投屏設備選擇界面，自動搜尋與本設備處於同一網絡的可投屏設備。
+3. 在搜尋結果頁，單擊要投屏的設備名稱將會發起投屏。
+4. 投屏成功後，將會顯示投屏中界面，單擊其中的 **退出投屏** 按鈕可結束投屏。
+
 
 
 ## 操作介绍
@@ -82,7 +91,6 @@
 - 在電影界面，鼠標拖動進度條來快進或快退影片。
 - 在電影界面，按下鍵盤上的 ![Right](../common/Right.svg) 鍵快進影片或 ![Left](../common/Left.svg) 鍵快退影片。
 >![notes](../common/notes.svg) 說明 ：當使用觸控屏電腦時，在全螢幕狀態下，一指向左滑動影片畫面區域快退影片，一指向右滑動影片畫面區域快進影片。
-
 
 
 ### 調整播放窗口
@@ -165,6 +173,9 @@
 
 1. 在電影界面，單擊鼠標右鍵。
 2. 選擇 **影片訊息**，可以查看影片的詳細訊息。
+
+
+
 
 
 ## 列表管理

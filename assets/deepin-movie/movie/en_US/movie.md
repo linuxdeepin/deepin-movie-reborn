@@ -52,6 +52,15 @@ On the Movie interface, press **Ctrl + Shift + ?** to view shortcuts. Proficienc
 | <img src="../common/play_normal.svg" class="inline" />     | Play       | <img src="../common/suspend_normal.svg" class="inline" />  | Pause           |
 | <img src="../common/zoom_in_normal.svg" class="inline" />    | Fullscreen | <img src="../common/zoom_out_normal.svg" class="inline" /> | Exit fullscreen |
 | <img src="../common/episodes_normal.svg" class="inline" /> | Playlist   | <img src="../common/volume_normal.svg" class="inline" />    | Volume          |
+| <img src="../common/cast-24.svg" class="inline" />         | Project to |                                                             |                 |
+
+Click ![movie](../common/cast-24.svg) on the toolbar to project the film:
+
+1. On the Movie interface, click ![movie](../common/cast-24.svg).
+2. The device selection page opens and automatically searches for projectable devices on the same network.
+3. On the search results page, click the name of the device you want to project to, and projection starts.
+4. After projection starts, the projecting page appears. Click **Exit Miracast** to stop projecting.
+
 
 
 ## Basic Operations
@@ -166,6 +175,9 @@ Right-click on the Movie interface and you can:
 
 1. Right-click on the Movie interface.
 2. Select **Film Info** and you can view the film info, codec info, and audio info of the film. 
+
+
+
 
 ## Playlist Management
 
