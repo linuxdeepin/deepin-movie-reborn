@@ -163,6 +163,14 @@ Right-click on the Movie interface and you can:
 1. Right-click on the Movie interface.
 2. Select **Film Info** and you can view the film info, codec info, and audio info of the film. 
 
+
+### Project to
+
+1. On the Movie interface, click ![movie](../common/cast-24.svg).
+2. The device selection page opens and automatically searches for projectable devices on the same network.
+3. On the search results page, click the name of the device you want to project to, and projection starts.
+4. After projection starts, the projecting page appears. Click **Exit Miracast** to stop projecting.
+
 ## Playlist Management
 
 You can enter the playlist to manage the existing video files.

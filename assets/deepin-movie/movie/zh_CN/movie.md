@@ -53,6 +53,14 @@
 | <img src="../common/play_normal.svg">     | 开始播放影片      | <img src="../common/suspend_normal.svg"> | 暂停播放影片   |
 | <img src="../common/zoom_in_normal.svg">  | 全屏播放          | <img src="../common/zoom_out_normal.svg"> |  退出全屏      |
 | <img src="../common/volume_normal.svg">  | 调节音量       |<img src="../common/episodes_normal.svg">|呼出/隐藏播放列表|
+| <img src="../common/cast-24.svg">        | 视频投屏          |                                                           |                |
+
+单击工具栏中的 ![movie](../common/cast-24.svg) 可以进行视频投屏：
+
+1. 在影院界面，单击 ![movie](../common/cast-24.svg)。
+2. 进入投屏设备选择界面，自动搜索与本设备处于同一网络的可投屏设备。
+3. 在搜索结果页，单击要投屏的设备名称将会发起投屏。
+4. 投屏成功后，将会显示投屏中界面，单击其中的 **退出投屏** 按钮可结束投屏。
 
 
 
@@ -78,7 +86,6 @@
 > ![notes](../common/notes.svg) 说明：当使用触控屏电脑时，一指按住影片文件拖拽到影院界面来播放影片。
 
 
-
 ![0|open](fig/open.png)
 
 ### 快进/快退
@@ -86,7 +93,6 @@
 - 在影院界面，鼠标拖动进度条来快进或快退视频。
 - 在影院界面，按下键盘上的 ![Right](../common/Right.svg) 快进视频或 ![Left](../common/Left.svg) 键快退视频。
 >![notes](../common/notes.svg) 说明 ：当使用触控屏电脑时，在全屏状态下，一指向左滑动视频快退视频，一指向右滑动视频快进视频。
-
 
 
 ### 调整播放窗口
@@ -175,6 +181,9 @@
 
 1. 在影院界面，单击鼠标右键。
 2. 选择 **影片信息**，查看影片信息、编码信息、音频流信息。
+
+
+
 
 
 ## 列表管理

@@ -52,6 +52,15 @@
 | <img src="../common/play_normal.svg" class="inline" /> | 開始播放影片      | <img src="../common/suspend_normal.svg" class="inline" /> | 暫停播放影片   |
 | <img src="../common/zoom_in_normal.svg" class="inline" /> | 全螢幕播放          | <img src="../common/zoom_out_normal.svg" class="inline" /> | 退出全螢幕       |
 | <img src="../common/volume_normal.svg" class="inline" /> | 調節音量 | <img src="../common/episodes_normal.svg" class="inline" />      | 呼出/隱藏播放列表         |
+| <img src="../common/cast-24.svg" class="inline" /> | 影片投屏 | | |
+
+單擊工具列中的 ![movie](../common/cast-24.svg) 可以進行影片投屏：
+
+1. 在電影介面，單擊 ![movie](../common/cast-24.svg)。
+2. 進入投屏裝置選擇介面，自動搜尋與本裝置處於同一網路的可投屏裝置。
+3. 在搜尋結果頁，單擊要投屏的裝置名稱將會發起投屏。
+4. 投屏成功後，將會顯示投屏中介面，單擊其中的 **退出投屏** 按鈕可結束投屏。
+
 
 ## 操作介紹
 
@@ -167,6 +176,9 @@
 
 1. 在電影介面上，單擊滑鼠右鍵。
 2. 選擇 **影片資訊**，可以查看影片的影片資訊、編碼訊息、音軌訊息。
+
+
+
 
 
 ## 列表管理
