@@ -24,18 +24,54 @@ sources:
 command:
   - deepin-movie
 
-build: |
-  # 下载构建依赖和运行时包
-  #   另外新增其编译所需：libpciaccess-dev libvdpau-dev libdrm-dev libx11-dev libwayland-dev）
-  apt -y install --download-only libmpv-dev libxcb1-dev libxcb-util0-dev libffmpegthumbnailer-dev libxcb-shape0-dev libxcb-ewmh-dev xcb-proto x11proto-record-dev x11-utils libxtst-dev libavcodec-dev libavformat-dev libavutil-dev libpulse-dev libdvdnav-dev libgsettings-qt-dev libva-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev qt6-base-dev qt6-base-dev-tools qt6-base-private-dev qt6-l10n-tools qt6-svg-dev qt6-tools-dev-tools qt6-tools-dev qt6-multimedia-dev libqt6sql6-sqlite libmpris-qt6-dev libqt6opengl6-dev libdtk6gui-dev libdtk6widget-dev libdtk6core-dev deepin-event-log ffmpeg pciutils mesa-utils libmpv2 libavdevice60 libavfilter9 libpostproc57 libffmpegthumbnailer4v5 libblas3 liblapack3 libpciaccess-dev libvdpau-dev libdrm-dev libx11-dev libwayland-dev
-  # libxcb1-dev：解决构建失败
-  bash ./install_dep /var/cache/apt/archives "$PREFIX" "libxcb1-dev"
+# 声明式构建/运行依赖（替代手动 apt download + install_dep/deploy_dep 解包）：
+# 1. 基础环境已具备的工具链与开发包不再声明：
+#    - gcc/g++/cmake/make/pkg-config 由 base 的 develop 模块提供
+#    - Qt6/DTK6 全套 dev、libxcb1-dev、libx11-dev、libwayland-dev、libglib2.0-dev
+#      等由 runtime 的 develop 模块提供
+# 2. build_depends 仅保留 base/runtime 缺失的编译依赖；
+#    depends 仅保留运行期缺失的库与工具，传递依赖（blas/lapack/avdevice 等）由 apt 闭包自动解析
+buildext:
+  apt:
+    build_depends:
+      - libmpv-dev
+      - libffmpegthumbnailer-dev
+      - libxcb-util-dev        # xcb/xcb_aux.h（mpv_proxy.cpp）
+      - libxcb-shape0-dev      # pkg_check xcb-shape
+      - libxtst-dev            # X11/extensions/record.h + -lXtst（鼠标事件监听）
+      - libavcodec-dev
+      - libavformat-dev
+      - libavutil-dev          # libavutil/hwcontext.h、dict.h 等
+      - libdvdnav-dev
+      - libgsettings-qt-dev    # QGSettings 头文件
+      - libva-dev              # va/va_x11.h；deepin-gpuinfo 源码构建（libva-drm/x11/wayland）
+      - libvdpau-dev           # deepin-gpuinfo 源码构建（vdpau）
+      - libpciaccess-dev       # deepin-gpuinfo 源码构建（pciaccess）
+      - libdrm-dev             # libdrm + libva-drm
+      - libgstreamer1.0-dev
+      - libgstreamer-plugins-base1.0-dev  # gst/pbutils
+      - libmpris-qt6-dev
+    depends:
+      # 应用通过 QLibrary dlopen 裸名 so，仅 -dev 包提供无版本号软链，
+      # 并经传递依赖带入 libmpv2 及 ffmpeg 全套运行库
+      - libmpv-dev
+      - libffmpegthumbnailer-dev
+      - deepin-event-log       # dlopen libdeepin-event-log.so
+      - libmpris-qt6
+      - ffmpeg                 # 工具箱调用 ffmpeg 转码
+      - pciutils               # lspci（GPU 信息）
+      - x11-utils              # xprop（窗口属性）
 
-  # 调整头文件查找路径
+permissions:
+  binds:
+    - source: /var/log
+      destination: /var/log
+
+build: |
+  # 调整头文件查找路径：glib 开发文件位于 runtime 层（/runtime/include），
+  # gstreamer 开发文件经 buildext 装入 /usr/include，与源码硬编码路径一致，无需调整
   sed -i "s|/usr/include/glib-2.0|/runtime/include/glib-2.0|g" src/CMakeLists.txt
-  sed -i "s|/usr/include/gstreamer-1.0|$PREFIX/include/gstreamer-1.0|g" src/CMakeLists.txt
   sed -i "s|/usr/include/glib-2.0|/runtime/include/glib-2.0|g" src/libdmr/CMakeLists.txt
-  sed -i "s|/usr/include/gstreamer-1.0|$PREFIX/include/gstreamer-1.0|g" src/libdmr/CMakeLists.txt
 
   # ================= 从源码构建 libgpuinfo =================
   # 源码来自上方 sources 段
@@ -56,20 +92,23 @@ build: |
   rm -rf /tmp/gpuinfo-build
   cmake -B /tmp/gpuinfo-build -S "$GPUINFO_SRC" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX
   cmake --build /tmp/gpuinfo-build --target gpuinfo -j`nproc`
-  # 安装到与原 libgpuinfo deb 解包完全相同的位置（deploy_dep 与 install 文件依赖这些路径）
+  # 安装到 $PREFIX/lib 与 $PREFIX/share（默认模块规则随应用层分发）
   install -d -m 0755 $PREFIX/lib/${TRIPLET} $PREFIX/share/deepin-gpuinfo
   install -m 0755 /tmp/gpuinfo-build/src/libgpuinfo/libgpuinfo.so.0.1.0 $PREFIX/lib/${TRIPLET}/
   ln -sf libgpuinfo.so.0.1.0 $PREFIX/lib/${TRIPLET}/libgpuinfo.so.0.1
   ln -sf libgpuinfo.so.0.1   $PREFIX/lib/${TRIPLET}/libgpuinfo.so
   install -m 0644 "$GPUINFO_SRC/config/gpuinfolib.csv" $PREFIX/share/deepin-gpuinfo/gpuinfolib.csv
 
-  # 移动部分库到应用库目录，否则无法找到
-  if [ -d "${PREFIX}/lib/${TRIPLET}/blas" ]; then
-      mv ${PREFIX}/lib/${TRIPLET}/blas/libblas.* ${PREFIX}/lib/${TRIPLET} 2>/dev/null || true
-  fi
-  if [ -d "${PREFIX}/lib/${TRIPLET}/lapack" ]; then
-      mv ${PREFIX}/lib/${TRIPLET}/lapack/liblapack.* ${PREFIX}/lib/${TRIPLET} 2>/dev/null || true
-  fi
+  # libblas3/liblapack3 经 alternatives 提供顶层软链，指向 /etc/alternatives（层内不存在），
+  # 将真实库复制进应用库目录，保证 ffmpeg 等运行期可解析（替代旧配方的 mv blas/lapack 逻辑）
+  for n in libblas.so.3 liblapack.so.3; do
+      src=$(readlink -f /usr/lib/${TRIPLET}/$n 2>/dev/null || true)
+      if [ -n "$src" ] && [ -e "$src" ]; then
+          cp -L "$src" $PREFIX/lib/${TRIPLET}/$n
+      fi
+  done
+
+  # 刷新 ld 缓存，使 dlopen("libgpuinfo.so") 可解析源码构建的库
   ldconfig -C "$LINGLONG_LD_SO_CACHE"
 
   # 构建
@@ -86,45 +125,3 @@ build: |
 
   # 解决GIO运行问题： Settings schema xxx is not installed
   glib-compile-schemas $PREFIX/share/glib-2.0/schemas
-
-  # 项目生成应用名和动态隐式加载的依赖库，ldd无法找到的其他库
-  # 注意：glxinfo是符号链接，会自动解析到架构特定文件(glxinfo.${TRIPLET})
-  # deploy_dep脚本会处理符号链接，无需显式列出架构特定版本
-  LDD_FILES=(
-    deepin-movie
-    ffmpeg
-    lspci
-    glxinfo
-    glxinfo.${TRIPLET}
-    libmpv.so
-    libgpuinfo.so
-    libavcodec.so
-    libavutil.so
-    libavformat.so
-    libavdevice.so
-    libavfilter.so
-    libpostproc.so
-    libswresample.so
-    libswscale.so
-    libgstreamer-1.0.so
-    libgstpbutils-1.0.so
-    libffmpegthumbnailer.so
-    ../libdeepin-event-log.so
-  )
-
-  # 生成.install 文件
-  bash ./deploy_dep "${LDD_FILES[@]}"
-
-  ID_VALUE=$(awk -F ': ' '/^  id: / {print $2}' linglong.yaml)
-  find $PREFIX/bin/xprop >> "${ID_VALUE}.install"
-  find $PREFIX/share/deepin-gpuinfo/gpuinfolib.csv >> "${ID_VALUE}.install"
-
-permissions:
-  binds:
-    - source: /var/log
-      destination: /var/log
-
-buildext:
-   apt:
-     build_depends:
-       - libc6
