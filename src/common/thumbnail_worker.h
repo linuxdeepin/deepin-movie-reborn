@@ -9,6 +9,7 @@
 #include <libffmpegthumbnailer/videothumbnailerc.h>
 #include <atomic>
 #include <mutex>
+#include "precise_thumbnail.h"
 
 
 typedef video_thumbnailer *(*mvideo_thumbnailer)();
