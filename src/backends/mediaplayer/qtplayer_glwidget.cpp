@@ -404,7 +404,8 @@ namespace dmr {
     {
         if (!m_bUseCustomFBO) return;
 
-        auto desiredSize = size() * qApp->devicePixelRatio();
+        // 与 mpv 后端一致：必须用窗口级 DPR（qApp->devicePixelRatio() 是屏幕级整数且进程内缓存）
+        auto desiredSize = size() * devicePixelRatioF();
 
         if (m_pFbo) {
             if (m_pFbo->size() == desiredSize) {
