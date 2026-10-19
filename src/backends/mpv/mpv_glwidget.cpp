@@ -570,7 +570,10 @@ namespace dmr {
     {
         if (!m_bUseCustomFBO) return;
 
-        auto desiredSize = size() * qApp->devicePixelRatio();
+        // 必须用窗口级 DPR：qApp->devicePixelRatio() 是屏幕级整数（分数缩放下偏大），
+        // 且进程内缓存不再更新；QOpenGLWidget 按窗口 DPR 分配 FBO，两者不一致会让 mpv
+        // 按错误的目标尺寸渲染，画面只显示一部分。
+        auto desiredSize = size() * devicePixelRatioF();
 
         if (m_pFbo) {
             if (m_pFbo->size() == desiredSize) {
@@ -824,7 +827,10 @@ namespace dmr {
         QOpenGLFunctions *pGLFunction = QOpenGLContext::currentContext()->functions();
         if (m_bPlaying) {
 
-            qreal dpr = qApp->devicePixelRatio();
+            // 缩放或显示变化后惰性重算渲染目标（尺寸未变时函数内直接返回）
+            updateMovieFbo();
+
+            qreal dpr = devicePixelRatioF();
             QSize scaled = size() * dpr;
             int nFlip = 1;
 
@@ -847,7 +853,7 @@ namespace dmr {
                 m_pFbo->bind();
 
                 mpv_opengl_fbo fbo {
-                    static_cast<int>(m_pFbo->handle()), scaled.width(), scaled.height(), 0
+                    static_cast<int>(m_pFbo->handle()), m_pFbo->width(), m_pFbo->height(), 0
                 };
 
                 mpv_render_param params[] = {
