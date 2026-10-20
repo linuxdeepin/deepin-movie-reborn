@@ -334,6 +334,18 @@ public:
      */
     bool getMiniMode();
 
+    /**
+     * @brief toggleKWinCompositingForLjm 凌久微显卡合成器控制
+     *        视频播放时停止 KWin 合成(最佳性能)，暂停/停止时恢复播放前状态
+     * @param playing 是否正在播放视频
+     */
+    void toggleKWinCompositingForLjm(bool playing);
+
+    /**
+     * @brief restoreKWinCompositingForLjm 恢复凌久微显卡播放前保存的 KWin 合成器状态
+     */
+    void restoreKWinCompositingForLjm();
+
 public slots:
     /**
      * @brief 根据url地址播放影片
@@ -585,6 +597,10 @@ private:
     QDBusInterface *m_pWMDBus {nullptr};              ///窗口特效dbus接口
     bool m_bIsWM {true};                              ///是否开启窗口特效（全屏绕过合成器期间会被临时置为false）
     bool m_bRealIsWM {true};                          ///真实的窗口特效状态，用于退出全屏后恢复m_bIsWM
+    QDBusInterface *m_pKWinCompositing {nullptr};     ///org.kde.kwin.Compositing 接口(凌久微停合成)
+    bool m_bLjmEffectsActive {false};                 ///是否启用凌久微显卡停合成
+    bool m_bCompositingSuspendedByUs {false};         ///当前是否由本程序 suspend 了合成器
+    bool m_bSavedKWinCompositingActive {true};        ///suspend 前 KWin 合成器 active 状态
     bool m_bMaximized;                                ///全屏前最大化窗口记录
     bool m_bLocked{true};
     bool m_bShowTime {false};                         ///全屏显示影片时间信息

@@ -704,6 +704,12 @@ bool isJjwGPUPresent()
     return jjwPath == "/dev/mwv206_0" || jjwPath == "/dev/jmgpu" || jjwPath == "mwv207d";
 }
 
+// 判断是否为凌久微(ljmcore)显卡
+bool isLjmGPUPresent()
+{
+    return QFile::exists("/sys/bus/pci/drivers/ljmcore");
+}
+
 QString getJjwGPUPath()
 {
     // jm72

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -71,6 +71,12 @@ bool isSietiumGPUPresent();
  * @return 如果存在jjw显卡返回true，否则返回false
  */
 bool isJjwGPUPresent();
+
+/**
+ * @brief 检测是否存在凌久微(ljmcore)显卡
+ * @return 如果存在凌久微显卡返回true，否则返回false
+ */
+bool isLjmGPUPresent();
 
 /**
  * @brief 获取jjw显卡设备路径
