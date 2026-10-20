@@ -1113,6 +1113,31 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     m_pCommHintWid->setWM(m_bIsWM);
     connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
 
+    // 凌久微显卡：视频播放时停止 KWin 合成(真正关合成，而非 com.deepin.wm 的 2.5D)，
+    // 暂停/停止时恢复播放前的状态
+    if (utils::isLjmGPUPresent()) {
+        m_pKWinCompositing = new QDBusInterface("org.kde.KWin", "/Compositor",
+                                                "org.kde.kwin.Compositing", QDBusConnection::sessionBus());
+        if (m_pKWinCompositing->isValid()) {
+            const QVariant act = m_pKWinCompositing->property("active");
+            if (act.isValid()) {
+                m_bSavedKWinCompositingActive = act.toBool();
+                m_bLjmEffectsActive = true;
+                qInfo() << "ljmcore detected, kwin compositing control enabled, active ="
+                        << m_bSavedKWinCompositingActive;
+            } else {
+                qWarning() << "ljmcore: read kwin compositing active failed:"
+                           << m_pKWinCompositing->lastError().message();
+                delete m_pKWinCompositing;
+                m_pKWinCompositing = nullptr;
+            }
+        } else {
+            qWarning() << "ljmcore detected but org.kde.kwin.Compositing is invalid, skip compositing control";
+            delete m_pKWinCompositing;
+            m_pKWinCompositing = nullptr;
+        }
+    }
+
     m_pAnimationlabel = new Platform_AnimationLabel(this, this);
     m_pAnimationlabel->setWM(m_bIsWM);
 
@@ -3428,6 +3453,13 @@ void Platform_MainWindow::slotPlayerStateChanged()
     bool bAudio = false;
     PlayerEngine *pEngine = dynamic_cast<PlayerEngine *>(sender());
     if (!pEngine) return;
+
+    // 凌久微显卡：仅视频播放时停止 KWin 合成，音频/暂停/停止时恢复
+    if (m_bLjmEffectsActive) {
+        bool bAudioNow = m_pEngine->playlist().count() > 0 && m_pEngine->currFileIsAudio();
+        toggleKWinCompositingForLjm(pEngine->state() == PlayerEngine::CoreState::Playing && !bAudioNow);
+    }
+
     setInit(pEngine->state() != PlayerEngine::Idle);
     resumeToolsWindow();
     updateWindowTitle();
@@ -3452,6 +3484,50 @@ void Platform_MainWindow::slotPlayerStateChanged()
     } else if (pEngine->state() == PlayerEngine::CoreState::Idle) {
         m_pMovieWidget->stopPlaying();
     }
+}
+
+void Platform_MainWindow::toggleKWinCompositingForLjm(bool playing)
+{
+    if (!m_bLjmEffectsActive || !m_pKWinCompositing)
+        return;
+
+    if (playing) {
+        if (m_bCompositingSuspendedByUs)
+            return;   // 已停合成，避免重复处理
+        // 播放前读取 KWin 合成器真实状态
+        const QVariant act = m_pKWinCompositing->property("active");
+        if (!act.isValid()) {
+            qWarning() << "ljmcore: read kwin compositing active failed:"
+                       << m_pKWinCompositing->lastError().message();
+            return;   // 读取失败则不做任何改动
+        }
+        m_bSavedKWinCompositingActive = act.toBool();
+        if (!m_bSavedKWinCompositingActive)
+            return;   // 合成本就未开启，无需处理
+        const QDBusMessage reply = m_pKWinCompositing->call("suspend");
+        if (reply.type() == QDBusMessage::ErrorMessage) {
+            qWarning() << "ljmcore: kwin suspend failed:" << reply.errorMessage();
+            return;
+        }
+        m_bCompositingSuspendedByUs = true;
+        qInfo() << "ljmcore: kwin compositing suspended for video playback";
+    } else {
+        restoreKWinCompositingForLjm();
+    }
+}
+
+void Platform_MainWindow::restoreKWinCompositingForLjm()
+{
+    if (!m_bLjmEffectsActive || !m_pKWinCompositing || !m_bCompositingSuspendedByUs)
+        return;
+
+    const QDBusMessage reply = m_pKWinCompositing->call("resume");
+    if (reply.type() == QDBusMessage::ErrorMessage) {
+        qWarning() << "ljmcore: kwin resume failed:" << reply.errorMessage();
+        return;   // 恢复失败保留标记，后续(暂停/退出)会重试
+    }
+    m_bCompositingSuspendedByUs = false;
+    qInfo() << "ljmcore: kwin compositing resumed";
 }
 
 void Platform_MainWindow::slotFocusWindowChanged()
@@ -3624,6 +3700,8 @@ void Platform_MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const 
 void Platform_MainWindow::closeEvent(QCloseEvent *pEvent)
 {
     qInfo() << __func__;
+    // 退出前恢复凌久微显卡播放时暂停的 KWin 合成，避免残留停合成状态
+    restoreKWinCompositingForLjm();
     if(m_pMircastShowWidget&&m_pMircastShowWidget->isVisible()) {
         slotExitMircast();
     }
@@ -5111,6 +5189,13 @@ bool Platform_MainWindow::getMiniMode()
 Platform_MainWindow::~Platform_MainWindow()
 {
     qInfo() << __func__;
+    // 兜底恢复凌久微显卡播放时暂停的 KWin 合成
+    restoreKWinCompositingForLjm();
+    if (m_pKWinCompositing) {
+        delete m_pKWinCompositing;
+        m_pKWinCompositing = nullptr;
+    }
+
     //Do not enter CloseEvent when exiting from the title bar menu, so add the save function here
     //powered by xxxxp
     if (m_pEngine) {
