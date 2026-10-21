@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "platform_thumbnail_worker.h"
+#include "ddlog.h"
 #include "player_engine.h"
 #include <QLibrary>
 #include <stdio.h>
@@ -22,28 +23,28 @@ QWaitCondition Platform_ThumbnailWorker::m_cond;
 
 Platform_ThumbnailWorker::~Platform_ThumbnailWorker()
 {
-    qDebug() << "Destroying thumbnail worker";
+    qCDebug(appMovie) << "Destroying thumbnail worker";
     free(m_pCharTime);
     if (m_video_thumbnailer) {
-        qDebug() << "Destroying video thumbnailer";
+        qCDebug(appMovie) << "Destroying video thumbnailer";
         m_mvideo_thumbnailer_destroy(m_video_thumbnailer);
     } else {
-        qDebug() << "Video thumbnailer is null, no need to destroy.";
+        qCDebug(appMovie) << "Video thumbnailer is null, no need to destroy.";
     }
-    qDebug() << "Exiting Platform_ThumbnailWorker destructor.";
+    qCDebug(appMovie) << "Exiting Platform_ThumbnailWorker destructor.";
 }
 
 Platform_ThumbnailWorker &Platform_ThumbnailWorker::get()
 {
     if (m_instance == nullptr) {
         QMutexLocker lock(&m_instLock);
-        qDebug() << "Creating new thumbnail worker instance";
+        qCDebug(appMovie) << "Creating new thumbnail worker instance";
         m_instance = new Platform_ThumbnailWorker;
         if(CompositingManager::get().platform() != Platform::Mips) {
-            qDebug() << "Starting thumbnail worker thread";
+            qCDebug(appMovie) << "Starting thumbnail worker thread";
             (*m_instance).start();
         } else {
-            qDebug() << "Skipping thumbnail worker thread start on MIPS platform";
+            qCDebug(appMovie) << "Skipping thumbnail worker thread start on MIPS platform";
         }
     }
     return *m_instance;
@@ -51,61 +52,61 @@ Platform_ThumbnailWorker &Platform_ThumbnailWorker::get()
 
 bool Platform_ThumbnailWorker::isThumbGenerated(const QUrl &url, int secs)
 {
-    qDebug() << "Entering Platform_ThumbnailWorker::isThumbGenerated. URL:" << url << ", Seconds:" << secs;
+    qCDebug(appMovie) << "Entering Platform_ThumbnailWorker::isThumbGenerated. URL:" << url << ", Seconds:" << secs;
     QMutexLocker lock(&m_thumbLock);
     if (!_cache.contains(url)) {
-        qDebug() << "Cache does not contain URL. Returning false.";
+        qCDebug(appMovie) << "Cache does not contain URL. Returning false.";
         return false;
     }
 
     const auto &l = _cache[url];
     bool result = l.contains(secs);
-    qDebug() << "Cache contains URL. Checking if seconds is present. Result:" << result;
-    qDebug() << "Exiting Platform_ThumbnailWorker::isThumbGenerated.";
+    qCDebug(appMovie) << "Cache contains URL. Checking if seconds is present. Result:" << result;
+    qCDebug(appMovie) << "Exiting Platform_ThumbnailWorker::isThumbGenerated.";
     return result;
 }
 
 QPixmap Platform_ThumbnailWorker::getThumb(const QUrl &url, int secs)
 {
-    qDebug() << "Entering Platform_ThumbnailWorker::getThumb. URL:" << url << ", Seconds:" << secs;
+    qCDebug(appMovie) << "Entering Platform_ThumbnailWorker::getThumb. URL:" << url << ", Seconds:" << secs;
     QMutexLocker lock(&m_thumbLock);
     QPixmap pm;
 
     if (_cache.contains(url)) {
         pm = _cache[url].value(secs);
-        qDebug() << "Retrieved cached thumbnail for" << url << "at" << secs << "seconds";
+        qCDebug(appMovie) << "Retrieved cached thumbnail for" << url << "at" << secs << "seconds";
     } else {
-        qDebug() << "No cached thumbnail found for" << url << "at" << secs << "seconds";
+        qCDebug(appMovie) << "No cached thumbnail found for" << url << "at" << secs << "seconds";
     }
-    qDebug() << "Exiting Platform_ThumbnailWorker::getThumb.";
+    qCDebug(appMovie) << "Exiting Platform_ThumbnailWorker::getThumb.";
     return pm;
 }
 
 void Platform_ThumbnailWorker::setPlayerEngine(PlayerEngine *pPlayerEngline)
 {
-    qDebug() << "Entering Platform_ThumbnailWorker::setPlayerEngine. PlayerEngine pointer:" << pPlayerEngline;
+    qCDebug(appMovie) << "Entering Platform_ThumbnailWorker::setPlayerEngine. PlayerEngine pointer:" << pPlayerEngline;
     _engine = pPlayerEngline;
-    qDebug() << "Exiting Platform_ThumbnailWorker::setPlayerEngine. Engine set.";
+    qCDebug(appMovie) << "Exiting Platform_ThumbnailWorker::setPlayerEngine. Engine set.";
 }
 
 void Platform_ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 {
-    qDebug() << "Requesting thumbnail for" << url << "at" << secs << "seconds";
+    qCDebug(appMovie) << "Requesting thumbnail for" << url << "at" << secs << "seconds";
     if(CompositingManager::get().platform() != Platform::Mips) {
-        qDebug() << "Platform is not MIPS. Attempting to add thumbnail request to queue.";
+        qCDebug(appMovie) << "Platform is not MIPS. Attempting to add thumbnail request to queue.";
         if (m_thumbLock.tryLock()) {
             _wq.push_front(qMakePair(url, secs));
             m_cond.wakeOne();
             m_thumbLock.unlock();
-            qDebug() << "Added thumbnail request to queue";
+            qCDebug(appMovie) << "Added thumbnail request to queue";
         } else {
-            qWarning() << "Failed to acquire lock for thumbnail request";
+            qCWarning(appMovie) << "Failed to acquire lock for thumbnail request";
         }
     } else {
-        qDebug() << "Running thumbnail generation synchronously on MIPS platform";
+        qCDebug(appMovie) << "Running thumbnail generation synchronously on MIPS platform";
         runSingle(qMakePair(url, secs));
     }
-    qDebug() << "Exiting Platform_ThumbnailWorker::requestThumb.";
+    qCDebug(appMovie) << "Exiting Platform_ThumbnailWorker::requestThumb.";
 }
 
 Platform_ThumbnailWorker::Platform_ThumbnailWorker()
@@ -119,7 +120,7 @@ Platform_ThumbnailWorker::Platform_ThumbnailWorker()
 
 void Platform_ThumbnailWorker::initThumb()
 {
-    qDebug() << "Initializing thumbnail generation library";
+    qCDebug(appMovie) << "Initializing thumbnail generation library";
     QLibrary library(SysUtils::libPath("libffmpegthumbnailer.so"));
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
@@ -130,27 +131,27 @@ void Platform_ThumbnailWorker::initThumb()
     if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
             || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
             || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr) {
-        qCritical() << "Failed to resolve required thumbnail generation functions";
+        qCCritical(appMovie) << "Failed to resolve required thumbnail generation functions";
         return;
     }
 
     m_video_thumbnailer = m_mvideo_thumbnailer();
     if (m_video_thumbnailer == nullptr) {
-        qCritical() << "Failed to create video thumbnailer instance";
+        qCCritical(appMovie) << "Failed to create video thumbnailer instance";
         return;
     }
-    qInfo() << "Thumbnail generation library initialized successfully";
+    qCInfo(appMovie) << "Thumbnail generation library initialized successfully";
 }
 
 QPixmap Platform_ThumbnailWorker::genThumb(const QUrl &url, int secs)
 {
-    qInfo() << "Generating thumbnail for" << url << "at" << secs << "seconds";
+    qCInfo(appMovie) << "Generating thumbnail for" << url << "at" << secs << "seconds";
     auto dpr = qApp->devicePixelRatio();
     QPixmap pm;
     pm.setDevicePixelRatio(dpr);
 
     if (m_image_data == nullptr) {
-        qDebug() << "Creating new image data buffer";
+        qCDebug(appMovie) << "Creating new image data buffer";
         m_image_data = m_mvideo_thumbnailer_create_image_data();
     }
 
@@ -162,15 +163,15 @@ QPixmap Platform_ThumbnailWorker::genThumb(const QUrl &url, int secs)
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     
     try {
-        qDebug() << "Generating thumbnail for file:" << file;
+        qCDebug(appMovie) << "Generating thumbnail for file:" << file;
         m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, file.toUtf8().data(),  m_image_data);
         auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
 
         pm = QPixmap::fromImage(img.scaled(thumbSize() * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         pm.setDevicePixelRatio(dpr);
-        qInfo() << "Successfully generated thumbnail" << pm.size();
+        qCInfo(appMovie) << "Successfully generated thumbnail" << pm.size();
     } catch (const std::logic_error &e) {
-        qWarning() << "Failed to generate thumbnail:" << e.what();
+        qCWarning(appMovie) << "Failed to generate thumbnail:" << e.what();
     }
 
     m_mvideo_thumbnailer_destroy_image_data(m_image_data);
@@ -181,7 +182,7 @@ QPixmap Platform_ThumbnailWorker::genThumb(const QUrl &url, int secs)
 
 void Platform_ThumbnailWorker::run()
 {
-    qInfo() << "Starting thumbnail worker thread";
+    qCInfo(appMovie) << "Starting thumbnail worker thread";
     setPriority(QThread::IdlePriority);
     while (
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -206,7 +207,7 @@ void Platform_ThumbnailWorker::run()
             if (!_wq.isEmpty()) {
                 w = _wq.takeFirst();
                 _wq.clear();
-                qDebug() << "Processing thumbnail request from queue";
+                qCDebug(appMovie) << "Processing thumbnail request from queue";
             }
         }
 
@@ -220,55 +221,55 @@ void Platform_ThumbnailWorker::run()
             QMutexLocker lock(&m_thumbLock);
             //TODO: optimize: need a lru map
             if (_cacheSize > SIZE_THRESHOLD) {
-                qInfo() << "Thumbnail cache size" << _cacheSize << "exceeds threshold" << SIZE_THRESHOLD << "- clearing cache";
+                qCInfo(appMovie) << "Thumbnail cache size" << _cacheSize << "exceeds threshold" << SIZE_THRESHOLD << "- clearing cache";
                 _cache.clear();
                 _cacheSize = 0;
             }
         }
 
         if (!isThumbGenerated(w.first, w.second)) {
-            qInfo() << "Generating new thumbnail for" << w.first << "at" << w.second << "seconds";
+            qCInfo(appMovie) << "Generating new thumbnail for" << w.first << "at" << w.second << "seconds";
             auto pm = genThumb(w.first, w.second);
 
             QMutexLocker lock(&m_thumbLock);
             _cache[w.first].insert(w.second, pm);
             _cacheSize += pm.width() * pm.height() * (pm.hasAlpha() ? 4 : 3);
-            qInfo() << "Cache size after insertion:" << _cacheSize;
+            qCInfo(appMovie) << "Cache size after insertion:" << _cacheSize;
 
             QTime d(0, 0, 0);
             d = d.addSecs(w.second);
-            qInfo() << "Generated thumbnail for" << w.first << "at" << d.toString("hh:mm:ss");
+            qCInfo(appMovie) << "Generated thumbnail for" << w.first << "at" << d.toString("hh:mm:ss");
         }
 
         emit thumbGenerated(w.first, w.second);
     }
 
-    qInfo() << "Thumbnail worker thread stopping";
+    qCInfo(appMovie) << "Thumbnail worker thread stopping";
     _wq.clear();
 }
 
 void Platform_ThumbnailWorker::runSingle(QPair<QUrl, int> w)
 {
-    qInfo() << "Running single thumbnail generation for" << w.first << "at" << w.second << "seconds";
+    qCInfo(appMovie) << "Running single thumbnail generation for" << w.first << "at" << w.second << "seconds";
     
     if (_cacheSize > SIZE_THRESHOLD) {
-        qInfo() << "Thumbnail cache size" << _cacheSize << "exceeds threshold" << SIZE_THRESHOLD << "- clearing cache";
+        qCInfo(appMovie) << "Thumbnail cache size" << _cacheSize << "exceeds threshold" << SIZE_THRESHOLD << "- clearing cache";
         _cache.clear();
         _cacheSize = 0;
     }
 
     if (!isThumbGenerated(w.first, w.second)) {
-        qInfo() << "Generating new thumbnail for" << w.first << "at" << w.second << "seconds";
+        qCInfo(appMovie) << "Generating new thumbnail for" << w.first << "at" << w.second << "seconds";
         auto pm = genThumb(w.first, w.second);
 
         QMutexLocker lock(&m_thumbLock);
         _cache[w.first].insert(w.second, pm);
         _cacheSize += pm.width() * pm.height() * (pm.hasAlpha() ? 4 : 3);
-        qInfo() << "Cache size after insertion:" << _cacheSize;
+        qCInfo(appMovie) << "Cache size after insertion:" << _cacheSize;
 
         QTime d(0, 0, 0);
         d = d.addSecs(w.second);
-        qInfo() << "Generated thumbnail for" << w.first << "at" << d.toString("hh:mm:ss");
+        qCInfo(appMovie) << "Generated thumbnail for" << w.first << "at" << d.toString("hh:mm:ss");
     }
 
     emit thumbGenerated(w.first, w.second);

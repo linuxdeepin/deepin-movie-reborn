@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "dbusutils.h"
+#include "ddlog.h"
 #include <QDBusConnection>
 #include <QDBusReply>
 #include <QDBusInterface>
@@ -17,57 +18,57 @@ static QMutex mutex;
 
 DBusUtils::DBusUtils()
 {
-    qDebug() << "Entering DBusUtils constructor.";
+    qCDebug(appMovie) << "Entering DBusUtils constructor.";
     // Constructor body is empty, no specific initialization to log
-    qDebug() << "Exiting DBusUtils constructor.";
+    qCDebug(appMovie) << "Exiting DBusUtils constructor.";
 }
 
 QVariant DBusUtils::readDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
 {
-    qDebug() << "Entering DBusUtils::readDBusProperty. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Property:" << pPropert;
+    qCDebug(appMovie) << "Entering DBusUtils::readDBusProperty. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Property:" << pPropert;
     // 创建QDBusInterface接口
     mutex.lock();
-    qDebug() << "Mutex locked in readDBusProperty.";
+    qCDebug(appMovie) << "Mutex locked in readDBusProperty.";
 
     QDBusInterface ainterface(sService, sPath,
                               sInterface,
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
-//        qInfo() << qPrintable(QDBusConnection::sessionBus().lastError().message());
-        //qInfo() << " QDBusInterface ainterface isValid" << path << propert;
+//        qCInfo(appMovie) << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        //qCInfo(appMovie) << " QDBusInterface ainterface isValid" << path << propert;
         QVariant v(0) ;
         mutex.unlock();
-        qDebug() << "Mutex unlocked. Exiting readDBusProperty with invalid interface.";
+        qCDebug(appMovie) << "Mutex unlocked. Exiting readDBusProperty with invalid interface.";
         return  v;
     }
     //调用远程的value方法
-    qDebug() << "Attempting to get property:" << pPropert;
+    qCDebug(appMovie) << "Attempting to get property:" << pPropert;
     QVariant v = ainterface.property(pPropert);
     mutex.unlock();
-    qDebug() << "Mutex unlocked. Exiting DBusUtils::readDBusProperty. Returned value:" << v;
+    qCDebug(appMovie) << "Mutex unlocked. Exiting DBusUtils::readDBusProperty. Returned value:" << v;
     return  v;
 }
 QVariant DBusUtils::readDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
-    qDebug() << "Entering DBusUtils::readDBusMethod. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Method:" << pMethod;
+    qCDebug(appMovie) << "Entering DBusUtils::readDBusMethod. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Method:" << pMethod;
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,
                               sInterface,
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
-        //qInfo() <<  "error:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        //qCInfo(appMovie) <<  "error:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
         return  v;
     }
     //调用远程的value方法
-    qDebug() << "Attempting to call method:" << pMethod;
+    qCDebug(appMovie) << "Attempting to call method:" << pMethod;
     QDBusReply<QDBusVariant> reply = ainterface.call(pMethod);
     if (reply.isValid()) {
 //        return reply.value();
         QVariant v(0) ;
         return  v;
     } else {
-        //qInfo() << "error1:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        //qCInfo(appMovie) << "error1:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
         return  v;
     }
