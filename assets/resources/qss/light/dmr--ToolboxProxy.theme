@@ -9,12 +9,12 @@ background: transparent;
 
 }
 
-QLabel, Dtk--Widget--DImageButton {
+QLabel, Dtk--Widget--DButtonBoxButton, Dtk--Widget--DIconButton, Dtk--Widget--DImageButton {
     background: transparent;
 }
 
 
-Dtk--Widget--DImageButton#ListBtn {
+Dtk--Widget--DIconButton#playlistButton {
     qproperty-normalPic: url(:/resources/icons/light/normal/list-normal.svg);
     qproperty-hoverPic: url(:/resources/icons/light/normal/list-hover.svg);
     qproperty-pressPic: url(:/resources/icons/light/normal/list-press.svg);
@@ -26,37 +26,37 @@ Dtk--Widget--DImageButton#SubtitleBtn {
     qproperty-pressPic: url(:/resources/icons/light/normal/Subtitle-press.svg);
 }
 
-Dtk--Widget--DImageButton#PrevBtn {
+Dtk--Widget--DButtonBoxButton#prevBtn {
     qproperty-normalPic: url(:/resources/icons/light/normal/previous-normal.svg);
     qproperty-hoverPic: url(:/resources/icons/light/normal/previous-hover.svg);
     qproperty-pressPic: url(:/resources/icons/light/normal/previous-press.svg);
 }
 
-Dtk--Widget--DImageButton#NextBtn {
+Dtk--Widget--DButtonBoxButton#nextBtn {
     qproperty-normalPic: url(:/resources/icons/light/normal/next-normal.svg);
     qproperty-hoverPic: url(:/resources/icons/light/normal/next-hover.svg);
     qproperty-pressPic: url(:/resources/icons/light/normal/next-press.svg);
 }
 
-Dtk--Widget--DImageButton#PlayBtn {
+Dtk--Widget--DButtonBoxButton#playBtn {
     qproperty-normalPic: url(:/resources/icons/light/normal/play-normal.svg);
     qproperty-hoverPic: url(:/resources/icons/light/normal/play-hover.svg);
     qproperty-pressPic: url(:/resources/icons/light/normal/play-press.svg);
 }
 
-Dtk--Widget--DImageButton#PauseBtn {
+Dtk--Widget--DButtonBoxButton#playBtn {
     qproperty-normalPic: url(:/resources/icons/light/normal/pause-normal.svg);
     qproperty-hoverPic: url(:/resources/icons/light/normal/pause-hover.svg);
     qproperty-pressPic: url(:/resources/icons/light/normal/pause-press.svg);
 }
 
-Dtk--Widget--DImageButton#FsBtn {
+Dtk--Widget--DIconButton#fullscreenButtion {
     qproperty-normalPic: url(:/resources/icons/light/normal/fullscreen-normal.svg);
     qproperty-hoverPic: url(:/resources/icons/light/normal/fullscreen-hover.svg);
     qproperty-pressPic: url(:/resources/icons/light/normal/fullscreen-press.svg);
 }
 
-Dtk--Widget--DImageButton#UnfsBtn {
+Dtk--Widget--DIconButton#fullscreenButtion {
     qproperty-normalPic: url(:/resources/icons/light/normal/exit-fullscreen-normal.svg);
     qproperty-hoverPic: url(:/resources/icons/light/normal/exit-fullscreen-hover.svg);
     qproperty-pressPic: url(:/resources/icons/light/normal/exit-fullscreen-press.svg);

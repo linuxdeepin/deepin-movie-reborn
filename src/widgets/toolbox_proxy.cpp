@@ -149,12 +149,17 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event)
     {
         switch (event->type()) {
-        case QEvent::ToolTip:
-        case QEvent::Enter: {
+        case QEvent::ToolTip: {
             m_object = obj;
             if (!m_showTime.isActive())
                 m_showTime.start(1000);
             return true;
+        }
+        case QEvent::Enter: {
+            m_object = obj;
+            if (!m_showTime.isActive())
+                m_showTime.start(1000);
+            break;
         }
 
         case QEvent::Leave: {
@@ -1185,7 +1190,7 @@ void ToolboxProxy::setup()
     m_pPlayBtn = new ButtonBoxButton("", this);
     m_pNextBtn = new ButtonBoxButton("", this);
 
-    m_pPrevBtn->setIcon(QIcon::fromTheme("dcc_last", QIcon(":/icons/deepin/builtin/light/normal/last_normal.svg")));
+    m_pPrevBtn->setIcon(QIcon::fromTheme("dcc_last", QIcon(QString(":/icons/deepin/builtin/%1/normal/last_normal.svg").arg(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ? "light" : "dark"))));
     m_pPrevBtn->setIconSize(QSize(36, 36));
     m_pPrevBtn->setFixedSize(40, 50);
     m_pPrevBtn->setObjectName(PREV_BUTTON);
@@ -1195,7 +1200,7 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(m_pPrevBtn, "prev");
     list.append(m_pPrevBtn);
 
-    m_pPlayBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
+    m_pPlayBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(QString(":/icons/deepin/builtin/%1/normal/play_normal.svg").arg(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ? "light" : "dark"))));
     m_pPlayBtn->setIconSize(QSize(36, 36));
     m_pPlayBtn->setFixedSize(40, 50);
     m_pPlayBtn->setFocusPolicy(Qt::TabFocus);
@@ -1205,7 +1210,7 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(m_pPlayBtn, "play");
     list.append(m_pPlayBtn);
 
-    m_pNextBtn->setIcon(QIcon::fromTheme("dcc_next", QIcon(":/icons/deepin/builtin/light/normal/next_normal.svg")));
+    m_pNextBtn->setIcon(QIcon::fromTheme("dcc_next", QIcon(QString(":/icons/deepin/builtin/%1/normal/next_normal.svg").arg(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ? "light" : "dark"))));
     m_pNextBtn->setIconSize(QSize(36, 36));
     m_pNextBtn->setFixedSize(40, 50);
     m_pNextBtn->setFocusPolicy(Qt::TabFocus);
@@ -1907,10 +1912,10 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
         //非x86平台播放列表切换不展示动画,故按键状态不做限制
         if(CompositingManager::get().platform() == Platform::X86) {
             if (isShortcut && m_pListBtn->isChecked()) {
-                m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
+                m_pListBtn->setIcon(QIcon(QString(":/icons/deepin/builtin/%1/checked/episodes_checked.svg").arg(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ? "light" : "dark")));
             } else {
                 m_pListBtn->setChecked(true);
-                m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
+                m_pListBtn->setIcon(QIcon(QString(":/icons/deepin/builtin/%1/checked/episodes_checked.svg").arg(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ? "light" : "dark")));
             }
 
             m_bAnimationFinash = false;
@@ -2389,7 +2394,7 @@ void ToolboxProxy::updatePlayState()
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             m_pMircastBtn->setPalette(pa);
         }
-        m_pPlayBtn->setIcon(QIcon::fromTheme("dcc_suspend", QIcon(":/icons/deepin/builtin/light/normal/suspend_normal.svg")));
+        m_pPlayBtn->setIcon(QIcon::fromTheme("dcc_suspend", QIcon(QString(":/icons/deepin/builtin/%1/normal/suspend_normal.svg").arg(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ? "light" : "dark"))));
         //lmh0910wayland下用这一套tooltip
         if (utils::check_wayland_env()) {
             m_pPlayBtnTip->setText(tr("Pause"));
@@ -2461,7 +2466,7 @@ void ToolboxProxy::updatePlayState()
         } else {
             m_pPlayBtn->setToolTip(tr("Play"));
         }
-        m_pPlayBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
+        m_pPlayBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(QString(":/icons/deepin/builtin/%1/normal/play_normal.svg").arg(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ? "light" : "dark"))));
     }
 
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
@@ -2555,7 +2560,7 @@ void ToolboxProxy::buttonClicked(QString id)
         m_pMircastBtn->hideToolTip();
         m_pMircastBtn->setChecked(m_mircastWidget->isVisible());
         if (m_pMircastBtn->isChecked())
-            m_pMircastBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/mircast_chenked.svg"));
+            m_pMircastBtn->setIcon(QIcon(QString(":/icons/deepin/builtin/%1/checked/mircast_chenked.svg").arg(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ? "light" : "dark")));
         else
             m_pMircastBtn->setIcon(QIcon::fromTheme("dcc_mircast"));
     }
