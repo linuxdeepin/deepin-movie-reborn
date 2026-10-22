@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "sysutils.h"
+#include "ddlog.h"
 #include <QDebug>
 #include <QDir>
 #include <QLibraryInfo>
@@ -10,12 +11,12 @@
 
 SysUtils::SysUtils()
 {
-    qDebug() << "SysUtils instance created";
+    qCDebug(appMovie) << "SysUtils instance created";
 }
 
 bool SysUtils::libExist(const QString &strlib)
 {
-    qDebug() << "Checking library existence:" << strlib;
+    qCDebug(appMovie) << "Checking library existence:" << strlib;
     
     // find all library paths by QLibrary
     QString libName;
@@ -24,29 +25,29 @@ bool SysUtils::libExist(const QString &strlib)
     else
         libName = strlib;
     
-    qDebug() << "Attempting to load library:" << libName;
+    qCDebug(appMovie) << "Attempting to load library:" << libName;
     QLibrary lib(libName);
     bool bExist = lib.load();
     if (!bExist) {
-        qWarning() << "Failed to load library:" << lib.errorString();
+        qCWarning(appMovie) << "Failed to load library:" << lib.errorString();
         QString fullPath = libPath(strlib);
-        qDebug() << "Trying alternative path:" << fullPath;
+        qCDebug(appMovie) << "Trying alternative path:" << fullPath;
         lib.setFileName(fullPath);
         bExist = lib.load();
         if (bExist) {
-            qInfo() << "Successfully loaded library from alternative path:" << fullPath;
+            qCInfo(appMovie) << "Successfully loaded library from alternative path:" << fullPath;
         } else {
-            qWarning() << "Failed to load library from alternative path:" << fullPath << "-" << lib.errorString();
+            qCWarning(appMovie) << "Failed to load library from alternative path:" << fullPath << "-" << lib.errorString();
         }
     } else {
-        qInfo() << "Successfully loaded library:" << libName;
+        qCInfo(appMovie) << "Successfully loaded library:" << libName;
     }
     return bExist;
 }
 
 QString SysUtils::libPath(const QString &strlib)
 {
-    qDebug() << "Getting library path for:" << strlib;
+    qCDebug(appMovie) << "Getting library path for:" << strlib;
     
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QString path = QLibraryInfo::path(QLibraryInfo::LibrariesPath);
@@ -55,16 +56,16 @@ QString SysUtils::libPath(const QString &strlib)
 #endif
 
     if (path.isEmpty()) {
-        qWarning() << "Failed to get library path from QLibraryInfo";
+        qCWarning(appMovie) << "Failed to get library path from QLibraryInfo";
         return strlib;
     }
 
-    qDebug() << "Library search path:" << path;
+    qCDebug(appMovie) << "Library search path:" << path;
     
     // 直接使用完整路径创建 QDir
     QDir dir(QDir::cleanPath(path));
     if (!dir.exists() || !dir.isReadable()) {
-        qWarning() << "Directory not accessible:" << path;
+        qCWarning(appMovie) << "Directory not accessible:" << path;
         // 尝试使用备选路径
         QStringList fallbackPaths = {
             "/usr/lib",
@@ -76,7 +77,7 @@ QString SysUtils::libPath(const QString &strlib)
             QDir fallbackDir(fbPath);
             if (fallbackDir.exists() && fallbackDir.isReadable()) {
                 dir = fallbackDir;
-                qInfo() << "Using fallback path:" << fbPath;
+                qCInfo(appMovie) << "Using fallback path:" << fbPath;
                 break;
             }
         }
@@ -87,16 +88,16 @@ QString SysUtils::libPath(const QString &strlib)
     
     if (!list.isEmpty()) {
         if (list.contains(strlib)) {
-            qDebug() << "Found exact library match:" << strlib;
+            qCDebug(appMovie) << "Found exact library match:" << strlib;
             return strlib;
         }
         list.sort();
         QString result = list.last();
-        qDebug() << "Found library variant:" << result;
+        qCDebug(appMovie) << "Found library variant:" << result;
         return result;
     }
 
-    qWarning() << "No matching library found for:" << strlib;
+    qCWarning(appMovie) << "No matching library found for:" << strlib;
     // Qt LibrariesPath 不包含，返回默认名称
     return strlib;
 }

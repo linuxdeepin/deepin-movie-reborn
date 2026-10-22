@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "utility.h"
+#include "ddlog.h"
 #include "utils.h"
 
 #include <QtWidgets>
@@ -46,45 +47,45 @@ const char kAtomNameBypassCompositor[] = "_NET_WM_BYPASS_COMPOSITOR";
 
 xcb_atom_t Utility::internAtom(const char *name)
 {
-    qDebug() << "Entering Utility::internAtom. Atom name:" << name;
+    qCDebug(appMovie) << "Entering Utility::internAtom. Atom name:" << name;
     if (!name || *name == 0) {
-        qWarning() << "Invalid atom name provided";
+        qCWarning(appMovie) << "Invalid atom name provided";
         return XCB_NONE;
     }
 
-    qDebug() << "Interning X11 atom:" << name;
+    qCDebug(appMovie) << "Interning X11 atom:" << name;
     xcb_intern_atom_cookie_t cookie = xcb_intern_atom(QX11Info::connection(), true, strlen(name), name);
     xcb_intern_atom_reply_t *reply = xcb_intern_atom_reply(QX11Info::connection(), cookie, 0);
 
     if (!reply) {
-        qWarning() << "Failed to intern atom:" << name;
+        qCWarning(appMovie) << "Failed to intern atom:" << name;
         return XCB_NONE;
     }
 
     xcb_atom_t atom = reply->atom;
     free(reply);
-    qDebug() << "Successfully interned atom:" << name << "with ID:" << atom;
+    qCDebug(appMovie) << "Successfully interned atom:" << name << "with ID:" << atom;
 
     return atom;
 }
 
 void Utility::startWindowSystemMove(quint32 WId)
 {
-    qDebug() << "Entering Utility::startWindowSystemMove. Window ID:" << WId;
+    qCDebug(appMovie) << "Entering Utility::startWindowSystemMove. Window ID:" << WId;
     sendMoveResizeMessage(WId, _NET_WM_MOVERESIZE_MOVE);
-    qDebug() << "Exiting Utility::startWindowSystemMove.";
+    qCDebug(appMovie) << "Exiting Utility::startWindowSystemMove.";
 }
 
 void Utility::cancelWindowMoveResize(quint32 WId)
 {
-    qDebug() << "Entering Utility::cancelWindowMoveResize. Window ID:" << WId;
+    qCDebug(appMovie) << "Entering Utility::cancelWindowMoveResize. Window ID:" << WId;
     sendMoveResizeMessage(WId, _NET_WM_MOVERESIZE_CANCEL);
-    qDebug() << "Exiting Utility::cancelWindowMoveResize.";
+    qCDebug(appMovie) << "Exiting Utility::cancelWindowMoveResize.";
 }
 
 void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos)
 {
-    qDebug() << "Updating mouse point for window move, window:" << WId << "position:" << globalPos;
+    qCDebug(appMovie) << "Updating mouse point for window move, window:" << WId << "position:" << globalPos;
     
     xcb_client_message_event_t xev;
 
@@ -110,7 +111,7 @@ void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos
     xcb_atom_t frameExtents = internAtom("_GTK_FRAME_EXTENTS");
 
     if (frameExtents == XCB_NONE) {
-        qWarning() << "Failed to create atom with name _GTK_FRAME_EXTENTS";
+        qCWarning(appMovie) << "Failed to create atom with name _GTK_FRAME_EXTENTS";
         return;
     }
 
@@ -132,13 +133,13 @@ void Utility::setRectangles(quint32 WId, const QRegion &region, bool onlyInput)
 void Utility::setRectangles(quint32 WId, const QVector<xcb_rectangle_t> &rectangles, bool onlyInput)
 {
     if (rectangles.isEmpty()) {
-        qDebug() << "Clearing shape for window:" << WId;
+        qCDebug(appMovie) << "Clearing shape for window:" << WId;
         xcb_shape_mask(QX11Info::connection(), XCB_SHAPE_SO_SET,
                        onlyInput ? XCB_SHAPE_SK_INPUT : XCB_SHAPE_SK_BOUNDING, WId, 0, 0, XCB_NONE);
         return;
     }
 
-    qDebug() << "Setting" << rectangles.size() << "rectangles for window:" << WId;
+    qCDebug(appMovie) << "Setting" << rectangles.size() << "rectangles for window:" << WId;
     xcb_shape_rectangles(QX11Info::connection(), XCB_SHAPE_SO_SET, onlyInput ? XCB_SHAPE_SK_INPUT : XCB_SHAPE_SK_BOUNDING,
                          XCB_CLIP_ORDERING_YX_BANDED, WId, 0, 0, rectangles.size(), rectangles.constData());
 }
@@ -169,14 +170,14 @@ void Utility::setRectangles(quint32 WId, const QVector<xcb_rectangle_t> &rectang
 
 void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalPos, Qt::MouseButton qbutton)
 {
-    qDebug() << "Sending move/resize message for window:" << WId << "action:" << action;
+    qCDebug(appMovie) << "Sending move/resize message for window:" << WId << "action:" << action;
     
     int xbtn = qbutton == Qt::LeftButton ? XCB_BUTTON_INDEX_1 :
                qbutton == Qt::RightButton ? XCB_BUTTON_INDEX_3 :
                XCB_BUTTON_INDEX_ANY;
 
     if (globalPos.isNull()) {
-        qDebug() << "Querying pointer position for window:" << WId;
+        qCDebug(appMovie) << "Querying pointer position for window:" << WId;
         xcb_generic_error_t** err = nullptr;
         xcb_query_pointer_reply_t* p = xcb_query_pointer_reply(QX11Info::connection(),
                                                               xcb_query_pointer(QX11Info::connection(),
@@ -184,9 +185,9 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
                                                               err);
         if (p && err == nullptr) {
             globalPos = QPoint(p->root_x, p->root_y);
-            qDebug() << "Got pointer position:" << globalPos;
+            qCDebug(appMovie) << "Got pointer position:" << globalPos;
         } else {
-            qWarning() << "Failed to query pointer position";
+            qCWarning(appMovie) << "Failed to query pointer position";
         }
 
         if (p) {
@@ -219,7 +220,7 @@ QVector<xcb_rectangle_t> Utility::qregion2XcbRectangles(const QRegion &region)
     QVector<xcb_rectangle_t> rectangles;
     rectangles.reserve(region.rectCount());
 
-    qDebug() << "Converting QRegion to XCB rectangles, count:" << region.rectCount();
+    qCDebug(appMovie) << "Converting QRegion to XCB rectangles, count:" << region.rectCount();
     
     for (const QRect &rect : region.rects()) {
         xcb_rectangle_t r;
@@ -269,7 +270,7 @@ bool Utility::setWindowCursor(quint32 WId, Utility::CornerEdge ce)
     Cursor cursor = XCreateFontCursor(display, CornerEdge2Xcb_cursor_t(ce));
 
     if (!cursor) {
-        qWarning() << "Failed to create font cursor for window:" << WId;
+        qCWarning(appMovie) << "Failed to create font cursor for window:" << WId;
         return false;
     }
 
@@ -306,7 +307,7 @@ bool Utility::setWindowCursor(quint32 WId, Utility::CornerEdge ce)
     }
 
     if (err != nullptr) {
-        qInfo() << "get property error";
+        qCInfo(appMovie) << "get property error";
         free(err);
     }
 
@@ -334,7 +335,7 @@ bool Utility::setWindowCursor(quint32 WId, Utility::CornerEdge ce)
     }
 
     if (err != nullptr) {
-        qInfo() << "get property error";
+        qCInfo(appMovie) << "get property error";
         free(err);
     }
 
