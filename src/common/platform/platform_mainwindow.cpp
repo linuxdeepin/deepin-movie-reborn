@@ -4614,6 +4614,11 @@ void Platform_MainWindow::toggleUIMode()
             }
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
+            if (m_lastRectInNormalMode.isValid()) {
+                setGeometry(m_lastRectInNormalMode);
+            } else {
+                resizeByConstraints();
+            }
             setWindowState(windowState() | Qt::WindowFullScreen);
             if (windowHandle()) {
                 Utility::setBypassCompositor(windowHandle()->winId(), true);
