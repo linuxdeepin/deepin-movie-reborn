@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "cssdpsearch.h"
+#include "ddlog.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QEventLoop>
@@ -16,31 +17,31 @@ const char* friendlyNamePro = "friendlyName";
 
 CSSDPSearch::CSSDPSearch(QObject *parent) : QObject(parent)
 {
-    qDebug() << "Initializing SSDP search";
+    qCDebug(dmrDlna) << "Initializing SSDP search";
     m_networkManager = new QNetworkAccessManager(this);
     m_HostAddr = QHostAddress("239.255.255.250");
     m_udpSocket = new QUdpSocket(this);
     m_udpSocket->bind(QHostAddress::Any, 56123, QUdpSocket::ShareAddress);
-    qDebug() << "UDP socket bound to port 56123 with ShareAddress option.";
+    qCDebug(dmrDlna) << "UDP socket bound to port 56123 with ShareAddress option.";
     connect(m_udpSocket, SIGNAL(readyRead()), this, SLOT(readMsg()));
     connect(this, SIGNAL(updataAvAddr(QByteArray)), this, SLOT(showDlnaCastAddr(QByteArray)));
-    qDebug() << "SSDP search initialized on port 56123";
+    qCDebug(dmrDlna) << "SSDP search initialized on port 56123";
 }
 
 CSSDPSearch::~CSSDPSearch()
 {
-    qDebug() << "Cleaning up SSDP search";
+    qCDebug(dmrDlna) << "Cleaning up SSDP search";
     if(m_networkManager) {
         m_networkManager->deleteLater();
         m_networkManager = NULL;
-        qDebug() << "QNetworkAccessManager deleted and set to NULL.";
+        qCDebug(dmrDlna) << "QNetworkAccessManager deleted and set to NULL.";
     }
     if(m_udpSocket) {
         m_udpSocket->deleteLater();
         m_udpSocket = NULL;
-        qDebug() << "QUdpSocket deleted and set to NULL.";
+        qCDebug(dmrDlna) << "QUdpSocket deleted and set to NULL.";
     }
-    qDebug() << "Exiting CSSDPSearch destructor.";
+    qCDebug(dmrDlna) << "Exiting CSSDPSearch destructor.";
 }
 /**
  * @brief readMsg 读取设备的单播消息
@@ -59,7 +60,7 @@ void CSSDPSearch::readMsg()
  */
 void CSSDPSearch::SsdpSearch()
 {
-    qDebug() << "Starting SSDP device discovery";
+    qCDebug(dmrDlna) << "Starting SSDP device discovery";
     m_lstStrLocationUrlAddr.clear();
     m_nFindReplyCount = 0;
     //UNPN 广播发现投屏设备请求消息
@@ -71,9 +72,9 @@ void CSSDPSearch::SsdpSearch()
                    "\r\n");
     qint64 ret = m_udpSocket->writeDatagram(msg.data(), m_HostAddr, 1900);
     if(ret == -1) {
-        qWarning() << "Failed to send SSDP discovery message:" << m_udpSocket->errorString();
+        qCWarning(dmrDlna) << "Failed to send SSDP discovery message:" << m_udpSocket->errorString();
     } else {
-        qDebug() << "Sent SSDP discovery message, size:" << ret << "bytes";
+        qCDebug(dmrDlna) << "Sent SSDP discovery message, size:" << ret << "bytes";
     }
 }
 /**
@@ -83,18 +84,18 @@ void CSSDPSearch::SsdpSearch()
 void CSSDPSearch::showDlnaCastAddr(QByteArray replyData)
 {
     if(replyData.contains("AVTransport")) {
-        qDebug() << "Found DLNA device with AVTransport capability";
+        qCDebug(dmrDlna) << "Found DLNA device with AVTransport capability";
         QList<QByteArray>  sList = replyData.split('\n');
         foreach(QByteArray data, sList) {
             if(data.contains("LOCATION")) {
-                qDebug() << "Processing device location:" << data.trimmed();
+                qCDebug(dmrDlna) << "Processing device location:" << data.trimmed();
                 QList<QByteArray>  tmpList = data.split(' ');
                 if(tmpList.size() >= 2)
                 {
                     QString url = tmpList.at(1).trimmed();
                     m_lstStrLocationUrlAddr.append(url);
                     QString urlAddr = "http://" + QUrl(url).host() + ":"+ QString::number(QUrl(url).port());
-                    qDebug() << "Adding device URL:" << urlAddr;
+                    qCDebug(dmrDlna) << "Adding device URL:" << urlAddr;
                     QNetworkRequest request;
                     request.setUrl(QUrl(url));
                     QNetworkReply *reply = m_networkManager->get(request);
