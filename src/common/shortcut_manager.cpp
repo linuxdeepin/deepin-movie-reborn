@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "shortcut_manager.h"
+#include "ddlog.h"
 #include "dmr_settings.h"
 
 #include <DSettingsOption>
@@ -16,22 +17,22 @@ static ShortcutManager *_shortcutManager = nullptr;
 
 ShortcutManager &ShortcutManager::get()
 {
-    qDebug() << "Entering ShortcutManager::get().";
+    qCDebug(appMovie) << "Entering ShortcutManager::get().";
     if (!_shortcutManager) {
-        qDebug() << "_shortcutManager is null, creating new ShortcutManager instance.";
+        qCDebug(appMovie) << "_shortcutManager is null, creating new ShortcutManager instance.";
         _shortcutManager = new ShortcutManager();
     } else {
-        qDebug() << "_shortcutManager already exists.";
+        qCDebug(appMovie) << "_shortcutManager already exists.";
     }
-    qDebug() << "Exiting ShortcutManager::get().";
+    qCDebug(appMovie) << "Exiting ShortcutManager::get().";
     return *_shortcutManager;
 }
 ShortcutManager::~ShortcutManager()
 {
-    qDebug() << "Entering ShortcutManager destructor.";
+    qCDebug(appMovie) << "Entering ShortcutManager destructor.";
     // No explicit cleanup for _shortcutManager as it's a static pointer managed by the application lifecycle.
     // If it were heap-allocated and needed explicit deletion, it would be done here.
-    qDebug() << "Exiting ShortcutManager destructor.";
+    qCDebug(appMovie) << "Exiting ShortcutManager destructor.";
 }
 ShortcutManager::ShortcutManager()
     : QObject(nullptr), _keyToAction({
@@ -68,11 +69,11 @@ ShortcutManager::ShortcutManager()
     {"previous_frame", ActionFactory::ActionKind::PreviousFrame},
 })
 {
-    qDebug() << "Entering ShortcutManager constructor.";
+    qCDebug(appMovie) << "Entering ShortcutManager constructor.";
     connect(&Settings::get(), &Settings::shortcutsChanged, [ = ](QString sk, const QVariant & val) {
         if (sk.endsWith(".enable")) {
             auto grp_key = sk.left(sk.lastIndexOf('.'));
-            qInfo() << "update group binding" << grp_key;
+            qCInfo(appMovie) << "update group binding" << grp_key;
 
             QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
             auto grps = shortcuts->childGroups();
@@ -85,43 +86,43 @@ ShortcutManager::ShortcutManager()
             return;
         }
         sk.remove(0, sk.lastIndexOf('.') + 1);
-        qInfo() << "update binding" << sk << QKeySequence(val.toStringList().at(0));
+        qCInfo(appMovie) << "update binding" << sk << QKeySequence(val.toStringList().at(0));
         QString strKey = QKeySequence(val.toStringList().at(0)).toString();
         if (strKey.contains("Return")) {
-            qInfo() << "Return key found in" << sk;
+            qCInfo(appMovie) << "Return key found in" << sk;
             strKey = QString("%1Return").arg(strKey.remove("Return"));
             _map[strKey] = _keyToAction[sk];
             if (QString("Return") == strKey) {
-                qInfo() << "Removing Enter key from map.";
+                qCInfo(appMovie) << "Removing Enter key from map.";
                 _map.remove(QString("Enter"));
             }
-            qInfo() << val << QKeySequence(strKey) << strKey;
+            qCInfo(appMovie) << val << QKeySequence(strKey) << strKey;
         } else if (strKey.contains("Num+Enter")) {
             strKey = QString("%1Enter").arg(strKey.remove("Num+Enter"));
             _map[strKey] = _keyToAction[sk];
             if (QString("Enter") == strKey) {
                 _map.remove(QString("Return"));
             }
-            qInfo() << val << QKeySequence(strKey) << strKey;
+            qCInfo(appMovie) << val << QKeySequence(strKey) << strKey;
         } else {
             _map.remove(_map.key(_keyToAction[sk]));
             _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
         }
         emit bindingsChanged();
     });
-    qDebug() << "ShortcutManager constructor finished.";
+    qCDebug(appMovie) << "ShortcutManager constructor finished.";
 }
 
 void ShortcutManager::buildBindings()
 {
-    qInfo() << "Building shortcuts from settings.";
+    qCInfo(appMovie) << "Building shortcuts from settings.";
     buildBindingsFromSettings();
     emit bindingsChanged();
 }
 
 void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 {
-    qInfo() << "Toggling shortcuts";
+    qCInfo(appMovie) << "Toggling shortcuts";
     auto sub = grp->childOptions();
     std::for_each(sub.begin(), sub.end(), [ = ](OptionPtr opt) {
         if (opt->viewType() != "shortcut") return;
@@ -133,11 +134,11 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
         if (strKey.contains("Return")) {
             strKey = QString("%1Return").arg(strKey.remove("Return"));
             _map[strKey] = _keyToAction[sk];
-            qInfo() << opt->name() << QKeySequence(strKey) << strKey;
+            qCInfo(appMovie) << opt->name() << QKeySequence(strKey) << strKey;
         } else if (strKey.contains("Num+Enter")) {
             strKey = QString("%1Enter").arg(strKey.remove("Num+Enter"));
             _map[strKey] = _keyToAction[sk];
-            qInfo() << opt->name() << QKeySequence(strKey) << strKey;
+            qCInfo(appMovie) << opt->name() << QKeySequence(strKey) << strKey;
         }
 
         if (on) {
@@ -151,7 +152,7 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 
 void ShortcutManager::buildBindingsFromSettings()
 {
-    qInfo() << "Building shortcuts from settings.";
+    qCInfo(appMovie) << "Building shortcuts from settings.";
     _map.clear();
     
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -167,14 +168,14 @@ void ShortcutManager::buildBindingsFromSettings()
     auto subgroups = shortcuts->childGroups();
     std::for_each(subgroups.begin(), subgroups.end(), [ = ](GroupPtr grp) {
         auto enabled = Settings::get().settings()->option(grp->key() + ".enable");
-        qInfo() << grp->name() << enabled->value();
+        qCInfo(appMovie) << grp->name() << enabled->value();
         Q_ASSERT(enabled && enabled->viewType() == "checkbox");
         if (!enabled->value().toBool())
             return;
 
         toggleGroupShortcuts(grp, true);
     });
-    qInfo() << "Shortcuts building finished.";
+    qCInfo(appMovie) << "Shortcuts building finished.";
 }
 
 QString ShortcutManager::toJson()
@@ -185,7 +186,7 @@ QString ShortcutManager::toJson()
     QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
     auto subgroups = shortcuts->childGroups();
     std::for_each(subgroups.begin(), subgroups.end(), [&](GroupPtr grp) {
-        qInfo() << grp->name();
+        qCInfo(appMovie) << grp->name();
 
         QJsonObject jsonGroup;
         jsonGroup.insert("groupName", qApp->translate("QObject", grp->name().toUtf8().data()));
