@@ -9,6 +9,7 @@
  *
  */
 #include <QDateTime>
+#include "ddlog.h"
 #include <QDebug>
 #include <QEventLoop>
 #include <QPainter>
@@ -28,12 +29,12 @@ using namespace dmr;
 AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow)
     : QFrame(parent)
 {
-    qDebug() << "Initializing AnimationLabel";
+    qCDebug(appMovie) << "Initializing AnimationLabel";
     initMember(pMainWindow);
     setAttribute(Qt::WA_TransparentForMouseEvents);
 
     resize(200, 200);
-    qDebug() << "Exiting AnimationLabel constructor.";
+    qCDebug(appMovie) << "Exiting AnimationLabel constructor.";
 }
 
 /**
@@ -41,22 +42,22 @@ AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow)
  */
 void AnimationLabel::pauseAnimation()
 {
-    qDebug() << "Starting pause animation";
+    qCDebug(appMovie) << "Starting pause animation";
     if (m_pPauseAnimationGroup && m_pPauseAnimationGroup->state() == QAbstractAnimation::Running) {
         m_pPauseAnimationGroup->stop();
-        qDebug() << "Pause animation group was running, stopped.";
+        qCDebug(appMovie) << "Pause animation group was running, stopped.";
     } else {
-        qDebug() << "Pause animation group not running or null.";
+        qCDebug(appMovie) << "Pause animation group not running or null.";
     }
     m_pPlayAnimationGroup->start();
-    qDebug() << "Play animation group started.";
+    qCDebug(appMovie) << "Play animation group started.";
     if(!isVisible()) {
         show();
-        qDebug() << "AnimationLabel was not visible, showed it.";
+        qCDebug(appMovie) << "AnimationLabel was not visible, showed it.";
     } else {
-        qDebug() << "AnimationLabel already visible.";
+        qCDebug(appMovie) << "AnimationLabel already visible.";
     }
-    qDebug() << "Exiting pauseAnimation().";
+    qCDebug(appMovie) << "Exiting pauseAnimation().";
 }
 
 /**
@@ -64,29 +65,29 @@ void AnimationLabel::pauseAnimation()
  */
 void AnimationLabel::playAnimation()
 {
-    qDebug() << "Starting play animation";
+    qCDebug(appMovie) << "Starting play animation";
     if (m_pPlayAnimationGroup && m_pPlayAnimationGroup->state() == QAbstractAnimation::Running) {
         m_pPlayAnimationGroup->stop();
-        qDebug() << "Play animation group was running, stopped.";
+        qCDebug(appMovie) << "Play animation group was running, stopped.";
     } else {
-        qDebug() << "Play animation group not running or null.";
+        qCDebug(appMovie) << "Play animation group not running or null.";
     }
     m_pPauseAnimationGroup->start();
-    qDebug() << "Pause animation group started.";
+    qCDebug(appMovie) << "Pause animation group started.";
     if(!isVisible()) {
         show();
-        qDebug() << "AnimationLabel was not visible, showed it.";
+        qCDebug(appMovie) << "AnimationLabel was not visible, showed it.";
     } else {
-        qDebug() << "AnimationLabel already visible.";
+        qCDebug(appMovie) << "AnimationLabel already visible.";
     }
-    qDebug() << "Exiting playAnimation().";
+    qCDebug(appMovie) << "Exiting playAnimation().";
 }
 
 void AnimationLabel::setWM(bool isWM)
 {
-    qDebug() << "Setting WM mode to:" << isWM;
+    qCDebug(appMovie) << "Setting WM mode to:" << isWM;
     m_bIsWM = isWM;
-    qDebug() << "Exiting setWM().";
+    qCDebug(appMovie) << "Exiting setWM().";
 }
 
 /**
@@ -95,13 +96,13 @@ void AnimationLabel::setWM(bool isWM)
  */
 void AnimationLabel::initMember(QWidget *pMainwindow)
 {
-    qDebug() << "Initializing AnimationLabel members";
+    qCDebug(appMovie) << "Initializing AnimationLabel members";
     initPlayAnimation();
     initPauseAnimation();
     m_pMainWindow = pMainwindow;
     m_sFileName = "";
 
-    qDebug() << "Exiting initMember().";
+    qCDebug(appMovie) << "Exiting initMember().";
 }
 
 /**
@@ -109,7 +110,7 @@ void AnimationLabel::initMember(QWidget *pMainwindow)
  */
 void AnimationLabel::initPauseAnimation()
 {
-    qDebug() << "Initializing pause animation";
+    qCDebug(appMovie) << "Initializing pause animation";
     m_pPauseAnimationGroup = new QSequentialAnimationGroup(this);
     m_pPauseShowAnimation = new QPropertyAnimation(this, "fps");
     m_pPauseHideAnimation = new QPropertyAnimation(this, "fps");
@@ -134,7 +135,7 @@ void AnimationLabel::initPauseAnimation()
     m_pPauseAnimationGroup->addPause(DELAY_TIME);
     m_pPauseAnimationGroup->addAnimation(m_pPauseHideAnimation);
 
-    qDebug() << "Exiting initPauseAnimation().";
+    qCDebug(appMovie) << "Exiting initPauseAnimation().";
 }
 
 /**
@@ -142,7 +143,7 @@ void AnimationLabel::initPauseAnimation()
  */
 void AnimationLabel::initPlayAnimation()
 {
-    qDebug() << "Initializing play animation";
+    qCDebug(appMovie) << "Initializing play animation";
     m_pPlayAnimationGroup = new QSequentialAnimationGroup(this);
     m_pPlayShowAnimation = new QPropertyAnimation(this, "fps");
     m_pPlayHideAnimation = new QPropertyAnimation(this, "fps");
@@ -167,7 +168,7 @@ void AnimationLabel::initPlayAnimation()
     m_pPlayAnimationGroup->addPause(DELAY_TIME);
     m_pPlayAnimationGroup->addAnimation(m_pPlayHideAnimation);
 
-    qDebug() << "Exiting initPlayAnimation().";
+    qCDebug(appMovie) << "Exiting initPlayAnimation().";
 }
 
 /**
@@ -176,26 +177,26 @@ void AnimationLabel::initPlayAnimation()
  */
 void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
 {
-    qDebug() << "Play animation frame changed to:" << value.toInt();
+    qCDebug(appMovie) << "Play animation frame changed to:" << value.toInt();
 #if defined (__aarch64__) || defined (__mips__)
-    qDebug() << "Compiling for __aarch64__ or __mips__.";
+    qCDebug(appMovie) << "Compiling for __aarch64__ or __mips__.";
     if (m_bIsWM || utils::check_wayland_env()) {
         m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
-        qDebug() << "WM mode or Wayland environment detected, using stop path.";
+        qCDebug(appMovie) << "WM mode or Wayland environment detected, using stop path.";
     } else {
         m_sFileName = QString(":/resources/icons/stop_new/%1.png").arg(value.toInt());
-        qDebug() << "WM mode or Wayland environment not detected, using stop_new path.";
+        qCDebug(appMovie) << "WM mode or Wayland environment not detected, using stop_new path.";
     }
 
 #else
-    qDebug() << "Compiling for other architectures.";
+    qCDebug(appMovie) << "Compiling for other architectures.";
     m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
-    qDebug() << "Using stop path for other architectures.";
+    qCDebug(appMovie) << "Using stop path for other architectures.";
 #endif
     m_pixmap = QPixmap(m_sFileName);
     update();
 
-    qDebug() << "Exiting onPlayAnimationChanged().";
+    qCDebug(appMovie) << "Exiting onPlayAnimationChanged().";
 }
 
 /**
@@ -204,40 +205,40 @@ void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
  */
 void AnimationLabel::onPauseAnimationChanged(const QVariant &value)
 {
-    qDebug() << "Pause animation frame changed to:" << value.toInt();
+    qCDebug(appMovie) << "Pause animation frame changed to:" << value.toInt();
 #if defined (__aarch64__) || defined (__mips__)
-    qDebug() << "Compiling for __aarch64__ or __mips__.";
+    qCDebug(appMovie) << "Compiling for __aarch64__ or __mips__.";
     if (m_bIsWM || utils::check_wayland_env()) {
         m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
-        qDebug() << "WM mode or Wayland environment detected, using start path.";
+        qCDebug(appMovie) << "WM mode or Wayland environment detected, using start path.";
     } else {
         m_sFileName = QString(":/resources/icons/start_new/%1.png").arg(value.toInt());
-        qDebug() << "WM mode or Wayland environment not detected, using start_new path.";
+        qCDebug(appMovie) << "WM mode or Wayland environment not detected, using start_new path.";
     }
 
 #else
-    qDebug() << "Compiling for other architectures.";
+    qCDebug(appMovie) << "Compiling for other architectures.";
     m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
-    qDebug() << "Using start path for other architectures.";
+    qCDebug(appMovie) << "Using start path for other architectures.";
 #endif
     m_pixmap = QPixmap(m_sFileName);
     update();
 
-    qDebug() << "Exiting onPauseAnimationChanged().";
+    qCDebug(appMovie) << "Exiting onPauseAnimationChanged().";
 }
 
 void AnimationLabel::onHideAnimation()
 {
-    qDebug() << "Hiding animation";
+    qCDebug(appMovie) << "Hiding animation";
     hide();
-    qDebug() << "Animation hidden.";
+    qCDebug(appMovie) << "Animation hidden.";
     if(m_pMainWindow) {
         m_pMainWindow->update();
-        qDebug() << "Main window updated.";
+        qCDebug(appMovie) << "Main window updated.";
     } else {
-        qDebug() << "Main window pointer is null.";
+        qCDebug(appMovie) << "Main window pointer is null.";
     }
-    qDebug() << "Exiting onHideAnimation().";
+    qCDebug(appMovie) << "Exiting onHideAnimation().";
 }
 
 /**

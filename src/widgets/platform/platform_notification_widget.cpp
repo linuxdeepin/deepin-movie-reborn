@@ -7,6 +7,7 @@
  *@file 这个文件是实现影院左上角信息弹窗
  */
 #include "platform_notification_widget.h"
+#include "ddlog.h"
 #include "utils.h"
 
 #include <DPlatformWindowHandle>
@@ -24,7 +25,7 @@ namespace dmr {
 Platform_NotificationWidget::Platform_NotificationWidget(QWidget *parent)
     : QFrame(parent), m_pMainWindow(parent)
 {
-    qDebug() << "Initializing Platform_NotificationWidget";
+    qCDebug(appMovie) << "Initializing Platform_NotificationWidget";
     initMember();
     setObjectName("NotificationFrame");
 
@@ -38,7 +39,7 @@ Platform_NotificationWidget::Platform_NotificationWidget(QWidget *parent)
     m_pMsgLabel->setFrameShape(QFrame::NoFrame);
     //添加在两种主题下文字效果，使其更加明显
     int nType = DGuiApplicationHelper::instance()->themeType();
-    qDebug() << "Current theme type:" << nType;
+    qCDebug(appMovie) << "Current theme type:" << nType;
     if (nType == 2) {
         m_pMsgLabel->setForegroundRole(DPalette::TextLively);
     } else {
@@ -47,17 +48,17 @@ Platform_NotificationWidget::Platform_NotificationWidget(QWidget *parent)
 
     m_pTimer = new QTimer(this);
     if (!utils::check_wayland_env()) {
-        qDebug() << "Setting timer interval to 2000ms for non-Wayland environment";
+        qCDebug(appMovie) << "Setting timer interval to 2000ms for non-Wayland environment";
         m_pTimer->setInterval(2000);
     } else {
-        qDebug() << "Setting timer interval to 500ms for Wayland environment";
+        qCDebug(appMovie) << "Setting timer interval to 500ms for Wayland environment";
         m_pTimer->setInterval(500);
     }
     m_pTimer->setSingleShot(true);
     connect(m_pTimer, &QTimer::timeout, this, &QWidget::hide);
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [=](int nType) {
-        qDebug() << "Theme type changed to:" << nType;
+        qCDebug(appMovie) << "Theme type changed to:" << nType;
         if (nType == 2) {
             m_pMsgLabel->setForegroundRole(DPalette::TextLively);
         } else {
@@ -71,12 +72,12 @@ Platform_NotificationWidget::Platform_NotificationWidget(QWidget *parent)
  */
 void Platform_NotificationWidget::showEvent(QShowEvent *event)
 {
-    qDebug() << "Show event triggered";
+    qCDebug(appMovie) << "Show event triggered";
     ensurePolished();
     if (m_pMainLayout->indexOf(m_pIconLabel) == -1) {
         int newWidth = m_pMsgLabel->sizeHint().width() + m_pMainLayout->contentsMargins().left()
                + m_pMainLayout->contentsMargins().right();
-        qDebug() << "Resizing to width:" << newWidth;
+        qCDebug(appMovie) << "Resizing to width:" << newWidth;
         resize(newWidth, height());
         adjustSize();
     }
@@ -97,7 +98,7 @@ void Platform_NotificationWidget::resizeEvent(QResizeEvent *re)
  */
 void Platform_NotificationWidget::syncPosition()
 {
-    qDebug() << "Syncing position with main window";
+    qCDebug(appMovie) << "Syncing position with main window";
     QRect geom = m_pMainWindow->geometry();
     switch (m_pAnchor) {
     case ANCHOR_BOTTOM:
@@ -119,7 +120,7 @@ void Platform_NotificationWidget::syncPosition()
  */
 void Platform_NotificationWidget::syncPosition(QRect rect)
 {
-    qDebug() << "Syncing position with provided rect:" << rect;
+    qCDebug(appMovie) << "Syncing position with provided rect:" << rect;
     QRect geom = rect;
     switch (m_pAnchor) {
     case ANCHOR_BOTTOM:
@@ -142,17 +143,17 @@ void Platform_NotificationWidget::syncPosition(QRect rect)
  */
 void Platform_NotificationWidget::popup(const QString &msg, bool flag)
 {
-    qDebug() << "Popup requested with message:" << msg << "auto-hide:" << flag;
+    qCDebug(appMovie) << "Popup requested with message:" << msg << "auto-hide:" << flag;
     m_pMainLayout->setContentsMargins(14, 4, 14, 4);
     if (m_pMainLayout->indexOf(m_pMsgLabel) == -1) {
-        qDebug() << "Adding message label to layout";
+        qCDebug(appMovie) << "Adding message label to layout";
         m_pMainLayout->addWidget(m_pMsgLabel);
     }
     setFixedHeight(30);
     m_pMsgLabel->setText(msg);
 
     if (flag) {
-        qDebug() << "Checking window visibility and overlap";
+        qCDebug(appMovie) << "Checking window visibility and overlap";
         QList<WId> currentApplicationWindowList;
         const QWindowList &list = qApp->allWindows();
 
@@ -186,17 +187,17 @@ void Platform_NotificationWidget::popup(const QString &msg, bool flag)
                         msgRect.x() + msgRect.width() > wRect.x() &&
                         msgRect.y() < wRect.y() + wRect.height() &&
                         msgRect.y() + msgRect.height() > wRect.y()) {
-                        qDebug() << "Notification overlaps with window, not showing";
+                        qCDebug(appMovie) << "Notification overlaps with window, not showing";
                         return; // 重叠
                     }
                 }
             }
         }
         if (!m_pMainWindow->isActiveWindow()) {
-            qDebug() << "Main window not active, setting short timer (500ms)";
+            qCDebug(appMovie) << "Main window not active, setting short timer (500ms)";
             m_pTimer->start(500);
         } else {
-            qDebug() << "Main window active, setting normal timer (2000ms)";
+            qCDebug(appMovie) << "Main window active, setting normal timer (2000ms)";
             m_pTimer->start(2000);
         }
     }
@@ -210,9 +211,9 @@ void Platform_NotificationWidget::popup(const QString &msg, bool flag)
  */
 void Platform_NotificationWidget::updateWithMessage(const QString &newMsg, bool flag)
 {
-    qDebug() << "Updating message:" << newMsg << "auto-hide:" << flag;
+    qCDebug(appMovie) << "Updating message:" << newMsg << "auto-hide:" << flag;
     if (m_pIconLabel) {
-        qDebug() << "Hiding icon label";
+        qCDebug(appMovie) << "Hiding icon label";
         m_pIconLabel->setVisible(false);
     }
 
@@ -220,29 +221,29 @@ void Platform_NotificationWidget::updateWithMessage(const QString &newMsg, bool 
     font.setPixelSize(12);
     QFontMetrics fontMetrics(font);
     QString sMsg = fontMetrics.elidedText(newMsg, Qt::ElideMiddle, m_pMainWindow->width() - 12 - 12 - 60);
-    qDebug() << "Elided message:" << sMsg;
+    qCDebug(appMovie) << "Elided message:" << sMsg;
 
     if (isVisible()) {
-        qDebug() << "Widget visible, updating existing message";
+        qCDebug(appMovie) << "Widget visible, updating existing message";
         m_pMsgLabel->setText(sMsg);
         int newWidth = m_pMsgLabel->sizeHint().width() + m_pMainLayout->contentsMargins().left()
                + m_pMainLayout->contentsMargins().right();
-        qDebug() << "Resizing to width:" << newWidth;
+        qCDebug(appMovie) << "Resizing to width:" << newWidth;
         resize(newWidth, height());
         adjustSize();
 
         if (flag) {
             if (!m_pMainWindow->isActiveWindow()) {
-                qDebug() << "Main window not active, setting short timer (500ms)";
+                qCDebug(appMovie) << "Main window not active, setting short timer (500ms)";
                 m_pTimer->start(500);
             } else {
-                qDebug() << "Main window active, setting normal timer (2000ms)";
+                qCDebug(appMovie) << "Main window active, setting normal timer (2000ms)";
                 m_pTimer->start(2000);
             }
         }
         syncPosition();
     } else {
-        qDebug() << "Widget not visible, showing as popup";
+        qCDebug(appMovie) << "Widget not visible, showing as popup";
         popup(sMsg, flag);
     }
 }
@@ -252,14 +253,14 @@ void Platform_NotificationWidget::updateWithMessage(const QString &newMsg, bool 
  */
 void Platform_NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
 {
-    qDebug() << "Painting notification widget";
+    qCDebug(appMovie) << "Painting notification widget";
     //参考设计图
     const float fRadius = 8;
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
     bool bLight = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType());
-    qDebug() << "Using light theme:" << bLight;
+    qCDebug(appMovie) << "Using light theme:" << bLight;
 
     //按照ui建议，突出文字
     QColor color = QColor(42, 42, 42, 255 * 0.95);
@@ -271,7 +272,7 @@ void Platform_NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
     }
 
     if(m_bIsWM) {
-        qDebug() << "Painting WM style notification";
+        qCDebug(appMovie) << "Painting WM style notification";
         painter.fillRect(rect(), Qt::transparent);
         {
             QPainterPath painterPath;
@@ -287,7 +288,7 @@ void Platform_NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
 
         QFrame::paintEvent(pPaintEvent);
     } else {
-        qDebug() << "Painting standard style notification";
+        qCDebug(appMovie) << "Painting standard style notification";
         color.setAlpha(255);
         painter.fillRect(rect(), color);
 
@@ -304,7 +305,7 @@ void Platform_NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
  */
 void Platform_NotificationWidget::initMember()
 {
-    qDebug() << "Initializing member variables";
+    qCDebug(appMovie) << "Initializing member variables";
     m_pMsgLabel = nullptr;
     m_pIconLabel = nullptr;
     m_pTimer = nullptr;
