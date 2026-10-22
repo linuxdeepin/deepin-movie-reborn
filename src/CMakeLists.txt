@@ -106,6 +106,7 @@ if (Qt6_FOUND)
         ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.restart.json
         ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.specialhwdec.json
         ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.playmode.json
+        ${PROJECT_SOURCE_DIR}/assets/configs/org.deepin.movie.json
     )
     if (DEFINED DSG_DATA_DIR)
         message("-- DConfig is supported by DTK")
@@ -213,6 +214,7 @@ else()
         ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.restart.json
         ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.specialhwdec.json
         ${PROJECT_SOURCE_DIR}/assets/org.deepin.movie.playmode.json
+        ${PROJECT_SOURCE_DIR}/assets/configs/org.deepin.movie.json
     )
     if (DEFINED DSG_DATA_DIR)
         message("-- DConfig is supported by DTK")
