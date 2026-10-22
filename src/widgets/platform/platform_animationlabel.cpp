@@ -9,6 +9,7 @@
  *
  */
 #include <QDateTime>
+#include "ddlog.h"
 #include <QDebug>
 #include <QEventLoop>
 #include <QPainter>
@@ -27,7 +28,7 @@ using namespace dmr;
 Platform_AnimationLabel::Platform_AnimationLabel(QWidget *parent, QWidget *pMainWindow)
     : QFrame(parent)
 {
-    qDebug() << "Initializing Platform_AnimationLabel";
+    qCDebug(appMovie) << "Initializing Platform_AnimationLabel";
     initMember(pMainWindow);
     setAttribute(Qt::WA_TransparentForMouseEvents);
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
@@ -35,10 +36,10 @@ Platform_AnimationLabel::Platform_AnimationLabel(QWidget *parent, QWidget *pMain
     hide();
 
     if(m_bIsWM){
-        qDebug() << "Setting WM size: 200x200";
+        qCDebug(appMovie) << "Setting WM size: 200x200";
         resize(200, 200);
     } else {
-        qDebug() << "Setting normal size: 100x100";
+        qCDebug(appMovie) << "Setting normal size: 100x100";
         resize(100, 100);
     }
 }
@@ -48,22 +49,22 @@ Platform_AnimationLabel::Platform_AnimationLabel(QWidget *parent, QWidget *pMain
  */
 void Platform_AnimationLabel::pauseAnimation()
 {
-    qDebug() << "Starting pause animation";
+    qCDebug(appMovie) << "Starting pause animation";
     if (m_pPauseAnimationGroup && m_pPauseAnimationGroup->state() == QAbstractAnimation::Running) {
-        qDebug() << "Stopping existing pause animation";
+        qCDebug(appMovie) << "Stopping existing pause animation";
         m_pPauseAnimationGroup->stop();
     }
 
     if (m_bIsWM) {
-        qDebug() << "Setting WM size for pause animation: 200x200";
+        qCDebug(appMovie) << "Setting WM size for pause animation: 200x200";
         setFixedSize(200, 200);
     } else {
-        qDebug() << "Setting normal size for pause animation: 100x100";
+        qCDebug(appMovie) << "Setting normal size for pause animation: 100x100";
         setFixedSize(100, 100);
     }
     m_pPlayAnimationGroup->start();
     if(!isVisible()) {
-        qDebug() << "Showing animation label";
+        qCDebug(appMovie) << "Showing animation label";
         show();
     }
 }
@@ -73,29 +74,29 @@ void Platform_AnimationLabel::pauseAnimation()
  */
 void Platform_AnimationLabel::playAnimation()
 {
-    qDebug() << "Starting play animation";
+    qCDebug(appMovie) << "Starting play animation";
     if (m_pPlayAnimationGroup && m_pPlayAnimationGroup->state() == QAbstractAnimation::Running) {
-        qDebug() << "Stopping existing play animation";
+        qCDebug(appMovie) << "Stopping existing play animation";
         m_pPlayAnimationGroup->stop();
     }
 
     if (m_bIsWM) {
-        qDebug() << "Setting WM size for play animation: 200x200";
+        qCDebug(appMovie) << "Setting WM size for play animation: 200x200";
         setFixedSize(200, 200);
     } else {
-        qDebug() << "Setting normal size for play animation: 100x100";
+        qCDebug(appMovie) << "Setting normal size for play animation: 100x100";
         setFixedSize(100, 100);
     }
     m_pPauseAnimationGroup->start();
     if(!isVisible()) {
-        qDebug() << "Showing animation label";
+        qCDebug(appMovie) << "Showing animation label";
         show();
     }
 }
 
 void Platform_AnimationLabel::setWM(bool isWM)
 {
-    qDebug() << "Setting WM mode:" << isWM;
+    qCDebug(appMovie) << "Setting WM mode:" << isWM;
     m_bIsWM = isWM;
 }
 
@@ -106,7 +107,7 @@ void Platform_AnimationLabel::setWM(bool isWM)
  */
 void Platform_AnimationLabel::initMember(QWidget *pMainwindow)
 {
-    qDebug() << "Initializing member variables";
+    qCDebug(appMovie) << "Initializing member variables";
     initPlayAnimation();
     initPauseAnimation();
     m_pMainWindow = pMainwindow;
@@ -118,7 +119,7 @@ void Platform_AnimationLabel::initMember(QWidget *pMainwindow)
  */
 void Platform_AnimationLabel::initPauseAnimation()
 {
-    qDebug() << "Initializing pause animation";
+    qCDebug(appMovie) << "Initializing pause animation";
     m_pPauseAnimationGroup = new QSequentialAnimationGroup(this);
     m_pPauseShowAnimation = new QPropertyAnimation(this, "fps");
     m_pPauseHideAnimation = new QPropertyAnimation(this, "fps");
@@ -144,7 +145,7 @@ void Platform_AnimationLabel::initPauseAnimation()
     m_pPauseAnimationGroup->addAnimation(m_pPauseShowAnimation);
     m_pPauseAnimationGroup->addPause(DELAY_TIME);
     m_pPauseAnimationGroup->addAnimation(m_pPauseHideAnimation);
-    qDebug() << "Pause animation initialized with" << nShowAnimationNum << "show frames and" << nHideAnimationNum << "hide frames";
+    qCDebug(appMovie) << "Pause animation initialized with" << nShowAnimationNum << "show frames and" << nHideAnimationNum << "hide frames";
 }
 
 /**
@@ -152,7 +153,7 @@ void Platform_AnimationLabel::initPauseAnimation()
  */
 void Platform_AnimationLabel::initPlayAnimation()
 {
-    qDebug() << "Initializing play animation";
+    qCDebug(appMovie) << "Initializing play animation";
     m_pPlayAnimationGroup = new QSequentialAnimationGroup(this);
     m_pPlayShowAnimation = new QPropertyAnimation(this, "fps");
     m_pPlayHideAnimation = new QPropertyAnimation(this, "fps");
@@ -176,7 +177,7 @@ void Platform_AnimationLabel::initPlayAnimation()
     m_pPlayAnimationGroup->addAnimation(m_pPlayShowAnimation);
     m_pPlayAnimationGroup->addPause(DELAY_TIME);
     m_pPlayAnimationGroup->addAnimation(m_pPlayHideAnimation);
-    qDebug() << "Play animation initialized with" << nShowAnimationNum << "show frames and" << nHideAnimationNum << "hide frames";
+    qCDebug(appMovie) << "Play animation initialized with" << nShowAnimationNum << "show frames and" << nHideAnimationNum << "hide frames";
 }
 
 /**
@@ -189,10 +190,10 @@ void Platform_AnimationLabel::setGeometryByMainWindow(QWidget *pMainWindow)
         QRect rect = pMainWindow->rect();
         int nWidth = width(), nHeight = height();
         QPoint pt = pMainWindow->mapToGlobal(rect.center())- QPoint(nWidth/2, nHeight/2);
-        qDebug() << "Setting geometry to:" << pt.x() << pt.y() << nWidth << nHeight;
+        qCDebug(appMovie) << "Setting geometry to:" << pt.x() << pt.y() << nWidth << nHeight;
         setGeometry(pt.x(), pt.y(), nWidth, nHeight);
     } else {
-        qWarning() << "Main window is null, cannot set geometry";
+        qCWarning(appMovie) << "Main window is null, cannot set geometry";
     }
 }
 
@@ -207,7 +208,7 @@ void Platform_AnimationLabel::onPlayAnimationChanged(const QVariant &value)
     } else {
         m_sFileName = QString(":/resources/icons/stop_new/%1.png").arg(value.toInt());
     }
-    qDebug() << "Loading play animation frame:" << m_sFileName;
+    qCDebug(appMovie) << "Loading play animation frame:" << m_sFileName;
     m_pixmap = QPixmap(m_sFileName);
     update();
 }
@@ -223,20 +224,20 @@ void Platform_AnimationLabel::onPauseAnimationChanged(const QVariant &value)
     } else {
         m_sFileName = QString(":/resources/icons/start_new/%1.png").arg(value.toInt());
     }
-    qDebug() << "Loading pause animation frame:" << m_sFileName;
+    qCDebug(appMovie) << "Loading pause animation frame:" << m_sFileName;
     m_pixmap = QPixmap(m_sFileName);
     update();
 }
 
 void Platform_AnimationLabel::onHideAnimation()
 {
-    qDebug() << "Hiding animation label";
+    qCDebug(appMovie) << "Hiding animation label";
     hide();
     if(m_pMainWindow) {
-        qDebug() << "Updating main window";
+        qCDebug(appMovie) << "Updating main window";
         m_pMainWindow->update();
     } else {
-        qWarning() << "Main window is null, cannot update";
+        qCWarning(appMovie) << "Main window is null, cannot update";
     }
 }
 
@@ -260,10 +261,10 @@ void Platform_AnimationLabel::paintEvent(QPaintEvent *e)
 void Platform_AnimationLabel::showEvent(QShowEvent *e)
 {
     if(!CompositingManager::get().composited()) { //MPV绑定wid方式通过mainwindow获取显示坐标
-        qDebug() << "Non-composited mode: setting geometry by main window";
+        qCDebug(appMovie) << "Non-composited mode: setting geometry by main window";
         setGeometryByMainWindow(m_pMainWindow);
     } else {
-        qDebug() << "Composited mode: using default geometry";
+        qCDebug(appMovie) << "Composited mode: using default geometry";
     }
     QFrame::showEvent(e);
 }

@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "platform_playlist_widget.h"
+#include "ddlog.h"
 #include "playlist_model.h"
 #include "compositing_manager.h"
 #include "player_engine.h"
@@ -35,10 +36,10 @@ public:
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
     {
-        qDebug() << "PlayItemTooltipHandler eventFilter";
+        qCDebug(appMovie) << "PlayItemTooltipHandler eventFilter";
         switch (event->type()) {
         case QEvent::ToolTip: {
-            qDebug() << "ToolTip";
+            qCDebug(appMovie) << "ToolTip";
             QHelpEvent *he = static_cast<QHelpEvent *>(event);
             Tip *tip = obj->property("HintWidget").value<Tip *>();
             QWidget *item = tip->property("for").value<QWidget *>();
@@ -57,7 +58,7 @@ protected:
             int dw = QGuiApplication::primaryScreen()->availableGeometry().width();
 #endif
             if (pos.x() + tip->width() > dw) {
-                qDebug() << "Tip width" << tip->width();
+                qCDebug(appMovie) << "Tip width" << tip->width();
                 pos.rx() = dw - tip->width();
             }
             tip->move(pos);
@@ -65,7 +66,7 @@ protected:
         }
 
         case QEvent::Leave: {
-            qDebug() << "Leave";
+            qCDebug(appMovie) << "Leave";
             auto tip = obj->property("HintWidget").value<Tip *>();
             tip->hide();
             event->ignore();
@@ -93,7 +94,7 @@ public:
     Platform_PlayItemWidget(const PlayItemInfo &pif, QListWidget *list = nullptr, int index = 0, Platform_PlaylistWidget *parent = nullptr)
         : QFrame(), _pif {pif}, _listWidget {list}, _playlist{parent}
     {
-        qDebug() << "PlayItemWidget constructor";
+        qCDebug(appMovie) << "PlayItemWidget constructor";
         _thumb = nullptr;
         m_pSvgWidget = nullptr;
         setProperty("PlayItemThumb", "true");
@@ -103,10 +104,10 @@ public:
         auto kd = "local";
         if (!_pif.url.isLocalFile()) {
             if (_pif.url.scheme().startsWith("dvd")) {
-                qDebug() << "dvd";
+                qCDebug(appMovie) << "dvd";
                 kd = "dvd";
             } else {
-                qDebug() << "network";
+                qCDebug(appMovie) << "network";
                 kd = "network";
             }
         }
@@ -129,31 +130,31 @@ public:
         l->addWidget(_index);
 
         if (_pif.thumbnail.isNull() && _pif.thumbnail_dark.isNull()) {
-            qDebug() << "no thumbnail";
+            qCDebug(appMovie) << "no thumbnail";
             if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-                qDebug() << "dark theme";
+                qCDebug(appMovie) << "dark theme";
                 m_pSvgWidget = new QSvgWidget(QString(":/resources/icons/music-dark.svg"), this);
             } else {
-                qDebug() << "light theme";
+                qCDebug(appMovie) << "light theme";
                 m_pSvgWidget = new QSvgWidget(QString(":/resources/icons/music-light.svg"), this);
             }
             m_pSvgWidget->setFixedSize(42, 24);
         } else {
-            qDebug() << "has thumbnail";
+            qCDebug(appMovie) << "has thumbnail";
             if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-                qDebug() << "dark theme";
+                qCDebug(appMovie) << "dark theme";
                 _thumb = new Platform_ListPic(_pif.thumbnail_dark.scaled(QSize(42, 24)), this);
             } else {
-                qDebug() << "light theme";
+                qCDebug(appMovie) << "light theme";
                 _thumb = new Platform_ListPic(_pif.thumbnail.scaled(QSize(42, 24)), this);
             }
         }
 
         if (_thumb) {
-            qDebug() << "has thumbnail, add to layout";
+            qCDebug(appMovie) << "has thumbnail, add to layout";
             l->addWidget(_thumb);
         } else {
-            qDebug() << "no thumbnail, add to layout";
+            qCDebug(appMovie) << "no thumbnail, add to layout";
             l->addWidget(m_pSvgWidget);
         }
         QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &Platform_PlayItemWidget::slotThemeTypeChanged);
@@ -223,7 +224,7 @@ public:
         setState(ItemState::Normal);
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
-        qDebug() << "compact mode";
+        qCDebug(appMovie) << "compact mode";
         setFixedHeight(24);
         _closeBtn->setIconSize(QSize(18, 18));
         _closeBtn->setFixedSize(17, 17);
@@ -236,7 +237,7 @@ public:
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
         if (sizeMode == DGuiApplicationHelper::NormalMode) {
-            qDebug() << "normal mode";
+            qCDebug(appMovie) << "normal mode";
             setFixedHeight(36);
             _closeBtn->setIconSize(QSize(28, 28));
             _closeBtn->setFixedSize(25, 25);
@@ -246,7 +247,7 @@ public:
             else
                 m_pSvgWidget->setFixedSize(42, 24);
         } else {
-            qDebug() << "compact mode";
+            qCDebug(appMovie) << "compact mode";
             setFixedHeight(24);
             _closeBtn->setIconSize(QSize(18, 18));
             _closeBtn->setFixedSize(17, 17);
@@ -259,20 +260,20 @@ public:
         updateClosePosition();
     });
 #endif
-    qDebug() << "PlayItemWidget constructor";
+    qCDebug(appMovie) << "PlayItemWidget constructor";
     }
     
     ~Platform_PlayItemWidget() override
     {
-        qDebug() << "PlayItemWidget destructor";
+        qCDebug(appMovie) << "PlayItemWidget destructor";
         if (m_pSvgWidget) {
-            qDebug() << "delete m_pSvgWidget";
+            qCDebug(appMovie) << "delete m_pSvgWidget";
             delete  m_pSvgWidget;
             m_pSvgWidget = nullptr;
         }
 
         if (_thumb) {
-            qDebug() << "delete _thumb";
+            qCDebug(appMovie) << "delete _thumb";
             delete _thumb;
             _thumb = nullptr;
         }
@@ -280,14 +281,14 @@ public:
 
     void updateInfo(const PlayItemInfo &pif)
     {
-        qDebug() << "updateInfo";
+        qCDebug(appMovie) << "updateInfo";
         _pif = pif;
         _time->setText(_pif.mi.durationStr());
         setToolTip(_pif.mi.title);
         updateNameText();
 
         if (!_pif.valid) {
-            qDebug() << "invalid";
+            qCDebug(appMovie) << "invalid";
             setState(ItemState::Invalid);
             _time->setText(tr("The file does not exist"));
         }
@@ -296,7 +297,7 @@ public:
 
     void setState(ItemState is)
     {
-        qDebug() << "setState" << is;
+        qCDebug(appMovie) << "setState" << is;
         setProperty("ItemState", is);
         updateForeground();
     }
@@ -307,13 +308,13 @@ public:
     }
     void setIndex(int index)
     {
-        qDebug() << "setIndex" << index;
+        qCDebug(appMovie) << "setIndex" << index;
         _index->setText(QString::number(index + 1));
     }
 
     void setHovered(bool v)
     {
-        qDebug() << "setHovered" << v;
+        qCDebug(appMovie) << "setHovered" << v;
         if (_hovered != v) {
             _hovered = v;
             setProperty("hovered", v);
@@ -322,24 +323,24 @@ public:
 
     void setCurItemHovered(bool v)
     {
-        qDebug() << "setCurItemHovered" << v;
+        qCDebug(appMovie) << "setCurItemHovered" << v;
         if (_hovered != v) {
             _hovered = v;
             setProperty("hovered", v);
         }
 
         if (v) {
-            qDebug() << "show close button";
+            qCDebug(appMovie) << "show close button";
             _closeBtn->show();
             _closeBtn->raise();
         } else {
-            qDebug() << "hide close button";
+            qCDebug(appMovie) << "hide close button";
             _closeBtn->hide();
         }
 
         updateClosePosition();
         update();
-        qDebug() << "setCurItemHovered end";
+        qCDebug(appMovie) << "setCurItemHovered end";
     }
 
     bool getBIsSelect() const
@@ -349,7 +350,7 @@ public:
 
     void setBIsSelect(bool bIsSelect)
     {
-        qDebug() << "setBIsSelect" << bIsSelect;
+        qCDebug(appMovie) << "setBIsSelect" << bIsSelect;
         m_bIsSelect = bIsSelect;
 
         updateForeground();
@@ -357,25 +358,25 @@ public:
 
     void doDoubleClick()
     {
-        qDebug() << "doDoubleClick";
+        qCDebug(appMovie) << "doDoubleClick";
         //FIXME: there is an potential inconsistency with model if pif did changed
         //(i.e gets deleted).
         _pif.refresh();
         _time->setText(_pif.mi.durationStr());
         if (!_pif.valid) {
-            qDebug() << "invalid";
+            qCDebug(appMovie) << "invalid";
             setState(ItemState::Invalid);
             _time->setText(tr("The file does not exist"));
         }
         if (!_pif.url.isLocalFile() || _pif.info.exists()) {
-            qDebug() << "local file or exists";
+            qCDebug(appMovie) << "local file or exists";
             emit doubleClicked();
         }else{
-            qDebug() << "not local file or not exists";
+            qCDebug(appMovie) << "not local file or not exists";
             //fixed:影院循环播放10个smb上的视频一段时间后，点击播放按钮或点击列表中的视频没反应
             emit _playlist->engine()->sigInvalidFile(QFileInfo(_pif.url.toLocalFile()).fileName());
         }
-        qDebug() << "doDoubleClick end";
+        qCDebug(appMovie) << "doDoubleClick end";
     }
 
 signals:
@@ -385,10 +386,10 @@ signals:
 private slots:
     void slotThemeTypeChanged()
     {
-        qDebug() << "slotThemeTypeChanged";
+        qCDebug(appMovie) << "slotThemeTypeChanged";
 //        QPalette pa;
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            qDebug() << "light theme";
+            qCDebug(appMovie) << "light theme";
             if (_thumb) {
                 _thumb->setPic(_pif.thumbnail);
             } else {
@@ -400,7 +401,7 @@ private slots:
             updateForeground();
         };
         if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-            qDebug() << "dark theme";
+            qCDebug(appMovie) << "dark theme";
             if (_thumb) {
                 _thumb->setPic(_pif.thumbnail_dark);
             } else {
@@ -414,25 +415,25 @@ private slots:
     }
     void slotSizeChange()
     {
-        qDebug() << "slotSizeChange";
+        qCDebug(appMovie) << "slotSizeChange";
         setFixedWidth(_playlist->width() - 230);
     }
 
 protected:
     void updateClosePosition()
     {
-        qDebug() << "updateClosePosition";
+        qCDebug(appMovie) << "updateClosePosition";
         auto margin = 10;
         _closeBtn->move(width() - _closeBtn->width() - margin,
                         (height() - _closeBtn->height()) / 2);
     }
     void updateForeground()
     {
-        qDebug() << "updateForeground";
+        qCDebug(appMovie) << "updateForeground";
         m_highlightColor = Dtk::Gui::DGuiApplicationHelper::instance()->applicationPalette().highlight().color();
 
         if(m_bIsSelect) {
-            qDebug() << "selected";
+            qCDebug(appMovie) << "selected";
             _name->setForegroundRole(DPalette::Text);
             _index->setForegroundRole(DPalette::Text);
 
@@ -442,26 +443,26 @@ protected:
             _index->setPalette(pa);
             update();
         } else {
-            qDebug() << "not selected";
+            qCDebug(appMovie) << "not selected";
             if (state() == ItemState::Playing) {
-                qDebug() << "playing";
+                qCDebug(appMovie) << "playing";
                 _name->setForegroundRole(DPalette::Highlight);
                 _index->setForegroundRole(DPalette::Highlight);
                 _time->setForegroundRole(DPalette::Highlight);
             } else {
-                qDebug() << "not playing";
+                qCDebug(appMovie) << "not playing";
                 _name->setForegroundRole(DPalette::BrightText);
                 _index->setForegroundRole(DPalette::BrightText);
                 _time->setForegroundRole(DPalette::BrightText);
 
                 QPalette pa;
                 if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-                    qDebug() << "light theme";
+                    qCDebug(appMovie) << "light theme";
                     pa.setColor(QPalette::BrightText, Qt::black);
                     _name->setPalette(pa);
                     _index->setPalette(pa);
                 } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-                    qDebug() << "dark theme";
+                    qCDebug(appMovie) << "dark theme";
                     pa.setColor(QPalette::BrightText, Qt::white);
                     _name->setPalette(pa);
                     _index->setPalette(pa);
@@ -471,7 +472,7 @@ protected:
     }
     void leaveEvent(QEvent *e) override
     {
-        qDebug() << "leaveEvent";
+        qCDebug(appMovie) << "leaveEvent";
         _closeBtn->hide();
         setHovered(false);
 
@@ -480,7 +481,7 @@ protected:
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent(QEvent *e) override
     {
-        qDebug() << "Qt5 enterEvent";
+        qCDebug(appMovie) << "Qt5 enterEvent";
         _closeBtn->show();
         _closeBtn->raise();
 
@@ -492,7 +493,7 @@ protected:
 #else
     void enterEvent(QEnterEvent *e) override
     {
-        qDebug() << "Qt6 enterEvent";
+        qCDebug(appMovie) << "Qt6 enterEvent";
         _closeBtn->show();
         _closeBtn->raise();
 
@@ -506,14 +507,14 @@ protected:
     {
         if (e->type() == QEvent::MouseButtonDblClick) {
             doDoubleClick();
-            qDebug() << "MouseButtonDblClick return";
+            qCDebug(appMovie) << "MouseButtonDblClick return";
             return true;
         }
         return QWidget::eventFilter(obj, e);
     }
     void resizeEvent(QResizeEvent *re) override
     {
-        qDebug() << "resizeEvent";
+        qCDebug(appMovie) << "resizeEvent";
         updateClosePosition();
         _name->setFixedWidth(width() - 180);
         updateNameText();
@@ -522,29 +523,29 @@ protected:
     }
     bool event(QEvent *ee) override
     {
-        qDebug() << "event" << ee->type();
+        qCDebug(appMovie) << "event" << ee->type();
         if (ee->type() == QEvent::Move) {
-            qDebug() << "Move";
+            qCDebug(appMovie) << "Move";
         }
 
         return QFrame::event(ee);
     }
     void updateNameText()
     {
-        qDebug() << "updateNameText";
+        qCDebug(appMovie) << "updateNameText";
         _name->setText(utils::ElideText(_pif.mi.title, {width() - 242, 36}, QTextOption::NoWrap,
                                         _name->font(), Qt::ElideRight, 18, width() - 242));
         _name->setCursor(Qt::ArrowCursor);
     }
     void showEvent(QShowEvent *se) override
     {
-        qDebug() << "showEvent";
+        qCDebug(appMovie) << "showEvent";
         updateNameText();
         QFrame::showEvent(se);
     }
     void mouseDoubleClickEvent(QMouseEvent *me) override
     {
-        qDebug() << "mouseDoubleClickEvent";
+        qCDebug(appMovie) << "mouseDoubleClickEvent";
         doDoubleClick();
 
         QFrame::mouseDoubleClickEvent(me);
@@ -595,7 +596,7 @@ protected:
         }
 
         if (m_bIsSelect) {
-            qDebug() << "m_bIsSelect";
+            qCDebug(appMovie) << "m_bIsSelect";
             _time->hide();
             _closeBtn->show();
             _closeBtn->raise();
@@ -603,7 +604,7 @@ protected:
             pp.addRoundedRect(bgRect, 8, 8);
             painter.fillPath(pp, m_highlightColor);
         } else {
-            qDebug() << "not m_bIsSelect";
+            qCDebug(appMovie) << "not m_bIsSelect";
             _time->show();
             _closeBtn->hide();
         }
@@ -638,11 +639,11 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event)
     {
         if (event->type() == QEvent::MouseButtonPress) {
-            qDebug() << "MouseButtonPress";
+            qCDebug(appMovie) << "MouseButtonPress";
             QMouseEvent *me = static_cast<QMouseEvent *>(event);
 
             if (me->buttons() == Qt::LeftButton) {
-                qDebug() << "LeftButton";
+                qCDebug(appMovie) << "LeftButton";
                 if (!m_bClicked) {
                     m_bClicked = true;
                     m_lastPoint = me->globalPos();
@@ -658,7 +659,7 @@ protected:
                         if (mw->insideResizeArea(m_lastPoint))
                             return;
                         if (plw->state() == Platform_PlaylistWidget::Opened && !plw->underMouse()) {
-                            qDebug() << "TogglePlaylist";
+                            qCDebug(appMovie) << "TogglePlaylist";
                             mw->requestAction(ActionFactory::ActionKind::TogglePlaylist);
                         }
                     });
@@ -666,7 +667,7 @@ protected:
             }
             return false;
         } else if (event->type() == QEvent::MouseButtonDblClick) {
-            qDebug() << "MouseButtonDblClick";
+            qCDebug(appMovie) << "MouseButtonDblClick";
             m_bClicked = false;
             return QObject::eventFilter(obj, event);
         }/* else if (event->type() == QEvent::KeyRelease) { //这段代码会导致Enter播放列表后，播放列表关闭
@@ -688,7 +689,7 @@ protected:
             }
             return false;
         }*/ else {
-            qDebug() << "standard event processing";
+            qCDebug(appMovie) << "standard event processing";
             // standard event processing
             return QObject::eventFilter(obj, event);
         }
@@ -715,15 +716,15 @@ public:
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
     {
-        qDebug() << "Platform_MouseEventListener eventFilter";
+        qCDebug(appMovie) << "Platform_MouseEventListener eventFilter";
         if (event->type() == QEvent::MouseButtonPress) {
             QMouseEvent *pMouseEvent = static_cast<QMouseEvent *>(event);
             if (pMouseEvent->buttons() == Qt::LeftButton && !m_pListWidget->itemAt(pMouseEvent->pos())) {
-                qDebug() << "LeftButton";
+                qCDebug(appMovie) << "LeftButton";
                 Platform_PlayItemWidget *pItem = reinterpret_cast<Platform_PlayItemWidget *>(m_pListWidget->itemWidget(m_pListWidget->currentItem()));
                 if(pItem)
                 {
-                    qDebug() << "setBIsSelect false";
+                    qCDebug(appMovie) << "setBIsSelect false";
                     pItem->setBIsSelect(false); // 点击播放列表空白处，取消item选中效果
                     m_pListWidget->update();
                 }
@@ -739,9 +740,9 @@ private:
 Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     : QWidget(mw), _engine(mpv), _mw(static_cast<Platform_MainWindow *>(mw))
 {
-    qDebug() << "Initializing Platform_PlaylistWidget";
+    qCDebug(appMovie) << "Initializing Platform_PlaylistWidget";
     bool composited = CompositingManager::get().composited();
-    qDebug() << "Composited mode:" << composited;
+    qCDebug(appMovie) << "Composited mode:" << composited;
     setAttribute(Qt::WA_TranslucentBackground, false);
     this->setObjectName(PLAYLIST_WIDGET);
 
@@ -813,11 +814,11 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     DPalette pa_cb = DGuiApplicationHelper::instance()->applicationPalette();
 #endif
     if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-        qDebug() << "light theme";
+        qCDebug(appMovie) << "light theme";
         pa_cb.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
         pa_cb.setBrush(QPalette::Dark, QColor(92, 92, 92, 255));
     } else {
-        qDebug() << "dark theme";
+        qCDebug(appMovie) << "dark theme";
         pa_cb.setBrush(QPalette::Light, QColor(85, 84, 84, 255));
         pa_cb.setBrush(QPalette::Dark, QColor(65, 65, 65, 255));
     }
@@ -833,11 +834,11 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         DPalette pa_cBtn = DGuiApplicationHelper::instance()->applicationPalette();
 #endif
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            qDebug() << "light theme";
+            qCDebug(appMovie) << "light theme";
             pa_cBtn.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
             pa_cBtn.setBrush(QPalette::Dark, QColor(92, 92, 92, 255));
         } else {
-            qDebug() << "dark theme";
+            qCDebug(appMovie) << "dark theme";
             pa_cBtn.setBrush(QPalette::Light, QColor(85, 84, 84, 255));
             pa_cBtn.setBrush(QPalette::Dark, QColor(65, 65, 65, 255));
         }
@@ -893,7 +894,7 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _playlist->setContentsMargins(0, 0, 0, 0);
 
     if (!composited) {
-        qDebug() << "Setting non-composited window flags";
+        qCDebug(appMovie) << "Setting non-composited window flags";
         _playlist->setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
         _playlist->setAttribute(Qt::WA_NativeWindow);
     }
@@ -906,7 +907,7 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 #endif
 
     if (!_closeMapper) {
-        qDebug() << "create closeMapper";
+        qCDebug(appMovie) << "create closeMapper";
         _closeMapper = new QSignalMapper(this);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         connect(_closeMapper,
@@ -921,7 +922,7 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     }
 
     if (!_activateMapper) {
-        qDebug() << "create activateMapper";
+        qCDebug(appMovie) << "create activateMapper";
         _activateMapper = new QSignalMapper(this);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         connect(_activateMapper,
@@ -937,15 +938,15 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
 #ifdef DTKWIDGET_CLASS_DSizeMode
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
-        qDebug() << "sizeModeChanged" << sizeMode;
+        qCDebug(appMovie) << "sizeModeChanged" << sizeMode;
         if (sizeMode == DGuiApplicationHelper::NormalMode) {
-            qDebug() << "NormalMode";
+            qCDebug(appMovie) << "NormalMode";
             for (int i = 0; i < _playlist->count(); i++) {
                 QListWidgetItem *item = _playlist->item(i);
                 item->setSizeHint(QSize(_playlist->itemWidget(item)->width(), 36));
             }
         } else {
-            qDebug() << "CompactMode";
+            qCDebug(appMovie) << "CompactMode";
             for (int i = 0; i < _playlist->count(); i++) {
                 QListWidgetItem *item = _playlist->item(i);
                 item->setSizeHint(QSize(_playlist->itemWidget(item)->width(), 24));
@@ -978,7 +979,7 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     });
 
     connect(_playlist->model(), &QAbstractItemModel::rowsMoved, this, &Platform_PlaylistWidget::slotRowsMoved);
-    qDebug() << "Playlist widget created";
+    qCDebug(appMovie) << "Playlist widget created";
 }
 
 Platform_PlaylistWidget::~Platform_PlaylistWidget()
@@ -987,10 +988,10 @@ Platform_PlaylistWidget::~Platform_PlaylistWidget()
 
 void Platform_PlaylistWidget::updateSelectItem(const int key)
 {
-    qDebug() << "Updating selected item with key:" << key;
+    qCDebug(appMovie) << "Updating selected item with key:" << key;
     auto curItem = _playlist->currentItem();
     auto curRow = _playlist->row(curItem);
-    qDebug() << "Current row:" << curRow;
+    qCDebug(appMovie) << "Current row:" << curRow;
     
     Platform_PlayItemWidget *prevItemWgt = nullptr;
     if (curItem) {
@@ -998,19 +999,19 @@ void Platform_PlaylistWidget::updateSelectItem(const int key)
     }
 
     if (key == Qt::Key_Up) {
-        qDebug() << "Handling Key_Up";
+        qCDebug(appMovie) << "Handling Key_Up";
         if (curRow == -1) {
             _index = curRow + 1;
         } else {
             _index = curRow - 1;
         }
         if (_index < 0) {
-            qDebug() << "Index out of bounds, returning";
+            qCDebug(appMovie) << "Index out of bounds, returning";
             return;
         }
 
         _playlist->setCurrentRow(_index);
-        qDebug() << "New index after Key_Up:" << _index;
+        qCDebug(appMovie) << "New index after Key_Up:" << _index;
         auto curItemWgt = reinterpret_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
         if (prevItemWgt) {
             prevItemWgt->setBIsSelect(false);
@@ -1020,14 +1021,14 @@ void Platform_PlaylistWidget::updateSelectItem(const int key)
         }
 
     } else if (key == Qt::Key_Down) {
-        qDebug() << "Handling Key_Down";
+        qCDebug(appMovie) << "Handling Key_Down";
         if (_index >= _playlist->count() - 1) {
-            qDebug() << "Already at last item, returning";
+            qCDebug(appMovie) << "Already at last item, returning";
             return;
         }
         _index = curRow + 1;
         _playlist->setCurrentRow(_index);
-        qDebug() << "New index after Key_Down:" << _index;
+        qCDebug(appMovie) << "New index after Key_Down:" << _index;
         auto curItemWgt = reinterpret_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
         if (prevItemWgt) {
             prevItemWgt->setBIsSelect(false);
@@ -1036,12 +1037,12 @@ void Platform_PlaylistWidget::updateSelectItem(const int key)
             curItemWgt->setBIsSelect(true);
         }
     } else if (key == Qt::Key_Enter || key == Qt::Key_Return) {
-        qDebug() << "Handling Enter/Return key";
+        qCDebug(appMovie) << "Handling Enter/Return key";
         if (m_pClearButton == focusWidget()) {   //focus在清空按钮上则清空列表
-            qDebug() << "Clear button focused, clearing playlist";
+            qCDebug(appMovie) << "Clear button focused, clearing playlist";
             _engine->clearPlaylist();
         } else {
-            qDebug() << "Playing selected item";
+            qCDebug(appMovie) << "Playing selected item";
             slotDoubleClickedItem(prevItemWgt);  //Enter键播放
         }
     }
@@ -1049,7 +1050,7 @@ void Platform_PlaylistWidget::updateSelectItem(const int key)
 
 void Platform_PlaylistWidget::clear()
 {
-    qDebug() << "Clearing playlist";
+    qCDebug(appMovie) << "Clearing playlist";
     _playlist->clear();
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
@@ -1058,10 +1059,10 @@ void Platform_PlaylistWidget::clear()
 
 void Platform_PlaylistWidget::updateItemInfo(int id)
 {
-    qDebug() << "Updating item info for id:" << id;
+    qCDebug(appMovie) << "Updating item info for id:" << id;
     auto piw = dynamic_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(_playlist->item(id)));
     if (piw == nullptr) {
-        qWarning() << "Failed to get item widget for id:" << id;
+        qCWarning(appMovie) << "Failed to get item widget for id:" << id;
         return;
     }
     piw->updateInfo(_engine->playlist().items()[id]);
@@ -1069,7 +1070,7 @@ void Platform_PlaylistWidget::updateItemInfo(int id)
 
 void Platform_PlaylistWidget::updateItemStates()
 {
-    qDebug() << "Updating item states, count:" << _playlist->count() << "current:" << _engine->playlist().current();
+    qCDebug(appMovie) << "Updating item states, count:" << _playlist->count() << "current:" << _engine->playlist().current();
 
     for (int i = 0; i < _playlist->count(); i++) {
         auto piw = dynamic_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
@@ -1077,13 +1078,13 @@ void Platform_PlaylistWidget::updateItemStates()
         auto old = piw->state();
         piw->setState(ItemState::Normal);
         if (!piw->_pif.valid) {
-            qDebug() << "Item" << i << "is invalid";
+            qCDebug(appMovie) << "Item" << i << "is invalid";
             piw->setState(ItemState::Invalid);
         }
 
         if (i == _engine->playlist().current()) {
             if (piw->state() != ItemState::Playing) {
-                qDebug() << "Setting item" << i << "as playing";
+                qCDebug(appMovie) << "Setting item" << i << "as playing";
                 _playlist->setCurrentRow(i);
                 piw->setState(ItemState::Playing);
             }
@@ -1093,14 +1094,14 @@ void Platform_PlaylistWidget::updateItemStates()
 
 void Platform_PlaylistWidget::showItemInfo()
 {
-    qDebug() << "showItemInfo";
+    qCDebug(appMovie) << "showItemInfo";
     if (!_mouseItem) {
-        qDebug() << "No mouse item, returning";
+        qCDebug(appMovie) << "No mouse item, returning";
         return;
     }
     auto item = dynamic_cast<Platform_PlayItemWidget *>(_mouseItem);
     if (item) {
-        qDebug() << "Mouse item is valid";
+        qCDebug(appMovie) << "Mouse item is valid";
         MovieInfoDialog mid(item->_pif, _mw);
         mid.exec();
     }
@@ -1108,29 +1109,29 @@ void Platform_PlaylistWidget::showItemInfo()
 
 void Platform_PlaylistWidget::openItemInFM()
 {
-    qDebug() << "openItemInFM";
+    qCDebug(appMovie) << "openItemInFM";
     if (!_mouseItem) {
-        qDebug() << "No mouse item, returning";
+        qCDebug(appMovie) << "No mouse item, returning";
         return;
     }
     auto item = dynamic_cast<Platform_PlayItemWidget *>(_mouseItem);
     if (item) {
-        qDebug() << "Mouse item is valid, opening in file manager";
+        qCDebug(appMovie) << "Mouse item is valid, opening in file manager";
         utils::ShowInFileManager(item->_pif.mi.filePath);
     }
 }
 
 void Platform_PlaylistWidget::removeClickedItem(bool isShortcut)
 {
-    qDebug() << "removeClickedItem";
+    qCDebug(appMovie) << "removeClickedItem";
     if (isShortcut && isVisible()) {
-        qDebug() << "Shortcut and visible, removing item";
+        qCDebug(appMovie) << "Shortcut and visible, removing item";
         for (int i = 0; i < _playlist->count(); i++) {
             Platform_PlayItemWidget * piw = dynamic_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
-            qInfo() << piw->getBIsSelect();
+            qCInfo(appMovie) << piw->getBIsSelect();
             if (piw->getBIsSelect()) {
                 _engine->playlist().remove(i);
-                qInfo() << "Item removed";
+                qCInfo(appMovie) << "Item removed";
                 return;
             }
         }
@@ -1139,7 +1140,7 @@ void Platform_PlaylistWidget::removeClickedItem(bool isShortcut)
     if (!_clickedItem) return;
     Platform_PlayItemWidget * piw = dynamic_cast<Platform_PlayItemWidget *>(_clickedItem);
     if (piw) {
-        qInfo() << __func__;
+        qCInfo(appMovie) << __func__;
         for (int i = 0; i < _playlist->count(); i++) {
             if (_clickedItem == _playlist->itemWidget(_playlist->item(i))) {
                 _engine->playlist().remove(i);
@@ -1147,12 +1148,12 @@ void Platform_PlaylistWidget::removeClickedItem(bool isShortcut)
             }
         }
     }
-    qInfo() << "Clicked item removed";
+    qCInfo(appMovie) << "Clicked item removed";
 }
 
 void Platform_PlaylistWidget::slotCloseTimeTimeOut()
 {
-    qDebug() << "slotCloseTimeTimeOut";
+    qCDebug(appMovie) << "slotCloseTimeTimeOut";
     QTimer *pCloselistTimer = dynamic_cast<QTimer *>(sender());
     pCloselistTimer->deleteLater();
     togglePopup(false);
@@ -1161,14 +1162,14 @@ void Platform_PlaylistWidget::slotCloseTimeTimeOut()
 
 void Platform_PlaylistWidget::slotCloseItem(QWidget *w)
 {
-    qDebug() << "item close clicked";
+    qCDebug(appMovie) << "item close clicked";
     _clickedItem = w;
     _mw->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
 }
 
 void Platform_PlaylistWidget::slotDoubleClickedItem(QWidget *w)
 {
-    qInfo() << "item double clicked";
+    qCInfo(appMovie) << "item double clicked";
     QList<QVariant> args;
     for (int i = 0; i < _playlist->count(); i++) {
         if (w == _playlist->itemWidget(_playlist->item(i))) {
@@ -1186,7 +1187,7 @@ void Platform_PlaylistWidget::slotDoubleClickedItem(QWidget *w)
 
 void Platform_PlaylistWidget::slotRowsMoved()
 {
-    qDebug() << "slotRowsMoved";
+    qCDebug(appMovie) << "slotRowsMoved";
     if (_lastDragged.first >= 0) {
         int target = -1;
         for (int i = 0; i < _playlist->count(); i++) {
@@ -1196,9 +1197,9 @@ void Platform_PlaylistWidget::slotRowsMoved()
                 break;
             }
         }
-        qInfo() << "swap " << _lastDragged.first << target;
+        qCInfo(appMovie) << "swap " << _lastDragged.first << target;
         if (target >= 0 && _lastDragged.first != target) {
-            qInfo() << "swap " << _lastDragged.first << target;
+            qCInfo(appMovie) << "swap " << _lastDragged.first << target;
             _engine->playlist().switchPosition(_lastDragged.first, target);
             _lastDragged = {-1, nullptr};
         }
@@ -1208,7 +1209,7 @@ void Platform_PlaylistWidget::slotRowsMoved()
 /*void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
 {
     auto md = ev->mimeData();
-    qInfo() << md->formats();
+    qCInfo(appMovie) << md->formats();
     if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
         if (!_playlist->selectedItems().contains(_playlist->itemAt(ev->pos()))) {
             _playlist->setDropIndicatorShown(true);
@@ -1253,7 +1254,7 @@ void Platform_PlaylistWidget::slotRowsMoved()
             stream >> row >> col >> roleDataMap;
             auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(row)));
             _lastDragged = qMakePair(row, piw);
-            qInfo() << "drag to move " << row << piw->_pif.url;
+            qCInfo(appMovie) << "drag to move " << row << piw->_pif.url;
         }
 
         QWidget::dropEvent(ev);
@@ -1271,13 +1272,13 @@ void Platform_PlaylistWidget::slotRowsMoved()
 
 void Platform_PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 {
-    qDebug() << "contextMenuEvent";
+    qCDebug(appMovie) << "contextMenuEvent";
     bool on_item = false;
     _mouseItem = nullptr;
     QPoint itempos(cme->pos().x() - 235, cme->pos().y() - 20);
 
     if (_playlist->itemAt(itempos)) {
-        qDebug() << "itemAt";
+        qCDebug(appMovie) << "itemAt";
         _mouseItem = _playlist->itemWidget(_playlist->itemAt(itempos));
         // itemWidget() may return null for items that have no widget attached;
         // only treat the position as "on item" when a real widget exists, so the
@@ -1286,16 +1287,16 @@ void Platform_PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
     }
 
     if (CompositingManager::get().isPadSystem()) {
-        qDebug() << "isPadSystem";
+        qCDebug(appMovie) << "isPadSystem";
         if (pSelectItemWgt) {
-            qDebug() << "pSelectItemWgt is not null";
+            qCDebug(appMovie) << "pSelectItemWgt is not null";
             pSelectItemWgt->setBIsSelect(false);
         }
         auto piw = dynamic_cast<Platform_PlayItemWidget *>(_mouseItem);
         piw->setBIsSelect(true);
         pSelectItemWgt = piw;
     } else {
-        qDebug() << "not isPadSystem";
+        qCDebug(appMovie) << "not isPadSystem";
         auto piw = dynamic_cast<Platform_PlayItemWidget *>(_mouseItem);
         auto menu = ActionFactory::get().playlistContextMenu();
         for (auto act : menu->actions()) {
@@ -1321,12 +1322,12 @@ void Platform_PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
     ActionFactory::get().playlistContextMenu()->hide();
     ActionFactory::get().playlistContextMenu()->clear();
 #endif
-    qDebug() << "contextMenuEvent end";
+    qCDebug(appMovie) << "contextMenuEvent end";
 }
 
 void Platform_PlaylistWidget::showEvent(QShowEvent *se)
 {
-    qDebug() << "showEvent";
+    qCDebug(appMovie) << "showEvent";
     batchUpdateSizeHints();
     adjustSize();
 
@@ -1335,13 +1336,13 @@ void Platform_PlaylistWidget::showEvent(QShowEvent *se)
 
 void Platform_PlaylistWidget::removeItem(int idx)
 {
-    qDebug() << "Removing item at index:" << idx;
+    qCDebug(appMovie) << "Removing item at index:" << idx;
     auto item_remove = this->_playlist->item(idx);
     if (item_remove) {
         QWidget *pItem = _playlist->itemWidget(item_remove);
         Platform_PlayItemWidget *pCurItem = dynamic_cast<Platform_PlayItemWidget *>(pItem);
         if (pCurItem == pSelectItemWgt) {
-            qDebug() << "Removing currently selected item";
+            qCDebug(appMovie) << "Removing currently selected item";
             pSelectItemWgt = nullptr;            //如果删除的是原来选中的则置空
         }
         item_remove = this->_playlist->takeItem(idx);
@@ -1357,12 +1358,12 @@ void Platform_PlaylistWidget::removeItem(int idx)
     }
 
     if (_playlist->count() != 0 && _playlist->count() != idx) {
-        qDebug() << "setCurItemHovered true";
+        qCDebug(appMovie) << "setCurItemHovered true";
         QWidget *item = _playlist->itemWidget(_playlist->item(idx));
         Platform_PlayItemWidget *curItem = dynamic_cast<Platform_PlayItemWidget *>(item);
         curItem->setCurItemHovered(true);
     } else if (_playlist->count() != 0 && _playlist->count() == idx) {
-        qDebug() << "setCurItemHovered true";
+        qCDebug(appMovie) << "setCurItemHovered true";
         QWidget *item = _playlist->itemWidget(_playlist->item(--idx));
         Platform_PlayItemWidget *curItem = dynamic_cast<Platform_PlayItemWidget *>(item);
         curItem->setCurItemHovered(true);
@@ -1370,16 +1371,16 @@ void Platform_PlaylistWidget::removeItem(int idx)
 
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
-    qDebug() << "Updated playlist count:" << _playlist->count();
+    qCDebug(appMovie) << "Updated playlist count:" << _playlist->count();
 }
 
 void Platform_PlaylistWidget::appendItems()
 {
-    qDebug() << "Appending items to playlist";
+    qCDebug(appMovie) << "Appending items to playlist";
     auto items = _engine->playlist().items();
     auto p = items.begin() + this->_playlist->count();
     while (p != items.end()) {
-        qDebug() << "Adding item at index:" << (p - items.begin());
+        qCDebug(appMovie) << "Adding item at index:" << (p - items.begin());
         auto w = new Platform_PlayItemWidget(*p, this->_playlist, p - items.begin(), this);
 
         auto item = new QListWidgetItem;
@@ -1395,66 +1396,66 @@ void Platform_PlaylistWidget::appendItems()
     }
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
-    qDebug() << "Updated playlist count:" << _playlist->count();
+    qCDebug(appMovie) << "Updated playlist count:" << _playlist->count();
     batchUpdateSizeHints();
     updateItemStates();
 }
 
 void Platform_PlaylistWidget::slotShowSelectItem(QListWidgetItem *item)
 {
-    qDebug() << "slotShowSelectItem";
+    qCDebug(appMovie) << "slotShowSelectItem";
     Platform_PlayItemWidget *pWidget = nullptr;
 
     if (item) {
-        qDebug() << "item is not null";
+        qCDebug(appMovie) << "item is not null";
         _playlist->setCurrentItem(item);
         pWidget = reinterpret_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(item));
         if (!pWidget) {
-            qDebug() << "pWidget is null, return";
+            qCDebug(appMovie) << "pWidget is null, return";
             return;
         }
     }
 
     if (CompositingManager::get().isPadSystem()) {
-        qDebug() << "isPadSystem";
+        qCDebug(appMovie) << "isPadSystem";
         pWidget->doDoubleClick();
         if (pSelectItemWgt) {
-            qDebug() << "pSelectItemWgt is not null";
+            qCDebug(appMovie) << "pSelectItemWgt is not null";
             pSelectItemWgt->setBIsSelect(false);
             pSelectItemWgt = nullptr;
         }
     } else {
-        qDebug() << "is not PadSystem";
+        qCDebug(appMovie) << "is not PadSystem";
         pWidget->setBIsSelect(true);
     }
-    qDebug() << "slotShowSelectItem end";
+    qCDebug(appMovie) << "slotShowSelectItem end";
 }
 
 void Platform_PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
-    qDebug() << "OnItemChanged";
+    qCDebug(appMovie) << "OnItemChanged";
     Platform_PlayItemWidget *prevItemWgt = nullptr;
     Platform_PlayItemWidget *curItemWgt = nullptr;
     bool bIsPad = CompositingManager::get().isPadSystem();
 
     if (previous) {
-        qDebug() << "previous is not null";
+        qCDebug(appMovie) << "previous is not null";
         prevItemWgt = reinterpret_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(previous));
         if (!bIsPad && prevItemWgt) {
-            qDebug() << "prevItemWgt is not null";
+            qCDebug(appMovie) << "prevItemWgt is not null";
             prevItemWgt->setBIsSelect(false);
         }
     }
 
     if (current) {
-        qDebug() << "current is not null";
+        qCDebug(appMovie) << "current is not null";
         curItemWgt = reinterpret_cast<Platform_PlayItemWidget *>(_playlist->itemWidget(current));
         if (!bIsPad && curItemWgt) {
-            qDebug() << "curItemWgt is not null";
+            qCDebug(appMovie) << "curItemWgt is not null";
             curItemWgt->setBIsSelect(true);
         }
     }
-    qDebug() << "OnItemChanged end";
+    qCDebug(appMovie) << "OnItemChanged end";
 }
 
 void Platform_PlaylistWidget::resetFocusAttribute(bool &atr)
@@ -1464,7 +1465,7 @@ void Platform_PlaylistWidget::resetFocusAttribute(bool &atr)
 
 void Platform_PlaylistWidget::loadPlaylist()
 {
-    qDebug() << "loadPlaylist";
+    qCDebug(appMovie) << "loadPlaylist";
     _playlist->clear();
 
 
@@ -1488,51 +1489,51 @@ void Platform_PlaylistWidget::loadPlaylist()
     updateItemStates();
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
-    qDebug() << "loadPlaylist end";
+    qCDebug(appMovie) << "loadPlaylist end";
 }
 
 void Platform_PlaylistWidget::batchUpdateSizeHints()
 {
-    qDebug() << "batchUpdateSizeHints";
+    qCDebug(appMovie) << "batchUpdateSizeHints";
     if (isVisible()) {
-        qDebug() << "isVisible";
+        qCDebug(appMovie) << "isVisible";
         for (int i = 0; i < this->_playlist->count(); i++) {
             auto item = this->_playlist->item(i);
             auto w = this->_playlist->itemWidget(item);
             item->setSizeHint(w->size());
         }
     }
-    qDebug() << "batchUpdateSizeHints end";
+    qCDebug(appMovie) << "batchUpdateSizeHints end";
 }
 
 void Platform_PlaylistWidget::endAnimation()
 {
-    qDebug() << "endAnimation";
+    qCDebug(appMovie) << "endAnimation";
     if (paOpen != nullptr && paClose != nullptr) {
-        qDebug() << "paOpen and paClose are not null";
+        qCDebug(appMovie) << "paOpen and paClose are not null";
         paOpen -> setDuration(0);
         paClose->setDuration(0);
     }
-    qDebug() << "endAnimation end";
+    qCDebug(appMovie) << "endAnimation end";
 }
 
 bool Platform_PlaylistWidget::isFocusInPlaylist()
 {
-    qDebug() << "isFocusInPlaylist";
+    qCDebug(appMovie) << "isFocusInPlaylist";
     if (m_pClearButton == focusWidget() || _playlist == focusWidget()) {
-        qDebug() << "focusWidget is m_pClearButton or _playlist, return true";
+        qCDebug(appMovie) << "focusWidget is m_pClearButton or _playlist, return true";
         return true;
     } else {
-        qDebug() << "focusWidget is not m_pClearButton or _playlist, return false";
+        qCDebug(appMovie) << "focusWidget is not m_pClearButton or _playlist, return false";
         return false;
     }
 }
 
 void Platform_PlaylistWidget::togglePopup(bool isShortcut)
 {
-    qDebug() << "Toggling playlist popup, shortcut:" << isShortcut;
+    qCDebug(appMovie) << "Toggling playlist popup, shortcut:" << isShortcut;
     if (paOpen != nullptr || paClose != nullptr) {
-        qDebug() << "Animation in progress, returning";
+        qCDebug(appMovie) << "Animation in progress, returning";
         return;
     }
 /**
@@ -1549,7 +1550,7 @@ void Platform_PlaylistWidget::togglePopup(bool isShortcut)
     int toolbox_height = TOOLBOX_HEIGHT;
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
-        qDebug() << "Using compact mode toolbox height";
+        qCDebug(appMovie) << "Using compact mode toolbox height";
         toolbox_height = TOOLBOX_DSIZEMODE_HEIGHT;
     }
 #endif
@@ -1564,12 +1565,12 @@ void Platform_PlaylistWidget::togglePopup(bool isShortcut)
     shrunk.moveBottom(fixed.bottom());
 
     if (_toggling) {
-        qDebug() << "Toggle in progress, returning";
+        qCDebug(appMovie) << "Toggle in progress, returning";
         return;
     }
 
     if (_state == State::Opened) {
-        qDebug() << "Closing playlist";
+        qCDebug(appMovie) << "Closing playlist";
         Q_ASSERT(isVisible());
 
         //Set this judgment to false when the playlist is collapsed
@@ -1583,7 +1584,7 @@ void Platform_PlaylistWidget::togglePopup(bool isShortcut)
         emit stateChange(isShortcut);
         setVisible(!isVisible());
     } else {
-        qDebug() << "Opening playlist";
+        qCDebug(appMovie) << "Opening playlist";
         _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         setVisible(!isVisible());
         _toggling = false;  //条件编译误报(cppcheck)
@@ -1592,7 +1593,7 @@ void Platform_PlaylistWidget::togglePopup(bool isShortcut)
         setGeometry(fixed);
         _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
     }
-    qDebug() << "Opening playlist end";
+    qCDebug(appMovie) << "Opening playlist end";
 }
 
 void Platform_PlaylistWidget::paintEvent(QPaintEvent *pe)
@@ -1631,13 +1632,13 @@ bool Platform_PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
         if (event->type() == QEvent::KeyPress) {
             if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Up ||
                     static_cast<QKeyEvent *>(event)->key() == Qt::Key_Down) {
-                qDebug() << "Ignoring Up/Down keys on clear button";
+                qCDebug(appMovie) << "Ignoring Up/Down keys on clear button";
                 return true;
             }
         }
         switch (event->type()) {
         case QEvent::FocusIn:
-            qDebug() << "Clear button focus in";
+            qCDebug(appMovie) << "Clear button focus in";
             ((Platform_ToolboxProxy *)_mw->toolbox())->setBtnFocusSign(true);
             break;
         case QEvent::FocusOut:
@@ -1655,12 +1656,12 @@ bool Platform_PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
             if (_playlist->count()) {
                 //The judgment here is to prevent the focus from shifting during mouse operation
                 if (!m_bButtonFocusOut) {
-                    qDebug() << "Ignoring focus in during mouse operation";
+                    qCDebug(appMovie) << "Ignoring focus in during mouse operation";
                     return true;
                 }
                 //焦点切换到播放列表，选中第一个条目
                 if (_playlist->currentRow() != 0) {
-                    qDebug() << "Setting focus to first item";
+                    qCDebug(appMovie) << "Setting focus to first item";
                     _playlist->setCurrentRow(0);
                     _index = 0;
                     m_bButtonFocusOut = false;
@@ -1672,7 +1673,7 @@ bool Platform_PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
             QKeyEvent *keyPressEv = static_cast<QKeyEvent *>(event);
             if (keyPressEv->key() == Qt::Key_Tab) {
                 //将焦点设置到清空按钮上，实现焦点循环
-                qDebug() << "Tab key pressed, moving focus to clear button";
+                qCDebug(appMovie) << "Tab key pressed, moving focus to clear button";
                 m_pClearButton->setFocus();
                 return true;
             }
