@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "utils.h"
+#include "ddlog.h"
 
 #include <QtDBus>
 #include <QtWidgets>
@@ -41,7 +42,7 @@ QStringList runPipeProcess(const QString &command, const QString &filter)
     // Reject commands containing shell metacharacters to prevent injection.
     // Use QProcess::start(program, args) directly for proper argument separation.
     if (command.contains(QRegularExpression("[|;&$`\\\\]"))) {
-        qWarning() << "runPipeProcess: rejected potentially unsafe command:" << command;
+        qCWarning(dmrLib) << "runPipeProcess: rejected potentially unsafe command:" << command;
         return QStringList();
     }
 
@@ -67,50 +68,50 @@ QStringList runPipeProcess(const QString &command, const QString &filter)
 
 void ShowInFileManager(const QString &path)
 {
-    qDebug() << "[ShowInFileManager] Input path:" << path;
+    qCDebug(dmrLib) << "[ShowInFileManager] Input path:" << path;
     if (path.isEmpty()) {
-        qDebug() << "Path is empty, returning.";
+        qCDebug(dmrLib) << "Path is empty, returning.";
         return;
     }
 
     // 玲珑环境处理：转换路径用于文件管理器
-    qDebug() << "[ShowInFileManager] IsLinglongEnvironment:" << IsLinglongEnvironment();
+    qCDebug(dmrLib) << "[ShowInFileManager] IsLinglongEnvironment:" << IsLinglongEnvironment();
     const QString actualPath = IsLinglongEnvironment() ? ConvertLinglongPathForFM(path) : path;
-    qDebug() << "[ShowInFileManager] actualPath:" << actualPath;
+    qCDebug(dmrLib) << "[ShowInFileManager] actualPath:" << actualPath;
 
     // 在玲珑环境下，actualPath 是给宿主机文件管理器用的路径
     // 需要用原始路径（容器内可访问的路径）来检查文件是否存在
     if (!QFile::exists(path)) {
-        qWarning() << "File does not exist:" << path;
+        qCWarning(dmrLib) << "File does not exist:" << path;
         return;
     }
 
     QUrl url = QUrl::fromLocalFile(QFileInfo(actualPath).dir().absolutePath());
-    qInfo() << "Opening file manager for URL:" << url.toString();
+    qCInfo(dmrLib) << "Opening file manager for URL:" << url.toString();
 
     // Try dde-file-manager
     if (url.isLocalFile()) {
-        qDebug() << "URL is a local file.";
+        qCDebug(dmrLib) << "URL is a local file.";
         QDBusInterface iface("org.freedesktop.FileManager1",
                              "/org/freedesktop/FileManager1",
                              "org.freedesktop.FileManager1",
                              QDBusConnection::sessionBus());
         if (iface.isValid()) {
-            qDebug() << "DBus interface is valid, calling ShowItems.";
+            qCDebug(dmrLib) << "DBus interface is valid, calling ShowItems.";
             const QStringList uris = { QUrl::fromLocalFile(actualPath).toString() };
-            qInfo() << "Using freedesktop.FileManager to show items:" << uris;
+            qCInfo(dmrLib) << "Using freedesktop.FileManager to show items:" << uris;
             QDBusPendingCall call = iface.asyncCall("ShowItems", uris, "");
             Q_UNUSED(call);
         } else {
-            qDebug() << "DBus interface is invalid, using QDesktopServices::openUrl as fallback.";
-            qInfo() << "Using desktopService::openUrl as fallback";
+            qCDebug(dmrLib) << "DBus interface is invalid, using QDesktopServices::openUrl as fallback.";
+            qCInfo(dmrLib) << "Using desktopService::openUrl as fallback";
             QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(actualPath).dir().absolutePath()));
         }
     } else {
-        qDebug() << "URL is not a local file, directly opening URL.";
+        qCDebug(dmrLib) << "URL is not a local file, directly opening URL.";
         QDesktopServices::openUrl(url);
     }
-    qDebug() << "Exiting ShowInFileManager().";
+    qCDebug(dmrLib) << "Exiting ShowInFileManager().";
 }
 
 static int min(int v1, int v2, int v3)
@@ -120,7 +121,7 @@ static int min(int v1, int v2, int v3)
 
 static int stringDistance(const QString &s1, const QString &s2)
 {
-    qDebug() << "Entering stringDistance() with s1:" << s1 << ", s2:" << s2;
+    qCDebug(dmrLib) << "Entering stringDistance() with s1:" << s1 << ", s2:" << s2;
     int n = s1.size(), m = s2.size();
     if (!n || !m) return max(n, m);
 
@@ -134,10 +135,10 @@ static int stringDistance(const QString &s1, const QString &s2)
         int pred = i + 1;
         for (int j = 0; j < n; j++) {
             if (s1[j] == s2[i]) {
-                qDebug() << "Characters match at s1[" << j << "] and s2[" << i << "].";
+                qCDebug(dmrLib) << "Characters match at s1[" << j << "] and s2[" << i << "].";
                 curr = dp[static_cast<vector<int>::size_type>(j)];
             } else {
-                qDebug() << "Characters do not match, calculating cost.";
+                qCDebug(dmrLib) << "Characters do not match, calculating cost.";
                 curr = min(dp[static_cast<vector<int>::size_type>(j)], dp[static_cast<vector<int>::size_type>(j + 1)], pred) + 1;
             }
             dp[static_cast<vector<int>::size_type>(j)] = pred;
@@ -147,44 +148,44 @@ static int stringDistance(const QString &s1, const QString &s2)
         dp[static_cast<vector<int>::size_type>(n)] = pred;
     }
 
-    qDebug() << "Exiting stringDistance() with result:" << curr;
+    qCDebug(dmrLib) << "Exiting stringDistance() with result:" << curr;
     return curr;
 }
 
 bool IsNamesSimilar(const QString &s1, const QString &s2)
 {
-    qDebug() << "Comparing names for similarity:" << s1 << "and" << s2;
+    qCDebug(dmrLib) << "Comparing names for similarity:" << s1 << "and" << s2;
     int dist = stringDistance(s1, s2);
     return (dist >= 0 && dist <= 4); //TODO: check ext.
 }
 
 QFileInfoList FindSimilarFiles(const QFileInfo &fi)
 {
-    qDebug() << "Finding similar files for:" << fi.fileName();
+    qCDebug(dmrLib) << "Finding similar files for:" << fi.fileName();
     QFileInfoList fil;
 
     QDirIterator it(fi.absolutePath());
     while (it.hasNext()) {
         it.next();
         if (!it.fileInfo().isFile()) {
-            qDebug() << "Skipping non-file entry:" << it.fileInfo().fileName();
+            qCDebug(dmrLib) << "Skipping non-file entry:" << it.fileInfo().fileName();
             continue;
         }
 
         if (IsNamesSimilar(fi.fileName(), it.fileInfo().fileName())) {
             fil.append(it.fileInfo());
-            qDebug() << "Found similar file:" << it.fileInfo().fileName();
+            qCDebug(dmrLib) << "Found similar file:" << it.fileInfo().fileName();
         }
     }
-    qInfo() << "Found" << fil.size() << "similar files";
+    qCInfo(dmrLib) << "Found" << fil.size() << "similar files";
     return fil;
 }
 
 bool CompareNames(const QString &fileName1, const QString &fileName2)
 {
-    qDebug() << "Entering CompareNames() with fileName1:" << fileName1 << ", fileName2:" << fileName2;
+    qCDebug(dmrLib) << "Entering CompareNames() with fileName1:" << fileName1 << ", fileName2:" << fileName2;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    qDebug() << "Compiling for Qt5.";
+    qCDebug(dmrLib) << "Compiling for Qt5.";
     static QRegExp rd("\\d+");
     int pos = 0;
     
@@ -194,29 +195,29 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
 
         auto pos2 = rd.indexIn(fileName2, pos);
         if (pos == pos2) {
-            qDebug() << "Qt5: Positions match at" << pos << ", comparing IDs.";
+            qCDebug(dmrLib) << "Qt5: Positions match at" << pos << ", comparing IDs.";
             auto id2 = fileName2.midRef(pos, rd.matchedLength());
             if (id1 != id2) {
-                qDebug() << "Qt5: IDs differ, performing integer or locale-aware comparison.";
+                qCDebug(dmrLib) << "Qt5: IDs differ, performing integer or locale-aware comparison.";
                 bool ok1, ok2;
                 bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
                 if (ok1 && ok2) {
-                    qDebug() << "Qt5: Integer comparison successful, returning:" << v;
+                    qCDebug(dmrLib) << "Qt5: Integer comparison successful, returning:" << v;
                     return v;
                 }
-                qDebug() << "Qt5: Falling back to locale-aware comparison.";
+                qCDebug(dmrLib) << "Qt5: Falling back to locale-aware comparison.";
                 return id1.localeAwareCompare(id2) < 0;
             }
         } else {
-            qDebug() << "Qt5: Positions do not match for fileName2.";
+            qCDebug(dmrLib) << "Qt5: Positions do not match for fileName2.";
         }
         pos += inc;
     }
-    qDebug() << "Qt5: No more matches found, returning locale-aware comparison for full filenames.";
+    qCDebug(dmrLib) << "Qt5: No more matches found, returning locale-aware comparison for full filenames.";
     return fileName1.localeAwareCompare(fileName2) < 0;
 
 #else
-    qDebug() << "Compiling for Qt6.";
+    qCDebug(dmrLib) << "Compiling for Qt6.";
     static QRegularExpression rd("\\d+");
     QRegularExpressionMatchIterator i = rd.globalMatch(fileName1);
     int pos = 0;
@@ -230,42 +231,42 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
         auto match2 = rd.match(fileName2, pos);
         auto pos2 = match2.capturedStart();
         if (pos == pos2) {
-            qDebug() << "Qt6: Positions match at" << pos << ", comparing IDs.";
+            qCDebug(dmrLib) << "Qt6: Positions match at" << pos << ", comparing IDs.";
             auto id2 = fileName2.mid(pos2, match2.capturedLength());
             if (id1 != id2) {
-                qDebug() << "Qt6: IDs differ, performing integer or locale-aware comparison.";
+                qCDebug(dmrLib) << "Qt6: IDs differ, performing integer or locale-aware comparison.";
                 bool ok1, ok2;
                 bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
                 if (ok1 && ok2) {
-                    qDebug() << "Qt6: Integer comparison successful, returning:" << v;
+                    qCDebug(dmrLib) << "Qt6: Integer comparison successful, returning:" << v;
                     return v;
                 }
-                qDebug() << "Qt6: Falling back to locale-aware comparison.";
+                qCDebug(dmrLib) << "Qt6: Falling back to locale-aware comparison.";
                 return id1.localeAwareCompare(id2) < 0;
             }
         } else {
-            qDebug() << "Qt6: Positions do not match for fileName2.";
+            qCDebug(dmrLib) << "Qt6: Positions do not match for fileName2.";
         }
         pos += inc;
     }
-    qDebug() << "Qt6: No more matches found, returning locale-aware comparison for full filenames.";
+    qCDebug(dmrLib) << "Qt6: No more matches found, returning locale-aware comparison for full filenames.";
     return fileName1.localeAwareCompare(fileName2) < 0;
 #endif
 }
 
 bool first_check_wayland_env()
 {
-    qDebug() << "Checking Wayland environment";
+    qCDebug(dmrLib) << "Checking Wayland environment";
     auto e = QProcessEnvironment::systemEnvironment();
     QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
     QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
     if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
         isWayland = true;
-        qInfo() << "Running in Wayland environment";
+        qCInfo(dmrLib) << "Running in Wayland environment";
         return true;
     } else {
-        qInfo() << "Not running in Wayland environment";
+        qCInfo(dmrLib) << "Not running in Wayland environment";
         return false;
     }
 }
@@ -285,7 +286,7 @@ void set_wayland(bool _b)
 // hash the whole file takes amount of time, so just pick some areas to be hashed
 QString FastFileHash(const QFileInfo &fi)
 {
-    qDebug() << "Calculating fast hash for file:" << fi.fileName();
+    qCDebug(dmrLib) << "Calculating fast hash for file:" << fi.fileName();
     auto sz = fi.size();
     QList<qint64> offsets = {
         4096,
@@ -294,12 +295,12 @@ QString FastFileHash(const QFileInfo &fi)
 
     QFile f(fi.absoluteFilePath());
     if (!f.open(QFile::ReadOnly)) {
-        qWarning() << "Failed to open file for hashing:" << fi.filePath();
+        qCWarning(dmrLib) << "Failed to open file for hashing:" << fi.filePath();
         return QString();
     }
 
     if (fi.size() < 8192) {
-        qDebug() << "File size < 8192, calculating full hash";
+        qCDebug(dmrLib) << "File size < 8192, calculating full hash";
         auto bytes = f.readAll();
         return QString(QCryptographicHash::hash(bytes, QCryptographicHash::Md5).toHex());
     }
@@ -317,10 +318,10 @@ QString FastFileHash(const QFileInfo &fi)
 // hash the entire file (hope file is small)
 QString FullFileHash(const QFileInfo &fi)
 {
-    qDebug() << "Calculating full hash for file:" << fi.fileName();
+    qCDebug(dmrLib) << "Calculating full hash for file:" << fi.fileName();
     QFile f(fi.absoluteFilePath());
     if (!f.open(QFile::ReadOnly)) {
-        qWarning() << "Failed to open file for full hashing:" << fi.filePath();
+        qCWarning(dmrLib) << "Failed to open file for full hashing:" << fi.filePath();
         return QString();
     }
 
@@ -331,18 +332,18 @@ QString FullFileHash(const QFileInfo &fi)
 
 QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
 {
-    qDebug() << "Entering MakeRoundedPixmap(pm, rx, ry, rotation) with rotation:" << rotation;
+    qCDebug(dmrLib) << "Entering MakeRoundedPixmap(pm, rx, ry, rotation) with rotation:" << rotation;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QMatrix matrix;
     matrix.rotate(rotation);
     pm = pm.transformed(matrix, Qt::SmoothTransformation);
-    qDebug() << "Transformed pixmap using QMatrix for Qt5.";
+    qCDebug(dmrLib) << "Transformed pixmap using QMatrix for Qt5.";
 #else
     // QMatrix类被移除了，需要使用QTransform来代替
     QTransform transform;
     transform.rotate(rotation);
     pm = pm.transformed(transform, Qt::SmoothTransformation);
-    qDebug() << "Transformed pixmap using QTransform for Qt6.";
+    qCDebug(dmrLib) << "Transformed pixmap using QTransform for Qt6.";
 #endif
 
     auto dpr = pm.devicePixelRatio();
@@ -367,13 +368,13 @@ QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
 
     p.drawPixmap(scaled_rect.toRect(), pm);
 
-    qDebug() << "Exiting MakeRoundedPixmap(pm, rx, ry, rotation).";
+    qCDebug(dmrLib) << "Exiting MakeRoundedPixmap(pm, rx, ry, rotation).";
     return dest;
 }
 
 QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
 {
-    qDebug() << "Entering MakeRoundedPixmap(sz, pm, rx, ry, time) with size:" << sz << ", time:" << time;
+    qCDebug(dmrLib) << "Entering MakeRoundedPixmap(sz, pm, rx, ry, time) with size:" << sz << ", time:" << time;
     int nX = 0;
     int nY = 0;
     auto dpr = pm.devicePixelRatio();
@@ -410,7 +411,7 @@ QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
                           (static_cast<int>(dest.height() / dpr)) - 5 - bounding.height()});
 
     {
-        qDebug() << "Drawing text for MakeRoundedPixmap(sz, pm, rx, ry, time) - block 1.";
+        qCDebug(dmrLib) << "Drawing text for MakeRoundedPixmap(sz, pm, rx, ry, time) - block 1.";
         QPainterPath pp;
         pp.addText(bounding.bottomLeft() + QPoint{0, 1}, ft, tm_str);
         QPen pen(QColor(0, 0, 0, 50));
@@ -421,96 +422,96 @@ QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
     }
 
     {
-        qDebug() << "Drawing text for MakeRoundedPixmap(sz, pm, rx, ry, time) - block 2.";
+        qCDebug(dmrLib) << "Drawing text for MakeRoundedPixmap(sz, pm, rx, ry, time) - block 2.";
         QPainterPath pp;
         pp.addText(bounding.bottomLeft(), ft, tm_str);
         p.fillPath(pp, QColor(Qt::white));
     }
 
-    qDebug() << "Exiting MakeRoundedPixmap(sz, pm, rx, ry, time).";
+    qCDebug(dmrLib) << "Exiting MakeRoundedPixmap(sz, pm, rx, ry, time).";
     return dest;
 }
 
 uint32_t InhibitStandby()
 {
-    qDebug() << "Entering InhibitStandby().";
+    qCDebug(dmrLib) << "Entering InhibitStandby().";
     QDBusInterface iface("org.freedesktop.ScreenSaver",
                          "/org/freedesktop/ScreenSaver",
                          "org.freedesktop.ScreenSaver");
     QDBusReply<uint32_t> reply = iface.call("Inhibit", "deepin-movie", "playing in fullscreen");
 
     if (reply.isValid()) {
-        qDebug() << "InhibitStandby() successful, returning cookie:" << reply.value();
+        qCDebug(dmrLib) << "InhibitStandby() successful, returning cookie:" << reply.value();
         return reply.value();
     }
 
-    qInfo() << reply.error().message();
+    qCInfo(dmrLib) << reply.error().message();
     return 0;
 }
 
 void UnInhibitStandby(uint32_t cookie)
 {
-    qDebug() << "Entering UnInhibitStandby() with cookie:" << cookie;
+    qCDebug(dmrLib) << "Entering UnInhibitStandby() with cookie:" << cookie;
     QDBusInterface iface("org.freedesktop.ScreenSaver",
                          "/org/freedesktop/ScreenSaver",
                          "org.freedesktop.ScreenSaver");
     iface.call("UnInhibit", cookie);
-    qDebug() << "Exiting UnInhibitStandby().";
+    qCDebug(dmrLib) << "Exiting UnInhibitStandby().";
 }
 
 uint32_t InhibitPower()
 {
-    qDebug() << "Entering InhibitPower().";
+    qCDebug(dmrLib) << "Entering InhibitPower().";
     QDBusInterface iface("org.freedesktop.PowerManagement",
                          "/org/freedesktop/PowerManagement",
                          "org.freedesktop.PowerManagement");
     QDBusReply<uint32_t> reply = iface.call("Inhibit", "deepin-movie", "playing in fullscreen");
 
     if (reply.isValid()) {
-        qDebug() << "InhibitPower() successful, returning cookie:" << reply.value();
+        qCDebug(dmrLib) << "InhibitPower() successful, returning cookie:" << reply.value();
         return reply.value();
     }
 
-    qInfo() << reply.error().message();
+    qCInfo(dmrLib) << reply.error().message();
     return 0;
 }
 
 void UnInhibitPower(uint32_t cookie)
 {
-    qDebug() << "Entering UnInhibitPower() with cookie:" << cookie;
+    qCDebug(dmrLib) << "Entering UnInhibitPower() with cookie:" << cookie;
     QDBusInterface iface("org.freedesktop.PowerManagement",
                          "/org/freedesktop/PowerManagement",
                          "org.freedesktop.PowerManagement");
     iface.call("UnInhibit", cookie);
-    qDebug() << "Exiting UnInhibitPower().";
+    qCDebug(dmrLib) << "Exiting UnInhibitPower().";
 }
 
 void MoveToCenter(QWidget *w)
 {
-    qDebug() << "Moving widget to center";
+    qCDebug(dmrLib) << "Moving widget to center";
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QDesktopWidget *dw = QApplication::desktop();
     QRect r = dw->availableGeometry(w);
-    qDebug() << "Using QDesktopWidget for Qt5. Available geometry:" << r;
+    qCDebug(dmrLib) << "Using QDesktopWidget for Qt5. Available geometry:" << r;
 #else
     QScreen *screen = QGuiApplication::primaryScreen();
     if (w && w->screen()) {
         screen = w->screen();
-        qDebug() << "Using widget's screen for Qt6.";
+        qCDebug(dmrLib) << "Using widget's screen for Qt6.";
     } else {
-        qDebug() << "Using primary screen for Qt6.";
+        qCDebug(dmrLib) << "Using primary screen for Qt6.";
     }
     QRect r = screen->availableGeometry();
-    qDebug() << "Using QScreen for Qt6. Available geometry:" << r;
+    qCDebug(dmrLib) << "Using QScreen for Qt6. Available geometry:" << r;
 #endif
 
     w->move(r.center() - w->rect().center());
-    qDebug() << "Widget moved to position:" << w->pos();
+    qCDebug(dmrLib) << "Widget moved to position:" << w->pos();
 }
 
 QString Time2str(qint64 seconds)
 {
-    qDebug() << "Converting time to string:" << seconds << "seconds";
+    qCDebug(dmrLib) << "Converting time to string:" << seconds << "seconds";
     QTime d(0, 0, 0);
     if (seconds < DAYSECONDS) {
         d = d.addSecs(static_cast<int>(seconds));
@@ -520,14 +521,14 @@ QString Time2str(qint64 seconds)
         int add = static_cast<int>(seconds / DAYSECONDS) * 24;
         QString dayOut =  d.toString("hh:mm:ss");
         dayOut.replace(0, 2, QString::number(add + dayOut.left(2).toInt()));
-        qDebug() << "Time string with days:" << dayOut;
+        qCDebug(dmrLib) << "Time string with days:" << dayOut;
         return dayOut;
     }
 }
 
 QString videoIndex2str(int index)
 {
-    qDebug() << "Entering videoIndex2str() with index:" << index;
+    qCDebug(dmrLib) << "Entering videoIndex2str() with index:" << index;
     QStringList videoList = {"none", "mpeg1video", "mpeg2video", "h261", "h263", "rv10", "rv20",
                              "mjpeg", "mjpegb", "ljpeg", "sp5x", "jpegls", "mpeg4", "rawvideo", "msmpeg4v1",
                              "msmpeg4v2", "msmpeg4v3", "wmv1", "wmv2", "h263p", "h263i", "flv1", "svq1",
@@ -580,13 +581,13 @@ QString videoIndex2str(int index)
     codecMap.insert(77824, "ra_144");
     codecMap.insert(77825, "ra_288");
     QString aa = codecMap[index];
-    qDebug() << "Exiting videoIndex2str() with result:" << aa;
+    qCDebug(dmrLib) << "Exiting videoIndex2str() with result:" << aa;
     return aa;
 }
 
 QString audioIndex2str(int index)
 {
-    qDebug() << "Entering audioIndex2str() with index:" << index;
+    qCDebug(dmrLib) << "Entering audioIndex2str() with index:" << index;
     QStringList audioList = {"mp2", "mp3", "aac", "ac3", "dts", "vorbis", "dvaudio", "wmav1", "wmav2", "mace3", "mace6",
                              "vmdaudio", "flac", "mp3adu", "mp3on4", "shorten", "alac", "westwood_snd1", "gsm", "qdm2",
                              "cook", "truespeech", "tta", "smackaudio", "qcelp", "wavpack", "dsicinaudio", "imc",
@@ -604,7 +605,7 @@ QString audioIndex2str(int index)
         codecMap.insert(i + 86016, audioList[i]);
     }
     QString aa = codecMap[index];
-    qDebug() << "Exiting audioIndex2str() with result:" << aa;
+    qCDebug(dmrLib) << "Exiting audioIndex2str() with result:" << aa;
     return aa;
 }
 
@@ -630,55 +631,55 @@ QString audioIndex2str(int index)
 //cppcheck 单元测试在用
 bool ValidateScreenshotPath(const QString &path)
 {
-    qDebug() << "Entering ValidateScreenshotPath() with path:" << path;
+    qCDebug(dmrLib) << "Entering ValidateScreenshotPath() with path:" << path;
     auto name = path.trimmed();
-    qDebug() << "Trimmed path:" << name;
+    qCDebug(dmrLib) << "Trimmed path:" << name;
     if (name.isEmpty()) {
-        qDebug() << "Path is empty, returning false.";
+        qCDebug(dmrLib) << "Path is empty, returning false.";
         return false;
     }
 
     if (name.size() && name[0] == '~') {
         name.replace(0, 1, QDir::homePath());
-        qDebug() << "Replaced ~ with home path. New path:" << name;
+        qCDebug(dmrLib) << "Replaced ~ with home path. New path:" << name;
     }
 
     QFileInfo fi(name);
     if (fi.exists()) {
-        qDebug() << "File/path exists.";
+        qCDebug(dmrLib) << "File/path exists.";
         if (!fi.isDir()) {
-            qDebug() << "Path is not a directory, returning false.";
+            qCDebug(dmrLib) << "Path is not a directory, returning false.";
             return false;
         }
 
         if (!fi.isReadable() || !fi.isWritable()) {
-            qDebug() << "Path is not readable or writable, returning false.";
+            qCDebug(dmrLib) << "Path is not readable or writable, returning false.";
             return false;
         }
     } else {
-        qDebug() << "File/path does not exist.";
+        qCDebug(dmrLib) << "File/path does not exist.";
     }
 
-    qDebug() << "Exiting ValidateScreenshotPath() with true.";
+    qCDebug(dmrLib) << "Exiting ValidateScreenshotPath() with true.";
     return true;
 }
 
 QImage LoadHiDPIImage(const QString &filename)
 {
-    qDebug() << "Entering LoadHiDPIImage() with filename:" << filename;
+    qCDebug(dmrLib) << "Entering LoadHiDPIImage() with filename:" << filename;
     QImageReader reader(filename);
     reader.setScaledSize(reader.size() * qApp->devicePixelRatio());
     auto img =  reader.read();
     img.setDevicePixelRatio(qApp->devicePixelRatio());
-    qDebug() << "Exiting LoadHiDPIImage(). Image size:" << img.size() << ", device pixel ratio:" << img.devicePixelRatio();
+    qCDebug(dmrLib) << "Exiting LoadHiDPIImage(). Image size:" << img.size() << ", device pixel ratio:" << img.devicePixelRatio();
     return img;
 }
 
 QPixmap LoadHiDPIPixmap(const QString &filename)
 {
-    qDebug() << "Entering LoadHiDPIPixmap() with filename:" << filename;
+    qCDebug(dmrLib) << "Entering LoadHiDPIPixmap() with filename:" << filename;
     QPixmap pixmap = QPixmap::fromImage(LoadHiDPIImage(filename));
-    qDebug() << "Exiting LoadHiDPIPixmap(). Pixmap size:" << pixmap.size();
+    qCDebug(dmrLib) << "Exiting LoadHiDPIPixmap(). Pixmap size:" << pixmap.size();
     return pixmap;
 }
 
@@ -686,8 +687,8 @@ QString ElideText(const QString &text, const QSize &size,
                   QTextOption::WrapMode wordWrap, const QFont &font,
                   Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
 {
-    qDebug() << "Entering ElideText() with text:" << text << ", size:" << size << ", wordWrap:" << wordWrap << ", font:" << font.family() << ", mode:" << mode;
-    qDebug() << "lineHeight:" << lineHeight << ", lastLineWidth:" << lastLineWidth;
+    qCDebug(dmrLib) << "Entering ElideText() with text:" << text << ", size:" << size << ", wordWrap:" << wordWrap << ", font:" << font.family() << ", mode:" << mode;
+    qCDebug(dmrLib) << "lineHeight:" << lineHeight << ", lastLineWidth:" << lastLineWidth;
     QTextLayout textLayout(text);
     QString str;
     QFontMetrics fontMetrics(font);
@@ -731,19 +732,19 @@ QString ElideText(const QString &text, const QSize &size,
         str = fontMetrics.elidedText(str, mode, lastLineWidth);
     }
 
-    qDebug() << "Exiting ElideText() with result:" << str;
+    qCDebug(dmrLib) << "Exiting ElideText() with result:" << str;
     return str;
 }
 
 void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
 {
-    qDebug() << "Getting play properties from path:" << path;
+    qCDebug(dmrLib) << "Getting play properties from path:" << path;
     Q_UNUSED(path);
 #ifdef DTKCORE_CLASS_DConfigFile
     Dtk::Core::DConfig *dconfig = Dtk::Core::DConfig::create("org.deepin.movie","org.deepin.movie.minimode");
     if(dconfig && dconfig->isValid() && dconfig->keyList().contains("playConfigHandling")){
         QString compositedHandling = dconfig->value("playConfigHandling").toString();
-        qInfo() << "Found play config handling:" << compositedHandling;
+        qCInfo(dmrLib) << "Found play config handling:" << compositedHandling;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QStringList confList = compositedHandling.split(";");
 #else
@@ -758,7 +759,7 @@ void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
 #endif
                 if (confItem.size() == 2) {
                     proMap->insert(confItem.first(), confItem.last());
-                    qDebug() << "Added config:" << confItem.first() << "=" << confItem.last();
+                    qCDebug(dmrLib) << "Added config:" << confItem.first() << "=" << confItem.last();
                 }
             }
         }
@@ -778,18 +779,18 @@ void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
                     QString temp = list.back();
                     temp = temp.mid(0, temp.length() - 1);//去除/n
                     proMap->insert(list.first(), temp);
-                    qInfo() << "Read config line: key:" << list.first() << "value:" << temp;
+                    qCInfo(dmrLib) << "Read config line: key:" << list.first() << "value:" << temp;
                 } else {
-                    qWarning() << __func__ << QString("ERROR! config line: %1 (line No: %2)").arg(QString(t)).arg(index);
+                    qCWarning(dmrLib) << __func__ << QString("ERROR! config line: %1 (line No: %2)").arg(QString(t)).arg(index);
                     continue;
                 }
             }
             file.close();
         } else {
-            qWarning() << __func__ << "File open ERROR, file path:" << path;
+            qCWarning(dmrLib) << __func__ << "File open ERROR, file path:" << path;
         }
     } else {
-        qWarning() << __func__ << "File not exist, file path:" << path;
+        qCWarning(dmrLib) << __func__ << "File not exist, file path:" << path;
     }
 #endif
 }
@@ -860,7 +861,7 @@ void switchToDefaultSink()
     } else
         return;
 
-    qInfo() <<"default sink: " << sinkindex << "\tcurrent sink: " << curSinkIndex << "\tsink input index: " << inputIndex;
+    qCInfo(dmrLib) <<"default sink: " << sinkindex << "\tcurrent sink: " << curSinkIndex << "\tsink input index: " << inputIndex;
 
     if (curSinkIndex == sinkindex) {
         return;
@@ -935,7 +936,7 @@ QString getJjwGPUPath()
         if (!strncmp(version->name, "mwv207d", version->name_len) && version->name_len == strlen("mwv207d")) {
             drmFreeVersion(version);
             close(fd);
-            qInfo() << __FUNCTION__ << "jm11 detected";
+            qCInfo(dmrLib) << __FUNCTION__ << "jm11 detected";
             return "mwv207d";
         }
 
@@ -968,7 +969,7 @@ QString ConvertLinglongPathForPlayback(const QString &path)
     const QString linglongPath = kLinglongHostRootfs + path;
 
     if (QFile::exists(linglongPath)) {
-        qWarning() << "[Linglong] Convert for playback:" << path << "->" << linglongPath;
+        qCWarning(dmrLib) << "[Linglong] Convert for playback:" << path << "->" << linglongPath;
         return linglongPath;
     }
 
@@ -986,7 +987,7 @@ QString ConvertLinglongPathForFM(const QString &path)
 
     if (path.startsWith(kLinglongHostRootfs)) {
         const QString convertedPath = path.mid(kLinglongHostRootfs.length());
-        qDebug() << "[Linglong] Convert for FM:" << path << "->" << convertedPath;
+        qCDebug(dmrLib) << "[Linglong] Convert for FM:" << path << "->" << convertedPath;
         return convertedPath;
     }
 

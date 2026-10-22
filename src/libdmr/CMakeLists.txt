@@ -22,6 +22,8 @@ file(GLOB_RECURSE HWDEC_SRCS ../common/hwdec_probe.cpp)
 file(GLOB_RECURSE SYS_UTILS_SRCS ../common/sysutils.cpp)
 # list(APPEND SRCS player_widget.cpp ${MPV_SRCS} ${MEDIAPLAYER_SRCS} ${HWDEC_SRCS})
 list(APPEND SRCS player_widget.cpp ${MPV_SRCS} ${HWDEC_SRCS} ${SYS_UTILS_SRCS})
+# 日志分类定义（ddlog.cpp 同时编入主程序与本库，供两侧共享分类）
+list(APPEND SRCS ../common/ddlog.cpp)
 
 add_library(${CMD_NAME} SHARED ${SRCS})
 set_target_properties(${CMD_NAME} PROPERTIES VERSION 0.1.0 SOVERSION 0.1)
