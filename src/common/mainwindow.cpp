@@ -2447,23 +2447,27 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::WindowAbove: {
         qDebug() << "ActionFactory::ActionKind::WindowAbove";
-        m_bWindowAbove = !m_bWindowAbove;
         if (!utils::check_wayland_env()) {
             qDebug() << "!utils::check_wayland_env()";
-            my_setStayOnTop(this, m_bWindowAbove);
+            my_setStayOnTop(this, !m_bWindowAbove);
         } else {
             //wayland 置顶实现
             QFunctionPointer setWindowProperty = qApp->platformFunction("_d_setWindowProperty");
             qDebug() << "setWindowProperty";
-            if (m_bWindowAbove) { //置顶
+            QWindow *window = windowHandle();
+            if (!setWindowProperty || !window)
+                break;
+
+            if (!m_bWindowAbove) { //置顶
                 qDebug() << "m_bWindowAbove";
-                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(windowHandle(), "_d_dwayland_staysontop", true);
+                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", true);
 
             } else {//取消置顶
                 qDebug() << "!m_bWindowAbove";
-                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(windowHandle(), "_d_dwayland_staysontop", false);
+                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", false);
             }
         }
+        m_bWindowAbove = !m_bWindowAbove;
         if (!bFromUI) {
             reflectActionToUI(actionKind);
         }
@@ -5435,8 +5439,9 @@ void MainWindow::toggleUIMode()
 
         if (!m_bWindowAbove) {
             qDebug() << "!m_bWindowAbove";
-            m_nStateBeforeMiniMode |= SBEM_Above;
             requestAction(ActionFactory::WindowAbove);
+            if (m_bWindowAbove)
+                m_nStateBeforeMiniMode |= SBEM_Above;
         }
 
         QSize sz = QSize(380, 380);
