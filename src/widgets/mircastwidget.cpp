@@ -43,6 +43,7 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     m_nPlayStatus = MircastWidget::NoState;
     m_attempts = 0;
     m_connectTimeout = 0;
+    m_transportInfoSupported = true;
     m_nCurDuration = -1;
     m_nCurAbsTime = -1;
     m_ControlURLPro = "";
@@ -162,6 +163,7 @@ void MircastWidget::playNext()
         m_mircastTimeOut.stop();
         m_attempts = 0;
         m_connectTimeout = 0;
+        m_transportInfoSupported = true;
         PlayerEngine *engine =static_cast<PlayerEngine *>(m_pEngine);
         engine->pauseResume();
         engine->seekAbsolute(0);
@@ -230,6 +232,8 @@ void MircastWidget::slotSearchTimeout()
 void MircastWidget::slotMircastTimeout()
 {
     m_pDlnaSoapPost->SoapOperPost(DLNA_GetPositionInfo, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
+    if (m_transportInfoSupported)
+        m_pDlnaSoapPost->SoapOperPost(DLNA_GetTransportInfo, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
     m_connectTimeout++;
     if (m_connectTimeout >= MAXMIRCAST) {
         m_mircastTimeOut.stop();
@@ -247,7 +251,8 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
     if (m_mircastState == MircastState::Idel)
         return;
     //TODO:测试电视退出投屏后是否会有返回
-    m_connectTimeout = 0;
+    if (m_transportInfoSupported)
+        m_connectTimeout = 0;
     PlayerEngine *engine =static_cast<PlayerEngine *>(m_pEngine);
     if (engine->state() == PlayerEngine::CoreState::Idle) {
         emit mircastState(MIRCAST_EXIT);
@@ -421,6 +426,21 @@ void MircastWidget::slotReadyRead()
     updateMircastState(SearchState::ListExhibit);
 }
 /**
+ * @brief slotGetTransportInfo 获取投屏传输状态，判断设备是否已停止播放
+ * @param transportState 传输状态字符串
+ */
+void MircastWidget::slotGetTransportInfo(QString transportState)
+{
+    if (transportState.toUpper() == "STOPPED") {
+        m_mircastTimeOut.stop();
+        emit mircastState(MIRCAST_DISCONNECTED);
+        slotExitMircast();
+    } else if (transportState.toUpper() == "NOT_IMPLEMENTED" || transportState.isEmpty()) {
+        m_transportInfoSupported = false;
+    }
+}
+
+/**
  * @brief slotExitMircast 退出投屏
  */
 void MircastWidget::slotExitMircast()
@@ -432,6 +452,7 @@ void MircastWidget::slotExitMircast()
     m_connectDevice.deviceState = Idel;
     m_mircastTimeOut.stop();
     m_connectTimeout = 0;
+    m_transportInfoSupported = true;
     m_listWidget->setItemWidgetStatus(m_listWidget->selectedItemWidget(), ItemWidget::Normal);
     stopDlnaTP();
     m_URLAddrPro.clear();
@@ -466,6 +487,7 @@ void MircastWidget::initializeHttpServer(int port)
         m_search = new CSSDPSearch(this);
         m_pDlnaSoapPost = new CDlnaSoapPost(this);
         connect(m_pDlnaSoapPost, &CDlnaSoapPost::sigGetPostionInfo, this, &MircastWidget::slotGetPositionInfo, Qt::QueuedConnection);
+        connect(m_pDlnaSoapPost, &CDlnaSoapPost::sigGetTransportInfo, this, &MircastWidget::slotGetTransportInfo, Qt::QueuedConnection);
 
         QList<QHostAddress> lstInfo = QNetworkInterface::allAddresses();
         QString sLocalIp;
