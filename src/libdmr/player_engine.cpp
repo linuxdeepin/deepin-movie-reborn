@@ -70,6 +70,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::mpvWarningLogsChanged, this, &PlayerEngine::mpvWarningLogsChanged);
         connect(_current, &Backend::urlpause, this, &PlayerEngine::urlpause);
         connect(_current, &Backend::sigMediaError, this, &PlayerEngine::sigMediaError);
+        connect(_current, &Backend::sigHDRDetected, this, &PlayerEngine::sigHDRDetected);
         l->addWidget(_current);
     }
 

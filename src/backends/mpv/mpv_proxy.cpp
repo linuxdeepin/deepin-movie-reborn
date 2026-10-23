@@ -984,6 +984,19 @@ void MpvProxy::handle_mpv_events()
 
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
+
+            QString primaries = my_get_property(m_handle, "video-params/primaries").toString();
+            QString gamma = my_get_property(m_handle, "video-params/gamma").toString();
+            qInfo() << "HDR detect: primaries =" << primaries << "gamma =" << gamma;
+            if (primaries.compare("bt2020", Qt::CaseInsensitive) == 0 &&
+                (gamma.compare("smpte2084", Qt::CaseInsensitive) == 0 ||
+                 gamma.compare("pq", Qt::CaseInsensitive) == 0) &&
+                !m_bHDRPrompted) {
+                qInfo() << "HDR video detected, emit sigHDRDetected";
+                emit sigHDRDetected();
+                m_bHDRPrompted = true;
+            }
+
             qInfo() << QString("rotate metadata: dec %1, out %2")
                     .arg(my_get_property(m_handle, "video-dec-params/rotate").toInt())
                     .arg(my_get_property(m_handle, "video-params/rotate").toInt());
@@ -1620,6 +1633,7 @@ void MpvProxy::initMember()
     m_bInited = false;
     m_bHwaccelAuto = false;
     m_bLastIsSpecificFormat = false;
+    m_bHDRPrompted = false;
 
     m_sInitVo = "gpu,xv,x11";//初始化vo数据
     m_listBurstPoints.clear();
@@ -1659,6 +1673,7 @@ void MpvProxy::play()
     PlayerEngine* pEngine = nullptr;
     bool bAudio = false;
     m_bLoadMedia = true;
+    m_bHDRPrompted = false;
 
     if (!m_bInited) {
         firstInit();
