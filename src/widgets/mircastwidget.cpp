@@ -38,6 +38,8 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     qRegisterMetaType<DlnaPositionInfo>("DlnaPositionInfo");
     setFixedSize(MIRCASTWIDTH + 14, MIRCASTHEIGHT + 12);
     setFramRadius(8);
+    setAttribute(Qt::WA_TranslucentBackground);
+    setBlurBackgroundEnabled(true);
     m_bIsToggling = false;
     m_mircastState = Idel;
     m_nPlayStatus = MircastWidget::NoState;
