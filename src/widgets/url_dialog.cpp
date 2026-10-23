@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -28,6 +28,8 @@ namespace dmr {
         messageLabel->setText(QApplication::translate("UrlDialog", "Please enter the URL:"));
         messageLabel->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
         m_lineEdit = new LineEdit;
+        m_lineEdit->setObjectName("urlLineEdit");
+        m_lineEdit->setAccessibleName("urlLineEdit");
 
         /**
          * widget包含一个垂直布局

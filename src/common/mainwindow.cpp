@@ -982,6 +982,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_pMiniPlayBtn->setIconSize(QSize(30, 30));
     m_pMiniPlayBtn->setFixedSize(QSize(35, 35));
     m_pMiniPlayBtn->setObjectName("MiniPlayBtn");
+    m_pMiniPlayBtn->setAccessibleName("MiniPlayBtn");
     connect(m_pMiniPlayBtn, SIGNAL(clicked()), pSignalMapper, SLOT(map()));
     pSignalMapper->setMapping(m_pMiniPlayBtn, "play");
     qCDebug(appMovie) << "MiniPlayBtn configured and mapped to 'play' action.";
@@ -1060,6 +1061,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_pMiniCloseBtn->setIconSize(QSize(30, 30));
     m_pMiniCloseBtn->setFixedSize(QSize(35, 35));
     m_pMiniCloseBtn->setObjectName("MiniCloseBtn");
+    m_pMiniCloseBtn->setAccessibleName("MiniCloseBtn");
     connect(m_pMiniCloseBtn, SIGNAL(clicked()), pSignalMapper, SLOT(map()));
     pSignalMapper->setMapping(m_pMiniCloseBtn, "close");
 
@@ -1067,6 +1069,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_pMiniQuitMiniBtn->setIconSize(QSize(30, 30));
     m_pMiniQuitMiniBtn->setFixedSize(QSize(35, 35));
     m_pMiniQuitMiniBtn->setObjectName("MiniQuitMiniBtn");
+    m_pMiniQuitMiniBtn->setAccessibleName("MiniQuitMiniBtn");
     connect(m_pMiniQuitMiniBtn, SIGNAL(clicked()), pSignalMapper, SLOT(map()));
     pSignalMapper->setMapping(m_pMiniQuitMiniBtn, "quit_mini");
 

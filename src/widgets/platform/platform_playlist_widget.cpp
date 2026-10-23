@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -869,6 +869,7 @@ Platform_PlaylistWidget::Platform_PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _playlist->viewport()->setAutoFillBackground(false);
     _playlist->setAutoFillBackground(false);
     _playlist->setObjectName(PLAYLIST);
+    _playlist->setAccessibleName(PLAYLIST);
     _playlist->viewport()->setObjectName(FILE_LIST);
 
     rightinfo->addWidget(_playlist);

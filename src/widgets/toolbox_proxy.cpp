@@ -1345,6 +1345,7 @@ void ToolboxProxy::setup()
     m_pPalyBox = new DButtonBox(m_pBotToolWgt);
     m_pPalyBox->setFixedWidth(120);
     m_pPalyBox->setObjectName(PLAY_BUTTOB_BOX);
+    m_pPalyBox->setAccessibleName(PLAY_BUTTOB_BOX);
     m_pPalyBox->setFocusPolicy(Qt::NoFocus);
     _mid->addWidget(m_pPalyBox);
     _mid->setAlignment(m_pPalyBox, Qt::AlignLeft);
