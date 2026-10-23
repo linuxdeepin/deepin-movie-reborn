@@ -13,7 +13,8 @@ typedef enum {
     DLNA_Pause,
     DLNA_Seek,
     DLNA_Stop,
-    DLNA_GetPositionInfo
+    DLNA_GetPositionInfo,
+    DLNA_GetTransportInfo
 } DlnaOper;
 // DLNA 投屏状态进度信息
 typedef struct {
@@ -53,6 +54,7 @@ private:
     QNetworkAccessManager *m_pNetWorkManager; //网络传输管理
 signals:
     void sigGetPostionInfo(DlnaPositionInfo);
+    void sigGetTransportInfo(QString transportState);
 };
 
 #endif // CDLNASOAPPOST_H

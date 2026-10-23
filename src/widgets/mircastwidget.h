@@ -228,6 +228,10 @@ public slots:
      */
     void slotGetPositionInfo(DlnaPositionInfo info);
     /**
+     * @brief slotGetTransportInfo 获取投屏传输状态
+     */
+    void slotGetTransportInfo(QString transportState);
+    /**
      * @brief slotConnectDevice 连接投屏设备
      */
     void slotConnectDevice(ItemWidget*);
@@ -302,6 +306,8 @@ private:
     CDlnaSoapPost *m_pDlnaSoapPost;
     //是否成功启动http server
     bool m_isStartHttpServer;
+    //设备是否支持GetTransportInfo
+    bool m_transportInfoSupported;
     //投屏设备的控制url
     QString m_ControlURLPro;
     //本地准备的投屏主机地址

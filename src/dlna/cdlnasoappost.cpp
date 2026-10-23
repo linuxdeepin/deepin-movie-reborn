@@ -69,6 +69,16 @@ static QString dlnaGetPositionInfo(
         "   </s:Body>"
         "</s:Envelope>"
     );
+static QString dlnaGetTransportInfo(
+        "<?xml version='1.0' encoding='utf-8'?>\r\n"
+        "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n"
+        "   <s:Body>\r\n"
+        "       <u:GetTransportInfo xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\">\r\n"
+        "           <InstanceID>0</InstanceID>\r\n"
+        "       </u:GetTransportInfo>\r\n"
+        "   </s:Body>"
+        "</s:Envelope>"
+    );
 //TRACK_NR ABS_COUNT
 static QString dlnaSetAVTransportURI(
         "<?xml version='1.0' encoding='utf-8'?>\r\n"
@@ -154,6 +164,10 @@ void CDlnaSoapPost::SoapOperPost(DlnaOper oper,
         sOperName = "GetPositionInfo";
         reqData = dlnaGetPositionInfo.toUtf8();
     }
+    else if(oper == DLNA_GetTransportInfo) {
+        sOperName = "GetTransportInfo";
+        reqData = dlnaGetTransportInfo.toUtf8();
+    }
 
     QNetworkRequest request;
      request.setUrl(QUrl(ControlURLPro));
@@ -184,6 +198,14 @@ void CDlnaSoapPost::SoapOperPost(DlnaOper oper,
             posInfo.nRelCount  = xmldata.getValueByPath("s:Body/u:GetPositionInfoResponse/RelCount").toLongLong();
             posInfo.nAbsCount  = xmldata.getValueByPath("s:Body/u:GetPositionInfoResponse/AbsCount").toLongLong();
             emit sigGetPostionInfo(posInfo);
+         }
+         if(data.contains("GetTransportInfoResponse")) {
+            GetDlnaXmlValue xmldata(data);
+            QString transportState = xmldata.getValueByPath("s:Body/u:GetTransportInfoResponse/CurrentTransportState");
+            emit sigGetTransportInfo(transportState);
+         }
+         else if(oper == DLNA_GetTransportInfo && data.contains("Fault")) {
+            emit sigGetTransportInfo(QString());
          }
      });
      connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
