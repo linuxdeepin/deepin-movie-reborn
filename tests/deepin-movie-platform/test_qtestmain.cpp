@@ -1,5 +1,5 @@
 // Copyright (C) 2019-2026 ~ 2020 UnionTech Software Technology Co.,Ltd
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -23,6 +23,8 @@ using namespace dmr;
 #endif
 
 #include <signal.h>
+#include <cstdlib>
+#include <string>
 #include <stdio.h>
 
 // Force flush coverage data on crash so .gcda files are preserved
@@ -136,11 +138,15 @@ void QTestMain::testGTest()
         ":boost_libdmr.ShowInFileManager_*";
     // NOTE: platform_mw_ext3.Event_Paint_DelegatesToBase was previously excluded
     // but is now fixed (uses proper QPaintEvent instead of plain QEvent).
-    if (const char *fl = getenv("DMR_GTEST_FILTER")) {
-        testing::GTEST_FLAG(filter) = fl;          // explicit filter wins
-    } else {
-        testing::GTEST_FLAG(filter) += kSingleRunExclude;  // else drop crashers
+    // DMR_GTEST_FILTER (positive pattern list, used by the chunked runner) narrows
+    // the run to selected suites; the single-run exclusion list is ALWAYS
+    // appended so the known crashers stay excluded in every mode.
+    std::string fl = "*";
+    if (const char *envfl = getenv("DMR_GTEST_FILTER")) {
+        fl = envfl;
     }
+    fl += kSingleRunExclude;
+    testing::GTEST_FLAG(filter) = fl;
     int ret = RUN_ALL_TESTS();
 #if !defined(__mips__) && defined(__SANITIZE_ADDRESS__)
     __sanitizer_set_report_path("asan.log");
