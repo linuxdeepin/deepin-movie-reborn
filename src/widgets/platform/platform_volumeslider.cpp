@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -57,6 +57,7 @@ Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *p
     m_slider->slider()->setRange(0, 100);
     m_slider->setValue(m_nVolume);
     m_slider->setObjectName(VOLUME_SLIDER);
+    m_slider->setAccessibleName(VOLUME_SLIDER);
     m_slider->slider()->setObjectName(SLIDER);
     m_slider->slider()->setAccessibleName(SLIDER);
     m_slider->slider()->setMinimumHeight(120);
