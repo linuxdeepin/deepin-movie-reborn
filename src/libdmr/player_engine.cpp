@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "config.h"
+#include "ddlog.h"
 #include <iostream>
 #include "player_engine.h"
 #include "playlist_model.h"
@@ -45,21 +46,21 @@ const QStringList PlayerEngine::subtitle_suffixs = {"ass", "sub", "srt", "aqt", 
 PlayerEngine::PlayerEngine(QWidget *parent)
     : QWidget(parent)
 {
-    qDebug() << "Initializing PlayerEngine";
+    qCDebug(dmrLib) << "Initializing PlayerEngine";
     m_bAudio = false;
     m_stopRunningThread = false;
     auto *l = new QVBoxLayout(this);
     l->setContentsMargins(0, 0, 0, 0);
 
     if(CompositingManager::isMpvExists()){
-        qDebug() << "MPV backend exists, creating MpvProxy";
+        qCDebug(dmrLib) << "MPV backend exists, creating MpvProxy";
         _current = new MpvProxy(this);
     }
     // else {
     //     _current = new QtPlayerProxy(this);
     // }
     if (_current) {
-        qDebug() << "Setting up backend connections";
+        qCDebug(dmrLib) << "Setting up backend connections";
         connect(_current, &Backend::stateChanged, this, &PlayerEngine::onBackendStateChanged);
         connect(_current, &Backend::tracksChanged, this, &PlayerEngine::tracksChanged);
         connect(_current, &Backend::elapsedChanged, this, &PlayerEngine::elapsedChanged);
@@ -76,7 +77,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::sigMediaError, this, &PlayerEngine::sigMediaError);
         l->addWidget(_current);
     } else {
-        qWarning() << "Failed to create backend";
+        qCWarning(dmrLib) << "Failed to create backend";
     }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -98,12 +99,12 @@ PlayerEngine::PlayerEngine(QWidget *parent)
     connect(_playlist, &PlaylistModel::asyncAppendFinished, this,
             &PlayerEngine::onPlaylistAsyncAppendFinished, Qt::DirectConnection);
     connect(_playlist, &PlaylistModel::updateDuration, this, &PlayerEngine::updateDuration);
-    qDebug() << "PlayerEngine initialization completed";
+    qCDebug(dmrLib) << "PlayerEngine initialization completed";
 }
 
 PlayerEngine::~PlayerEngine()
 {
-    qDebug() << "Destroying PlayerEngine";
+    qCDebug(dmrLib) << "Destroying PlayerEngine";
     m_stopRunningThread = true;
     FileFilter::instance()->stopThread();
     if (_current) {
@@ -117,18 +118,18 @@ PlayerEngine::~PlayerEngine()
         delete _playlist;
         _playlist = nullptr;
     }
-    qDebug() << "PlayerEngine destroyed";
+    qCDebug(dmrLib) << "PlayerEngine destroyed";
 }
 
 bool PlayerEngine::isPlayableFile(const QUrl &url)
 {
-    qDebug() << "Checking if file is playable:" << url.toString();
+    qCDebug(dmrLib) << "Checking if file is playable:" << url.toString();
     if (FileFilter::instance()->isMediaFile(url)) {
-        qDebug() << "File is playable";
+        qCDebug(dmrLib) << "File is playable";
         return true;
     } else {    // 网络文件不提示
         if(url.isLocalFile()) {
-            qWarning() << "Invalid file:" << QFileInfo(url.toLocalFile()).fileName();
+            qCWarning(dmrLib) << "Invalid file:" << QFileInfo(url.toLocalFile()).fileName();
             emit sigInvalidFile(QFileInfo(url.toLocalFile()).fileName());
         }
         return false;
@@ -139,59 +140,59 @@ static QStringList suffixes;
 
 bool PlayerEngine::isPlayableFile(const QString &name)
 {
-    qDebug() << "Enter isPlayableFile function";
+    qCDebug(dmrLib) << "Enter isPlayableFile function";
     QUrl url = FileFilter::instance()->fileTransfer(name);
 
     if (FileFilter::instance()->isMediaFile(url))
     {
-        qDebug() << "File is playable";
+        qCDebug(dmrLib) << "File is playable";
         return true;
     }
 
     if (url.isLocalFile()) {   // 网络文件不提示
-        qDebug() << "File is not playable";
+        qCDebug(dmrLib) << "File is not playable";
         emit sigInvalidFile(QFileInfo(url.toLocalFile()).fileName());
         return false;
     }
-    qDebug() << "File is not playable";
+    qCDebug(dmrLib) << "File is not playable";
     return  false;
 }
 
 bool PlayerEngine::isAudioFile(const QString &name)
 {
-    qDebug() << "Enter isAudioFile function";
+    qCDebug(dmrLib) << "Enter isAudioFile function";
     QUrl url = FileFilter::instance()->fileTransfer(name);
-    qDebug() << "File is audio";
+    qCDebug(dmrLib) << "File is audio";
     return FileFilter::instance()->isAudio(url);
 }
 
 bool PlayerEngine::isSubtitle(const QString &name)
 {
-    qDebug() << "Enter isSubtitle function";
+    qCDebug(dmrLib) << "Enter isSubtitle function";
     QUrl url = FileFilter::instance()->fileTransfer(name);
-    qDebug() << "File is subtitle";
+    qCDebug(dmrLib) << "File is subtitle";
     return FileFilter::instance()->isSubtitle(url);
 }
 
 void PlayerEngine::updateSubStyles()
 {
-    qDebug() << "Updating subtitle styles";
+    qCDebug(dmrLib) << "Updating subtitle styles";
 #ifndef _LIBDMR_
     QPointer<DSettingsOption> pFontOpt = Settings::get().settings()->option("subtitle.font.family");
     QPointer<DSettingsOption> pSizeOpt = Settings::get().settings()->option("subtitle.font.size");
     if(!pFontOpt || !pSizeOpt) {
-        qWarning() << "Failed to get subtitle style settings";
+        qCWarning(dmrLib) << "Failed to get subtitle style settings";
         return;
     }
 
     int fontId = pFontOpt->value().toInt();
     int size = pSizeOpt->value().toInt();
     QString font = pFontOpt->data("items").toStringList()[fontId];
-    qDebug() << "Subtitle style - Font:" << font << "Size:" << size;
+    qCDebug(dmrLib) << "Subtitle style - Font:" << font << "Size:" << size;
 
     if (_state != CoreState::Idle) {
         if (_playlist->current() < 0) {
-            qDebug() << "No current playlist item";
+            qCDebug(dmrLib) << "No current playlist item";
             return;
         }
 
@@ -203,7 +204,7 @@ void PlayerEngine::updateSubStyles()
         size /= scale;
         /* magic scale number 2.0 comes from my mind, test with my eyes... */
         size *= 2.0;
-        qDebug() << "Updating subtitle style with scaled size:" << size;
+        qCDebug(dmrLib) << "Updating subtitle style with scaled size:" << size;
         updateSubStyle(font, size);
     }
 #endif
@@ -211,7 +212,7 @@ void PlayerEngine::updateSubStyles()
 
 void PlayerEngine::waitLastEnd()
 {
-    qDebug() << "Enter waitLastEnd function";
+    qCDebug(dmrLib) << "Enter waitLastEnd function";
     if (MpvProxy *mpv = dynamic_cast<MpvProxy *>(_current)) {
         mpv->pollingEndOfPlayback();
     }
@@ -219,13 +220,13 @@ void PlayerEngine::waitLastEnd()
     // else if (QtPlayerProxy *qtPlayer = dynamic_cast<QtPlayerProxy *>(_current)) {
     //     qtPlayer->pollingEndOfPlayback();
     // }
-    qDebug() << "Exiting waitLastEnd function";
+    qCDebug(dmrLib) << "Exiting waitLastEnd function";
 }
 
 void PlayerEngine::onBackendStateChanged()
 {
     if (!_current) {
-        qWarning() << "Backend state changed but no backend exists";
+        qCWarning(dmrLib) << "Backend state changed but no backend exists";
         return;
     }
 
@@ -235,27 +236,27 @@ void PlayerEngine::onBackendStateChanged()
         _state = CoreState::Playing;
         if (_playlist->count() > 0) {
             m_bAudio = currFileIsAudio();
-            qDebug() << "State changed to Playing, is audio:" << m_bAudio;
+            qCDebug(dmrLib) << "State changed to Playing, is audio:" << m_bAudio;
         }
         //playing . emit thumbnail progress mode signal with setting file
         if (old == CoreState::Idle) {
-            qDebug() << "Initializing thumbnail settings";
+            qCDebug(dmrLib) << "Initializing thumbnail settings";
             emit siginitthumbnailseting();
         }
         break;
     case Backend::PlayState::Paused:
         _state = CoreState::Paused;
-        qDebug() << "State changed to Paused";
+        qCDebug(dmrLib) << "State changed to Paused";
         break;
     case Backend::PlayState::Stopped:
         _state = CoreState::Idle;
-        qDebug() << "State changed to Idle";
+        qCDebug(dmrLib) << "State changed to Idle";
         break;
     }
 
     updateSubStyles();
     if (old != _state) {
-        qDebug() << "State changed from" << old << "to" << _state;
+        qCDebug(dmrLib) << "State changed from" << old << "to" << _state;
         emit stateChanged();
     }
 
@@ -277,59 +278,59 @@ void PlayerEngine::onBackendStateChanged()
         }
 #endif
     }
-    qDebug() << "Exiting onBackendStateChanged function";
+    qCDebug(dmrLib) << "Exiting onBackendStateChanged function";
 }
 
 PlayerEngine::CoreState PlayerEngine::state()
 {
-    qDebug() << "Enter state function";
+    qCDebug(dmrLib) << "Enter state function";
     if (!_current)
         return _state;
     auto old = _state;
     switch (_current->state()) {
     case Backend::PlayState::Playing:
-        qDebug() << "State changed to Playing";
+        qCDebug(dmrLib) << "State changed to Playing";
         _state = CoreState::Playing;
         break;
     case Backend::PlayState::Paused:
-        qDebug() << "State changed to Paused";
+        qCDebug(dmrLib) << "State changed to Paused";
         _state = CoreState::Paused;
         break;
     case Backend::PlayState::Stopped:
-        qDebug() << "State changed to Idle";
+        qCDebug(dmrLib) << "State changed to Idle";
         _state = CoreState::Idle;
         break;
     }
 
     if (old != _state) {
-        qWarning() << "###### state mismatch" << old << _state;
+        qCWarning(dmrLib) << "###### state mismatch" << old << _state;
         emit stateChanged();
     }
-    qDebug() << "Exiting state function";
+    qCDebug(dmrLib) << "Exiting state function";
     return _state;
 }
 
 const PlayingMovieInfo &PlayerEngine::playingMovieInfo()
 {
-    qDebug() << "Enter playingMovieInfo function";
+    qCDebug(dmrLib) << "Enter playingMovieInfo function";
     static PlayingMovieInfo empty;
 
     if (!_current) {
-        qDebug() << "current is null, return empty";
+        qCDebug(dmrLib) << "current is null, return empty";
         return empty;
     }
-    qDebug() << "Exiting playingMovieInfo function";
+    qCDebug(dmrLib) << "Exiting playingMovieInfo function";
     return _current->playingMovieInfo();
 }
 
 int PlayerEngine::aid()
 {
-    qDebug() << "Enter aid function";
+    qCDebug(dmrLib) << "Enter aid function";
     if (state() == CoreState::Idle) {
         return 0;
     }
     if (!_current) {
-        qDebug() << "current is null, return 0";
+        qCDebug(dmrLib) << "current is null, return 0";
         return 0;
     }
 
@@ -338,12 +339,12 @@ int PlayerEngine::aid()
 
 int PlayerEngine::sid()
 {
-    qDebug() << "Enter sid function";
+    qCDebug(dmrLib) << "Enter sid function";
     if (state() == CoreState::Idle) {
         return 0;
     }
     if (!_current) {
-        qDebug() << "current is null, return 0";
+        qCDebug(dmrLib) << "current is null, return 0";
         return 0;
     }
 
@@ -353,22 +354,22 @@ int PlayerEngine::sid()
 void PlayerEngine::onSubtitlesDownloaded(const QUrl &url, const QList<QString> &filenames,
                                          OnlineSubtitle::FailReason reason)
 {
-    qDebug() << "Enter onSubtitlesDownloaded function";
+    qCDebug(dmrLib) << "Enter onSubtitlesDownloaded function";
     //mod for warning by xxj ,no any means
     reason = OnlineSubtitle::FailReason::NoError;
 
     if (state() == CoreState::Idle) {
-        qDebug() << "state is Idle, return";
+        qCDebug(dmrLib) << "state is Idle, return";
         return;
     }
 
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
 
     if (playlist().count() <= 0 || playlist().currentInfo().url != url) {
-        qDebug() << "playlist().currentInfo().url != url, return";
+        qCDebug(dmrLib) << "playlist().currentInfo().url != url, return";
         return;
     }
 
@@ -383,18 +384,18 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl &url, const QList<QString> &
     }
 
     emit loadOnlineSubtitlesFinished(url, res);
-    qDebug() << "Exiting onSubtitlesDownloaded function";
+    qCDebug(dmrLib) << "Exiting onSubtitlesDownloaded function";
 }
 
 bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
 {
-    qDebug() << "Loading subtitle:" << fi.absoluteFilePath();
+    qCDebug(dmrLib) << "Loading subtitle:" << fi.absoluteFilePath();
     if (state() == CoreState::Idle || playlist().count() <= 0) {
-        qDebug() << "Player is idle, ignoring subtitle load";
+        qCDebug(dmrLib) << "Player is idle, ignoring subtitle load";
         return true;
     }
     if (!_current) {
-        qWarning() << "No backend available";
+        qCWarning(dmrLib) << "No backend available";
         return true;
     }
 
@@ -405,7 +406,7 @@ bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
         if (sub["external"].toBool()) {
             auto path = sub["external-filename"].toString();
             if (path == fi.canonicalFilePath()) {
-                qDebug() << "Subtitle already loaded, selecting it";
+                qCDebug(dmrLib) << "Subtitle already loaded, selecting it";
                 this->selectSubtitle(i);
                 return true;
             }
@@ -414,26 +415,26 @@ bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
     }
 
     if (_current->loadSubtitle(fi)) {
-        qDebug() << "Subtitle loaded successfully";
+        qCDebug(dmrLib) << "Subtitle loaded successfully";
 #ifndef _LIBDMR_
         MovieConfiguration::get().append2ListUrl(pif.url, ConfigKnownKey::ExternalSubs,
                                                  fi.canonicalFilePath());
 #endif
         return true;
     }
-    qWarning() << "Failed to load subtitle";
+    qCWarning(dmrLib) << "Failed to load subtitle";
     return false;
 }
 
 void PlayerEngine::loadOnlineSubtitle(const QUrl &url)
 {
-    qDebug() << "Requesting online subtitle for:" << url.toString();
+    qCDebug(dmrLib) << "Requesting online subtitle for:" << url.toString();
     if (state() == CoreState::Idle) {
-        qDebug() << "Player is idle, ignoring subtitle request";
+        qCDebug(dmrLib) << "Player is idle, ignoring subtitle request";
         return;
     }
     if (!_current) {
-        qWarning() << "No backend available";
+        qCWarning(dmrLib) << "No backend available";
         return;
     }
 
@@ -442,9 +443,9 @@ void PlayerEngine::loadOnlineSubtitle(const QUrl &url)
 
 void PlayerEngine::setPlaySpeed(double times)
 {
-    qDebug() << "Enter setPlaySpeed function";
+    qCDebug(dmrLib) << "Enter setPlaySpeed function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->setPlaySpeed(times);
@@ -452,9 +453,9 @@ void PlayerEngine::setPlaySpeed(double times)
 
 void PlayerEngine::setSubDelay(double secs)
 {
-    qDebug() << "Enter setSubDelay function";
+    qCDebug(dmrLib) << "Enter setSubDelay function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
 
@@ -463,9 +464,9 @@ void PlayerEngine::setSubDelay(double secs)
 
 double PlayerEngine::subDelay() const
 {
-    qDebug() << "Enter subDelay function";
+    qCDebug(dmrLib) << "Enter subDelay function";
     if (!_current) {
-        qDebug() << "current is null, return 0.0";
+        qCDebug(dmrLib) << "current is null, return 0.0";
         return 0.0;
     }
     return _current->subDelay();
@@ -473,14 +474,14 @@ double PlayerEngine::subDelay() const
 
 QString PlayerEngine::subCodepage()
 {
-    qDebug() << "Enter subCodepage function";
+    qCDebug(dmrLib) << "Enter subCodepage function";
     if (!_current)
         return "auto";
     if (_current->subCodepage().isEmpty()) {
-        qDebug() << "subCodepage is empty, return auto";
+        qCDebug(dmrLib) << "subCodepage is empty, return auto";
         return "auto";
     } else {
-        qDebug() << "subCodepage is not empty, return" << _current->subCodepage();
+        qCDebug(dmrLib) << "subCodepage is not empty, return" << _current->subCodepage();
         return _current->subCodepage();
     }
 
@@ -488,155 +489,155 @@ QString PlayerEngine::subCodepage()
 
 void PlayerEngine::setSubCodepage(const QString &cp)
 {
-    qDebug() << "Enter setSubCodepage function";
+    qCDebug(dmrLib) << "Enter setSubCodepage function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->setSubCodepage(cp);
-    qDebug() << "Exiting setSubCodepage function";
+    qCDebug(dmrLib) << "Exiting setSubCodepage function";
 //    emit subCodepageChanged();
 }
 
 void PlayerEngine::addSubSearchPath(const QString &path)
 {
-    qDebug() << "Enter addSubSearchPath function";
+    qCDebug(dmrLib) << "Enter addSubSearchPath function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->addSubSearchPath(path);
-    qDebug() << "Exiting addSubSearchPath function";
+    qCDebug(dmrLib) << "Exiting addSubSearchPath function";
 }
 
 void PlayerEngine::updateSubStyle(const QString &font, int sz)
 {
-    qDebug() << "Enter updateSubStyle function";
+    qCDebug(dmrLib) << "Enter updateSubStyle function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->updateSubStyle(font, sz / 2);
-    qDebug() << "Exiting updateSubStyle function";
+    qCDebug(dmrLib) << "Exiting updateSubStyle function";
 }
 
 void PlayerEngine::selectSubtitle(int id)
 {
-    qDebug() << "Enter selectSubtitle function";
+    qCDebug(dmrLib) << "Enter selectSubtitle function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     if (state() != CoreState::Idle) {
-        qDebug() << "state is not Idle, return";
+        qCDebug(dmrLib) << "state is not Idle, return";
         const auto &pmf = _current->playingMovieInfo();
         if (id >= pmf.subs.size()) return;
         auto sid = pmf.subs[id]["id"].toInt();
         _current->selectSubtitle(sid);
     }
-    qDebug() << "Exiting selectSubtitle function";
+    qCDebug(dmrLib) << "Exiting selectSubtitle function";
 }
 
 bool PlayerEngine::isSubVisible()
 {
-    qDebug() << "Enter isSubVisible function";
+    qCDebug(dmrLib) << "Enter isSubVisible function";
     if (state() == CoreState::Idle) {
-        qDebug() << "state is Idle, return false";
+        qCDebug(dmrLib) << "state is Idle, return false";
         return false;
     }
     if (!_current) {
-        qDebug() << "current is null, return false";
+        qCDebug(dmrLib) << "current is null, return false";
         return false;
     }
-    qDebug() << "Exiting isSubVisible function";
+    qCDebug(dmrLib) << "Exiting isSubVisible function";
     return _current->isSubVisible();
 }
 
 void PlayerEngine::toggleSubtitle()
 {
-    qDebug() << "Enter toggleSubtitle function";
+    qCDebug(dmrLib) << "Enter toggleSubtitle function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->toggleSubtitle();
-    qDebug() << "Exiting toggleSubtitle function";
+    qCDebug(dmrLib) << "Exiting toggleSubtitle function";
 }
 
 void PlayerEngine::selectTrack(int id)
 {
-    qDebug() << "Enter selectTrack function";
+    qCDebug(dmrLib) << "Enter selectTrack function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->selectTrack(id);
-    qDebug() << "Exiting selectTrack function";
+    qCDebug(dmrLib) << "Exiting selectTrack function";
 }
 
 void PlayerEngine::volumeUp()
 {
-    qDebug() << "Enter volumeUp function";
+    qCDebug(dmrLib) << "Enter volumeUp function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->volumeUp();
-    qDebug() << "Exiting volumeUp function";
+    qCDebug(dmrLib) << "Exiting volumeUp function";
 }
 
 void PlayerEngine::changeVolume(int val)
 {
-    qDebug() << "Enter changeVolume function";
+    qCDebug(dmrLib) << "Enter changeVolume function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->changeVolume(val);
-    qDebug() << "Exiting changeVolume function";
+    qCDebug(dmrLib) << "Exiting changeVolume function";
 }
 
 void PlayerEngine::volumeDown()
 {
-    qDebug() << "Enter volumeDown function";
+    qCDebug(dmrLib) << "Enter volumeDown function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->volumeDown();
-    qDebug() << "Exiting volumeDown function";
+    qCDebug(dmrLib) << "Exiting volumeDown function";
 }
 
 int PlayerEngine::volume() const
 {
-    qDebug() << "Enter volume function";
+    qCDebug(dmrLib) << "Enter volume function";
     if (!_current) {
-        qDebug() << "current is null, return 100";
+        qCDebug(dmrLib) << "current is null, return 100";
         return 100;
     }
-    qDebug() << "Exiting volume function";
+    qCDebug(dmrLib) << "Exiting volume function";
     return _current->volume();
 }
 
 bool PlayerEngine::muted() const
 {
-    qDebug() << "Enter muted function";
+    qCDebug(dmrLib) << "Enter muted function";
     if (!_current) {
-        qDebug() << "current is null, return false";
+        qCDebug(dmrLib) << "current is null, return false";
         return false;
     }
-    qDebug() << "Exiting muted function";
+    qCDebug(dmrLib) << "Exiting muted function";
     return _current->muted();
 }
 
 void PlayerEngine::changehwaccelMode(Backend::hwaccelMode hwaccelMode)
 {
-    qDebug() << "Enter changehwaccelMode function";
+    qCDebug(dmrLib) << "Enter changehwaccelMode function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
-    qDebug() << "Exiting changehwaccelMode function";
+    qCDebug(dmrLib) << "Exiting changehwaccelMode function";
     return _current->changehwaccelMode(hwaccelMode);
 }
 
@@ -660,58 +661,58 @@ QVariant PlayerEngine::getDecodeModel()
 
 Backend *PlayerEngine::getMpvProxy()
 {
-    qDebug() << "Enter getMpvProxy function";
+    qCDebug(dmrLib) << "Enter getMpvProxy function";
     return _current;
 }
 
 void PlayerEngine::toggleMute()
 {
-    qDebug() << "Entering PlayerEngine::toggleMute().";
+    qCDebug(dmrLib) << "Entering PlayerEngine::toggleMute().";
     if (!_current) {
-        qDebug() << "_current backend is null, returning.";
+        qCDebug(dmrLib) << "_current backend is null, returning.";
         return;
     }
     //发送信号通知初始化库函数
     if (!m_bMpvFunsLoad) {
-        qDebug() << "mpv functions not loaded, emitting mpvFunsLoadOver().";
+        qCDebug(dmrLib) << "mpv functions not loaded, emitting mpvFunsLoadOver().";
         emit mpvFunsLoadOver();
         m_bMpvFunsLoad = true;
     }
 
     _current->toggleMute();
     emit volumeChanged();
-    qDebug() << "Exiting PlayerEngine::toggleMute().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::toggleMute().";
 }
 
 void PlayerEngine::setMute(bool bMute)
 {
-    qDebug() << "Entering PlayerEngine::setMute() with bMute:" << bMute;
+    qCDebug(dmrLib) << "Entering PlayerEngine::setMute() with bMute:" << bMute;
     if (!_current) return;
     _current->setMute(bMute);
-    qDebug() << "Exiting PlayerEngine::setMute().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::setMute().";
 }
 
 void PlayerEngine::savePreviousMovieState()
 {
-    qDebug() << "Entering PlayerEngine::savePreviousMovieState().";
+    qCDebug(dmrLib) << "Entering PlayerEngine::savePreviousMovieState().";
     savePlaybackPosition();
-    qDebug() << "Exiting PlayerEngine::savePreviousMovieState().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::savePreviousMovieState().";
 }
 
 void PlayerEngine::paintEvent(QPaintEvent *e)
 {
-    qDebug() << "Entering PlayerEngine::paintEvent().";
+    qCDebug(dmrLib) << "Entering PlayerEngine::paintEvent().";
 #ifndef USE_TEST
     QRect rect = this->rect();
     QPainter p(this);
 
     if (!CompositingManager::get().composited() || utils::check_wayland_env()) {  // wayland下不会进入mainwindow的paintevent函数导致图标未绘制
-        qDebug() << "Compositing manager not composited or wayland environment detected.";
+        qCDebug(dmrLib) << "Compositing manager not composited or wayland environment detected.";
         if (_state != Idle && m_bAudio) {
-            qDebug() << "Player is not idle and is audio, filling black rectangle.";
+            qCDebug(dmrLib) << "Player is not idle and is audio, filling black rectangle.";
             p.fillRect(rect, QBrush(QColor(0, 0, 0)));
         } else {
-            qDebug() << "Player is idle or not audio, drawing icon.";
+            qCDebug(dmrLib) << "Player is idle or not audio, drawing icon.";
             qreal dpr = devicePixelRatioF();
             int iconSize = static_cast<int>(130 * dpr);
             QImage icon = QIcon::fromTheme("deepin-movie").pixmap(iconSize, iconSize).toImage();
@@ -720,37 +721,37 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
             QPointF pos = rect.center() - QPointF(pix.width() / 2.0 / dpr, pix.height() / 2.0 / dpr);
 
             if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-                qDebug() << "Theme type is Light, filling white rectangle and drawing pixmap.";
+                qCDebug(dmrLib) << "Theme type is Light, filling white rectangle and drawing pixmap.";
                 p.fillRect(rect, QBrush(QColor(255, 255, 255)));
                 p.drawPixmap(pos, pix);
             } else {
-                qDebug() << "Theme type is not Light, filling black rectangle and drawing pixmap.";
+                qCDebug(dmrLib) << "Theme type is not Light, filling black rectangle and drawing pixmap.";
                 p.fillRect(rect, QBrush(QColor(0, 0, 0)));
                 p.drawPixmap(pos, pix);
             }
         }
     } else {
-        qDebug() << "Compositing manager is composited and not wayland environment, skipping custom paint.";
+        qCDebug(dmrLib) << "Compositing manager is composited and not wayland environment, skipping custom paint.";
     }
 #endif
-    qDebug() << "Exiting PlayerEngine::paintEvent().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::paintEvent().";
     return QWidget::paintEvent(e);
 }
 
 void PlayerEngine::requestPlay(int id)
 {
-    qDebug() << "Requesting play for item" << id;
+    qCDebug(dmrLib) << "Requesting play for item" << id;
     if (!_current) {
-        qWarning() << "No backend available";
+        qCWarning(dmrLib) << "No backend available";
         return;
     }
     if (id >= _playlist->count()) {
-        qWarning() << "Invalid playlist index:" << id;
+        qCWarning(dmrLib) << "Invalid playlist index:" << id;
         return;
     }
 
     const auto &item = _playlist->items()[id];
-    qDebug() << "Setting play file:" << item.url.toString();
+    qCDebug(dmrLib) << "Setting play file:" << item.url.toString();
     _current->setPlayFile(item.url);
 
     DRecentData data;
@@ -760,18 +761,18 @@ void PlayerEngine::requestPlay(int id)
 
     if (!_current) return;
     if (_current->isPlayable()) {
-        qDebug() << "File is playable, starting playback";
+        qCDebug(dmrLib) << "File is playable, starting playback";
 #ifdef __sw_64__
         // 1.1.0以上版本的dav1d在多线程环境下会卡死，更换解码器使用
         if(!FileFilter::instance()->isFormatSupported(item.url)) {
-            qDebug() << "Using libaom-av1 decoder for unsupported format";
+            qCDebug(dmrLib) << "Using libaom-av1 decoder for unsupported format";
             _current->setProperty("vd", "libaom-av1");
         }
 #endif
         _current->play();
     } else {
         // TODO: delete and try next backend?
-        qDebug() << "File is not playable, considering next backend or handling error.";
+        qCDebug(dmrLib) << "File is not playable, considering next backend or handling error.";
     }
 
     QJsonObject obj{
@@ -784,60 +785,60 @@ void PlayerEngine::requestPlay(int id)
         {"coding_format",  utils::videoIndex2str(item.mi.vCodecID)}
     };
 
-    qDebug() << "Logging playback event:" << obj;
+    qCDebug(dmrLib) << "Logging playback event:" << obj;
     EventLogUtils::get().writeLogs(obj);
-    qDebug() << "Exiting PlayerEngine::requestPlay().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::requestPlay().";
 }
 
 void PlayerEngine::savePlaybackPosition()
 {
-    qDebug() << "Entering PlayerEngine::savePlaybackPosition().";
+    qCDebug(dmrLib) << "Entering PlayerEngine::savePlaybackPosition().";
     if (!_current) {
-        qDebug() << "_current backend is null, returning.";
+        qCDebug(dmrLib) << "_current backend is null, returning.";
         return;
     }
     _current->savePlaybackPosition();
-    qDebug() << "Exiting PlayerEngine::savePlaybackPosition().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::savePlaybackPosition().";
 }
 
 void PlayerEngine::nextFrame()
 {
-    qDebug() << "Entering PlayerEngine::nextFrame().";
+    qCDebug(dmrLib) << "Entering PlayerEngine::nextFrame().";
     if (!_current) {
-        qDebug() << "_current backend is null, returning.";
+        qCDebug(dmrLib) << "_current backend is null, returning.";
         return;
     }
     _current->nextFrame();
-    qDebug() << "Exiting PlayerEngine::nextFrame().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::nextFrame().";
 }
 
 void PlayerEngine::previousFrame()
 {
-    qDebug() << "Entering PlayerEngine::previousFrame().";
+    qCDebug(dmrLib) << "Entering PlayerEngine::previousFrame().";
     if (!_current) {
-        qDebug() << "_current backend is null, returning.";
+        qCDebug(dmrLib) << "_current backend is null, returning.";
         return;
     }
     _current->previousFrame();
-    qDebug() << "Exiting PlayerEngine::previousFrame().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::previousFrame().";
 }
 
 void PlayerEngine::makeCurrent()
 {
-    qDebug() << "Entering PlayerEngine::makeCurrent().";
+    qCDebug(dmrLib) << "Entering PlayerEngine::makeCurrent().";
     if (!_current) {
-        qDebug() << "_current backend is null, returning.";
+        qCDebug(dmrLib) << "_current backend is null, returning.";
         return;
     }
     _current->makeCurrent();
-    qDebug() << "Exiting PlayerEngine::makeCurrent().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::makeCurrent().";
 }
 
 void PlayerEngine::play()
 {
-    qDebug() << "Play requested";
+    qCDebug(dmrLib) << "Play requested";
     if (!_current || !_playlist->count()) {
-        qWarning() << "Cannot play: no backend or empty playlist";
+        qCWarning(dmrLib) << "Cannot play: no backend or empty playlist";
         return;
     }
     if (_playingRequest) return;
@@ -845,168 +846,168 @@ void PlayerEngine::play()
     if (state() == CoreState::Paused &&
             getBackendProperty("keep-open").toBool() &&
             getBackendProperty("eof-reached").toBool()) {
-        qDebug() << "End of file reached, stopping and playing next";
+        qCDebug(dmrLib) << "End of file reached, stopping and playing next";
         stop();
         next();
     } else if (state() == CoreState::Idle) {
         playByName(_playlist->currentInfo().url);
     }
-    qDebug() << "Exiting PlayerEngine::play().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::play().";
 }
 
 void PlayerEngine::prev()
 {
-    qDebug() << "Entering PlayerEngine::prev().";
+    qCDebug(dmrLib) << "Entering PlayerEngine::prev().";
     if (_playingRequest) {
-        qDebug() << "_playingRequest is true, returning.";
+        qCDebug(dmrLib) << "_playingRequest is true, returning.";
         return;
     }
     _playingRequest = true;
     savePreviousMovieState();
     _playlist->playPrev(true);
     _playingRequest = false;
-    qDebug() << "Exiting PlayerEngine::prev().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::prev().";
 }
 
 void PlayerEngine::next()
 {
-    qDebug() << "Entering PlayerEngine::next().";
+    qCDebug(dmrLib) << "Entering PlayerEngine::next().";
     if (_playingRequest) {
-        qDebug() << "_playingRequest is true, returning.";
+        qCDebug(dmrLib) << "_playingRequest is true, returning.";
         return;
     }
     _playingRequest = true;
     savePreviousMovieState();
     _playlist->playNext(true);
     _playingRequest = false;
-    qDebug() << "Exiting PlayerEngine::next().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::next().";
 }
 
 void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo> &pil)
 {
-    qDebug() << "Entering PlayerEngine::onPlaylistAsyncAppendFinished().";
+    qCDebug(dmrLib) << "Entering PlayerEngine::onPlaylistAsyncAppendFinished().";
     if (_pendingPlayReq.isValid()) {
-        qDebug() << "_pendingPlayReq is valid.";
+        qCDebug(dmrLib) << "_pendingPlayReq is valid.";
         auto id = _playlist->indexOf(_pendingPlayReq);
         if (pil.size() && _pendingPlayReq.scheme() == "playlist") {
-            qDebug() << "Playlist scheme detected, updating ID.";
+            qCDebug(dmrLib) << "Playlist scheme detected, updating ID.";
             id = _playlist->indexOf(pil[0].url);
         }
 
         if (id >= 0) {
-            qDebug() << "ID is valid, changing current playlist item to ID:" << id;
+            qCDebug(dmrLib) << "ID is valid, changing current playlist item to ID:" << id;
             _playlist->changeCurrent(id);
             _pendingPlayReq = QUrl();
         } else {
-            qDebug() << "ID is invalid, info logged.";
+            qCDebug(dmrLib) << "ID is invalid, info logged.";
         }
         // else, wait for another signal
     } else {
-        qDebug() << "_pendingPlayReq is not valid, info logged.";
+        qCDebug(dmrLib) << "_pendingPlayReq is not valid, info logged.";
     }
-    qDebug() << "Exiting PlayerEngine::onPlaylistAsyncAppendFinished().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::onPlaylistAsyncAppendFinished().";
 }
 
 void PlayerEngine::playByName(const QUrl &url)
 {
-    qDebug() << "Entering PlayerEngine::playByName() with URL:" << url;
+    qCDebug(dmrLib) << "Entering PlayerEngine::playByName() with URL:" << url;
     savePreviousMovieState();
     int id = _playlist->indexOf(url);
-    qInfo() << __func__ << url << "id:" << id;
+    qCInfo(dmrLib) << __func__ << url << "id:" << id;
     if (id >= 0) {
-        qDebug() << "URL found in playlist at ID:" << id << ", changing current.";
+        qCDebug(dmrLib) << "URL found in playlist at ID:" << id << ", changing current.";
         _playlist->changeCurrent(id);
     } else {
-        qDebug() << "URL not found in playlist, setting as pending play request.";
+        qCDebug(dmrLib) << "URL not found in playlist, setting as pending play request.";
         _pendingPlayReq = url;
     }
-    qDebug() << "Exiting PlayerEngine::playByName().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::playByName().";
 }
 
 void PlayerEngine::playSelected(int id)
 {
-    qDebug() << "Entering PlayerEngine::playSelected() with ID:" << id;
-    qInfo() << __func__ << id;
+    qCDebug(dmrLib) << "Entering PlayerEngine::playSelected() with ID:" << id;
+    qCInfo(dmrLib) << __func__ << id;
     savePreviousMovieState();
     _playlist->changeCurrent(id);
-    qDebug() << "Exiting PlayerEngine::playSelected().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::playSelected().";
 }
 
 void PlayerEngine::clearPlaylist()
 {
-    qDebug() << "Entering PlayerEngine::clearPlaylist().";
+    qCDebug(dmrLib) << "Entering PlayerEngine::clearPlaylist().";
     _playlist->clear();
     MovieConfiguration::get().clear();
-    qDebug() << "Exiting PlayerEngine::clearPlaylist().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::clearPlaylist().";
 }
 
 void PlayerEngine::pauseResume()
 {
-    qDebug() << "Pause/Resume requested";
+    qCDebug(dmrLib) << "Pause/Resume requested";
     if (!_current) {
-        qDebug() << "_current backend is null, cannot pause/resume, returning.";
-        qWarning() << "No backend available";
+        qCDebug(dmrLib) << "_current backend is null, cannot pause/resume, returning.";
+        qCWarning(dmrLib) << "No backend available";
         return;
     }
     if (_state == CoreState::Idle) {
-        qDebug() << "Player state is Idle, returning.";
+        qCDebug(dmrLib) << "Player state is Idle, returning.";
         return;
     }
 
     _current->pauseResume();
-    qDebug() << "Exiting PlayerEngine::pauseResume().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::pauseResume().";
 }
 
 void PlayerEngine::stop()
 {
-    qDebug() << "Stop requested";
+    qCDebug(dmrLib) << "Stop requested";
     if (!_current) {
-        qWarning() << "No backend available";
+        qCWarning(dmrLib) << "No backend available";
         return;
     }
     _current->stop();
-    qDebug() << "Exiting PlayerEngine::stop().";
+    qCDebug(dmrLib) << "Exiting PlayerEngine::stop().";
 }
 
 bool PlayerEngine::paused()
 {
-    qDebug() << "Enter paused function";
+    qCDebug(dmrLib) << "Enter paused function";
     return _state == CoreState::Paused;
 }
 
 QImage PlayerEngine::takeScreenshot()
 {
-    qDebug() << "Enter takeScreenshot function";
+    qCDebug(dmrLib) << "Enter takeScreenshot function";
     if (!_current) return QImage();
     return _current->takeScreenshot();
 }
 
 void PlayerEngine::burstScreenshot()
 {
-    qDebug() << "Enter burstScreenshot function";
+    qCDebug(dmrLib) << "Enter burstScreenshot function";
     if (!_current) return;
     _current->burstScreenshot();
 }
 
 void PlayerEngine::stopBurstScreenshot()
 {
-    qDebug() << "Enter stopBurstScreenshot function";
+    qCDebug(dmrLib) << "Enter stopBurstScreenshot function";
     if (!_current) return;
     _current->stopBurstScreenshot();
 }
 
 void PlayerEngine::seekForward(int secs)
 {
-    qDebug() << "Seeking forward" << secs << "seconds";
+    qCDebug(dmrLib) << "Seeking forward" << secs << "seconds";
     if (state() == CoreState::Idle) {
-        qDebug() << "Player is idle, ignoring seek";
+        qCDebug(dmrLib) << "Player is idle, ignoring seek";
         return;
     }
 
     static int lastElapsed = 0;
 
     if (elapsed() == lastElapsed) {
-        qDebug() << "Elapsed time unchanged, ignoring seek";
+        qCDebug(dmrLib) << "Elapsed time unchanged, ignoring seek";
         return;
     }
     if (!_current) return;
@@ -1015,15 +1016,15 @@ void PlayerEngine::seekForward(int secs)
 
 void PlayerEngine::seekBackward(int secs)
 {
-    qDebug() << "Seeking backward" << secs << "seconds";
+    qCDebug(dmrLib) << "Seeking backward" << secs << "seconds";
     if (state() == CoreState::Idle) {
-        qDebug() << "Player is idle, ignoring seek";
+        qCDebug(dmrLib) << "Player is idle, ignoring seek";
         return;
     }
 
     if (!_current) return;
     if (elapsed() - abs(secs) <= 0) {
-        qDebug() << "Seeking to start of file";
+        qCDebug(dmrLib) << "Seeking to start of file";
         _current->seekBackward(static_cast<int>(elapsed()));
     } else {
         _current->seekBackward(secs);
@@ -1033,9 +1034,9 @@ void PlayerEngine::seekBackward(int secs)
 
 void PlayerEngine::seekAbsolute(int pos)
 {
-    qDebug() << "Seeking to absolute position:" << pos;
+    qCDebug(dmrLib) << "Seeking to absolute position:" << pos;
     if (state() == CoreState::Idle) {
-        qDebug() << "Player is idle, ignoring seek";
+        qCDebug(dmrLib) << "Player is idle, ignoring seek";
         return;
     }
 
@@ -1045,34 +1046,34 @@ void PlayerEngine::seekAbsolute(int pos)
 
 void PlayerEngine::setDVDDevice(const QString &path)
 {
-    qDebug() << "Enter setDVDDevice function";
+    qCDebug(dmrLib) << "Enter setDVDDevice function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->setDVDDevice(path);
-    qDebug() << "Exiting setDVDDevice function";
+    qCDebug(dmrLib) << "Exiting setDVDDevice function";
 }
 
 bool PlayerEngine::addPlayFile(const QUrl &url)
 {
-    qDebug() << "Adding file to playlist:" << url.toString();
+    qCDebug(dmrLib) << "Adding file to playlist:" << url.toString();
     QUrl realUrl = FileFilter::instance()->fileTransfer(url.toString());
     if (!isPlayableFile(realUrl)) {
-        qWarning() << "File is not playable:" << realUrl.toString();
+        qCWarning(dmrLib) << "File is not playable:" << realUrl.toString();
         return false;
     }
 
     _playlist->append(realUrl);
-    qDebug() << "File added to playlist successfully";
+    qCDebug(dmrLib) << "File added to playlist successfully";
     return true;
 }
 
 QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 {
-    qDebug() << "Adding directory to playlist:" << dir.path();
+    qCDebug(dmrLib) << "Adding directory to playlist:" << dir.path();
     QList<QUrl> valids = FileFilter::instance()->filterDir(dir);
-    qDebug() << "Found" << valids.size() << "valid files in directory";
+    qCDebug(dmrLib) << "Found" << valids.size() << "valid files in directory";
 
     struct {
         bool operator()(const QUrl& fi1, const QUrl& fi2) const {
@@ -1088,7 +1089,7 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
                 auto pos2 = rd.indexIn(fileName2, pos);
                 if (pos == pos2) {
                     auto id2 = fileName2.midRef(pos, rd.matchedLength());
-                    //qInfo() << "id compare " << id1 << id2;
+                    //qCInfo(dmrLib) << "id compare " << id1 << id2;
                     if (id1 != id2) {
                         bool ok1, ok2;
                         bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
@@ -1113,7 +1114,7 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
                 auto pos2 = rd.match(fileName2, pos).capturedStart();
                 if (pos == pos2) {
                     auto id2 = QStringView(fileName2).mid(pos, rd.match(fileName2, pos).capturedLength());
-                    //qInfo() << "id compare " << id1 << id2;
+                    //qCInfo(dmrLib) << "id compare " << id1 << id2;
                     if (id1 != id2) {
                         bool ok1, ok2;
                         bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
@@ -1138,19 +1139,19 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 
 QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 {
-    qDebug() << "Adding" << urls.size() << "files to playlist";
+    qCDebug(dmrLib) << "Adding" << urls.size() << "files to playlist";
     QList<QUrl> valids;
 
     for (QUrl url : urls) {
         if (m_stopRunningThread) {
-            qDebug() << "Thread stopped, breaking file addition";
+            qCDebug(dmrLib) << "Thread stopped, breaking file addition";
             break;
         }
         if (isPlayableFile(url))
             valids << url;
     }
 
-    qDebug() << "Found" << valids.size() << "playable files";
+    qCDebug(dmrLib) << "Found" << valids.size() << "playable files";
     _playlist->appendAsync(valids);
 
     return valids;
@@ -1158,7 +1159,7 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 
 QList<QUrl> PlayerEngine::addPlayFiles(const QList<QString> &lstFile)
 {
-    qDebug() << "Enter addPlayFiles function";
+    qCDebug(dmrLib) << "Enter addPlayFiles function";
     QList<QUrl> valids;
     QUrl realUrl;
 
@@ -1177,7 +1178,7 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QString> &lstFile)
 
 void PlayerEngine::addPlayFs(const QList<QString> &lstFile)
 {
-    qDebug() << "Enter addPlayFs function";
+    qCDebug(dmrLib) << "Enter addPlayFs function";
     QList<QUrl> valids;
     QUrl realUrl;
 
@@ -1198,118 +1199,118 @@ void PlayerEngine::addPlayFs(const QList<QString> &lstFile)
     QList<QUrl> addFiles = addPlayFiles(valids);
     blockSignals(false);
     emit finishedAddFiles(addFiles);
-    qDebug() << "Exiting addPlayFs function";
+    qCDebug(dmrLib) << "Exiting addPlayFs function";
 }
 
 qint64 PlayerEngine::duration() const
 {
-    qDebug() << "Enter duration function";
+    qCDebug(dmrLib) << "Enter duration function";
     if (!_current) {
-        qDebug() << "current is null, return 0";
+        qCDebug(dmrLib) << "current is null, return 0";
         return 0;
     }
-    qDebug() << "Exiting duration function";
+    qCDebug(dmrLib) << "Exiting duration function";
     return _current->duration();
 }
 
 QSize PlayerEngine::videoSize() const
 {
-    qDebug() << "Enter videoSize function";
+    qCDebug(dmrLib) << "Enter videoSize function";
     if (!_current) {
-        qDebug() << "current is null, return {0, 0}";
+        qCDebug(dmrLib) << "current is null, return {0, 0}";
         return {0, 0};
     }
-    qDebug() << "Exiting videoSize function";
+    qCDebug(dmrLib) << "Exiting videoSize function";
     return _current->videoSize();
 }
 
 qint64 PlayerEngine::elapsed() const
 {
-    qDebug() << "Enter elapsed function";
+    qCDebug(dmrLib) << "Enter elapsed function";
     if (!_current) {
-        qDebug() << "current is null, return 0";
+        qCDebug(dmrLib) << "current is null, return 0";
         return 0;
     }
     if (!_playlist) {
-        qDebug() << "playlist is null, return 0";
+        qCDebug(dmrLib) << "playlist is null, return 0";
         return 0;
     }
     if (_playlist->count() == 0 || _playlist->current() < 0) {
-        qDebug() << "playlist count is 0 or current is less than 0, return 0";
+        qCDebug(dmrLib) << "playlist count is 0 or current is less than 0, return 0";
         return 0;
     }
     qint64 nDuration = _current->duration();        //因为文件信息的持续时间和MPV返回的持续有些差别，所以，我们使用文件返回的持续时间
     qint64 nElapsed = _current->elapsed();
     if (nElapsed < 0) {
-        qDebug() << "elapsed is negative, return 0";
+        qCDebug(dmrLib) << "elapsed is negative, return 0";
         return 0;
     }
     if (nElapsed > nDuration) {
-        qDebug() << "elapsed is greater than duration, return duration";
+        qCDebug(dmrLib) << "elapsed is greater than duration, return duration";
         return nDuration;
     }
-    qDebug() << "Exiting elapsed function";
+    qCDebug(dmrLib) << "Exiting elapsed function";
     return nElapsed;
 }
 
 void PlayerEngine::setVideoAspect(double r)
 {
-    qDebug() << "Enter setVideoAspect function";
+    qCDebug(dmrLib) << "Enter setVideoAspect function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->setVideoAspect(r);
-    qDebug() << "Exiting setVideoAspect function";
+    qCDebug(dmrLib) << "Exiting setVideoAspect function";
 }
 
 double PlayerEngine::videoAspect() const
 {
-    qDebug() << "Enter videoAspect function";
+    qCDebug(dmrLib) << "Enter videoAspect function";
     if (!_current) {
-        qDebug() << "current is null, return 0.0";
+        qCDebug(dmrLib) << "current is null, return 0.0";
         return 0.0;
     }
-    qDebug() << "Exiting videoAspect function";
+    qCDebug(dmrLib) << "Exiting videoAspect function";
     return _current->videoAspect();
 }
 
 int PlayerEngine::videoRotation() const
 {
-    qDebug() << "Enter videoRotation function";
+    qCDebug(dmrLib) << "Enter videoRotation function";
     if (!_current) {
-        qDebug() << "current is null, return 0";
+        qCDebug(dmrLib) << "current is null, return 0";
         return 0;
     }
-    qDebug() << "Exiting videoRotation function";
+    qCDebug(dmrLib) << "Exiting videoRotation function";
     return _current->videoRotation();
 }
 
 void PlayerEngine::setVideoRotation(int degree)
 {
-    qDebug() << "Enter setVideoRotation function";
+    qCDebug(dmrLib) << "Enter setVideoRotation function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->setVideoRotation(degree);
-    qDebug() << "Exiting setVideoRotation function";
+    qCDebug(dmrLib) << "Exiting setVideoRotation function";
 }
 
 void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
 {
-    qDebug() << "Enter changeSoundMode function";
+    qCDebug(dmrLib) << "Enter changeSoundMode function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->changeSoundMode(sm);
-    qDebug() << "Exiting changeSoundMode function";
+    qCDebug(dmrLib) << "Exiting changeSoundMode function";
 }
 
 void PlayerEngine::resizeEvent(QResizeEvent *)
 {
-    qDebug() << "Enter resizeEvent function";
+    qCDebug(dmrLib) << "Enter resizeEvent function";
 #if !defined(USE_DXCB) && !defined(_LIBDMR_)
     bool rounded = !window()->isFullScreen() && !window()->isMaximized();
     if (rounded) {
@@ -1327,34 +1328,34 @@ void PlayerEngine::resizeEvent(QResizeEvent *)
         clearMask();
     }
 #endif
-    qDebug() << "Exiting resizeEvent function";
+    qCDebug(dmrLib) << "Exiting resizeEvent function";
 }
 
 void PlayerEngine::setBackendProperty(const QString &name, const QVariant &val)
 {
-    qDebug() << "Enter setBackendProperty function";
+    qCDebug(dmrLib) << "Enter setBackendProperty function";
     if (!_current) {
-        qDebug() << "current is null, return";
+        qCDebug(dmrLib) << "current is null, return";
         return;
     }
     _current->setProperty(name, val);
-    qDebug() << "Exiting setBackendProperty function";
+    qCDebug(dmrLib) << "Exiting setBackendProperty function";
 }
 
 QVariant PlayerEngine::getBackendProperty(const QString &name)
 {
-    qDebug() << "Enter getBackendProperty function";
+    qCDebug(dmrLib) << "Enter getBackendProperty function";
     if (!_current) {
-        qDebug() << "current is null, return QVariant()";
+        qCDebug(dmrLib) << "current is null, return QVariant()";
         return QVariant();
     }
-    qDebug() << "Exiting getBackendProperty function";
+    qCDebug(dmrLib) << "Exiting getBackendProperty function";
     return _current->getProperty(name);
 }
 
 void PlayerEngine::toggleRoundedClip(bool roundClip)
 {
-    qDebug() << "Enter toggleRoundedClip function";
+    qCDebug(dmrLib) << "Enter toggleRoundedClip function";
     MpvProxy* pMpvProxy = nullptr;
 
     pMpvProxy = dynamic_cast<MpvProxy *>(_current);
@@ -1363,35 +1364,35 @@ void PlayerEngine::toggleRoundedClip(bool roundClip)
     // } else {
         pMpvProxy->updateRoundClip(roundClip);
     // }
-    qDebug() << "Exiting toggleRoundedClip function";
+    qCDebug(dmrLib) << "Exiting toggleRoundedClip function";
 }
 
 bool PlayerEngine::currFileIsAudio()
 {
-    qDebug() << "Enter currFileIsAudio function";
+    qCDebug(dmrLib) << "Enter currFileIsAudio function";
     bool bAudio = false;
     PlayItemInfo pif;
 
     if (_playlist->count() > 0) {
-        qDebug() << "playlist count > 0";
+        qCDebug(dmrLib) << "playlist count > 0";
         pif = _playlist->currentInfo();
     }
 
     if (CompositingManager::isMpvExists()) {
-        qDebug() << "CompositingManager::isMpvExists()";
+        qCDebug(dmrLib) << "CompositingManager::isMpvExists()";
         if(pif.mi.vCodecID == AV_CODEC_ID_AVS2 || pif.mi.vCodecID == AV_CODEC_ID_AVS3) {
-            qDebug() << "AV_CODEC_ID_AVS2 || AV_CODEC_ID_AVS3";
+            qCDebug(dmrLib) << "AV_CODEC_ID_AVS2 || AV_CODEC_ID_AVS3";
             bAudio = false;
         } else {
-            qDebug() << "AV_CODEC_ID_AVS2 || AV_CODEC_ID_AVS3 else";
+            qCDebug(dmrLib) << "AV_CODEC_ID_AVS2 || AV_CODEC_ID_AVS3 else";
             bAudio = pif.url.isLocalFile() && (pif.mi.width <= 0 && pif.mi.height <= 0);
         }
     } else {
-        qDebug() << "CompositingManager::isMpvExists() else";
+        qCDebug(dmrLib) << "CompositingManager::isMpvExists() else";
         bAudio = isAudioFile(pif.url.toString());
     }
 
-    qDebug() << "Exiting currFileIsAudio function";
+    qCDebug(dmrLib) << "Exiting currFileIsAudio function";
     return bAudio;
 }
 

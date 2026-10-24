@@ -4,30 +4,31 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "threadpool.h"
+#include "ddlog.h"
 
 #include <QDebug>
 
 ThreadPool::ThreadPool(QObject *parent) : QObject(parent)
 {
-    qDebug() << "Entering ThreadPool constructor.";
-    qDebug() << "Exiting ThreadPool constructor.";
+    qCDebug(appMovie) << "Entering ThreadPool constructor.";
+    qCDebug(appMovie) << "Exiting ThreadPool constructor.";
 }
 
 ThreadPool::~ThreadPool()
 {
-    qDebug() << "Entering ThreadPool destructor.";
+    qCDebug(appMovie) << "Entering ThreadPool destructor.";
     quitAll();
-    qDebug() << "Exiting ThreadPool destructor. quitAll() called.";
+    qCDebug(appMovie) << "Exiting ThreadPool destructor. quitAll() called.";
 }
 
 QThread *ThreadPool::newThread()
 {
-    qDebug() << "Entering ThreadPool::newThread().";
+    qCDebug(appMovie) << "Entering ThreadPool::newThread().";
     auto thread = new QThread;
-//    qInfo() << "add <<<<<<<" << thread;
+//    qCInfo(appMovie) << "add <<<<<<<" << thread;
     m_pool.push_back(thread);
 
-    qDebug() << "Exiting ThreadPool::newThread(). Returning new thread.";
+    qCDebug(appMovie) << "Exiting ThreadPool::newThread(). Returning new thread.";
     return thread;
 }
 
@@ -41,9 +42,9 @@ void ThreadPool::moveToNewThread(QObject *obj)
 void ThreadPool::quitAll()
 {
     for (auto thread : m_pool) {
-//        qInfo() << thread;
+//        qCInfo(appMovie) << thread;
         thread->quit();
         thread->wait(2000);
     }
-    qInfo() << "all thread quit";
+    qCInfo(appMovie) << "all thread quit";
 }

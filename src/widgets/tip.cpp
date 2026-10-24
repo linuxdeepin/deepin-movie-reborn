@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "tip.h"
+#include "ddlog.h"
 
 #include <QDebug>
 #include <QHBoxLayout>
@@ -47,7 +48,7 @@ public:
 Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     : QFrame(parent), d_ptr(new TipPrivate(this))
 {
-    qDebug() << "Initializing Tip widget with text:" << text;
+    qCDebug(appMovie) << "Initializing Tip widget with text:" << text;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     DThemeManager::instance()->registerWidget(this);
 #endif
@@ -72,10 +73,10 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     iconLabel->setObjectName("TipIcon");
     iconLabel->setFixedSize(icon.size());
     if (icon.isNull()) {
-        qDebug() << "No icon provided for tip";
+        qCDebug(appMovie) << "No icon provided for tip";
         iconLabel->hide();
     } else {
-        qDebug() << "Setting tip icon with size:" << icon.size();
+        qCDebug(appMovie) << "Setting tip icon with size:" << icon.size();
         iconLabel->setPixmap(icon);
     }
 
@@ -99,19 +100,19 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     hide();
 
     bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
-    qDebug() << "Window manager blur support:" << bIsWM;
+    qCDebug(appMovie) << "Window manager blur support:" << bIsWM;
     connect(DWindowManagerHelper::instance(), &DWindowManagerHelper::hasBlurWindowChanged, this, &Tip::slotWMChanged);
 }
 
 Tip::~Tip()
 {
-    qDebug() << "Tip widget destroyed";
+    qCDebug(appMovie) << "Tip widget destroyed";
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)  
 void Tip::enterEvent(QEvent *e)
 {
-    qDebug() << "Entering enterEvent function";
+    qCDebug(appMovie) << "Entering enterEvent function";
     hide();
 
     QFrame::enterEvent(e);
@@ -119,7 +120,7 @@ void Tip::enterEvent(QEvent *e)
 #else
 void Tip::enterEvent(QEnterEvent *e)
 {
-    qDebug() << "Entering enterEvent function";
+    qCDebug(appMovie) << "Entering enterEvent function";
     hide();
 
     QFrame::enterEvent(e);
@@ -128,16 +129,16 @@ void Tip::enterEvent(QEnterEvent *e)
 
 QBrush Tip::background() const
 {
-    qDebug() << "Entering background function";
+    qCDebug(appMovie) << "Entering background function";
     Q_D(const Tip);
     return d->background;
 }
 
 void Tip::setText(const QString text)
 {
-    qDebug() << "Entering setText function";
+    qCDebug(appMovie) << "Entering setText function";
     Q_D(const Tip);
-    qDebug() << "Setting tip text:" << text;
+    qCDebug(appMovie) << "Setting tip text:" << text;
     d->textLabel->setText(text);
     m_strText = text;
     update();
@@ -145,14 +146,14 @@ void Tip::setText(const QString text)
 
 int Tip::radius() const
 {
-    qDebug() << "Entering radius function";
+    qCDebug(appMovie) << "Entering radius function";
     Q_D(const Tip);
     return d->radius;
 }
 
 QColor Tip::borderColor() const
 {
-    qDebug() << "Entering borderColor function";
+    qCDebug(appMovie) << "Entering borderColor function";
     Q_D(const Tip);
     return d->borderColor;
 }
@@ -160,34 +161,34 @@ QColor Tip::borderColor() const
 void Tip::setBackground(QBrush background)
 {
     Q_D(Tip);
-    qDebug() << "Entering setBackground function";
+    qCDebug(appMovie) << "Entering setBackground function";
     d->background = background;
 }
 
 void Tip::setRadius(int radius)
 {
     Q_D(Tip);
-    qDebug() << "Entering setRadius function";
+    qCDebug(appMovie) << "Entering setRadius function";
     d->radius = radius;
 }
 
 void Tip::setBorderColor(QColor borderColor)
 {
-    qDebug() << "Entering setBorderColor function";
+    qCDebug(appMovie) << "Entering setBorderColor function";
     Q_D(Tip);
     d->borderColor = borderColor;
 }
 
 void Tip::slotWMChanged()
 {
-    qDebug() << "Entering slotWMChanged function";
+    qCDebug(appMovie) << "Entering slotWMChanged function";
     bIsWM = DWindowManagerHelper::instance()->hasBlurWindow();
-    qDebug() << "Window manager blur support changed:" << bIsWM;
+    qCDebug(appMovie) << "Window manager blur support changed:" << bIsWM;
 }
 
 void Tip::pop(QPoint center)
 {
-    qDebug() << "Pop tip at position:" << center;
+    qCDebug(appMovie) << "Pop tip at position:" << center;
     Q_D(Tip);
     this->show();
     center = center - QPoint(width() / 2, height() / 2);
@@ -197,7 +198,7 @@ void Tip::pop(QPoint center)
 #ifdef _OLD
 void Tip::paintEvent(QPaintEvent *)
 {
-    qDebug() << "Entering paintEvent function";
+    qCDebug(appMovie) << "Entering paintEvent function";
     Q_D(Tip);
 
     QPainter painter(this);
@@ -236,31 +237,31 @@ void Tip::paintEvent(QPaintEvent *)
     QPen borderPen(borderColor);
     borderPen.setWidthF(penWidthf);
     painter.strokePath(borderPath, borderPen);
-    qDebug() << "Exiting paintEvent function";
+    qCDebug(appMovie) << "Exiting paintEvent function";
 }
 #else
 void Tip::paintEvent(QPaintEvent *)
 {
-    qDebug() << "Entering paintEvent function";
+    qCDebug(appMovie) << "Entering paintEvent function";
     Q_D(Tip);
     QPainter pt(this);
     pt.setRenderHint(QPainter::Antialiasing);
 
     int transparency = 245;
     if (!bIsWM) {
-        qDebug() << "Not bIsWM, setting transparency to 255";
+        qCDebug(appMovie) << "Not bIsWM, setting transparency to 255";
         transparency = 255;
     }
     if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-        qDebug() << "LightType";
+        qCDebug(appMovie) << "LightType";
         pt.setPen(QColor(0, 0, 0, 10));
         pt.setBrush(QBrush(QColor(247, 247, 247, transparency)));
     } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-        qDebug() << "DarkType";
+        qCDebug(appMovie) << "DarkType";
         pt.setPen(QColor(255, 255, 255, 10));
         pt.setBrush(QBrush(QColor(42, 42, 42, transparency)));
     } else {
-        qDebug() << "OtherType";
+        qCDebug(appMovie) << "OtherType";
         pt.setPen(QColor(0, 0, 0, 10));
         pt.setBrush(QBrush(QColor(247, 247, 247, transparency)));
     }
@@ -268,12 +269,12 @@ void Tip::paintEvent(QPaintEvent *)
     QRect rect = this->rect();
     QPainterPath painterPath;
     if (bIsWM) {
-        qDebug() << "bIsWM";
+        qCDebug(appMovie) << "bIsWM";
         rect.setWidth(rect.width() - 1);
         rect.setHeight(rect.height() - 1);
         painterPath.addRoundedRect(rect, d->radius, d->radius);
     } else {
-        qDebug() << "Not bIsWM";
+        qCDebug(appMovie) << "Not bIsWM";
         painterPath.addRect(rect);
     }
     pt.drawPath(painterPath);
@@ -282,25 +283,25 @@ void Tip::paintEvent(QPaintEvent *)
 
 void Tip::resizeEvent(QResizeEvent *ev)
 {
-    qDebug() << "Entering resizeEvent function";
+    qCDebug(appMovie) << "Entering resizeEvent function";
     return QWidget::resizeEvent(ev);
 }
 
 void Tip::resetSize(const int maxWidth)
 {
-    qDebug() << "Entering resetSize function";
+    qCDebug(appMovie) << "Entering resetSize function";
     Q_D(Tip);
     QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
     QFontMetrics fm(font);
     auto w = fm.boundingRect(d->textLabel->text()).width();
 
     if (w >= maxWidth - 14) {
-        qDebug() << "w >= maxWidth - 14";
+        qCDebug(appMovie) << "w >= maxWidth - 14";
         d->textLabel->setWordWrap(true);
         this->setFixedWidth(maxWidth);
         d->textLabel->setFixedWidth(maxWidth - 14);
     }
-    qDebug() << "Exiting resetSize function";
+    qCDebug(appMovie) << "Exiting resetSize function";
 }
 
 }

@@ -1,9 +1,10 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "url_dialog.h"
+#include "ddlog.h"
 #include "dmr_lineedit.h"
 #include "dmr_settings.h"
 
@@ -16,7 +17,7 @@ namespace dmr {
     UrlDialog::UrlDialog(QWidget *parent)
         : DDialog(parent)
     {
-        qDebug() << "Initializing UrlDialog";
+        qCDebug(appMovie) << "Initializing UrlDialog";
         addButtons(QStringList() << QApplication::translate("UrlDialog", "Cancel")
                    << QApplication::translate("UrlDialog", "OK"));
         setOnButtonClickedClose(false);
@@ -27,6 +28,8 @@ namespace dmr {
         messageLabel->setText(QApplication::translate("UrlDialog", "Please enter the URL:"));
         messageLabel->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
         m_lineEdit = new LineEdit;
+        m_lineEdit->setObjectName("urlLineEdit");
+        m_lineEdit->setAccessibleName("urlLineEdit");
 
         /**
          * widget包含一个垂直布局
@@ -50,15 +53,15 @@ namespace dmr {
 
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
-        qDebug() << "Setting compact mode size for UrlDialog";
+        qCDebug(appMovie) << "Setting compact mode size for UrlDialog";
         setFixedSize(251, 150);
     } else {
-        qDebug() << "Setting normal mode size for UrlDialog";
+        qCDebug(appMovie) << "Setting normal mode size for UrlDialog";
         setFixedSize(380, 190);
     }
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [=](DGuiApplicationHelper::SizeMode sizeMode) {
-        qDebug() << "Size mode changed to:" << (sizeMode == DGuiApplicationHelper::NormalMode ? "Normal" : "Compact");
+        qCDebug(appMovie) << "Size mode changed to:" << (sizeMode == DGuiApplicationHelper::NormalMode ? "Normal" : "Compact");
         if (sizeMode == DGuiApplicationHelper::NormalMode) {
             setFixedSize(380, 190);
         } else {
@@ -69,11 +72,11 @@ namespace dmr {
 #endif
 
         connect(getButton(0), &QAbstractButton::clicked, this, [ = ] {
-            qDebug() << "Cancel button clicked";
+            qCDebug(appMovie) << "Cancel button clicked";
             done(QDialog::Rejected);
         });
         connect(getButton(1), &QAbstractButton::clicked, this, [ = ] {
-            qDebug() << "OK button clicked with URL:" << m_lineEdit->text();
+            qCDebug(appMovie) << "OK button clicked with URL:" << m_lineEdit->text();
             done(QDialog::Accepted);
         });
         connect(m_lineEdit, &QLineEdit::textChanged, this, &UrlDialog::slotTextchanged);
@@ -82,15 +85,15 @@ namespace dmr {
     QUrl UrlDialog::url() const
     {
         auto u = QUrl(m_lineEdit->text(), QUrl::StrictMode);
-        qDebug() << "Getting URL:" << m_lineEdit->text() << "isLocalFile:" << u.isLocalFile() << "scheme:" << u.scheme();
+        qCDebug(appMovie) << "Getting URL:" << m_lineEdit->text() << "isLocalFile:" << u.isLocalFile() << "scheme:" << u.scheme();
         
         if (u.isLocalFile() || u.scheme().isEmpty()) {
-            qDebug() << "Invalid URL - local file or empty scheme";
+            qCDebug(appMovie) << "Invalid URL - local file or empty scheme";
             return QUrl();
         }
 
         if (!Settings::get().iscommonPlayableProtocol(u.scheme())) {
-            qDebug() << "Invalid URL - unsupported protocol:" << u.scheme();
+            qCDebug(appMovie) << "Invalid URL - unsupported protocol:" << u.scheme();
             return QUrl();
         }
 
@@ -99,7 +102,7 @@ namespace dmr {
 
     void UrlDialog::showEvent(QShowEvent *se)
     {
-        qDebug() << "UrlDialog shown";
+        qCDebug(appMovie) << "UrlDialog shown";
         m_lineEdit->setFocus();
 
         DDialog::showEvent(se);
@@ -107,7 +110,7 @@ namespace dmr {
 
     void UrlDialog::slotTextchanged()
     {
-        qDebug() << "URL text changed:" << m_lineEdit->text();
+        qCDebug(appMovie) << "URL text changed:" << m_lineEdit->text();
         if (m_lineEdit->text().isEmpty()) {
             getButton(1)->setEnabled(false);
         } else {

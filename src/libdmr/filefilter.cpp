@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "filefilter.h"
+#include "ddlog.h"
 #include "compositing_manager.h"
 #include "sysutils.h"
 
@@ -23,9 +24,9 @@ static mvideo_gst_discoverer_info_get_subtitle_streams g_mvideo_gst_discoverer_i
 
 FileFilter::FileFilter()
 {
-    qDebug() << "Initializing FileFilter";
+    qCDebug(dmrLib) << "Initializing FileFilter";
     m_bMpvExists = dmr::CompositingManager::isMpvExists();
-    qInfo() << "MPV exists:" << m_bMpvExists;
+    qCInfo(dmrLib) << "MPV exists:" << m_bMpvExists;
     m_stopRunningThread = false;
     m_pDiscoverer = nullptr;
     m_pLoop = nullptr;
@@ -61,7 +62,7 @@ FileFilter::FileFilter()
     m_pLoop = g_main_loop_new(nullptr, FALSE);
 
     if (!m_pDiscoverer) {
-        qCritical() << "Failed to create discoverer instance:" << pGErr->message;
+        qCCritical(dmrLib) << "Failed to create discoverer instance:" << pGErr->message;
         g_clear_error (&pGErr);
     }
 
@@ -69,12 +70,12 @@ FileFilter::FileFilter()
     g_signal_connect_data(m_pDiscoverer, "finished",  (GCallback)(finished), m_pLoop, nullptr, GConnectFlags(0));
 
     g_mvideo_gst_discoverer_start(m_pDiscoverer);
-    qDebug() << "FileFilter initialization completed";
+    qCDebug(dmrLib) << "FileFilter initialization completed";
 }
 
 FileFilter::~FileFilter()
 {
-    qDebug() << "Destroying FileFilter";
+    qCDebug(dmrLib) << "Destroying FileFilter";
     g_mvideo_gst_discoverer_stop(m_pDiscoverer);
     g_object_unref(m_pDiscoverer);
     g_main_loop_unref(m_pLoop);
@@ -83,7 +84,7 @@ FileFilter::~FileFilter()
 FileFilter *FileFilter::instance()
 {
     if (nullptr == m_pFileFilter) {
-        qDebug() << "Creating new FileFilter instance";
+        qCDebug(dmrLib) << "Creating new FileFilter instance";
         m_pFileFilter = new FileFilter();
     }
     return m_pFileFilter;
@@ -91,59 +92,59 @@ FileFilter *FileFilter::instance()
 
 bool FileFilter::isMediaFile(QUrl url)
 {
-    qDebug() << "Checking if file is media:" << url.toString();
+    qCDebug(dmrLib) << "Checking if file is media:" << url.toString();
     MediaType miType;
     bool bMedia = false;
 
     if(!url.isLocalFile()) {   // url 文件不做判断,默认可以播放
-        qInfo() << "Non-local URL, assuming media file";
+        qCInfo(dmrLib) << "Non-local URL, assuming media file";
         return true;
     }
 
-    qDebug() << "URL is local. Determining media type.";
+    qCDebug(dmrLib) << "URL is local. Determining media type.";
     if (m_bMpvExists) {
-        qDebug() << "MPV exists. Judging type by FFmpeg.";
+        qCDebug(dmrLib) << "MPV exists. Judging type by FFmpeg.";
         miType = typeJudgeByFFmpeg(url);
     } else {
-        qDebug() << "MPV does not exist. Judging type by Gst.";
+        qCDebug(dmrLib) << "MPV does not exist. Judging type by Gst.";
         miType = typeJudgeByGst(url);
     }
 
     if (miType == MediaType::Audio || miType == MediaType::Video) {
-        qDebug() << "Media type is Audio or Video. Setting bMedia to true.";
+        qCDebug(dmrLib) << "Media type is Audio or Video. Setting bMedia to true.";
         bMedia = true;
     }
 
-    qDebug() << "Media type:" << (bMedia ? "Media" : "Not media");
+    qCDebug(dmrLib) << "Media type:" << (bMedia ? "Media" : "Not media");
     return bMedia;
 }
 
 QList<QUrl> FileFilter::filterDir(QDir dir)
 {
-    qDebug() << "Filtering directory:" << dir.absolutePath();
+    qCDebug(dmrLib) << "Filtering directory:" << dir.absolutePath();
     QList<QUrl> lstUrl;
     QDir di(dir);
-    qDebug() << "QDir object created for:" << di.absolutePath();
+    qCDebug(dmrLib) << "QDir object created for:" << di.absolutePath();
 
     di.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
-    qDebug() << "Directory filter set.";
+    qCDebug(dmrLib) << "Directory filter set.";
 
     for (QFileInfo fileInfo : di.entryInfoList()) {
-        qDebug() << "Processing entry:" << fileInfo.absoluteFilePath();
+        qCDebug(dmrLib) << "Processing entry:" << fileInfo.absoluteFilePath();
         if (fileInfo.isFile()) {
-            qDebug() << "Entry is a file. Transferring file:" << fileInfo.filePath();
+            qCDebug(dmrLib) << "Entry is a file. Transferring file:" << fileInfo.filePath();
             lstUrl.append(fileTransfer(fileInfo.filePath()));
-            qDebug() << "File transferred and added to list. Current list size:" << lstUrl.size();
+            qCDebug(dmrLib) << "File transferred and added to list. Current list size:" << lstUrl.size();
         } else if (fileInfo.isDir()) {
-            qDebug() << "Entry is a directory:" << fileInfo.absoluteFilePath();
+            qCDebug(dmrLib) << "Entry is a directory:" << fileInfo.absoluteFilePath();
             if (m_stopRunningThread) {
-                qDebug() << "Thread stopped, returning empty list";
+                qCDebug(dmrLib) << "Thread stopped, returning empty list";
                 return QList<QUrl>();
             }
             lstUrl << filterDir(fileInfo.absoluteFilePath());
         }
     }
-    qDebug() << "Found" << lstUrl.size() << "files in directory";
+    qCDebug(dmrLib) << "Found" << lstUrl.size() << "files in directory";
     return lstUrl;
 }
 
@@ -155,12 +156,12 @@ static const QString s_fileSchemePrefix = QStringLiteral("file://");
 
 QUrl FileFilter::fileTransfer(QString strFile)
 {
-    qDebug() << "Entering FileFilter::fileTransfer() with strFile:" << strFile;
+    qCDebug(dmrLib) << "Entering FileFilter::fileTransfer() with strFile:" << strFile;
     QUrl realUrl;
 
     if (strFile.startsWith(s_fileSchemePrefix)) {
         strFile = QUrl::fromPercentEncoding(strFile.mid(s_fileSchemePrefix.size()).toUtf8());
-        qDebug() << "Extracted path from file URL:" << strFile;
+        qCDebug(dmrLib) << "Extracted path from file URL:" << strFile;
     }
     // Without "file://" prefix, strFile is already a filesystem path; do not URL-decode it.
 
@@ -170,80 +171,80 @@ QUrl FileFilter::fileTransfer(QString strFile)
         // for broken or circular symlinks, avoiding an infinite loop.
         const QString canonical = fileInfo.canonicalFilePath();
         realUrl = QUrl::fromLocalFile(canonical.isEmpty() ? strFile : canonical);
-        qDebug() << "realUrl set from local file:" << realUrl.toString();
+        qCDebug(dmrLib) << "realUrl set from local file:" << realUrl.toString();
     } else {
         // Non-existent local path or a non-file:// network URL (http://, rtmp://, etc.)
         realUrl = QUrl(strFile);
-        qDebug() << "realUrl set from raw string:" << realUrl.toString();
+        qCDebug(dmrLib) << "realUrl set from raw string:" << realUrl.toString();
     }
 
-    qDebug() << "Exiting FileFilter::fileTransfer() with realUrl:" << realUrl.toString();
+    qCDebug(dmrLib) << "Exiting FileFilter::fileTransfer() with realUrl:" << realUrl.toString();
     return realUrl;
 }
 
 bool FileFilter::isAudio(QUrl url)
 {
-    qDebug() << "Entering FileFilter::isAudio() with URL:" << url.toString();
+    qCDebug(dmrLib) << "Entering FileFilter::isAudio() with URL:" << url.toString();
     bool bAudio = false;
 
     if(m_mapCheckAudio.contains(url)) {
-        qDebug() << "m_mapCheckAudio contains URL. Returning cached value.";
+        qCDebug(dmrLib) << "m_mapCheckAudio contains URL. Returning cached value.";
         bool result = m_mapCheckAudio.value(url);
-        qDebug() << "Exiting FileFilter::isAudio() (cached) with result:" << result;
+        qCDebug(dmrLib) << "Exiting FileFilter::isAudio() (cached) with result:" << result;
         return result;
     } else {
-        qDebug() << "m_mapCheckAudio does not contain URL. Clearing map.";
+        qCDebug(dmrLib) << "m_mapCheckAudio does not contain URL. Clearing map.";
         m_mapCheckAudio.clear();
     }
 
     if (m_bMpvExists) {
-        qDebug() << "MPV exists. Judging type by FFmpeg.";
+        qCDebug(dmrLib) << "MPV exists. Judging type by FFmpeg.";
         bAudio = typeJudgeByFFmpeg(url) == MediaType::Audio ? true : false;
     } else {
-        qDebug() << "MPV does not exist. Judging type by Gst.";
+        qCDebug(dmrLib) << "MPV does not exist. Judging type by Gst.";
         bAudio = typeJudgeByGst(url) == MediaType::Audio ? true : false;
     }
 
-    qDebug() << "Storing result in m_mapCheckAudio. bAudio:" << bAudio;
+    qCDebug(dmrLib) << "Storing result in m_mapCheckAudio. bAudio:" << bAudio;
     m_mapCheckAudio[url] = bAudio;
 
-    qDebug() << "Exiting FileFilter::isAudio() with result:" << bAudio;
+    qCDebug(dmrLib) << "Exiting FileFilter::isAudio() with result:" << bAudio;
     return bAudio;
 }
 
 bool FileFilter::isSubtitle(QUrl url)
 {
-    qDebug() << "Entering FileFilter::isSubtitle() with URL:" << url.toString();
+    qCDebug(dmrLib) << "Entering FileFilter::isSubtitle() with URL:" << url.toString();
     bool result;
     if (m_bMpvExists) {
-        qDebug() << "MPV exists. Judging type by FFmpeg.";
+        qCDebug(dmrLib) << "MPV exists. Judging type by FFmpeg.";
         result = typeJudgeByFFmpeg(url) == MediaType::Subtitle ? true : false;
     } else {
-        qDebug() << "MPV does not exist. Judging type by Gst.";
+        qCDebug(dmrLib) << "MPV does not exist. Judging type by Gst.";
         result = typeJudgeByGst(url) == MediaType::Subtitle ? true : false;
     }
-    qDebug() << "Exiting FileFilter::isSubtitle() with result:" << result;
+    qCDebug(dmrLib) << "Exiting FileFilter::isSubtitle() with result:" << result;
     return result;
 }
 
 bool FileFilter::isVideo(QUrl url)
 {
-    qDebug() << "Entering FileFilter::isVideo() with URL:" << url.toString();
+    qCDebug(dmrLib) << "Entering FileFilter::isVideo() with URL:" << url.toString();
     bool result;
     if (m_bMpvExists) {
-        qDebug() << "MPV exists. Judging type by FFmpeg.";
+        qCDebug(dmrLib) << "MPV exists. Judging type by FFmpeg.";
         result = typeJudgeByFFmpeg(url) == MediaType::Video ? true : false;
     } else {
-        qDebug() << "MPV does not exist. Judging type by Gst.";
+        qCDebug(dmrLib) << "MPV does not exist. Judging type by Gst.";
         result = typeJudgeByGst(url) == MediaType::Video ? true : false;
     }
-    qDebug() << "Exiting FileFilter::isVideo() with result:" << result;
+    qCDebug(dmrLib) << "Exiting FileFilter::isVideo() with result:" << result;
     return result;
 }
 
 FileFilter::MediaType FileFilter::typeJudgeByFFmpeg(const QUrl &url)
 {
-    qDebug() << "Judging media type by FFmpeg:" << url.toString();
+    qCDebug(dmrLib) << "Judging media type by FFmpeg:" << url.toString();
     int nRet;
     QString strFormatName;
     bool bVCodec = false;
@@ -252,78 +253,78 @@ FileFilter::MediaType FileFilter::typeJudgeByFFmpeg(const QUrl &url)
     MediaType miType = MediaType::Other;
 
     QString strMimeType = m_mimeDB.mimeTypeForUrl(url).name();
-    qDebug() << "MIME type:" << strMimeType;
+    qCDebug(dmrLib) << "MIME type:" << strMimeType;
 
     if (strMimeType.contains("mpegurl")) {
-        qDebug() << "Mpegurl format detected, returning Other";
+        qCDebug(dmrLib) << "Mpegurl format detected, returning Other";
         return MediaType::Other;
     }
 
     AVFormatContext *av_ctx = nullptr;
 
     nRet = g_mvideo_avformat_open_input(&av_ctx, url.toLocalFile().toUtf8().constData(), nullptr, nullptr);
-    qDebug() << "avformat_open_input returned:" << nRet;
+    qCDebug(dmrLib) << "avformat_open_input returned:" << nRet;
 
     if(nRet < 0) {
-        qWarning() << "Failed to open input file:" << url.toString();
+        qCWarning(dmrLib) << "Failed to open input file:" << url.toString();
         return MediaType::Other;
     }
-    qDebug() << "Input file opened successfully.";
+    qCDebug(dmrLib) << "Input file opened successfully.";
     if(g_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0)
     {
-        qDebug() << "Failed to find stream info. Returning MediaType::Other.";
+        qCDebug(dmrLib) << "Failed to find stream info. Returning MediaType::Other.";
         return MediaType::Other;
     }
-    qDebug() << "Stream info found successfully.";
+    qCDebug(dmrLib) << "Stream info found successfully.";
 
     strFormatName = av_ctx->iformat->long_name;
-    qDebug() << "Format name:" << strFormatName;
+    qCDebug(dmrLib) << "Format name:" << strFormatName;
 
     for (int i = 0; i < static_cast<int>(av_ctx->nb_streams); i++) {
-        qDebug() << "Processing stream index:" << i;
+        qCDebug(dmrLib) << "Processing stream index:" << i;
         AVStream *in_stream = av_ctx->streams[i];
 
         if (in_stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
-            qDebug() << "Video stream detected.";
+            qCDebug(dmrLib) << "Video stream detected.";
             bVCodec = true;
         } else if (in_stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
-            qDebug() << "Audio stream detected.";
+            qCDebug(dmrLib) << "Audio stream detected.";
             bACodec = true;
         } else if (in_stream->codecpar->codec_type == AVMEDIA_TYPE_SUBTITLE) {
-            qDebug() << "Subtitle stream detected.";
+            qCDebug(dmrLib) << "Subtitle stream detected.";
             bSCodec = true;
         } else {
-            qDebug() << "Other stream type detected:" << in_stream->codecpar->codec_type;
+            qCDebug(dmrLib) << "Other stream type detected:" << in_stream->codecpar->codec_type;
         }
     }
-    qDebug() << "Finished processing all streams. bVCodec:" << bVCodec << ", bACodec:" << bACodec << ", bSCodec:" << bSCodec;
+    qCDebug(dmrLib) << "Finished processing all streams. bVCodec:" << bVCodec << ", bACodec:" << bACodec << ", bSCodec:" << bSCodec;
 
     if (bVCodec) {
-        qDebug() << "Video codec found. Setting miType to Video.";
+        qCDebug(dmrLib) << "Video codec found. Setting miType to Video.";
         miType = MediaType::Video;
     } else if (bACodec) {
-        qDebug() << "Audio codec found. Setting miType to Audio.";
+        qCDebug(dmrLib) << "Audio codec found. Setting miType to Audio.";
         miType = MediaType::Audio;
     } else if (bSCodec) {
-        qDebug() << "Subtitle codec found. Setting miType to Subtitle.";
+        qCDebug(dmrLib) << "Subtitle codec found. Setting miType to Subtitle.";
         miType = MediaType::Subtitle;
     } else {
-        qDebug() << "No video, audio, or subtitle codecs found. Setting miType to Other.";
+        qCDebug(dmrLib) << "No video, audio, or subtitle codecs found. Setting miType to Other.";
         miType = MediaType::Other;
     }
 
     if (strMimeType.contains("x-7z")) { //7z压缩包中会检测出音频流
-        qDebug() << "7z archive detected, returning Other";
+        qCDebug(dmrLib) << "7z archive detected, returning Other";
         miType = MediaType::Other;
     }
 
     if(strFormatName.contains("Tele-typewriter") || strMimeType.startsWith("image/")) {   // 排除文本文件，如果只用mimetype判断会遗漏部分原始格式文件如：h264裸流
-        qDebug() << "Text file or image detected, returning Other";
+        qCDebug(dmrLib) << "Text file or image detected, returning Other";
         miType = MediaType::Other;
     }
 
     g_mvideo_avformat_close_input(&av_ctx);
-    qDebug() << "Media type determined:" << (miType == MediaType::Video ? "Video" : 
+    qCDebug(dmrLib) << "Media type determined:" << (miType == MediaType::Video ? "Video" : 
                                            miType == MediaType::Audio ? "Audio" : 
                                            miType == MediaType::Subtitle ? "Subtitle" : "Other");
     return miType;
@@ -346,7 +347,7 @@ FileFilter::MediaType FileFilter::typeJudgeByGst(const QUrl &url)
     uri[urlLen] = '\0';
 
     if (!g_mvideo_gst_discoverer_discover_uri_async (m_pDiscoverer, uri)) {
-      qInfo() << "Failed to start discovering URI " << uri;
+      qCInfo(dmrLib) << "Failed to start discovering URI " << uri;
       g_object_unref (m_pDiscoverer);
     }
 
@@ -387,14 +388,14 @@ bool FileFilter::isFormatSupported(const QUrl &url)
 
 void FileFilter::stopThread()
 {
-    qDebug() << "Entering FileFilter::stopThread()";
+    qCDebug(dmrLib) << "Entering FileFilter::stopThread()";
     m_stopRunningThread = true;
-    qDebug() << "m_stopRunningThread set to true. Exiting FileFilter::stopThread()";
+    qCDebug(dmrLib) << "m_stopRunningThread set to true. Exiting FileFilter::stopThread()";
 }
 
 void FileFilter::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GError *err, MediaType *miType)
 {
-    qDebug() << "Entering FileFilter::discovered()";
+    qCDebug(dmrLib) << "Entering FileFilter::discovered()";
     Q_UNUSED(discoverer);
 
     GstDiscovererResult result;
@@ -406,19 +407,19 @@ void FileFilter::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, 
     uri = g_mvideo_gst_discoverer_info_get_uri (info);
     result = g_mvideo_gst_discoverer_info_get_result (info);
 
-    qDebug() << "Discoverer result:" << result;
+    qCDebug(dmrLib) << "Discoverer result:" << result;
     switch (result) {
       case GST_DISCOVERER_URI_INVALID:
-        qWarning() << "Invalid URI:" << uri;
+        qCWarning(dmrLib) << "Invalid URI:" << uri;
         break;
       case GST_DISCOVERER_ERROR:
-        qWarning() << "Discoverer error:" << err->message;
+        qCWarning(dmrLib) << "Discoverer error:" << err->message;
         break;
       case GST_DISCOVERER_TIMEOUT:
-        qWarning() << "Discovery timeout for URI:" << uri;
+        qCWarning(dmrLib) << "Discovery timeout for URI:" << uri;
         break;
       case GST_DISCOVERER_BUSY:
-        qWarning() << "Discoverer busy for URI:" << uri;
+        qCWarning(dmrLib) << "Discoverer busy for URI:" << uri;
         break;
       case GST_DISCOVERER_MISSING_PLUGINS:{
         const GstStructure *s;
@@ -427,17 +428,17 @@ void FileFilter::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, 
         s = g_mvideo_gst_discoverer_info_get_misc (info);
         str = g_mvideo_gst_structure_to_string (s);
 
-        qWarning() << "Missing plugins for URI:" << uri << "Details:" << str;
+        qCWarning(dmrLib) << "Missing plugins for URI:" << uri << "Details:" << str;
         g_free (str);
         break;
       }
       case GST_DISCOVERER_OK:
-        qDebug() << "Successfully discovered URI:" << uri;
+        qCDebug(dmrLib) << "Successfully discovered URI:" << uri;
         break;
     }
 
     if (result != GST_DISCOVERER_OK) {
-        qWarning() << "URI cannot be played:" << uri;
+        qCWarning(dmrLib) << "URI cannot be played:" << uri;
         return;
     }
 
@@ -445,44 +446,44 @@ void FileFilter::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, 
     list = g_mvideo_gst_discoverer_info_get_video_streams(info);
     if (list) {
         bVideo = true;
-        qDebug() << "Video stream found";
+        qCDebug(dmrLib) << "Video stream found";
     }
     list = g_mvideo_gst_discoverer_info_get_audio_streams(info);
     if (list) {
         bAudio = true;
-        qDebug() << "Audio stream found";
+        qCDebug(dmrLib) << "Audio stream found";
     }
     list = g_mvideo_gst_discoverer_info_get_subtitle_streams(info);
     if(list) {
         bSubtitle = true;
-        qDebug() << "Subtitle stream found";
+        qCDebug(dmrLib) << "Subtitle stream found";
     }
 
     if (bVideo) {
-        qDebug() << "Setting miType to Video.";
+        qCDebug(dmrLib) << "Setting miType to Video.";
         *miType = MediaType::Video;
     } else if (bAudio) {
-        qDebug() << "Setting miType to Audio.";
+        qCDebug(dmrLib) << "Setting miType to Audio.";
         *miType = MediaType::Audio;
     } else if (bSubtitle) {
-        qDebug() << "Setting miType to Subtitle.";
+        qCDebug(dmrLib) << "Setting miType to Subtitle.";
         *miType = MediaType::Subtitle;
     } else {
-        qDebug() << "Setting miType to Other.";
+        qCDebug(dmrLib) << "Setting miType to Other.";
         *miType = MediaType::Other;
     }
-    qDebug() << "Media type determined:" << (*miType == MediaType::Video ? "Video" : 
+    qCDebug(dmrLib) << "Media type determined:" << (*miType == MediaType::Video ? "Video" : 
                                            *miType == MediaType::Audio ? "Audio" : 
                                            *miType == MediaType::Subtitle ? "Subtitle" : "Other");
-    qDebug() << "Exiting FileFilter::discovered()";
+    qCDebug(dmrLib) << "Exiting FileFilter::discovered()";
 }
 
 void FileFilter::finished(GstDiscoverer *discoverer, GMainLoop *loop)
 {
-    qDebug() << "Entering FileFilter::finished()";
+    qCDebug(dmrLib) << "Entering FileFilter::finished()";
     Q_UNUSED(discoverer);
 
     g_main_loop_quit(loop);
-    qDebug() << "Exiting FileFilter::finished()";
+    qCDebug(dmrLib) << "Exiting FileFilter::finished()";
 }
 
