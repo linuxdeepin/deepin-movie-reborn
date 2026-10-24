@@ -479,6 +479,7 @@ private:
     DSettingsDialog *initSettings();
     void updateSizeConstraints();
     void toggleUIMode();
+    void resumePlaybackAfterMinimize();
     bool insideToolsArea(const QPoint &pos);
     void switchTheme();
     bool isActionAllowed(ActionFactory::ActionKind kd, bool bFromUI, bool bIsShortcut);
@@ -611,5 +612,4 @@ private:
 
 
 #endif /* ifndef _MAIN_WINDOW_H */
-
 
