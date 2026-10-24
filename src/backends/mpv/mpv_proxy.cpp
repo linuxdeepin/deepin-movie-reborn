@@ -1402,11 +1402,22 @@ void MpvProxy::processPropertyChange(const QString &name)
         // Use cached values to avoid synchronous API calls
         QTimer::singleShot(0, this, [this]() {
             if (m_cachedPause) {
-                if (!m_cachedIdleActive)
-                    setState(PlayState::Paused);
-                else
+                if (!m_cachedIdleActive) {
+                    if (m_bUserPaused) {
+                        setState(PlayState::Paused);
+                    } else {
+                        qCInfo(dmrMpv) << "Non-user pause detected, attempting resume";
+                        QTimer::singleShot(300, this, [this]() {
+                            if (m_cachedPause && !m_bUserPaused) {
+                                qCInfo(dmrMpv) << "Resuming playback after audio device change";
+                                my_set_property_async(m_handle, "pause", false, 0);
+                            }
+                        });
+                    }
+                } else
                     my_set_property_async(m_handle, "pause", false, 0);
             } else {
+                m_bUserPaused = false;
                 if (state() != PlayState::Stopped) {
                     setState(PlayState::Playing);
                 }
@@ -2000,6 +2011,7 @@ void MpvProxy::initMember()
     m_bConnectStateChange = false;
     m_bLoadMedia = false;
     m_bPauseOnStart = false;
+    m_bUserPaused = false;
     m_bIsJingJia = false;
     m_bInited = false;
     m_bHwaccelAuto = false;
@@ -2032,6 +2044,7 @@ void MpvProxy::initMember()
 void MpvProxy::play()
 {
     qCInfo(dmrMpv) << "Starting playback";
+    m_bUserPaused = m_bPauseOnStart;
     
     if(m_bLoadMedia) {
         qCInfo(dmrMpv) << "Media already loading, scheduling retry in 5 seconds";
@@ -2180,6 +2193,7 @@ void MpvProxy::pauseResume()
     }
 
     qCInfo(dmrMpv) << "Toggling pause state - current state:" << paused();
+    m_bUserPaused = !paused();
     my_set_property(m_handle, "pause", !paused());
     qCDebug(dmrMpv) << "Exiting MpvProxy::pauseResume()";
 }
@@ -2188,6 +2202,7 @@ void MpvProxy::stop()
 {
     qCDebug(dmrMpv) << "Entering MpvProxy::stop()";
     qCInfo(dmrMpv) << "Stopping playback";
+    m_bUserPaused = false;
 
     // Check if mpv handle is valid before sending stop command
     if (!m_handle) {
