@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -479,6 +479,7 @@ private:
     DSettingsDialog *initSettings();
     void updateSizeConstraints();
     void toggleUIMode();
+    void resumePlaybackAfterMinimize();
     bool insideToolsArea(const QPoint &pos);
     void switchTheme();
     bool isActionAllowed(ActionFactory::ActionKind kd, bool bFromUI, bool bIsShortcut);
@@ -611,5 +612,4 @@ private:
 
 
 #endif /* ifndef _MAIN_WINDOW_H */
-
 
