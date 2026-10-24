@@ -933,7 +933,7 @@ void Platform_ToolboxProxy::setup()
     bot_widget->setBlurRectXRadius(18);
     bot_widget->setBlurRectYRadius(18);
     bot_widget->setRadius(30);
-    bot_widget->setBlurEnabled(false);
+    bot_widget->setBlurEnabled(true);
     bot_widget->setMode(DBlurEffectWidget::GaussianBlur);
     auto type = DGuiApplicationHelper::instance()->themeType();
     THEME_TYPE(type);
