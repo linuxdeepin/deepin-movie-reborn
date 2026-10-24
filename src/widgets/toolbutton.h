@@ -47,10 +47,12 @@ protected:
     void enterEvent(QEvent *ev) override
     {
         emit entered();
+        DButtonBoxButton::enterEvent(ev);
     };
     void leaveEvent(QEvent *ev) override
     {
         emit leaved();
+        DButtonBoxButton::leaveEvent(ev);
     };
 };
 
@@ -334,13 +336,15 @@ signals:
     void leaved();
 
 protected:
-    void enterEvent(QEvent *) override
+    void enterEvent(QEvent *ev) override
     {
         emit entered();
+        DIconButton::enterEvent(ev);
     }
-    void leaveEvent(QEvent *) override
+    void leaveEvent(QEvent *ev) override
     {
         emit leaved();
+        DIconButton::leaveEvent(ev);
     }
 
 private:

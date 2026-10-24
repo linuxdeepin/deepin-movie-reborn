@@ -46,7 +46,6 @@ public:
 Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     : QFrame(parent), d_ptr(new TipPrivate(this))
 {
-    DThemeManager::instance()->registerWidget(this);
     Q_D(Tip);
 
     setAttribute(Qt::WA_DeleteOnClose);
