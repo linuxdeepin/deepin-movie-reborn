@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "gstutils.h"
+#include "ddlog.h"
 #include "gstutils.h"
 #include "sysutils.h"
 
@@ -33,7 +34,7 @@ GstUtils* GstUtils::m_pGstUtils = new GstUtils;
 
 GstUtils::GstUtils()
 {
-    qDebug() << "Initializing GstUtils";
+    qCDebug(dmrLib) << "Initializing GstUtils";
     QLibrary gstreamerLibrary(SysUtils::libPath("libgstreamer-1.0.so"));
     QLibrary gstpbutilsLibrary(SysUtils::libPath("libgstpbutils-1.0.so"));
 
@@ -69,7 +70,7 @@ GstUtils::GstUtils()
     m_gstData.loop = g_main_loop_new (nullptr, FALSE);
 
     if (!m_gstData.discoverer) {
-        qCritical() << "Failed to create discoverer instance:" << pGErr->message;
+        qCCritical(dmrLib) << "Failed to create discoverer instance:" << pGErr->message;
         g_clear_error (&pGErr);
     }
 
@@ -77,7 +78,7 @@ GstUtils::GstUtils()
     g_signal_connect_data (m_gstData.discoverer, "finished",  (GCallback)(finished), &m_gstData, nullptr, GConnectFlags(0));
 
     g_mvideo_gst_discoverer_start(m_gstData.discoverer);
-    qDebug() << "GstUtils initialization completed";
+    qCDebug(dmrLib) << "GstUtils initialization completed";
 }
 
 void GstUtils::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GError *err, CustomData *data)
@@ -91,23 +92,23 @@ void GstUtils::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GE
     uri = g_mvideo_gst_discoverer_info_get_uri (info);
     result = g_mvideo_gst_discoverer_info_get_result (info);
 
-    qDebug() << "Discovering media file:" << uri;
+    qCDebug(dmrLib) << "Discovering media file:" << uri;
 
     m_movieInfo.valid = false;
     m_movieInfo.duration = 0;
 
     switch (result) {
       case GST_DISCOVERER_URI_INVALID:
-        qWarning() << "Invalid URI:" << uri;
+        qCWarning(dmrLib) << "Invalid URI:" << uri;
         break;
       case GST_DISCOVERER_ERROR:
-        qWarning() << "Discoverer error:" << err->message;
+        qCWarning(dmrLib) << "Discoverer error:" << err->message;
         break;
       case GST_DISCOVERER_TIMEOUT:
-        qWarning() << "Discovery timeout for URI:" << uri;
+        qCWarning(dmrLib) << "Discovery timeout for URI:" << uri;
         break;
       case GST_DISCOVERER_BUSY:
-        qWarning() << "Discoverer busy for URI:" << uri;
+        qCWarning(dmrLib) << "Discoverer busy for URI:" << uri;
         break;
       case GST_DISCOVERER_MISSING_PLUGINS:{
         const GstStructure *s;
@@ -116,29 +117,29 @@ void GstUtils::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GE
         s = g_mvideo_gst_discoverer_info_get_misc (info);
         str = g_mvideo_gst_structure_to_string (s);
 
-        qWarning() << "Missing plugins for URI:" << uri << "Details:" << str;
+        qCWarning(dmrLib) << "Missing plugins for URI:" << uri << "Details:" << str;
         g_free (str);
         break;
       }
       case GST_DISCOVERER_OK:
-        qDebug() << "Successfully discovered URI:" << uri;
+        qCDebug(dmrLib) << "Successfully discovered URI:" << uri;
         break;
     }
 
     if (result != GST_DISCOVERER_OK) {
-        qWarning() << "URI cannot be played:" << uri;
+        qCWarning(dmrLib) << "URI cannot be played:" << uri;
         return;
     }
 
     m_movieInfo.valid = true;
     m_movieInfo.duration = g_mvideo_gst_discoverer_info_get_duration (info) / GST_SECOND;
-    qDebug() << "Media duration:" << m_movieInfo.duration << "seconds";
+    qCDebug(dmrLib) << "Media duration:" << m_movieInfo.duration << "seconds";
 
     // 如果没有时长就当做原始视频格式处理
     if(m_movieInfo.duration == 0) {
 #ifdef _MOVIE_USE_
         m_movieInfo.strFmtName = "raw";
-        qDebug() << "Zero duration detected, treating as raw format";
+        qCDebug(dmrLib) << "Zero duration detected, treating as raw format";
 #endif
     }
 
@@ -154,7 +155,7 @@ void GstUtils::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GE
         m_movieInfo.proportion = m_movieInfo.height == 0 ? 0 : (float)m_movieInfo.width / m_movieInfo.height;
         m_movieInfo.resolution = QString::number(m_movieInfo.width) + "x" + QString::number(m_movieInfo.height);
         
-        qDebug() << "Video info - Resolution:" << m_movieInfo.resolution 
+        qCDebug(dmrLib) << "Video info - Resolution:" << m_movieInfo.resolution 
                  << "FPS:" << m_movieInfo.fps 
                  << "Bitrate:" << m_movieInfo.vCodeRate;
     }
@@ -168,7 +169,7 @@ void GstUtils::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GE
         m_movieInfo.channels = static_cast<int>(g_mvideo_gst_discoverer_audio_info_get_channels(aInfo));
         m_movieInfo.aDigit = static_cast<int>(g_mvideo_gst_discoverer_audio_info_get_depth(aInfo));
         
-        qDebug() << "Audio info - Sample rate:" << m_movieInfo.sampling 
+        qCDebug(dmrLib) << "Audio info - Sample rate:" << m_movieInfo.sampling 
                  << "Channels:" << m_movieInfo.channels 
                  << "Bit depth:" << m_movieInfo.aDigit 
                  << "Bitrate:" << m_movieInfo.aCodeRate;
@@ -178,13 +179,13 @@ void GstUtils::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GE
 void GstUtils::finished(GstDiscoverer *discoverer, CustomData *data)
 {
     Q_UNUSED(discoverer);
-    qDebug() << "Media discovery finished";
+    qCDebug(dmrLib) << "Media discovery finished";
     g_main_loop_quit (data->loop);
 }
 
 GstUtils::~GstUtils()
 {
-    qDebug() << "Destroying GstUtils";
+    qCDebug(dmrLib) << "Destroying GstUtils";
     g_mvideo_gst_discoverer_stop(m_gstData.discoverer);
     g_object_unref(m_gstData.discoverer);
     g_main_loop_unref (m_gstData.loop);
@@ -193,7 +194,7 @@ GstUtils::~GstUtils()
 GstUtils* GstUtils::get()
 {
     if(!m_pGstUtils) {
-        qDebug() << "Creating new GstUtils instance";
+        qCDebug(dmrLib) << "Creating new GstUtils instance";
         m_pGstUtils = new GstUtils();
     }
     return m_pGstUtils;
@@ -201,7 +202,7 @@ GstUtils* GstUtils::get()
 
 MovieInfo GstUtils::parseFileByGst(const QFileInfo &fi)
 {
-    qDebug() << "Parsing file by GStreamer:" << fi.filePath();
+    qCDebug(dmrLib) << "Parsing file by GStreamer:" << fi.filePath();
     m_movieInfo = MovieInfo();
 
     m_movieInfo.title = fi.fileName();
@@ -214,20 +215,20 @@ MovieInfo GstUtils::parseFileByGst(const QFileInfo &fi)
     m_movieInfo.fileSize = fi.size();
     m_movieInfo.fileType = fi.suffix();
 
-    qDebug() << "File info - Title:" << m_movieInfo.title 
+    qCDebug(dmrLib) << "File info - Title:" << m_movieInfo.title 
              << "Size:" << m_movieInfo.fileSize 
              << "Type:" << m_movieInfo.fileType;
 
     QByteArray uri = QUrl::fromLocalFile(fi.filePath()).toString().toLocal8Bit();
     if (!g_mvideo_gst_discoverer_discover_uri_async (m_gstData.discoverer, uri.constData())) {
-        qWarning() << "Failed to start discovering URI:" << uri;
+        qCWarning(dmrLib) << "Failed to start discovering URI:" << uri;
         g_object_unref (m_gstData.discoverer);
         return m_movieInfo;
     }
 
     g_main_loop_run (m_gstData.loop);
 
-    qDebug() << "File parsing completed";
+    qCDebug(dmrLib) << "File parsing completed";
     return m_movieInfo;
 }
 

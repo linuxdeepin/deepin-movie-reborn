@@ -1,9 +1,10 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "platform_volumeslider.h"
+#include "ddlog.h"
 #include "platform_toolbox_proxy.h"
 #include "dbusutils.h"
 
@@ -14,12 +15,12 @@ namespace dmr {
 Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *parent)
     : QWidget(parent), _mw(mw)
 {
-    qDebug() << "Entering Platform_VolumeSlider constructor";
+    qCDebug(appMovie) << "Entering Platform_VolumeSlider constructor";
     if (CompositingManager::get().platform() != Platform::X86) {
-        qDebug() << "CompositingManager::get().platform() != Platform::X86";
+        qCDebug(appMovie) << "CompositingManager::get().platform() != Platform::X86";
         setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
     } else {
-        qDebug() << "CompositingManager::get().platform() == Platform::X86";
+        qCDebug(appMovie) << "CompositingManager::get().platform() == Platform::X86";
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
     }
     m_iStep = 0;
@@ -56,6 +57,7 @@ Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *p
     m_slider->slider()->setRange(0, 100);
     m_slider->setValue(m_nVolume);
     m_slider->setObjectName(VOLUME_SLIDER);
+    m_slider->setAccessibleName(VOLUME_SLIDER);
     m_slider->slider()->setObjectName(SLIDER);
     m_slider->slider()->setAccessibleName(SLIDER);
     m_slider->slider()->setMinimumHeight(120);
@@ -82,12 +84,12 @@ Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *p
             this, &Platform_VolumeSlider::setThemeType);
     m_autoHideTimer.setSingleShot(true);
     connect(&m_autoHideTimer, &QTimer::timeout, this, &Platform_VolumeSlider::hide);
-    qDebug() << "Exiting Platform_VolumeSlider constructor";
+    qCDebug(appMovie) << "Exiting Platform_VolumeSlider constructor";
 }
 
 void Platform_VolumeSlider::initVolume()
 {
-    qDebug() << "Entering initVolume function";
+    qCDebug(appMovie) << "Entering initVolume function";
     QTimer::singleShot(50, this, [ = ] { //延迟加载等待信号槽连接
         int nVolume = Settings::get().internalOption("global_volume").toInt();
         bool bMute = Settings::get().internalOption("mute").toBool();
@@ -97,19 +99,19 @@ void Platform_VolumeSlider::initVolume()
 
         setMute(bMute);
     });
-    qDebug() << "Exiting initVolume function";
+    qCDebug(appMovie) << "Exiting initVolume function";
 }
 
 void Platform_VolumeSlider::stopTimer()
 {
-    qDebug() << "Entering stopTimer function";
+    qCDebug(appMovie) << "Entering stopTimer function";
     m_autoHideTimer.stop();
-    qDebug() << "Exiting stopTimer function";
+    qCDebug(appMovie) << "Exiting stopTimer function";
 }
 
 QString Platform_VolumeSlider::readSinkInputPath()
 {
-    qDebug() << "Entering readSinkInputPath function";
+    qCDebug(appMovie) << "Entering readSinkInputPath function";
     QString strPath = "";
 
     QVariant v = ApplicationAdaptor::readDBusProperty("org.deepin.dde.Audio1", "/org/deepin/dde/Audio1",
@@ -117,7 +119,7 @@ QString Platform_VolumeSlider::readSinkInputPath()
 
     if (!v.isValid())
     {
-        qDebug() << "Invalid D-Bus property value";
+        qCDebug(appMovie) << "Invalid D-Bus property value";
         return strPath;
     }
 
@@ -128,20 +130,20 @@ QString Platform_VolumeSlider::readSinkInputPath()
                                                              "org.deepin.dde.Audio1.SinkInput", "Name");
         QString strMovie = QObject::tr("Movie");
         if (!nameV.isValid() || (!nameV.toString().contains(strMovie, Qt::CaseInsensitive) && !nameV.toString().contains("deepin movie", Qt::CaseInsensitive))) {
-            qDebug() << "Skipping invalid or non-movie sink input:" << nameV.toString();
+            qCDebug(appMovie) << "Skipping invalid or non-movie sink input:" << nameV.toString();
             continue;
         }
 
         strPath = curPath.path();
         break;
     }
-    qDebug() << "Exiting readSinkInputPath function, result:" << strPath;
+    qCDebug(appMovie) << "Exiting readSinkInputPath function, result:" << strPath;
     return strPath;
 }
 
 void Platform_VolumeSlider::setMute(bool muted)
 {
-    qDebug() << "Setting mute state to:" << muted;
+    qCDebug(appMovie) << "Setting mute state to:" << muted;
     if (m_bIsMute != muted || m_nVolume == 0) {
         return;
     }
@@ -153,14 +155,14 @@ void Platform_VolumeSlider::setMute(bool muted)
                                   "org.deepin.dde.Audio1.SinkInput",
                                   QDBusConnection::sessionBus());
         if (!ainterface.isValid()) {
-            qDebug() << "Invalid D-Bus interface";
+            qCDebug(appMovie) << "Invalid D-Bus interface";
             return;
         }
 
         //调用设置音量
         ainterface.call(QLatin1String("SetMute"), muted);
     } else {
-        qDebug() << "No sink input path found";
+        qCDebug(appMovie) << "No sink input path found";
     }
 
     return;
@@ -168,7 +170,7 @@ void Platform_VolumeSlider::setMute(bool muted)
 
 void Platform_VolumeSlider::updatePoint(QPoint point)
 {
-    qDebug() << "Updating slider position to:" << point;
+    qCDebug(appMovie) << "Updating slider position to:" << point;
     QRect main_rect = _mw->rect();
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
     m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
@@ -178,7 +180,7 @@ void Platform_VolumeSlider::updatePoint(QPoint point)
 }
 void Platform_VolumeSlider::popup()
 {
-    qDebug() << "Entering popup function";
+    qCDebug(appMovie) << "Entering popup function";
     QRect main_rect = _mw->rect();
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 
@@ -195,13 +197,13 @@ void Platform_VolumeSlider::popup()
 
     //动画未完成，等待动画结束后再隐藏控件
     if (pVolAnimation) {
-        qDebug() << "Animation is already running, setting hide when finished";
+        qCDebug(appMovie) << "Animation is already running, setting hide when finished";
         m_bHideWhenFinished = true;
         return;
     }
 
     if (m_state == State::Close && isVisible()) {
-        qDebug() << "Creating new animation";
+        qCDebug(appMovie) << "Creating new animation";
         pVolAnimation = new QPropertyAnimation(this, "geometry");
         pVolAnimation->setEasingCurve(QEasingCurve::Linear);
         pVolAnimation->setKeyValueAt(0, end);
@@ -212,27 +214,27 @@ void Platform_VolumeSlider::popup()
         raise();
         pVolAnimation->start();
         connect(pVolAnimation, &QPropertyAnimation::finished, [ = ] {
-            qDebug() << "Animation finished";
+            qCDebug(appMovie) << "Animation finished";
             pVolAnimation->deleteLater();
             pVolAnimation = nullptr;
             m_state = Open;
             m_bFinished = false;
             if (m_bHideWhenFinished) {
-                qDebug() << "Hiding when finished, calling popup again";
+                qCDebug(appMovie) << "Hiding when finished, calling popup again";
                 popup();
                 m_bHideWhenFinished = false;
             }
         });
     } else {
-        qDebug() << "Setting state to Close and hiding";
+        qCDebug(appMovie) << "Setting state to Close and hiding";
         m_state = Close;
         hide();
     }
-    qDebug() << "Exiting popup function";
+    qCDebug(appMovie) << "Exiting popup function";
 }
 void Platform_VolumeSlider::delayedHide()
 {   
-    qDebug() << "Entering delayedHide function";
+    qCDebug(appMovie) << "Entering delayedHide function";
     const int nGap = 18;   // 音量条和音量按钮之间的间距
     QRect adRect = QRect(m_point + QPoint(6, VOLSLIDER_HEIGHT), m_point + QPoint(6 + VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT + nGap));
 
@@ -248,17 +250,17 @@ void Platform_VolumeSlider::delayedHide()
                 hide();
         });
     }
-    qDebug() << "Exiting delayedHide function";
+    qCDebug(appMovie) << "Exiting delayedHide function";
 }
 void Platform_VolumeSlider::changeVolume(int nVolume)
 {   
-    qDebug() << "Entering changeVolume function";
-    qDebug() << "Changing volume to:" << nVolume;
+    qCDebug(appMovie) << "Entering changeVolume function";
+    qCDebug(appMovie) << "Changing volume to:" << nVolume;
     if (nVolume < 0) {
-        qDebug() << "Volume is less than 0, setting to 0";
+        qCDebug(appMovie) << "Volume is less than 0, setting to 0";
         nVolume = 0;
     } else if (nVolume > 200) {
-        qDebug() << "Volume is greater than 200, setting to 200";
+        qCDebug(appMovie) << "Volume is greater than 200, setting to 200";
         nVolume = 200;
     }
     m_nVolume = nVolume;
@@ -267,70 +269,70 @@ void Platform_VolumeSlider::changeVolume(int nVolume)
     //1.保证初始化音量(100)和配置文件中音量一致时，也能得到刷新
     //2.m_slider的最大值为100,如果大于100必须主动调用
     if (nVolume >= 100) {
-        qDebug() << "Volume is greater than or equal to 100, calling volumeChanged";
+        qCDebug(appMovie) << "Volume is greater than or equal to 100, calling volumeChanged";
         volumeChanged(nVolume);
     }
-    qDebug() << "Exiting changeVolume function";
+    qCDebug(appMovie) << "Exiting changeVolume function";
 }
 
 void Platform_VolumeSlider::calculationStep(int iAngleDelta){
-    qDebug() << "Calculating volume step with angle delta:" << iAngleDelta;
+    qCDebug(appMovie) << "Calculating volume step with angle delta:" << iAngleDelta;
     m_bIsWheel = true;
 
     if ((m_iStep > 0 && iAngleDelta > 0) || (m_iStep < 0 && iAngleDelta < 0)) {
-        qDebug() << "Adding to step";
+        qCDebug(appMovie) << "Adding to step";
         m_iStep += iAngleDelta;
     } else {
-        qDebug() << "Setting step to:" << iAngleDelta;
+        qCDebug(appMovie) << "Setting step to:" << iAngleDelta;
         m_iStep = iAngleDelta;
     }
-    qDebug() << "Exiting calculationStep function";
+    qCDebug(appMovie) << "Exiting calculationStep function";
 }
 
 void Platform_VolumeSlider::volumeUp()
 {
-    qDebug() << "Entering volumeUp function";
+    qCDebug(appMovie) << "Entering volumeUp function";
     if (m_bIsWheel) {
-        qDebug() << "m_bIsWheel is true";
+        qCDebug(appMovie) << "m_bIsWheel is true";
         m_bIsWheel = false;
         if(qAbs(m_iStep) >= 120) {
-            qDebug() << "Step is greater than or equal to 120, changing volume";
+            qCDebug(appMovie) << "Step is greater than or equal to 120, changing volume";
             m_nVolume += qAbs(m_iStep) / 120 * 10;
             changeVolume(qMin(m_nVolume, 200));
             m_iStep = 0;
         }
     } else {
-        qDebug() << "m_bIsWheel is false, changing volume";
+        qCDebug(appMovie) << "m_bIsWheel is false, changing volume";
         changeVolume(qMin(m_nVolume + 10, 200));
     }
-    qDebug() << "Exiting volumeUp function";
+    qCDebug(appMovie) << "Exiting volumeUp function";
 }
 
 void Platform_VolumeSlider::volumeDown()
 {
-    qDebug() << "Entering volumeDown function";
+    qCDebug(appMovie) << "Entering volumeDown function";
     if(m_bIsWheel){
-        qDebug() << "m_bIsWheel is true";
+        qCDebug(appMovie) << "m_bIsWheel is true";
         m_bIsWheel = false;
         if(qAbs(m_iStep) >= 120){
-            qDebug() << "Step is greater than or equal to 120, changing volume";
+            qCDebug(appMovie) << "Step is greater than or equal to 120, changing volume";
             m_nVolume -= qAbs(m_iStep) / 120 * 10 ;
             changeVolume(qMax(m_nVolume, 0));
             m_iStep = 0;
         }
     }else{
-        qDebug() << "m_bIsWheel is false, changing volume";
+        qCDebug(appMovie) << "m_bIsWheel is false, changing volume";
         changeVolume(qMax(m_nVolume - 10, 0));
     }
-    qDebug() << "Exiting volumeDown function";
+    qCDebug(appMovie) << "Exiting volumeDown function";
 }
 
 void Platform_VolumeSlider::changeMuteState(bool bMute)
 {
-    qDebug() << "Entering changeMuteState function";
-    qDebug() << "Changing mute state to:" << bMute;
+    qCDebug(appMovie) << "Entering changeMuteState function";
+    qCDebug(appMovie) << "Changing mute state to:" << bMute;
     if (m_bIsMute == bMute || m_nVolume == 0) {
-        qDebug() << "Mute state is the same or volume is 0, returning";
+        qCDebug(appMovie) << "Mute state is the same or volume is 0, returning";
         return;
     }
 
@@ -338,20 +340,20 @@ void Platform_VolumeSlider::changeMuteState(bool bMute)
     refreshIcon();
     Settings::get().setInternalOption("mute", m_bIsMute);
     emit sigMuteStateChanged(bMute);
-    qDebug() << "Exiting changeMuteState function";
+    qCDebug(appMovie) << "Exiting changeMuteState function";
 }
 
 void Platform_VolumeSlider::volumeChanged(int nVolume)
 {
-    qDebug() << "Entering volumeChanged function";
-    qDebug() << "Volume changed to:" << nVolume;
+    qCDebug(appMovie) << "Entering volumeChanged function";
+    qCDebug(appMovie) << "Volume changed to:" << nVolume;
     if (m_nVolume != nVolume) {
-        qDebug() << "Volume is different, updating volume";
+        qCDebug(appMovie) << "Volume is different, updating volume";
         m_nVolume = nVolume;
     }
 
     if (m_nVolume > 0 && m_bIsMute) {      //音量改变时改变静音状态
-        qDebug() << "Volume is greater than 0 and mute is true, changing mute state to false";
+        qCDebug(appMovie) << "Volume is greater than 0 and mute is true, changing mute state to false";
         changeMuteState(false);
         setMute(false);
     }
@@ -359,78 +361,78 @@ void Platform_VolumeSlider::volumeChanged(int nVolume)
     refreshIcon();
 
     emit sigVolumeChanged(nVolume);
-    qDebug() << "Exiting volumeChanged function";
+    qCDebug(appMovie) << "Exiting volumeChanged function";
 }
 
 void Platform_VolumeSlider::refreshIcon()
 {
-    qDebug() << "Entering refreshIcon function";
+    qCDebug(appMovie) << "Entering refreshIcon function";
     int nValue = m_slider->value();
-    qDebug() << "nValue:" << nValue;
+    qCDebug(appMovie) << "nValue:" << nValue;
 
     if (nValue >= 66) {
-        qDebug() << "nValue is greater than or equal to 66, setting icon to dcc_volume";
+        qCDebug(appMovie) << "nValue is greater than or equal to 66, setting icon to dcc_volume";
         m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volume"));
     }
     else if (nValue >= 33) {
-        qDebug() << "nValue is greater than or equal to 33, setting icon to dcc_volumemid";
+        qCDebug(appMovie) << "nValue is greater than or equal to 33, setting icon to dcc_volumemid";
         m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volumemid"));
     }
     else {
-        qDebug() << "nValue is less than 33, setting icon to dcc_volumelow";
+        qCDebug(appMovie) << "nValue is less than 33, setting icon to dcc_volumelow";
         m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volumelow"));
     }
 
     if (m_bIsMute || nValue == 0) {
-        qDebug() << "Mute is true or nValue is 0, setting icon to dcc_mute";
+        qCDebug(appMovie) << "Mute is true or nValue is 0, setting icon to dcc_mute";
         m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_mute"));
     }
 
     m_pLabShowVolume->setText(QString("%1%").arg(nValue * 1.0 / m_slider->maximum() * 100));
-    qDebug() << "Exiting refreshIcon function";
+    qCDebug(appMovie) << "Exiting refreshIcon function";
 }
 
 void Platform_VolumeSlider::muteButtnClicked()
 {
-    qDebug() << "Entering muteButtnClicked function";
+    qCDebug(appMovie) << "Entering muteButtnClicked function";
     bool bMute = m_bIsMute;
-    qDebug() << "bMute:" << bMute;
+    qCDebug(appMovie) << "bMute:" << bMute;
     changeMuteState(!bMute);
     setMute(!bMute);
-    qDebug() << "Exiting muteButtnClicked function";
+    qCDebug(appMovie) << "Exiting muteButtnClicked function";
 }
 
 bool Platform_VolumeSlider::getsliderstate()
 {
-    qDebug() << "Entering getsliderstate function";
-    qDebug() << "m_bFinished:" << m_bFinished;
+    qCDebug(appMovie) << "Entering getsliderstate function";
+    qCDebug(appMovie) << "m_bFinished:" << m_bFinished;
     return m_bFinished;
 }
 
 int Platform_VolumeSlider::getVolume()
 {
-    qDebug() << "Entering getVolume function";
-    qDebug() << "m_nVolume:" << m_nVolume;
+    qCDebug(appMovie) << "Entering getVolume function";
+    qCDebug(appMovie) << "m_nVolume:" << m_nVolume;
     return m_nVolume;
 }
 
 void Platform_VolumeSlider::setThemeType(int type)
 {
-    qDebug() << "Entering setThemeType function";
-    qDebug() << "type:" << type;
+    qCDebug(appMovie) << "Entering setThemeType function";
+    qCDebug(appMovie) << "type:" << type;
     Q_UNUSED(type)
-    qDebug() << "Exiting setThemeType function";
+    qCDebug(appMovie) << "Exiting setThemeType function";
 }
 
 void Platform_VolumeSlider::enterEvent(QEnterEvent *e)
 {
-    qDebug() << "Entering enterEvent function";
+    qCDebug(appMovie) << "Entering enterEvent function";
     m_mouseIn = true;
     QWidget::enterEvent(e);
 }
 void Platform_VolumeSlider::showEvent(QShowEvent *se)
 {
-    qDebug() << "Entering showEvent function";
+    qCDebug(appMovie) << "Entering showEvent function";
     QRect main_rect = _mw->rect();
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 
@@ -438,7 +440,7 @@ void Platform_VolumeSlider::showEvent(QShowEvent *se)
     int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
-        qDebug() << "DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode";
+        qCDebug(appMovie) << "DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode";
         x += 50;
         y += 30;
     }
@@ -451,7 +453,7 @@ void Platform_VolumeSlider::showEvent(QShowEvent *se)
 }
 void Platform_VolumeSlider::leaveEvent(QEvent *e)
 {
-    qDebug() << "Entering leaveEvent function";
+    qCDebug(appMovie) << "Entering leaveEvent function";
     m_mouseIn = false;
     delayedHide();
     QWidget::leaveEvent(e);
@@ -469,13 +471,13 @@ void Platform_VolumeSlider::paintEvent(QPaintEvent *)
 
 void Platform_VolumeSlider::keyPressEvent(QKeyEvent *pEvent)
 {
-    qDebug() << "Entering keyPressEvent function";
+    qCDebug(appMovie) << "Entering keyPressEvent function";
     int nCurVolume = getVolume();
     if (pEvent->key() == Qt::Key_Up) {
-        qDebug() << "Key_Up";
+        qCDebug(appMovie) << "Key_Up";
         changeVolume(qMin(nCurVolume + 5, 200));
     } else if (pEvent->key() == Qt::Key_Down) {
-        qDebug() << "Key_Down";
+        qCDebug(appMovie) << "Key_Down";
         changeVolume(qMax(nCurVolume - 5, 0));
     }
     QWidget::keyPressEvent(pEvent);
@@ -483,31 +485,31 @@ void Platform_VolumeSlider::keyPressEvent(QKeyEvent *pEvent)
 
 bool Platform_VolumeSlider::eventFilter(QObject *obj, QEvent *e)
 {
-    qDebug() << "Entering eventFilter function";
+    qCDebug(appMovie) << "Entering eventFilter function";
     if (e->type() == QEvent::Wheel) {
         QWheelEvent *we = static_cast<QWheelEvent *>(e);
-        qDebug() << "Wheel event - Angle delta:" << we->angleDelta() << "Modifiers:" << we->modifiers() << "Buttons:" << we->buttons();
+        qCDebug(appMovie) << "Wheel event - Angle delta:" << we->angleDelta() << "Modifiers:" << we->modifiers() << "Buttons:" << we->buttons();
         
         if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
             calculationStep(we->angleDelta().y());
             if (we->angleDelta().y() > 0) {
-                qDebug() << "Angle delta is greater than 0, calling volumeUp";
+                qCDebug(appMovie) << "Angle delta is greater than 0, calling volumeUp";
                 volumeUp();
             } else {
-                qDebug() << "Angle delta is less than 0, calling volumeDown";
+                qCDebug(appMovie) << "Angle delta is less than 0, calling volumeDown";
                 volumeDown();
             }
         }
         return false;
     } else {
-        qDebug() << "Event is not a wheel event, calling QObject::eventFilter";
+        qCDebug(appMovie) << "Event is not a wheel event, calling QObject::eventFilter";
         return QObject::eventFilter(obj, e);
     }
 }
 
 Platform_VolumeSlider::~Platform_VolumeSlider()
 {
-    qInfo() << "Destroying Platform_VolumeSlider";
+    qCInfo(appMovie) << "Destroying Platform_VolumeSlider";
 }
 
 }

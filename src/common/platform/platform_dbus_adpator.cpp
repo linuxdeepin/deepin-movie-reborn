@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "platform_dbus_adpator.h"
+#include "ddlog.h"
 #include "utils.h"
 #include "platform/platform_playlist_widget.h"
 #include "player_engine.h"
@@ -12,145 +13,145 @@
 Platform_ApplicationAdaptor::Platform_ApplicationAdaptor(Platform_MainWindow *pMainWid)
     : QDBusAbstractAdaptor(pMainWid)
 {
-    qDebug() << "Entering Platform_ApplicationAdaptor constructor.";
+    qCDebug(appMovie) << "Entering Platform_ApplicationAdaptor constructor.";
     initMember();
 
     m_pMainWindow = pMainWid;
-    qDebug() << "Exiting Platform_ApplicationAdaptor constructor.";
+    qCDebug(appMovie) << "Exiting Platform_ApplicationAdaptor constructor.";
 }
 
 //cppcheck 单元测试 wayland下再用
 void Platform_ApplicationAdaptor::openFiles(const QStringList &listFiles)
 {
-    qDebug() << "Entering Platform_ApplicationAdaptor::openFiles. Files count:" << listFiles.count();
+    qCDebug(appMovie) << "Entering Platform_ApplicationAdaptor::openFiles. Files count:" << listFiles.count();
     m_pMainWindow->play(listFiles);
-    qDebug() << "Exiting Platform_ApplicationAdaptor::openFiles.";
+    qCDebug(appMovie) << "Exiting Platform_ApplicationAdaptor::openFiles.";
 }
 
 //cppcheck 单元测试在用
 void Platform_ApplicationAdaptor::openFile(const QString &sFile)
 {
-    qDebug() << "Entering Platform_ApplicationAdaptor::openFile. File:" << sFile;
+    qCDebug(appMovie) << "Entering Platform_ApplicationAdaptor::openFile. File:" << sFile;
     if(sFile.startsWith("UOS_AI")) {
         QString uosAiStr = sFile.mid(6);
-        qInfo() << "sFile: " << sFile << " midd: " << uosAiStr;
+        qCInfo(appMovie) << "sFile: " << sFile << " midd: " << uosAiStr;
         funOpenFile(uosAiStr);
-        qDebug() << "File is UOS_AI string. Called funOpenFile and returning.";
+        qCDebug(appMovie) << "File is UOS_AI string. Called funOpenFile and returning.";
         return;
     }
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QRegExp url_re("\\w+://");
     bool isMatch = (url_re.indexIn(sFile) == 0);
-    qDebug() << "QT_VERSION < 6.0.0. Using QRegExp. isMatch:" << isMatch;
+    qCDebug(appMovie) << "QT_VERSION < 6.0.0. Using QRegExp. isMatch:" << isMatch;
 #else
     QRegularExpression url_re("\\w+://");
     bool isMatch = url_re.match(sFile).capturedStart() == 0;
-    qDebug() << "QT_VERSION >= 6.0.0. Using QRegularExpression. isMatch:" << isMatch;
+    qCDebug(appMovie) << "QT_VERSION >= 6.0.0. Using QRegularExpression. isMatch:" << isMatch;
 #endif
 
     QUrl url;
     if (isMatch) {
         url = QUrl(sFile);
-        qDebug() << "File matches URL pattern. Created QUrl from file:" << url.toString();
+        qCDebug(appMovie) << "File matches URL pattern. Created QUrl from file:" << url.toString();
     } else {
         url = QUrl::fromLocalFile(sFile);
-        qDebug() << "File does not match URL pattern. Created QUrl from local file:" << url.toString();
+        qCDebug(appMovie) << "File does not match URL pattern. Created QUrl from local file:" << url.toString();
     }
     m_pMainWindow->play({url.toString()});
-    qDebug() << "Exiting Platform_ApplicationAdaptor::openFile. Playback initiated.";
+    qCDebug(appMovie) << "Exiting Platform_ApplicationAdaptor::openFile. Playback initiated.";
 }
 
 void Platform_ApplicationAdaptor::funOpenFile(const QString &sFile)
 {
-    qDebug() << "Entering Platform_ApplicationAdaptor::funOpenFile. File to search:" << sFile;
+    qCDebug(appMovie) << "Entering Platform_ApplicationAdaptor::funOpenFile. File to search:" << sFile;
     if(m_pMainWindow) {
-        qDebug() << "MainWindow is valid. Retrieving playlist items.";
+        qCDebug(appMovie) << "MainWindow is valid. Retrieving playlist items.";
         QList<PlayItemInfo> lstItem = m_pMainWindow->playlist()->engine()->playlist().items();
-        qDebug() << "Playlist items count:" << lstItem.count();
+        qCDebug(appMovie) << "Playlist items count:" << lstItem.count();
         for (PlayItemInfo info: lstItem) {
             if(QFileInfo(info.mi.filePath).fileName().toLower().contains(sFile.toLower())) {
-                qInfo() << "Platform_funOpenFile: " << info.mi.filePath;
+                qCInfo(appMovie) << "Platform_funOpenFile: " << info.mi.filePath;
                 m_pMainWindow->play({QUrl::fromLocalFile(info.mi.filePath).toString()});
-                qDebug() << "Playing matched file and breaking loop.";
+                qCDebug(appMovie) << "Playing matched file and breaking loop.";
                 break;
             } else {
-                qDebug() << "Playlist item file name does not contain search string (case-insensitive).";
+                qCDebug(appMovie) << "Playlist item file name does not contain search string (case-insensitive).";
             }
         }
     } else {
-        qWarning() << "MainWindow is null in Platform_ApplicationAdaptor::funOpenFile. Cannot process file.";
+        qCWarning(appMovie) << "MainWindow is null in Platform_ApplicationAdaptor::funOpenFile. Cannot process file.";
     }
-    qDebug() << "Exiting Platform_ApplicationAdaptor::funOpenFile.";
+    qCDebug(appMovie) << "Exiting Platform_ApplicationAdaptor::funOpenFile.";
 }
 
 void Platform_ApplicationAdaptor::Raise()
 {
-    qDebug() << "Entering Platform_ApplicationAdaptor::Raise().";
-    qInfo() << "raise window from dbus";
+    qCDebug(appMovie) << "Entering Platform_ApplicationAdaptor::Raise().";
+    qCInfo(appMovie) << "raise window from dbus";
     m_pMainWindow->showNormal();
     m_pMainWindow->raise();
     m_pMainWindow->activateWindow();
-    qDebug() << "Exiting Platform_ApplicationAdaptor::Raise(). Window raised and activated.";
+    qCDebug(appMovie) << "Exiting Platform_ApplicationAdaptor::Raise(). Window raised and activated.";
 }
 
 void Platform_ApplicationAdaptor::initMember()
 {
-    qDebug() << "Entering Platform_ApplicationAdaptor::initMember().";
+    qCDebug(appMovie) << "Entering Platform_ApplicationAdaptor::initMember().";
     m_pMainWindow = nullptr;
-    qDebug() << "Exiting Platform_ApplicationAdaptor::initMember(). m_pMainWindow set to nullptr.";
+    qCDebug(appMovie) << "Exiting Platform_ApplicationAdaptor::initMember(). m_pMainWindow set to nullptr.";
 }
 
 QVariant Platform_ApplicationAdaptor::readDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
 {
-    qDebug() << "Entering Platform_ApplicationAdaptor::readDBusProperty. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Property:" << pPropert;
+    qCDebug(appMovie) << "Entering Platform_ApplicationAdaptor::readDBusProperty. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Property:" << pPropert;
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,
                               sInterface,
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
-        qInfo() << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        qCInfo(appMovie) << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
-        qWarning() << "QDBusInterface is not valid. Returning default QVariant(0).";
+        qCWarning(appMovie) << "QDBusInterface is not valid. Returning default QVariant(0).";
         return  v;
     } else {
-        qDebug() << "QDBusInterface created successfully.";
+        qCDebug(appMovie) << "QDBusInterface created successfully.";
     }
     // 调用远程的value方法
     QList<QByteArray> q = ainterface.dynamicPropertyNames();
-    qDebug() << "Dynamic property names retrieved. Count:" << q.count();
+    qCDebug(appMovie) << "Dynamic property names retrieved. Count:" << q.count();
     QVariant v = ainterface.property(pPropert);
-    qDebug() << "Property value retrieved. Returning:" << v;
-    qDebug() << "Exiting Platform_ApplicationAdaptor::readDBusProperty.";
+    qCDebug(appMovie) << "Property value retrieved. Returning:" << v;
+    qCDebug(appMovie) << "Exiting Platform_ApplicationAdaptor::readDBusProperty.";
     return  v;
 }
 
 //cppcheck 单元测试在使用
 QVariant Platform_ApplicationAdaptor::readDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
-    qDebug() << "Entering Platform_ApplicationAdaptor::readDBusMethod. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Method:" << pMethod;
+    qCDebug(appMovie) << "Entering Platform_ApplicationAdaptor::readDBusMethod. Service:" << sService << ", Path:" << sPath << ", Interface:" << sInterface << ", Method:" << pMethod;
     // 创建QDBusInterface接口
     QDBusInterface ainterface(sService, sPath,
                               sInterface,
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
-        qInfo() <<  "error:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        qCInfo(appMovie) <<  "error:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
-        qWarning() << "QDBusInterface is not valid. Returning default QVariant(0).";
+        qCWarning(appMovie) << "QDBusInterface is not valid. Returning default QVariant(0).";
         return  v;
     } else {
-        qDebug() << "QDBusInterface created successfully.";
+        qCDebug(appMovie) << "QDBusInterface created successfully.";
     }
     // 调用远程的value方法
     QDBusReply<QDBusVariant> reply = ainterface.call(pMethod);
     if (reply.isValid()) {
         QVariant v(0) ;
-        qDebug() << "QDBusReply is valid. Returning default QVariant(0).";
+        qCDebug(appMovie) << "QDBusReply is valid. Returning default QVariant(0).";
         return  v;
     } else {
-        qInfo() << "error1:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        qCInfo(appMovie) << "error1:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
-        qWarning() << "QDBusReply is not valid. Returning default QVariant(0).";
+        qCWarning(appMovie) << "QDBusReply is not valid. Returning default QVariant(0).";
         return  v;
     }
-    qDebug() << "Exiting Platform_ApplicationAdaptor::readDBusMethod.";
+    qCDebug(appMovie) << "Exiting Platform_ApplicationAdaptor::readDBusMethod.";
 }

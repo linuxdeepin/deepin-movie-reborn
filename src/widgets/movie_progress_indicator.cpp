@@ -7,6 +7,7 @@
   *@file 这个文件是负责实现全屏展示进度控件相关
   */
 #include "movie_progress_indicator.h"
+#include "ddlog.h"
 #include "utils.h"
 #include <QDebug>
 
@@ -18,26 +19,26 @@ namespace dmr {
 MovieProgressIndicator::MovieProgressIndicator(QWidget *parent)
     : QFrame(parent)
 {
-    qDebug() << "Entering MovieProgressIndicator constructor.";
+    qCDebug(appMovie) << "Entering MovieProgressIndicator constructor.";
     initMember();
-    qDebug() << "initMember() called.";
+    qCDebug(appMovie) << "initMember() called.";
 
     QFont font;
     //参考设计图
     font.setPixelSize(14);
     QFontMetrics fontMetrics(font);
     this->setFont(font);
-    qDebug() << "Font set with pixel size 14.";
+    qCDebug(appMovie) << "Font set with pixel size 14.";
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    qDebug() << "Compiling for Qt5, calculating fixedSize using fontMetrics.width().";
+    qCDebug(appMovie) << "Compiling for Qt5, calculating fixedSize using fontMetrics.width().";
     m_fixedSize = QSize(qMax(52, fontMetrics.width("999:99")), fontMetrics.height() + 10);
 #else
-    qDebug() << "Compiling for Qt6, calculating fixedSize using fontMetrics.horizontalAdvance().";
+    qCDebug(appMovie) << "Compiling for Qt6, calculating fixedSize using fontMetrics.horizontalAdvance().";
     m_fixedSize = QSize(qMax(52, fontMetrics.horizontalAdvance("999:99")), fontMetrics.height() + 10);
 #endif
     this->setFixedSize(m_fixedSize);
-    qDebug() << "Fixed size set to:" << m_fixedSize;
-    qDebug() << "Exiting MovieProgressIndicator constructor.";
+    qCDebug(appMovie) << "Fixed size set to:" << m_fixedSize;
+    qCDebug(appMovie) << "Exiting MovieProgressIndicator constructor.";
 }
 /**
  * @brief paintEvent 重载绘制事件函数
@@ -73,12 +74,12 @@ void MovieProgressIndicator::paintEvent(QPaintEvent *pPaintEvent)
  */
 void MovieProgressIndicator::initMember()
 {
-    qDebug() << "Entering MovieProgressIndicator::initMember().";
+    qCDebug(appMovie) << "Entering MovieProgressIndicator::initMember().";
     m_nElapsed = 0;
     m_pert = 0;
     m_fixedSize = QSize(0, 0);
-    qDebug() << "Member variables initialized to default values.";
-    qDebug() << "Exiting MovieProgressIndicator::initMember().";
+    qCDebug(appMovie) << "Member variables initialized to default values.";
+    qCDebug(appMovie) << "Exiting MovieProgressIndicator::initMember().";
 }
 /**
  * @brief updateMovieProgress 更新电影进度控件
@@ -87,18 +88,18 @@ void MovieProgressIndicator::initMember()
  */
 void MovieProgressIndicator::updateMovieProgress(qint64 duration, qint64 pos)
 {
-    qDebug() << "Entering MovieProgressIndicator::updateMovieProgress() with duration:" << duration << ", pos:" << pos;
+    qCDebug(appMovie) << "Entering MovieProgressIndicator::updateMovieProgress() with duration:" << duration << ", pos:" << pos;
     m_nElapsed = pos;
     if (duration != 0) {
         m_pert = static_cast<qreal>(((float)pos) / duration);
-        qDebug() << "Duration is not 0, m_pert calculated:" << m_pert;
+        qCDebug(appMovie) << "Duration is not 0, m_pert calculated:" << m_pert;
     } else {
         m_pert = 0;
-        qDebug() << "Duration is 0, m_pert set to 0.";
+        qCDebug(appMovie) << "Duration is 0, m_pert set to 0.";
     }
     update();
-    qDebug() << "Widget updated.";
-    qDebug() << "Exiting MovieProgressIndicator::updateMovieProgress().";
+    qCDebug(appMovie) << "Widget updated.";
+    qCDebug(appMovie) << "Exiting MovieProgressIndicator::updateMovieProgress().";
 }
 
 }
