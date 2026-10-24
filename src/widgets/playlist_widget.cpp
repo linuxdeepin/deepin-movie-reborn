@@ -190,10 +190,6 @@ public:
             installEventFilter(th);
         connect(_playlist, &PlaylistWidget::sizeChange, this, &PlayItemWidget::slotSizeChange);
 
-        m_opacityEffect = new QGraphicsOpacityEffect;
-        _time->setGraphicsEffect(m_opacityEffect);
-        m_opacityEffect_1 = new QGraphicsOpacityEffect;
-        _index->setGraphicsEffect(m_opacityEffect_1);
         setState(ItemState::Normal);
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
@@ -535,8 +531,6 @@ private:
     bool _hovered {false};
     PlaylistWidget *_playlist{nullptr};
     bool m_bIsSelect = false;
-    QGraphicsOpacityEffect *m_opacityEffect {nullptr};
-    QGraphicsOpacityEffect *m_opacityEffect_1 {nullptr};
     QColor m_highlightColor;
 };
 
