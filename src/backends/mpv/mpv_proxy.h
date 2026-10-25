@@ -471,6 +471,7 @@ private:
     bool m_bConnectStateChange;
     bool m_bLoadMedia;                     //mpv是否在加载媒体中
     bool m_bPauseOnStart;                  //mpv是否在暂停中
+    bool m_bUserPaused {false};            //用户主动暂停标志，区分设备变更导致的自动暂停
     bool m_bIsJingJia;                     //是否在景嘉微平台上
     bool m_bInited;                        //mpv是否已经初始化
     bool m_bHwaccelAuto;                   //如果设置为不为自动，则不允许此类改变硬件设置
