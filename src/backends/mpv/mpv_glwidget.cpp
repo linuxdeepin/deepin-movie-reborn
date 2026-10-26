@@ -457,7 +457,7 @@ namespace dmr {
     void MpvGLWidget::prepareSplashImages()
     {
         QPixmap pixmap;
-        QImage img=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg");
+        QImage img=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg", devicePixelRatioF());
         pixmap=pixmap.fromImage(img);
 
         QPixmap pixmap2;
@@ -467,12 +467,12 @@ namespace dmr {
         QPainter painter(&pixmap);
         painter.drawPixmap(102,126,pixmap2); // 参数102 126，在界面上保持居中
         m_imgBgDark=pixmap.toImage();
-        m_imgBgDark.setDevicePixelRatio(qApp->devicePixelRatio());
+        m_imgBgDark.setDevicePixelRatio(devicePixelRatioF());
 
         QPixmap pixmap3;
         QImage image(pixmap.size(),QImage::Format_Alpha8);
         image.fill(QColor(0, 0, 0, 0));
-        image.setDevicePixelRatio(qApp->devicePixelRatio());
+        image.setDevicePixelRatio(devicePixelRatioF());
         pixmap3=pixmap3.fromImage(image);
 
         QPixmap pixmap4;
@@ -482,7 +482,7 @@ namespace dmr {
         QPainter painter1(&pixmap3);
         painter1.drawPixmap(102,126,pixmap4); // 参数102 126，在界面上保持居中
         m_imgBgLight = pixmap3.toImage();
-        m_imgBgLight.setDevicePixelRatio(qApp->devicePixelRatio());
+        m_imgBgLight.setDevicePixelRatio(devicePixelRatioF());
     }
 
     //cppcheck误报

@@ -23,7 +23,7 @@ QString FullFileHash(const QFileInfo &fi);
 QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation = 0);
 QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time);
 
-QImage LoadHiDPIImage(const QString &filename);
+QImage LoadHiDPIImage(const QString &filename, qreal dpr = 0.0);
 QPixmap LoadHiDPIPixmap(const QString &filename);
 
 uint32_t InhibitStandby();
