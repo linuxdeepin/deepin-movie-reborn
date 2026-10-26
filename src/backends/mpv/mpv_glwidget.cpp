@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -456,6 +456,11 @@ namespace dmr {
 
     void MpvGLWidget::prepareSplashImages()
     {
+        qreal dpr = qApp->devicePixelRatio();
+        if (m_bSplashImagesPrepared && qFuzzyCompare(m_splashDpr, dpr)) {
+            return;
+        }
+
         QPixmap pixmap;
         QImage img=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg");
         pixmap=pixmap.fromImage(img);
@@ -483,6 +488,10 @@ namespace dmr {
         painter1.drawPixmap(102,126,pixmap4); // 参数102 126，在界面上保持居中
         m_imgBgLight = pixmap3.toImage();
         m_imgBgLight.setDevicePixelRatio(qApp->devicePixelRatio());
+
+        m_bSplashImagesPrepared = true;
+        m_splashDpr = dpr;
+        m_bSplashTexDirty = true;
     }
 
     //cppcheck误报
@@ -807,6 +816,10 @@ namespace dmr {
         m_pCornerMasks[2] = nullptr;
         m_pCornerMasks[3] = nullptr;
 
+        m_bSplashImagesPrepared = false;
+        m_splashDpr = 0.0;
+        m_bSplashTexDirty = false;
+
         m_callback = nullptr;
         m_context_report = nullptr;
         m_renderContex = nullptr;
@@ -989,7 +1002,10 @@ namespace dmr {
                     m_pGlProg->setUniformValue("bg", color);
                     prepareSplashImages();
                     QOpenGLTexture *pGLTexture;
-                    m_pLightTex->setData(m_imgBgLight);
+                    if (m_bSplashTexDirty) {
+                        m_pLightTex->setData(m_imgBgLight);
+                        m_bSplashTexDirty = false;
+                    }
                     pGLTexture = m_pLightTex;
                     //和产品、ui商议深色主题下去除深色背景效果
 //                    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();

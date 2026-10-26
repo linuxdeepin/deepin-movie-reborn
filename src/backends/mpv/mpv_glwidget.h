@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -116,6 +116,9 @@ private:
 
     QImage m_imgBgDark;                    //深色主题背景图
     QImage m_imgBgLight;                   //浅色主题背景图
+    bool m_bSplashImagesPrepared;          //splash图片是否已缓存
+    qreal m_splashDpr;                     //缓存splash图片时的DPR
+    bool m_bSplashTexDirty;                //splash纹理数据是否需要重新上传
 
     //add by heyi
     mpv_render_contextSet_update_callback m_callback;
