@@ -3694,6 +3694,9 @@ void Platform_MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const 
                (sErrorMessage.toLower().contains(QString("open"))) &&
                sErrorMessage.toLower().contains(m_pEngine->getplaylist()->currentInfo().info.fileName())) {
         m_pCommHintWid->updateWithMessage(tr("No video file found"));
+    } else if (sErrorMessage.toLower().contains(QString("cannot load libcuda")) ||
+               sErrorMessage.toLower().contains(QString("could not dynamically load cuda"))) {
+        m_pCommHintWid->updateWithMessage(tr("Hardware decoding is unavailable, software decoding will be used"));
     }
 }
 
