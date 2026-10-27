@@ -346,6 +346,12 @@ public:
      */
     void restoreKWinCompositingForLjm();
 
+    /**
+     * @brief degradeTranslucentWidgetsForLjm 合成器暂停/恢复时对半透明控件做渲染降级/还原
+     * @param degraded true=降级为不透明背景，false=还原模糊/半透明
+     */
+    void degradeTranslucentWidgetsForLjm(bool degraded);
+
 public slots:
     /**
      * @brief 根据url地址播放影片

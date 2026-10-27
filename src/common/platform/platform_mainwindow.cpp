@@ -3510,6 +3510,7 @@ void Platform_MainWindow::toggleKWinCompositingForLjm(bool playing)
             return;
         }
         m_bCompositingSuspendedByUs = true;
+        degradeTranslucentWidgetsForLjm(true);
         qInfo() << "ljmcore: kwin compositing suspended for video playback";
     } else {
         restoreKWinCompositingForLjm();
@@ -3527,7 +3528,55 @@ void Platform_MainWindow::restoreKWinCompositingForLjm()
         return;   // 恢复失败保留标记，后续(暂停/退出)会重试
     }
     m_bCompositingSuspendedByUs = false;
+    degradeTranslucentWidgetsForLjm(false);
     qInfo() << "ljmcore: kwin compositing resumed";
+}
+
+void Platform_MainWindow::degradeTranslucentWidgetsForLjm(bool degraded)
+{
+    const bool bLight = (DGuiApplicationHelper::LightType
+                         == DGuiApplicationHelper::instance()->themeType());
+
+    // Params must match toolbox init in Platform_ToolboxProxy
+    // (platform_toolbox_proxy.cpp:926-939, THEME_TYPE macro:45-56)
+    constexpr int kBlurRadius = 30;
+    const QColor baseColor = bLight ? QColor(247, 247, 247) : QColor(32, 32, 32);
+    const qreal maskAlpha = bLight ? 0.6 : 0.5;
+
+    if (degraded) {
+        if (m_pToolbox) {
+            m_pToolbox->setBlurBackgroundEnabled(false);
+            auto *blur = m_pToolbox->blurBackground();
+            if (blur) {
+                blur->setMaskColor(baseColor);
+            }
+        }
+        if (m_pFullScreenTimeLabel) {
+            m_pFullScreenTimeLabel->setAttribute(Qt::WA_TranslucentBackground, false);
+            m_pFullScreenTimeLabel->setStyleSheet(
+                QString("background-color: rgba(%1, %2, %3, 1.0);")
+                    .arg(baseColor.red())
+                    .arg(baseColor.green())
+                    .arg(baseColor.blue()));
+        }
+    } else {
+        if (m_pToolbox) {
+            m_pToolbox->setBlurBackgroundEnabled(true);
+            auto *blur = m_pToolbox->blurBackground();
+            if (blur) {
+                blur->setBlurEnabled(true);
+                blur->setMode(DBlurEffectWidget::GaussianBlur);
+                blur->setRadius(kBlurRadius);
+                QColor maskColor = baseColor;
+                maskColor.setAlphaF(maskAlpha);
+                blur->setMaskColor(maskColor);
+            }
+        }
+        if (m_pFullScreenTimeLabel) {
+            m_pFullScreenTimeLabel->setStyleSheet(QString());
+            m_pFullScreenTimeLabel->setAttribute(Qt::WA_TranslucentBackground);
+        }
+    }
 }
 
 void Platform_MainWindow::slotFocusWindowChanged()
