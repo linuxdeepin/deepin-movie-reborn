@@ -28,6 +28,7 @@
 #include "vendor/presenter.h"
 #include "filefilter.h"
 #include "eventlogutils.h"
+#include <QVBoxLayout>
 
 //#include <QtWidgets>
 #include <QtDBus>
@@ -3012,6 +3013,14 @@ DSettingsDialog *Platform_MainWindow::initSettings()
     m_pDSettingDilog->setProperty("_d_QSSThemename", "dark");
     m_pDSettingDilog->setProperty("_d_QSSFilename", "DSettingsDialog");
     m_pDSettingDilog->updateSettings(Settings::get().settings());
+
+    QWidget *settingsContent = m_pDSettingDilog->findChild<QWidget *>("SettingsContent");
+    if (settingsContent) {
+        QVBoxLayout *contentLayout = qobject_cast<QVBoxLayout *>(settingsContent->layout());
+        if (contentLayout) {
+            contentLayout->setSpacing(20);
+        }
+    }
 
     //hack:
     QSpinBox *pSpinBox = m_pDSettingDilog->findChild<QSpinBox *>("OptionDSpinBox");
