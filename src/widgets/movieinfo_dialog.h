@@ -53,7 +53,7 @@ public:
         //参考设计图
         pShadowEffect->setColor(QColor(0, 0, 0, 76));
         pShadowEffect->setOffset(0, 3);
-        pShadowEffect->setBlurRadius(6);
+        pShadowEffect->setBlurRadius(20);
         setGraphicsEffect(pShadowEffect);
     }
 };
