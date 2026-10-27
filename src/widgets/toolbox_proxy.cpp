@@ -39,7 +39,7 @@ static const int RIGHT_MARGIN = 10;
 
 static const QString SLIDER_ARROW = ":resources/icons/slider.svg";
 
-#define POPUP_DURATION 350
+#define POPUP_DURATION 250
 
 DWIDGET_USE_NAMESPACE
 
@@ -1915,7 +1915,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
 
             m_bAnimationFinash = false;
             m_pPaOpen = new QPropertyAnimation(this, "geometry");
-            m_pPaOpen->setEasingCurve(QEasingCurve::Linear);
+            m_pPaOpen->setEasingCurve(QEasingCurve::OutCubic);
             m_pPaOpen->setDuration(POPUP_DURATION) ;
             m_pPaOpen->setStartValue(rc_closed);
             m_pPaOpen->setEndValue(rc_opened);
@@ -1946,7 +1946,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
                 m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
             }
             m_pPaClose = new QPropertyAnimation(this, "geometry");
-            m_pPaClose->setEasingCurve(QEasingCurve::Linear);
+            m_pPaClose->setEasingCurve(QEasingCurve::OutCubic);
             m_pPaClose->setDuration(POPUP_DURATION);
             m_pPaClose->setStartValue(rc_opened);
             m_pPaClose->setEndValue(rc_closed);
