@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -513,10 +513,15 @@ bool ValidateScreenshotPath(const QString &path)
 
 QImage LoadHiDPIImage(const QString &filename)
 {
+    return LoadHiDPIImage(filename, qApp->devicePixelRatio());
+}
+
+QImage LoadHiDPIImage(const QString &filename, qreal dpr)
+{
     QImageReader reader(filename);
-    reader.setScaledSize(reader.size() * qApp->devicePixelRatio());
+    reader.setScaledSize(reader.size() * dpr);
     auto img =  reader.read();
-    img.setDevicePixelRatio(qApp->devicePixelRatio());
+    img.setDevicePixelRatio(dpr);
     return img;
 }
 
