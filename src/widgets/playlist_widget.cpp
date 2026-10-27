@@ -21,7 +21,7 @@
 #include "../accessibility/ac-deepin-movie-define.h"
 
 #define PLAYLIST_FIXED_WIDTH 800
-#define POPUP_DURATION 350
+#define POPUP_DURATION 200
 
 namespace dmr {
 class PlayItemTooltipHandler: public QObject
@@ -1382,7 +1382,7 @@ void PlaylistWidget::togglePopup(bool isShortcut)
         }
 #ifdef __x86_64__
         paOpen = new QPropertyAnimation(this, "geometry");
-        paOpen->setEasingCurve(QEasingCurve::Linear);
+        paOpen->setEasingCurve(QEasingCurve::InCubic);
         paOpen->setDuration(POPUP_DURATION);
         paOpen->setStartValue(fixed);
         paOpen->setEndValue(shrunk);;
@@ -1406,7 +1406,7 @@ void PlaylistWidget::togglePopup(bool isShortcut)
         setVisible(!isVisible());
 #ifdef __x86_64__
         paClose = new QPropertyAnimation(this, "geometry");
-        paClose->setEasingCurve(QEasingCurve::Linear);
+        paClose->setEasingCurve(QEasingCurve::OutCubic);
         paClose->setDuration(POPUP_DURATION);
         paClose->setStartValue(shrunk);
         paClose->setEndValue(fixed);
