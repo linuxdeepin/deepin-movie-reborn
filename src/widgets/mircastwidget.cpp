@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -18,6 +18,7 @@
 #include <QNetworkReply>
 #include <QFileInfo>
 #include <QNetworkInterface>
+#include <QPainter>
 
 #define MIRCASTWIDTH 240
 #define MIRCASTHEIGHT 188
@@ -138,6 +139,20 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
 
     mainLayout->addStretch();
     m_dlnaContentServer = nullptr;
+}
+
+void MircastWidget::paintEvent(QPaintEvent *event)
+{
+    if(CompositingManager::get().platform() != X86) {
+        QPainter painter(this);
+        if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
+        } else {
+            painter.fillRect(rect(), this->palette().background());
+        }
+    } else {
+        DFloatingWidget::paintEvent(event);
+    }
 }
 /**
  * @brief getMircastState 获取投屏连接状态

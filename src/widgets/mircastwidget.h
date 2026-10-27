@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -251,6 +251,8 @@ public slots:
      * @brief getPosInfoDlnaTp 获取投屏播放视频信息
      */
     void getPosInfoDlnaTp();
+protected:
+    void paintEvent(QPaintEvent *event) override;
 signals:
     void closeServer();
     void mircastState(int state, QString msg = QString());
