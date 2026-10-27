@@ -35,6 +35,7 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     setAttribute(Qt::WA_NoMousePropagation, true);//鼠标事件不进入父窗口
     if(!CompositingManager::get().composited())
         setAttribute(Qt::WA_NativeWindow);
+    setAttribute(Qt::WA_TranslucentBackground);
     qRegisterMetaType<DlnaPositionInfo>("DlnaPositionInfo");
     setFixedSize(MIRCASTWIDTH + 14, MIRCASTHEIGHT + 12);
     setFramRadius(8);
