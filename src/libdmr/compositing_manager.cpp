@@ -167,8 +167,8 @@ CompositingManager::CompositingManager()
     for (int id = 0; id <= 10; id++) {
         if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
         if (is_device_viable(id)) {
-            qCDebug(dmrLib) << "Device" << id << "is viable. Checking for i915/arise/cx4/zx/cx drivers.";
-            vector<string> drivers = {"i915", "arise", "cx4", "zx", "cx"};
+            qCDebug(dmrLib) << "Device" << id << "is viable. Checking for i915/arise/cx4/zx/cx/gb02 drivers.";
+            vector<string> drivers = {"i915", "arise", "cx4", "zx", "cx", "gb02"};
             hasSpecialDriver = is_card_exists(id, drivers);
             qCDebug(dmrLib) << "is_card_exists for device" << id << "returned:" << hasSpecialDriver;
             break;
