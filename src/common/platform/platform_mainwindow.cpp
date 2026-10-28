@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -1086,8 +1086,7 @@ void Platform_MainWindow::updateContentGeometry(const QRect &rect)
                          values);
 
 #else
-    move(rect.x(), rect.y());
-    resize(rect.width(), rect.height());
+    setGeometry(rect);
 #endif
 }
 
