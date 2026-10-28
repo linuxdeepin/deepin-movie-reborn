@@ -33,11 +33,16 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
 : DFloatingWidget(mainWindow), m_pEngine(pEngine)
 {
     setAttribute(Qt::WA_NoMousePropagation, true);//鼠标事件不进入父窗口
+    setAttribute(Qt::WA_TranslucentBackground, true);
     if(!CompositingManager::get().composited())
         setAttribute(Qt::WA_NativeWindow);
     qRegisterMetaType<DlnaPositionInfo>("DlnaPositionInfo");
     setFixedSize(MIRCASTWIDTH + 14, MIRCASTHEIGHT + 12);
     setFramRadius(8);
+    setBlurBackgroundEnabled(true);
+    blurBackground()->setRadius(30);
+    blurBackground()->setBlurEnabled(true);
+    blurBackground()->setMode(DBlurEffectWidget::GaussianBlur);
     m_bIsToggling = false;
     m_mircastState = Idel;
     m_nPlayStatus = MircastWidget::NoState;
