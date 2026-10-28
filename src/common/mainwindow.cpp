@@ -3120,7 +3120,11 @@ void MainWindow::updateProxyGeometry()
                             rect().width() - 10, TOOLBOX_HEIGHT);
             }
             mircastPoint.setX(5 + rect().width() - 10);
-            mircastPoint.setY(height() - TOOLBOX_HEIGHT - rect().top() - 5);
+            if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened && !utils::check_wayland_env()) {
+                mircastPoint.setY(height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - rect().top() - 5);
+            } else {
+                mircastPoint.setY(height() - TOOLBOX_HEIGHT - rect().top() - 5);
+            }
 #ifdef DTKWIDGET_CLASS_DSizeMode
     if (DGuiApplicationHelper::instance()->sizeMode() == DGuiApplicationHelper::CompactMode) {
         if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened && !utils::check_wayland_env()) {
@@ -3131,7 +3135,11 @@ void MainWindow::updateProxyGeometry()
                         rect().width() - 10, TOOLBOX_DSIZEMODE_HEIGHT);
         }
         mircastPoint.setX(5 + rect().width() - 10);
-        mircastPoint.setY(height() - TOOLBOX_DSIZEMODE_HEIGHT - rect().top() - 5);
+        if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened && !utils::check_wayland_env()) {
+            mircastPoint.setY(height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_DSIZEMODE_HEIGHT) - rect().top() - 5);
+        } else {
+            mircastPoint.setY(height() - TOOLBOX_DSIZEMODE_HEIGHT - rect().top() - 5);
+        }
     }
 #endif
             m_pToolbox->setGeometry(rfs);
