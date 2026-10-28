@@ -923,10 +923,14 @@ void Platform_ToolboxProxy::setup()
     stacked->setStackingMode(QStackedLayout::StackAll);
     setLayout(stacked);
 
-    this->setBlurBackgroundEnabled(true);
-    this->blurBackground()->setRadius(30);
-    this->blurBackground()->setBlurEnabled(true);
-    this->blurBackground()->setMode(DBlurEffectWidget::GaussianBlur);
+    if (CompositingManager::get().composited()) {
+        this->setBlurBackgroundEnabled(true);
+        this->blurBackground()->setRadius(30);
+        this->blurBackground()->setBlurEnabled(true);
+        this->blurBackground()->setMode(DBlurEffectWidget::GaussianBlur);
+    } else {
+        this->setBlurBackgroundEnabled(false);
+    }
 
     bot_widget = new DBlurEffectWidget(this);
     bot_widget->setObjectName(BOTTOM_WIDGET);
