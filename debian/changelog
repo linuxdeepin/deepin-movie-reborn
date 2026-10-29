@@ -1,3 +1,36 @@
+deepin-movie-reborn (6.5.60) unstable; urgency=medium
+
+  * chore: Update version to 6.5.60
+  * fix: add Sietium gb02 driver to special GPU detection list
+  * test: 适配 deepin-reader 风格的单测统计脚本
+  * fix: add AT-SPI accessible names for widgets missing them
+  * refactor(widgets): categorize widgets module logs
+  * refactor(backend): categorize mpv backend and vendor logs
+  * refactor(common): categorize common module logs
+  * feat: add unified log categories and DConfig log rules watcher
+  * refactor(libdmr): categorize libdmr logs
+  * refactor(dlna): categorize DLNA module logs
+  * feat: integrate DConfig dynamic log rules into main and add meta
+  * chore(packaging): migrate linglong.yaml to declarative buildext deps
+  * fix: add Fantasy GPU detection to disable OpenGL compositing
+  * fix: make judgeMouseInWindow return actual mouse-in-window result
+  * fix: check event type before downcasting in toolbox eventFilter
+  * fix: null-check dynamic_cast results before dereferencing in mpv_proxy
+  * fix: guard findChild and X11 display results in MainWindow
+  * test(ut): add MainWindow regression tests
+  * test(ut): add regression tests for libdmr module
+  * test(ut): add MpvProxy regression tests
+  * fix(movie): fix Tip leak and add missing switch defaults
+  * fix: pass valid argv to execv instead of nullptr
+  * fix: replace strcpy with strncpy in thumb workers
+  * fix: use QActionGroup parameter in DEF_ACTION_GROUP macro
+  * fix: move ToolTipEvent alloc into condition block
+  * fix: guard null socket and harden connection lifecycle
+  * fix: fix heap buffer overflow in typeJudgeByGst
+  * fix: remove Qt version conditional in MethodToString
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 29 Oct 2026 11:36:33 +0800
+
 deepin-movie-reborn (6.5.59) unstable; urgency=medium
 
   * chore: Update version to 6.5.59
