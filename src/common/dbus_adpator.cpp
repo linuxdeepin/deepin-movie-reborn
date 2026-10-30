@@ -138,8 +138,8 @@ QVariant ApplicationAdaptor::readDBusMethod(const QString &sService, const QStri
     // 调用远程的value方法
     QDBusReply<QDBusVariant> reply = ainterface.call(pMethod);
     if (reply.isValid()) {
-        QVariant v(0) ;
-        return  v;
+        qCDebug(appMovie) << "Exiting ApplicationAdaptor::readDBusMethod with valid reply.";
+        return reply.value().variant();
     } else {
         qCInfo(appMovie) << "error1:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
