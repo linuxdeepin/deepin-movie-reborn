@@ -21,15 +21,18 @@ lcov --directory ./CMakeFiles/deepin-movie-test.dir --zerocounters
 # 的 crashHandler 会在崩溃时 __gcov_dump() 刷新 .gcda，所以崩溃的那次仍贡献到
 # 崩溃点为止的覆盖；多次累加把 flaky 崩溃丢掉的尾部补回来。
 for ut_run in 1 2 3; do
-    ASAN_OPTIONS="fast_unwind_on_malloc=1" ./$executable; ec=$?; echo "==>> ${executable} 第${ut_run}次 退出码=$ec (134=SIGABRT/Q_ASSERT, 139=SIGSEGV, 0=正常)"
+    ASAN_OPTIONS="fast_unwind_on_malloc=1" timeout 600 ./$executable; ec=$?; echo "==>> ${executable} 第${ut_run}次 退出码=$ec (134=SIGABRT/Q_ASSERT, 139=SIGSEGV, 0=正常, 124=超时)"
 done
 lcov --directory . --capture --output-file ./html/${executable}_Coverage.info
 
 echo " =================== do filter begin ==================== "
 if [ ${platform} = x86_64 ];then
-lcov --remove ./html/${executable}_Coverage.info 'tests/CMakeFiles/${executable}.dir/${executable}_autogen/*/*' '${executable}_autogen/*/*/*.cpp' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/common/utility_x11.*' '*/src/common/settings_translation.cpp' '*/src/common/event_monitor.cpp' '*/src/widgets/videoboxbutton.cpp' '*/src/common/hwdec_probe.*'  '*/src/common/platform/*' '*/src/widgets/platform/*' '*/src/dlna/dlnaHttpServer/*' '*/src/widgets/movie_progress_indicator.cpp' '*/src/libdmr/gstutils.cpp' '*/src/common/sysutils.cpp' '*/src/common/diskcheckthread.cpp' '*/src/libdmr/online_sub.cpp' '*/src/widgets/burst_screenshots_dialog.cpp' '*/src/common/thumbnail_worker.*' '*/src/dlna/dlnacontentserver.cpp' '*/src/common/dbus_adpator.cpp' '*/src/libdmr/filefilter.cpp' '*/src/common/shortcut_manager.cpp'  -o ./html/${executable}_Coverage_fileter.info
+# ut-movie-t17 作用域: utility_x11/hwdec_probe/platform_dbus_adpator/dbus_adpator/
+# sysutils/diskcheckthread/volumemonitoring/dbusutils/ddlog/threadpool 纳入统计,
+# 相应从排除清单移除; platform 主窗口等其余平台文件仍排除
+lcov --remove ./html/${executable}_Coverage.info 'tests/CMakeFiles/${executable}.dir/${executable}_autogen/*/*' '${executable}_autogen/*/*/*.cpp' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/common/settings_translation.cpp' '*/src/common/event_monitor.cpp' '*/src/widgets/videoboxbutton.cpp' '*/src/common/platform/platform_mainwindow.*' '*/src/common/platform/platform_thumbnail_worker.*' '*/src/widgets/platform/*' '*/src/dlna/dlnaHttpServer/*' '*/src/widgets/movie_progress_indicator.cpp' '*/src/libdmr/gstutils.cpp' '*/src/libdmr/online_sub.cpp' '*/src/widgets/burst_screenshots_dialog.cpp' '*/src/common/thumbnail_worker.*' '*/src/dlna/dlnacontentserver.cpp' '*/src/libdmr/filefilter.cpp' '*/src/common/shortcut_manager.cpp'  -o ./html/${executable}_Coverage_fileter.info
 else
-lcov --remove ./html/${executable}_Coverage.info 'tests/CMakeFiles/${executable}.dir/${executable}_autogen/*/*' '${executable}_autogen/*/*/*.cpp' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/common/utility_x11.*' '*/src/common/settings_translation.cpp' '*/src/common/event_monitor.cpp' '*/src/widgets/videoboxbutton.cpp' '*/src/backends/mpv/mpv_glwidget.cpp' '*/src/common/thumbnail_worker.*'  '*/src/common/platform/*' '*/src/widgets/platform/*' '*/src/dlna/dlnaHttpServer/*' -o ./html/${executable}_Coverage_fileter.info
+lcov --remove ./html/${executable}_Coverage.info 'tests/CMakeFiles/${executable}.dir/${executable}_autogen/*/*' '${executable}_autogen/*/*/*.cpp' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/common/settings_translation.cpp' '*/src/common/event_monitor.cpp' '*/src/widgets/videoboxbutton.cpp' '*/src/backends/mpv/mpv_glwidget.cpp' '*/src/common/thumbnail_worker.*'  '*/src/common/platform/platform_mainwindow.*' '*/src/common/platform/platform_thumbnail_worker.*' '*/src/widgets/platform/*' '*/src/dlna/dlnaHttpServer/*' -o ./html/${executable}_Coverage_fileter.info
 echo true
 fi
 echo " =================== do filter end ====================== "
