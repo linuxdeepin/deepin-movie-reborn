@@ -24,6 +24,10 @@ VolumeButton::VolumeButton(QWidget *parent)
 
     connect(&m_showTime, &QTimer::timeout, [=]{
         qCDebug(appMovie) << "Tooltip timer triggered, showing volume tooltip";
+        if (nullptr == this->parentWidget()) {
+            qCDebug(appMovie) << "Parent widget is null, skipping tooltip";
+            return;
+        }
         QPoint pos = this->parentWidget()->mapToGlobal(this->pos());
         pos.rx() = pos.x() + (this->width() - m_pToolTip->width()) / 2;
         pos.ry() = pos.y() - 40;
@@ -218,8 +222,8 @@ bool VolumeButton::eventFilter(QObject *obj, QEvent *e)
            emit sigUnsupported();
         }
 
-        qCDebug(appMovie) << "Exiting VolumeButton::eventFilter() - returning false";
-        return false;
+        qCDebug(appMovie) << "Exiting VolumeButton::eventFilter() - returning true";
+        return true;
     }
 
     qCDebug(appMovie) << "Exiting VolumeButton::eventFilter() - delegating to parent";
