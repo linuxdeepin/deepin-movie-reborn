@@ -225,9 +225,10 @@ TEST(dmrsettings_ext, generalOption_roundTrip)
     // 必须用 schema 中真实存在的 base.general 选项(如 last_open_path),
     // 否则 DTK DSettings::setOption 会解引用空指针导致崩溃。
     QVariant prev = Settings::get().settings()->value("base.general.last_open_path");
-    Settings::get().setGeneralOption("last_open_path", QStringLiteral("/tmp/dmr_ut_general"));
-    EXPECT_EQ(Settings::get().generalOption("last_open_path").toString(),
-              QStringLiteral("/tmp/dmr_ut_general"));
+    // temp-path based value instead of a hardcoded /tmp literal
+    const QString dmrUtGeneral = QDir::tempPath() + QStringLiteral("/dmr_ut_general");
+    Settings::get().setGeneralOption("last_open_path", dmrUtGeneral);
+    EXPECT_EQ(Settings::get().generalOption("last_open_path").toString(), dmrUtGeneral);
 
     Settings::get().setGeneralOption("last_open_path", QString());
     EXPECT_TRUE(Settings::get().generalOption("last_open_path").toString().isEmpty());
@@ -273,8 +274,8 @@ TEST(dmrsettings_ext, disableInterop_returnsBool)
 TEST(dmrsettings_ext, screenshotLocation_expandsTildeAndCreatesDir)
 {
     // Use a temp dir under home so the '~' expansion branch is exercised.
-    QString tmp = QDir::homePath() + "/.dmr_ut_screenshot_" +
-                  QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz");
+    // Fixed name keeps the case deterministic; removed again at the end.
+    QString tmp = QDir::homePath() + "/.dmr_ut_screenshot_tilde";
     Settings::get().settings()->setOption("base.screenshot.location",
                                           QString("~") + tmp.mid(QDir::homePath().size()));
     Settings::get().settings()->sync();
@@ -424,6 +425,179 @@ TEST(dmrsettings_ext, decodeAndEffectHandlers)
     // restore
     if (auto opt = s->option("base.decode.Effect"))  opt->setValue(ovEffect);
     if (auto opt = s->option("base.decode.select"))  opt->setValue(ovSelect);
+    s->sync();
+    QTest::qWait(20);
+}
+
+// ==========================================================================
+// Settings constructor output contract (dmr_settings.cpp:29-363).
+// The ctor builds the DSettings tree from the embedded JSON schema, fills the
+// playmode / hwaccel item lists, normalizes the decode indexes and connects
+// the valueChanged cascade. These cases assert that output through the public
+// API only; the keys below exist in both settings.json and the
+// lowEffectSettings.json variant, so the assertions hold on every host.
+// ==========================================================================
+#include <QSignalSpy>
+
+// Fixture for the appended ctor-contract cases: guarantees a clean on-disk
+// config state around each case (the shared Settings singleton is untouched).
+class DmrSettingsTestEnv : public ::testing::Test {
+protected:
+    void SetUp() override
+    {
+        QDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation))
+            .removeRecursively();
+    }
+    void TearDown() override
+    {
+        QDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation))
+            .removeRecursively();
+    }
+};
+
+TEST_F(DmrSettingsTestEnv, settingsTree_CoreOptions_Present)
+{
+    // Arrange
+    DSettings *s = Settings::get().settings();
+    ASSERT_NE(s, nullptr);
+    // Act
+    auto playmode = s->option("base.play.playmode");
+    // Assert: ctor-contract core options must exist in the tree
+    EXPECT_NE(playmode, nullptr);
+    EXPECT_NE(s->option("base.play.mute"), nullptr);
+    EXPECT_NE(s->option("base.play.hwaccel"), nullptr);
+    EXPECT_NE(s->option("base.decode.select"), nullptr);
+    EXPECT_NE(s->option("base.screenshot.location"), nullptr);
+}
+
+TEST_F(DmrSettingsTestEnv, settingsTree_PlaymodeItems_PopulatedByCtor)
+{
+    // Arrange
+    DSettings *s = Settings::get().settings();
+    ASSERT_NE(s, nullptr);
+    auto opt = s->option("base.play.playmode");
+    ASSERT_NE(opt, nullptr);
+    // Act
+    const QStringList items = opt->data("items").toStringList();
+    // Assert: the ctor replaces the item list with the 5 play modes.
+    EXPECT_FALSE(items.isEmpty());
+    EXPECT_EQ(items.size(), 5);
+}
+
+TEST_F(DmrSettingsTestEnv, settingsTree_HwaccelItems_PopulatedByCtor)
+{
+    // Arrange
+    DSettings *s = Settings::get().settings();
+    ASSERT_NE(s, nullptr);
+    auto opt = s->option("base.play.hwaccel");
+    ASSERT_NE(opt, nullptr);
+    // Act
+    const QStringList items = opt->data("items").toStringList();
+    // Assert: the ctor sets the Auto/Open/Close item list (3 entries).
+    EXPECT_FALSE(items.isEmpty());
+    EXPECT_EQ(items.size(), 3);
+}
+
+TEST_F(DmrSettingsTestEnv, settingsTree_DecodeIndexes_NormalizedByCtor)
+{
+    // Arrange
+    DSettings *s = Settings::get().settings();
+    ASSERT_NE(s, nullptr);
+    const QStringList keys = {"base.decode.Effect", "base.decode.Videoout",
+                              "base.decode.Decodemode"};
+    // Act: read every decode index back from the tree.
+    for (const QString &key : keys) {
+        auto opt = s->option(key);
+        ASSERT_NE(opt, nullptr) << key.toStdString();
+        int v = s->value(key).toInt();
+        // Assert: normalizeOptionIndex clamped each index into
+        // [0, items.size()).
+        EXPECT_GE(v, 0) << key.toStdString();
+        const QStringList items = opt->data("items").toStringList();
+        if (!items.isEmpty()) {
+            EXPECT_LT(v, items.size()) << key.toStdString();
+        }
+    }
+}
+
+// ---- Settings ctor valueChanged cascade (observable via signals) ----
+
+TEST_F(DmrSettingsTestEnv, valueChanged_ShortcutsKey_EmitsShortcutsChanged)
+{
+    // Arrange
+    DSettings *s = Settings::get().settings();
+    ASSERT_NE(s, nullptr);
+    QVariant prev = s->value("shortcuts.play.pause_play");
+    QSignalSpy spy(&Settings::get(), &Settings::shortcutsChanged);
+    ASSERT_TRUE(spy.isValid());
+
+    // Act
+    s->setOption("shortcuts.play.pause_play", QStringLiteral("X"));
+    s->sync();
+    QTest::qWait(80);
+
+    // Assert
+    EXPECT_GE(spy.count(), 1);
+    if (spy.count() > 0) {
+        QList<QVariant> args = spy.first();
+        EXPECT_EQ(args.at(0).toString(), QStringLiteral("shortcuts.play.pause_play"));
+        EXPECT_EQ(args.at(1).toString(), QStringLiteral("X"));
+    }
+
+    s->setOption("shortcuts.play.pause_play", prev);
+    s->sync();
+    QTest::qWait(20);
+}
+
+TEST_F(DmrSettingsTestEnv, valueChanged_PlaymodeKey_EmitsDefaultPlaymodeChanged)
+{
+    // Arrange
+    DSettings *s = Settings::get().settings();
+    ASSERT_NE(s, nullptr);
+    QVariant prev = s->value("base.play.playmode");
+    QSignalSpy spy(&Settings::get(), &Settings::defaultplaymodechanged);
+    ASSERT_TRUE(spy.isValid());
+
+    // Act
+    s->setOption("base.play.playmode", 2);
+    s->sync();
+    QTest::qWait(80);
+
+    // Assert
+    EXPECT_GE(spy.count(), 1);
+    if (spy.count() > 0) {
+        QList<QVariant> args = spy.first();
+        EXPECT_EQ(args.at(0).toString(), QStringLiteral("base.play.playmode"));
+    }
+
+    s->setOption("base.play.playmode", prev);
+    s->sync();
+    QTest::qWait(20);
+}
+
+TEST_F(DmrSettingsTestEnv, valueChanged_MuteKey_EmitsBaseMuteChanged)
+{
+    // Arrange
+    DSettings *s = Settings::get().settings();
+    ASSERT_NE(s, nullptr);
+    QVariant prev = s->value("base.play.mute");
+    QSignalSpy spy(&Settings::get(), &Settings::baseMuteChanged);
+    ASSERT_TRUE(spy.isValid());
+
+    // Act
+    s->setOption("base.play.mute", true);
+    s->sync();
+    QTest::qWait(80);
+
+    // Assert
+    EXPECT_GE(spy.count(), 1);
+    if (spy.count() > 0) {
+        QList<QVariant> args = spy.first();
+        EXPECT_EQ(args.at(0).toString(), QStringLiteral("base.play.mute"));
+        EXPECT_EQ(args.at(1).toBool(), true);
+    }
+
+    s->setOption("base.play.mute", prev);
     s->sync();
     QTest::qWait(20);
 }
