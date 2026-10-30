@@ -66,6 +66,10 @@ void Platform_ApplicationAdaptor::funOpenFile(const QString &sFile)
     qCDebug(appMovie) << "Entering Platform_ApplicationAdaptor::funOpenFile. File to search:" << sFile;
     if(m_pMainWindow) {
         qCDebug(appMovie) << "MainWindow is valid. Retrieving playlist items.";
+        if (!m_pMainWindow->playlist()) {
+            qCDebug(appMovie) << "Playlist not yet loaded, cannot search items.";
+            return;
+        }
         QList<PlayItemInfo> lstItem = m_pMainWindow->playlist()->engine()->playlist().items();
         qCDebug(appMovie) << "Playlist items count:" << lstItem.count();
         for (PlayItemInfo info: lstItem) {
