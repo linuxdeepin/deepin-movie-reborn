@@ -5116,22 +5116,37 @@ void Platform_MainWindow::prepareSplashImages()
 void Platform_MainWindow::subtitleMatchVideo(const QString &sFileName)
 {
     qCDebug(appMovie) << "Enter subtitleMatchVideo function";
-    QString sVideoName = sFileName;
+    QString sVideoName;
     // Search for video files with the same name as the subtitles and play the video file.
     QFileInfo subfileInfo(sFileName);
     QDir dir(subfileInfo.canonicalPath());
     dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
     dir.setSorting(QDir::Size | QDir::Reversed);
+    // Only consider video files as candidates (DEF-PMW-001)
+    dir.setNameFilters(PlayerEngine::video_filetypes);
+
+    const QString subBase = subfileInfo.completeBaseName();
+    const QString subCanonical = subfileInfo.canonicalFilePath();
 
     QFileInfoList list = dir.entryInfoList();
     for (int i = 0; i < list.size(); ++i) {
         QFileInfo info = list.at(i);
         qCInfo(appMovie) << info.absoluteFilePath();
-//        if (info.completeBaseName() == subfileInfo.completeBaseName()) {
-        if (subfileInfo.fileName().contains(info.completeBaseName())) {
+
+        // Skip the subtitle file itself (DEF-PMW-001)
+        if (info.canonicalFilePath() == subCanonical) {
+            continue;
+        }
+
+        // Match by exact or prefix base name instead of loose substring (DEF-PMW-003)
+        const QString videoBase = info.completeBaseName();
+        if (videoBase == subBase ||
+            (subBase.startsWith(videoBase) && subBase.length() > videoBase.length() &&
+             (subBase.at(videoBase.length()) == '.' ||
+              subBase.at(videoBase.length()) == '_' ||
+              subBase.at(videoBase.length()) == '-'))) {
             sVideoName = info.absoluteFilePath();
-        } else {
-            sVideoName = nullptr;
+            break;
         }
     }
 
