@@ -64,9 +64,8 @@ QVariant DBusUtils::readDBusMethod(const QString &sService, const QString &sPath
     qCDebug(appMovie) << "Attempting to call method:" << pMethod;
     QDBusReply<QDBusVariant> reply = ainterface.call(pMethod);
     if (reply.isValid()) {
-//        return reply.value();
-        QVariant v(0) ;
-        return  v;
+        qCDebug(appMovie) << "Exiting DBusUtils::readDBusMethod with valid reply.";
+        return reply.value().variant();
     } else {
         //qCInfo(appMovie) << "error1:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
