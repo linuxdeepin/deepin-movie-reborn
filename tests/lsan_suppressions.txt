@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: 2026 UnionTech Software Technology Co., Ltd.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# deepin-movie-reborn 单测 LSan 误报抑制清单
+# 用法: ASAN_OPTIONS="suppressions=<repo>/tests/lsan_suppressions.txt:fast_unwind_on_malloc=1"
+# 说明: 本仓库 UT 默认 ENABLE_SANITIZE=OFF; 开启 sanitizer 的构建中,
+#       Qt/DTK/第三方库内部的"仍可达"分配会被 LSan 误报, 在此按库前缀抑制。
+leak:libQt6Core
+leak:libQt6Gui
+leak:libQt6Widgets
+leak:libQt6DBus
+leak:libQt6Network
+leak:libQt6XcbQpa
+leak:libdtkcore
+leak:libdtkgui
+leak:libdtkwidget
+leak:libfontconfig
+leak:libfreetype
+leak:libglib-2.0
+leak:libmpv
+leak:libavcodec
+leak:libavformat
+leak:libcuda
+leak:libnvidia
+leak:libX11
+leak:libxcb
