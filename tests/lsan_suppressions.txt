@@ -25,3 +25,14 @@ leak:libcuda
 leak:libnvidia
 leak:libX11
 leak:libxcb
+
+# Qt6 DBus / event-loop deferred cleanup (freed at process exit, reported as leak)
+leak:QDBusConnectionManager
+leak:QDBusServiceWatcher
+leak:QMetaType
+leak:QFactoryLoader
+
+# fontconfig caches font patterns at startup; freed never (framework-level)
+leak:libfontconfig.so.1
+# libstdc++ internal realloc (locale/string statics) with no caller frames
+leak:libstdc++.so.6
