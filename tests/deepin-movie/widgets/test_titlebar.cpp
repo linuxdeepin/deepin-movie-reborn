@@ -391,3 +391,14 @@ TEST(titlebar_ext, destroy_afterUse_cleansUp)
     }
     EXPECT_NO_FATAL_FAILURE(tb_wait(20));
 }
+
+// Deleting a heap instance also exercises the deleting destructor (D0).
+TEST(titlebar_ext, destroy_heapInstance_cleansUp)
+{
+    QWidget parent;
+    TitlebarThemeGuard guard(DGuiApplicationHelper::LightType);
+    Titlebar *tb = new Titlebar(&parent);
+    tb->slotThemeTypeChanged();
+    delete tb;
+    SUCCEED();
+}

@@ -375,3 +375,15 @@ TEST(tip_ext, destroy_afterPop_cleansUp)
     }
     SUCCEED();
 }
+
+// Deleting a heap instance also exercises the deleting destructor (D0).
+TEST(tip_ext, destroy_heapInstance_cleansUp)
+{
+    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
+    TipEnvGuard env(true, DGuiApplicationHelper::LightType);
+    Tip *t = new Tip(QPixmap(), QString("heap"), nullptr);
+    t->pop(QPoint(30, 30));
+    EXPECT_TRUE(t->isVisible());
+    delete t;
+    SUCCEED();
+}
