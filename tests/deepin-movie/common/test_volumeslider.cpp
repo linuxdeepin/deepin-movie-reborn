@@ -27,6 +27,7 @@
 //   * enter/leave + delayedHide m_mouseIn guard   -> vse_delayedHide_hidesWhenNotIn / vse_enterEvent_rearmPreventsHide
 //   * paintEvent both-theme smoke                 -> vse_paintEvent_doesNotCrash
 //   * keyPressEvent delegates to QWidget          -> vse_keyPressEvent_delegates_noVolumeChange
+//   * updatePoint stores computed anchor          -> vse_updatePoint_movesToComputedPoint
 //   * readSinkInputPath (DBus, stubbed)           -> vse_readSinkInputPath_*
 //   * setMute guard + DBus-invalid path           -> vse_setMute_guard_zeroVolume / vse_setMute_dbusInvalid_noCrash
 //   * stopTimer / setThemeType idempotent         -> vse_stopTimer_idempotent / vse_setThemeType_noop
@@ -891,6 +892,32 @@ TEST(volume_slider_ext, vse_keyPressEvent_delegates_noVolumeChange)
     QApplication::sendEvent(vs, &up);
 
     EXPECT_EQ(vs->getVolume(), 40);
+
+    delete vs;
+}
+
+TEST(volume_slider_ext, vse_updatePoint_movesToComputedPoint)
+{
+    // Arrange
+    VolumeSlider *vs = vse_makeSlider();
+    ASSERT_NE(vs, nullptr);
+    MainWindow *mw = dApp->getMainWindow();
+    ASSERT_NE(mw, nullptr);
+
+    // Expected anchor mirrors the production arithmetic exactly: the point
+    // offset by the margin-shrunk view rect and the toolbox/volslider layout
+    // constants from volumeslider.h.
+    QRect viewRect = mw->rect().marginsRemoved(QMargins(1, 1, 1, 1));
+    QPoint offset(viewRect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40
+                                      + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
+                  viewRect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT);
+    QPoint expected = QPoint(10, 10) + offset;
+
+    // Act
+    vs->updatePoint(QPoint(10, 10));
+
+    // Assert: the stored anchor equals the computed position.
+    EXPECT_EQ(vs->m_point, expected);
 
     delete vs;
 }
