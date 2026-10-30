@@ -1690,7 +1690,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind actionKind)
             (*p)->setEnabled(false);
             if (actionKind == ActionFactory::TogglePlaylist) {
                 // here what we read is the last state of playlist
-                if (m_pPlaylist->state() != PlaylistWidget::Opened) {
+                if (!m_pPlaylist || m_pPlaylist->state() != PlaylistWidget::Opened) {
                     (*p)->setChecked(false);
                 } else {
                     (*p)->setChecked(true);
@@ -2350,7 +2350,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                 qCDebug(appMovie) << "m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Closed && !m_pToolbox->isVisible(), m_pToolbox->show()";
                 m_pToolbox->show();
             }
-            m_pPlaylist->togglePopup(bIsShortcut);
+            if (m_pPlaylist) {
+                m_pPlaylist->togglePopup(bIsShortcut);
+            }
             if (!bFromUI) {
                 qCDebug(appMovie) << "!bFromUI, reflectActionToUI";
                 reflectActionToUI(actionKind);
@@ -2496,7 +2498,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             }
         } else {
             //当焦点在播放列表上按下Esc键，播放列表收起，焦点回到列表按钮上
-            if (m_pPlaylist->state() == PlaylistWidget::Opened) {
+            if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Opened) {
                 qCDebug(appMovie) << "m_pPlaylist->state() == PlaylistWidget::Opened";
                 m_pToolbox->playlistClosedByEsc();
             }
@@ -2605,19 +2607,25 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::PlaylistRemoveItem: {
         qCDebug(appMovie) << "ActionFactory::ActionKind::PlaylistRemoveItem";
-        m_pPlaylist->removeClickedItem(bIsShortcut);
+        if (m_pPlaylist) {
+            m_pPlaylist->removeClickedItem(bIsShortcut);
+        }
         break;
     }
 
     case ActionFactory::ActionKind::PlaylistOpenItemInFM: {
         qCDebug(appMovie) << "ActionFactory::ActionKind::PlaylistOpenItemInFM";
-        m_pPlaylist->openItemInFM();
+        if (m_pPlaylist) {
+            m_pPlaylist->openItemInFM();
+        }
         break;
     }
 
     case ActionFactory::ActionKind::PlaylistItemInfo: {
         qCDebug(appMovie) << "ActionFactory::ActionKind::PlaylistItemInfo";
-        m_pPlaylist->showItemInfo();
+        if (m_pPlaylist) {
+            m_pPlaylist->showItemInfo();
+        }
         break;
     }
 
@@ -3514,6 +3522,17 @@ void MainWindow::play(const QList<QString> &listFiles)
 {
     qCDebug(appMovie) << "Starting playback with" << listFiles.size() << "files";
     Q_ASSERT(m_pEngine);
+
+    // Guard: m_pPlaylist is created asynchronously via QTimer::singleShot(300, loadPlayList).
+    // If play() is called before the playlist is ready (e.g. early DBus openFile),
+    // defer by storing files so loadPlayList() will play them once the playlist exists.
+    if (!m_pPlaylist) {
+        qCInfo(appMovie) << "Playlist not yet loaded, deferring playback for" << listFiles.size() << "files";
+        if (!listFiles.isEmpty()) {
+            m_listOpenFiles = listFiles;
+        }
+        return;
+    }
 
 #ifdef DTKCORE_CLASS_DConfigFile
     DConfig *dconfig = DConfig::create("org.deepin.movie","org.deepin.movie.restart");
@@ -4495,7 +4514,7 @@ void MainWindow::showEvent(QShowEvent *pEvent)
 
     if (!qgetenv("FLATPAK_APPID").isEmpty()) {
         qCInfo(appMovie) << "workaround for flatpak";
-        if (m_pPlaylist->isVisible())
+        if (m_pPlaylist && m_pPlaylist->isVisible())
             updateProxyGeometry();
     }
 
@@ -5550,7 +5569,7 @@ void MainWindow::toggleUIMode()
         }
 
         if (m_nStateBeforeMiniMode & SBEM_PlaylistOpened &&
-                m_pPlaylist->state() == PlaylistWidget::Closed) {
+                m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Closed) {
             if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
                 QTimer::singleShot(100, [ = ]() {
                     qCDebug(appMovie) << "QTimer::singleShot(100, [ = ]())";
