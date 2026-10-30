@@ -5549,6 +5549,11 @@ void Platform_MainWindow::dropEvent(QDropEvent *pEvent)
     QList<QString> lstFile;
     QList<QUrl> urls = pEvent->mimeData()->urls();
 
+    if (urls.isEmpty()) {
+        qCDebug(appMovie) << "urls.isEmpty(), return";
+        return;
+    }
+
     for (QUrl strUrl : urls) {
         lstFile << strUrl.path();
     }
