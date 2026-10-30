@@ -409,6 +409,10 @@ QList<QAction *> ActionFactory::findActionsByKind(ActionKind target_kd)
     QList<QAction *> listAction;
     auto itor = m_listContextMenuActions.begin();
     while (itor != m_listContextMenuActions.end()) {
+        if (itor->isNull()) {
+            itor = m_listContextMenuActions.erase(itor);
+            continue;
+        }
 #if QT_VERSION < QT_VERSION_CHECK(5, 7, 0)
         auto kd = (ActionKind)(*p)->property("kind").value<int>();
 #else
