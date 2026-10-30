@@ -29,7 +29,7 @@ cd "$BDIR" || exit 1
 # "stamp mismatch" mid-capture).
 find "$GCDA_DIR" -name '*.gcda' -delete 2>/dev/null
 
-SUITES="dmrsettings_ext engine_model_ext filefilter_ext libdmr libdmr_ext logic_ext MainWindow mircast_ext MovieApp movieconfig_ext PadMode platform_mw_ext platform_mw_ext2 platform_mw_ext3 platform_mw_ext4 platform_mw_ext5 platform_mw_ext6 platform_tb_ext platform_tb_ext3 platform_tb_ext4 platform_widgets_ext platform_pw_ext mircastwidget_ext PlayerEngine player_engine_ext playlist_model_ext compositing_ext online_sub_ext Presenter requestAction Settings ToolBox qhttp_ext mpv_proxy_ext mpv_proxy_ext2 utils_ext Wayland dlna_ext mircastwidget_ext2 small_widgets_ext"
+SUITES="dmrsettings_ext engine_model_ext filefilter_ext libdmr libdmr_ext logic_ext MainWindow mircast_ext MovieApp movieconfig_ext PadMode platform_mw_ext platform_mw_ext2 platform_mw_ext3 platform_mw_ext4 platform_mw_ext5 platform_mw_ext6 platform_mw_ext7 platform_tb_ext platform_tb_ext3 platform_tb_ext4 platform_widgets_ext platform_pw_ext mircastwidget_ext PlayerEngine player_engine_ext playlist_model_ext compositing_ext online_sub_ext Presenter requestAction Settings ToolBox qhttp_ext mpv_proxy_ext mpv_proxy_ext2 utils_ext Wayland dlna_ext mircastwidget_ext2 small_widgets_ext"
 
 # Suites with a known crashing case: run once normally (covers up to the crash),
 # then again excluding that case (covers the tail). gcov accumulates both.
