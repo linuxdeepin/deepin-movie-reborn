@@ -1984,15 +1984,17 @@ TEST(MainWindow, slotFontChanged_UpdatesLabelWidths)
     EXPECT_GE(lbl->minimumWidth(), 0);
 }
 
-// 窗口中心鼠标点：judgeMouseInWindow 返回 false（现状：bRet 计算后从不置 true）
+// 窗外鼠标点：judgeMouseInWindow 返回 false（rect.contains 不命中）
 TEST(MainWindow, judgeMouseInWindow_CenterReturnsFalse)
 {
     MainWindow *w = dApp->getMainWindow();
     ASSERT_NE(nullptr, w);
 
     bool ret = true;
-    EXPECT_NO_THROW(ret = w->judgeMouseInWindow(QPoint(10, 10)));
-    EXPECT_FALSE(ret);   // 已知现状：返回值恒 false
+    // 取窗口几何左上角远处偏移，保证无论 WM 如何摆窗都在窗口矩形之外
+    QPoint outside = w->frameGeometry().topLeft() - QPoint(5000, 5000);
+    EXPECT_NO_THROW(ret = w->judgeMouseInWindow(outside));
+    EXPECT_FALSE(ret);   // 窗外点必不命中窗口矩形
 }
 
 // 窗口边缘鼠标点：触发 leaveEvent（autoHideTimer 停止 + 工具窗口挂起）

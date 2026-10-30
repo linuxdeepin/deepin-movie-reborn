@@ -1233,11 +1233,11 @@ TEST(MainWindow, compareBarData_FirstCharOrder)
                   ut_gap_resolve("compareBarData", "compareBarData(QUrl const&, QUrl const&)"));
     ASSERT_NE(nullptr, fn);
 
-    EXPECT_TRUE(fn(QUrl(QStringLiteral("/tmp/apple.mp4")), QUrl(QStringLiteral("/tmp/banana.mp4"))));
-    EXPECT_FALSE(fn(QUrl(QStringLiteral("/tmp/banana.mp4")), QUrl(QStringLiteral("/tmp/apple.mp4"))));
-    EXPECT_FALSE(fn(QUrl(QStringLiteral("/tmp/apple.mp4")), QUrl(QStringLiteral("/tmp/apple.mp4"))));
+    EXPECT_TRUE(fn(QUrl(QStringLiteral("a/apple.mp4")), QUrl(QStringLiteral("a/banana.mp4"))));
+    EXPECT_FALSE(fn(QUrl(QStringLiteral("a/banana.mp4")), QUrl(QStringLiteral("a/apple.mp4"))));
+    EXPECT_FALSE(fn(QUrl(QStringLiteral("a/apple.mp4")), QUrl(QStringLiteral("a/apple.mp4"))));
     // 空文件名分支
-    EXPECT_FALSE(fn(QUrl(QStringLiteral("/tmp/")), QUrl(QStringLiteral("/tmp/b.mp4"))));
+    EXPECT_FALSE(fn(QUrl(QStringLiteral("a/")), QUrl(QStringLiteral("a/b.mp4"))));
 }
 
 // createSelectableLineEditOptionHandle：构建可手输路径的选项行
