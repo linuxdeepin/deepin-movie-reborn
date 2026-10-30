@@ -69,6 +69,10 @@ void ApplicationAdaptor::funOpenFile(const QString &sFile)
     qCDebug(appMovie) << "Entering ApplicationAdaptor::funOpenFile. File:" << sFile;
     if(m_pMainWindow) {
         qCDebug(appMovie) << "MainWindow pointer is valid.";
+        if (!m_pMainWindow->playlist()) {
+            qCDebug(appMovie) << "Playlist not yet loaded, cannot search items.";
+            return;
+        }
         QList<PlayItemInfo> lstItem = m_pMainWindow->playlist()->engine()->playlist().items();
         for (PlayItemInfo info: lstItem) {
             if(QFileInfo(info.mi.filePath).fileName().toLower().contains(sFile.toLower())) {

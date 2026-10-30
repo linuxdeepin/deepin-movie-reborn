@@ -1512,7 +1512,7 @@ void Platform_MainWindow::onWindowStateChanged()
 
     if (isMinimized()) {
         qCDebug(appMovie) << "isMinimized()";
-        if (m_pPlaylist->state() == Platform_PlaylistWidget::Opened) {
+        if (m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::Opened) {
             qCDebug(appMovie) << "m_pPlaylist->state() == Platform_PlaylistWidget::Opened";
             m_pPlaylist->togglePopup(false);
         }
@@ -1788,7 +1788,7 @@ void Platform_MainWindow::reflectActionToUI(ActionFactory::ActionKind actionKind
             (*p)->setEnabled(false);
             if (actionKind == ActionFactory::TogglePlaylist) {
                 // here what we read is the last state of playlist
-                if (m_pPlaylist->state() != Platform_PlaylistWidget::Opened) {
+                if (!m_pPlaylist || m_pPlaylist->state() != Platform_PlaylistWidget::Opened) {
                     (*p)->setChecked(false);
                 } else {
                     (*p)->setChecked(true);
@@ -2447,7 +2447,9 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
                 qCDebug(appMovie) << "m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::Closed && !m_pToolbox->isVisible()";
                 m_pToolbox->show();
             }
-            m_pPlaylist->togglePopup(bIsShortcut);
+            if (m_pPlaylist) {
+                m_pPlaylist->togglePopup(bIsShortcut);
+            }
             if (!bFromUI) {
                 qCDebug(appMovie) << "!bFromUI";
                 reflectActionToUI(actionKind);
@@ -2477,7 +2479,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         m_pAnimationlabel->hide();
 
         int nDelayTime = 0;
-        if (m_pPlaylist->state() == Platform_PlaylistWidget::Opened) {
+        if (m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::Opened) {
             requestAction(ActionFactory::TogglePlaylist);
             nDelayTime = 500;
         }
@@ -2550,7 +2552,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
             }
         } else {
             //当焦点在播放列表上按下Esc键，播放列表收起，焦点回到列表按钮上
-            if (m_pPlaylist->state() == Platform_PlaylistWidget::Opened) {
+            if (m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::Opened) {
                 qCDebug(appMovie) << "m_pPlaylist->state() == Platform_PlaylistWidget::Opened";
                 m_pToolbox->playlistClosedByEsc();
             }
@@ -2659,19 +2661,25 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
 
     case ActionFactory::ActionKind::PlaylistRemoveItem: {
         qCDebug(appMovie) << "ActionFactory::ActionKind::PlaylistRemoveItem";
-        m_pPlaylist->removeClickedItem(bIsShortcut);
+        if (m_pPlaylist) {
+            m_pPlaylist->removeClickedItem(bIsShortcut);
+        }
         break;
     }
 
     case ActionFactory::ActionKind::PlaylistOpenItemInFM: {
         qCDebug(appMovie) << "ActionFactory::ActionKind::PlaylistOpenItemInFM";
-        m_pPlaylist->openItemInFM();
+        if (m_pPlaylist) {
+            m_pPlaylist->openItemInFM();
+        }
         break;
     }
 
     case ActionFactory::ActionKind::PlaylistItemInfo: {
         qCDebug(appMovie) << "ActionFactory::ActionKind::PlaylistItemInfo";
-        m_pPlaylist->showItemInfo();
+        if (m_pPlaylist) {
+            m_pPlaylist->showItemInfo();
+        }
         break;
     }
 
@@ -3549,6 +3557,18 @@ DSettingsDialog *Platform_MainWindow::initSettings()
 void Platform_MainWindow::play(const QList<QString> &listFiles)
 {
     qCDebug(appMovie) << "Enter play function with" << listFiles.size() << "files";
+
+    // Guard: m_pPlaylist is created asynchronously via QTimer::singleShot(300, loadPlayList).
+    // If play() is called before the playlist is ready (e.g. early DBus openFile),
+    // defer by storing files so loadPlayList() will play them once the playlist exists.
+    if (!m_pPlaylist) {
+        qCInfo(appMovie) << "Playlist not yet loaded, deferring playback for" << listFiles.size() << "files";
+        if (!listFiles.isEmpty()) {
+            m_listOpenFiles = listFiles;
+        }
+        return;
+    }
+
     QList<QUrl> lstValid;
     QList<QString> lstDir;
     QList<QString> lstFile;
@@ -4456,7 +4476,7 @@ void Platform_MainWindow::showEvent(QShowEvent *pEvent)
 
     if (!qgetenv("FLATPAK_APPID").isEmpty()) {
         qCInfo(appMovie) << "workaround for flatpak";
-        if (m_pPlaylist->isVisible())
+        if (m_pPlaylist && m_pPlaylist->isVisible())
             updateProxyGeometry();
     }
 
@@ -5469,7 +5489,7 @@ void Platform_MainWindow::toggleUIMode()
         }
 
         if (m_nStateBeforeMiniMode & SBEM_PlaylistOpened &&
-                m_pPlaylist->state() == Platform_PlaylistWidget::Closed) {
+                m_pPlaylist && m_pPlaylist->state() == Platform_PlaylistWidget::Closed) {
             qCDebug(appMovie) << "m_nStateBeforeMiniMode & SBEM_PlaylistOpened && m_pPlaylist->state() == Platform_PlaylistWidget::Closed";
             if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
                 QTimer::singleShot(100, [ = ]() {
