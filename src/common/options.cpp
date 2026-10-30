@@ -7,6 +7,7 @@
 #include "ddlog.h"
 #include "options.h"
 #include <QDebug>
+#include <QCoreApplication>
 
 namespace dmr {
 
@@ -53,6 +54,17 @@ bool CommandLineManager::debug() const
 {
     qCDebug(appMovie) << "Entering CommandLineManager::debug().";
     bool result = this->isSet("VV");
+    if (!result) {
+        // QCommandLineParser splits single-dash multi-char options (e.g. -VV into -V -V),
+        // so isSet("VV") misses the -VV form. Manually check raw arguments.
+        const auto args = QCoreApplication::arguments();
+        for (const auto &arg : args) {
+            if (arg == QLatin1String("-VV")) {
+                result = true;
+                break;
+            }
+        }
+    }
     qCDebug(appMovie) << "Exiting CommandLineManager::debug(). Returning:" << result;
     return result;
 }
@@ -81,6 +93,17 @@ QString CommandLineManager::dvdDevice() const
         QString result = this->value("dvd-device").trimmed();
         qCDebug(appMovie) << "dvd-device option is set. Returning trimmed value:" << result;
         return result;
+    }
+
+    // QCommandLineParser does not support single-dash multi-char options;
+    // manually scan raw arguments for -dvd-device <value>.
+    const auto args = QCoreApplication::arguments();
+    for (int i = 0; i < args.size() - 1; ++i) {
+        if (args[i] == QLatin1String("-dvd-device")) {
+            QString result = args[i + 1].trimmed();
+            qCDebug(appMovie) << "dvd-device option (single-dash) is set. Returning trimmed value:" << result;
+            return result;
+        }
     }
 
     qCDebug(appMovie) << "dvd-device option is not set. Returning empty string.";
