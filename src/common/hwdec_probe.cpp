@@ -15,8 +15,8 @@ HwdecProbe HwdecProbe::m_ffmpegProbe;
 HwdecProbe::HwdecProbe():m_hwDeviceCtx(nullptr)
 {
     qCDebug(appMovie) << "Initializing HwdecProbe";
-//    m_ffmpegProbe.initffmpegInterface();
-//    m_ffmpegProbe.getHwTypes();
+    initffmpegInterface();
+    getHwTypes();
 }
 
 HwdecProbe& HwdecProbe::get()
@@ -27,6 +27,14 @@ HwdecProbe& HwdecProbe::get()
 bool HwdecProbe::isFileCanHwdec(const QUrl& url, QList<QString>& hwList)
 {
     qCInfo(appMovie) << "Checking hardware decoding capability for:" << url.toString();
+
+    if (!m_avformatOpenInput || !m_avformatFindStreamInfo || !m_avformatCloseInput ||
+        !m_avcodecFindDecoder || !m_avcodecAllocContext3 || !m_avcodecOpen2 ||
+        !m_avHwdeviceGetTypeName || !m_avHwdeviceCtxCreate) {
+        qCWarning(appMovie) << "FFmpeg interface not properly initialized, cannot check hardware decoding";
+        return false;
+    }
+
     hwList.clear();
     AVFormatContext *input_ctx = nullptr;
     int ret = 0;
@@ -129,6 +137,12 @@ void HwdecProbe::getHwTypes()
 {
     qCDebug(appMovie) << "Getting available hardware decoder types";
     m_hwTypeList.clear();
+
+    if (!m_avHwdeviceIterateTypes) {
+        qCWarning(appMovie) << "FFmpeg interface not properly initialized, cannot get hardware types";
+        return;
+    }
+
     AVHWDeviceType type = AV_HWDEVICE_TYPE_NONE;
     // find hwdevies
     while ((type = m_avHwdeviceIterateTypes(type)) != AV_HWDEVICE_TYPE_NONE) {
