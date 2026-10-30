@@ -128,9 +128,9 @@ protected:
         }
         case QEvent::MouseMove: {
             qCDebug(appMovie) << "event mouse move";
-            QHelpEvent *he = static_cast<QHelpEvent *>(event);
             auto tip = obj->property("HintWidget").value<Tip *>();
             tip->hide();
+            break;
         }
         default:
             break;
