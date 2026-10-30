@@ -2253,7 +2253,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
     }
 #endif  
 
-    if (m_pPlaylist->state() == PlaylistWidget::State::Opened) {
+    if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened) {
         qCDebug(appMovie) << "m_pPlaylist->state() == PlaylistWidget::State::Opened";
         //非x86平台播放列表切换不展示动画,故按键状态不做限制
         if(CompositingManager::get().platform() == Platform::X86) {
@@ -2411,7 +2411,7 @@ qint64 ToolboxProxy::getMouseTime()
 void ToolboxProxy::clearPlayListFocus()
 {
     qCDebug(appMovie) << "clearPlayListFocus";
-    if (m_pPlaylist->isFocusInPlaylist()) {
+    if (m_pPlaylist && m_pPlaylist->isFocusInPlaylist()) {
         qCDebug(appMovie) << "m_pPlaylist->isFocusInPlaylist()";
         m_pPlaylist->clearFocus();
     }
@@ -2498,7 +2498,7 @@ void ToolboxProxy::changeMuteState()
 void ToolboxProxy::playlistClosedByEsc()
 {
     qCDebug(appMovie) << "playlistClosedByEsc";
-    if (m_pPlaylist->isFocusInPlaylist() && m_bSetListBtnFocus) {
+    if (m_pPlaylist && m_pPlaylist->isFocusInPlaylist() && m_bSetListBtnFocus) {
         qCDebug(appMovie) << "m_pPlaylist->isFocusInPlaylist() && m_bSetListBtnFocus";
 //        m_bSetListBtnFocus = true;
         m_pMainWindow->requestAction(ActionFactory::TogglePlaylist);
@@ -3146,11 +3146,11 @@ bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
             qCDebug(appMovie) << "obj == m_pListBtn";
             QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(ev);
             if (ev->type() == QEvent::MouseButtonRelease && mouseEvent->button() == Qt::LeftButton) {
-                if (m_pPlaylist->state() == PlaylistWidget::State::Opened && m_pListBtn->isChecked()) {
+                if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened && m_pListBtn->isChecked()) {
                     qCDebug(appMovie) << "m_pPlaylist->state() == PlaylistWidget::State::Opened && m_pListBtn->isChecked()";
                     m_pListBtn->setChecked(!m_pListBtn->isChecked());
                 }
-                if (m_pPlaylist->state() == PlaylistWidget::State::Closed && !m_pListBtn->isChecked()) {
+                if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Closed && !m_pListBtn->isChecked()) {
                     qCDebug(appMovie) << "m_pPlaylist->state() == PlaylistWidget::State::Closed && !m_pListBtn->isChecked()";
                     m_pListBtn->setChecked(!m_pListBtn->isChecked());
                 }
