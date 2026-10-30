@@ -188,6 +188,44 @@ TEST(notif_ext, construct_themeForegroundRole_dark)
     EXPECT_NE(label->foregroundRole(), QPalette::ToolTipText);
 }
 
+// The ctor connects themeTypeChanged to a lambda that re-applies the
+// foreground role. The lambda's dark branch calls DLabel's
+// DPalette::ColorType overload (unobservable through QWidget::foregroundRole,
+// which DLabel leaves untouched for extended DPalette types), so both
+// setForegroundRole overloads are recorded via scoped stubs and asserted
+// directly. The public signal is emitted manually — the scoped theme stub
+// keeps themeType() consistent and the app-wide DTK palette cascade of
+// setPaletteType() is avoided.
+static QPalette::ColorRole s_nwx_lastFgRole = QPalette::NoRole;
+static DPalette::ColorType s_nwx_lastDColor = DPalette::NoType;
+static void nwx_setFgRole_recorder(DLabel *, QPalette::ColorRole r) { s_nwx_lastFgRole = r; }
+static void nwx_setDColor_recorder(DLabel *, DPalette::ColorType c) { s_nwx_lastDColor = c; }
+
+TEST(notif_ext, construct_themeTypeChangedSlot_updatesForegroundRole)
+{
+    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
+    NotifThemeGuard themeGuard(DGuiApplicationHelper::LightType);
+    QWidget *parent = nwx_makeParent(true);
+    NotificationWidget nw(parent);
+    nw.popup(QString("theme switch"), false);
+    nwx_wait(20);
+    ASSERT_NE(nwx_msgLabel(nw), nullptr);
+
+    Stub recorder;
+    recorder.set(static_cast<void (DLabel::*)(QPalette::ColorRole)>(
+                     &DLabel::setForegroundRole),
+                 &nwx_setFgRole_recorder);
+    recorder.set(static_cast<void (DLabel::*)(DPalette::ColorType)>(
+                     &DLabel::setForegroundRole),
+                 &nwx_setDColor_recorder);
+
+    emit DGuiApplicationHelper::instance()->themeTypeChanged(
+        DGuiApplicationHelper::LightType);
+    EXPECT_EQ(s_nwx_lastFgRole, QPalette::ToolTipText);
+    emit DGuiApplicationHelper::instance()->themeTypeChanged(
+        DGuiApplicationHelper::DarkType);
+    EXPECT_EQ(s_nwx_lastDColor, DPalette::TextLively);
+}
 // NOTE: the ctor's themeTypeChanged lambda cannot be triggered safely from
 // tests — the only in-process emitter is DGuiApplicationHelper::setPaletteType,
 // whose app-wide cascade would perturb the shared MainWindow.
