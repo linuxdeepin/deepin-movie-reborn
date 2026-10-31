@@ -96,6 +96,7 @@ const char kAtomNameWmStateAbove[] = "_NET_WM_STATE_ABOVE";
 const char kAtomNameWmStateStaysOnTop[] = "_NET_WM_STATE_STAYS_ON_TOP";
 const char kAtomNameWmSkipTaskbar[] = "_NET_WM_STATE_SKIP_TASKBAR";
 const char kAtomNameWmSkipPager[] = "_NET_WM_STATE_SKIP_PAGER";
+constexpr int kMinimizePauseStateTimeoutMs = 2000;
 
 #define AUTOHIDE_TIMEOUT 2000
 #define AUTOHIDE_TIME_PAD 5000   //time of the toolbox auto hide
@@ -900,6 +901,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_pToolbox, &ToolboxProxy::sigUnsupported, this, &MainWindow::slotUnsupported);
     connect(m_pEngine, &PlayerEngine::stateChanged, this, &MainWindow::slotPlayerStateChanged);
+    connect(m_pEngine, &PlayerEngine::stateChanged, this, [this]() {
+        if (m_bQuitfullscreenflag)
+            scheduleResumePlaybackAfterMinimize();
+    });
     connect(m_pEngine, &PlayerEngine::sigInvalidFile, this, &MainWindow::slotInvalidFile);
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
@@ -1340,6 +1345,9 @@ bool MainWindow::event(QEvent *pEvent)
         m_bIsTouch = true;
     }
 
+    if (pEvent->type() == QEvent::WindowActivate && m_bQuitfullscreenflag)
+        scheduleResumePlaybackAfterMinimize();
+
     //add by heyi
     //判断是否停止右键菜单定时器
     if (m_bMousePressed) {
@@ -1362,21 +1370,17 @@ bool MainWindow::event(QEvent *pEvent)
             if (Settings::get().isSet(Settings::PauseOnMinimize)) {
                 if (m_pEngine && m_pEngine->state() == PlayerEngine::Playing) {
                     qCDebug(appMovie) << "Pausing playback due to minimize";
-                    requestAction(ActionFactory::TogglePause);
+                    // A window-state transition may be rejected by the action
+                    // animation gate. Pause the engine directly in this path.
+                    m_pEngine->pauseResume();
                     m_bQuitfullscreenflag = true;
                 }
                 QList<QAction *> listActs = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
                 listActs.at(0)->setChecked(false);
             }
-        } else if (m_lastWindowState & Qt::WindowMinimized) {
+        } else if ((m_lastWindowState & Qt::WindowMinimized) || m_bQuitfullscreenflag) {
             qCDebug(appMovie) << "Window restored from minimized state";
-            if (Settings::get().isSet(Settings::PauseOnMinimize)) {
-                if (m_bQuitfullscreenflag) {
-                    qCDebug(appMovie) << "Resuming playback after restore";
-                    requestAction(ActionFactory::TogglePause);
-                    m_bQuitfullscreenflag = false;
-                }
-            }
+            scheduleResumePlaybackAfterMinimize();
         }
         onWindowStateChanged();
     }
@@ -4500,6 +4504,43 @@ void MainWindow::showEvent(QShowEvent *pEvent)
     }
 
     QMainWindow::showEvent(pEvent);
+    if (m_bQuitfullscreenflag)
+        scheduleResumePlaybackAfterMinimize();
+}
+
+void MainWindow::scheduleResumePlaybackAfterMinimize()
+{
+    if (m_resumePlaybackCheckPending)
+        return;
+
+    m_resumePlaybackCheckPending = true;
+    QTimer::singleShot(0, this, [this]() {
+        m_resumePlaybackCheckPending = false;
+        resumePlaybackAfterMinimize();
+    });
+}
+
+void MainWindow::resumePlaybackAfterMinimize()
+{
+    if (!m_bQuitfullscreenflag || !m_pEngine || !isVisible() || (windowState() & Qt::WindowMinimized))
+        return;
+
+    const auto state = m_pEngine->state();
+    if (state == PlayerEngine::Paused) {
+        m_pEngine->pauseResume();
+        m_bQuitfullscreenflag = false;
+    } else if (state == PlayerEngine::Idle) {
+        m_bQuitfullscreenflag = false;
+    } else {
+        // mpv reports the pause asynchronously. Keep the intent until its
+        // Paused notification arrives, but do not resume a later manual pause
+        // if the minimize request never took effect.
+        QTimer::singleShot(kMinimizePauseStateTimeoutMs, this, [this]() {
+            if (m_bQuitfullscreenflag && isVisible() && !(windowState() & Qt::WindowMinimized)
+                && m_pEngine && m_pEngine->state() == PlayerEngine::Playing)
+                m_bQuitfullscreenflag = false;
+        });
+    }
 }
 
 void MainWindow::resizeByConstraints(bool bForceCentered)
@@ -5809,6 +5850,7 @@ void MainWindow::initMember()
     m_bMouseMoved = false;
     m_bMousePressed = false;
     m_bQuitfullscreenflag = false;
+    m_resumePlaybackCheckPending = false;
     m_bStartMini = false;
     m_bProgressChanged = false;
     m_bLastIsTouch = false;
