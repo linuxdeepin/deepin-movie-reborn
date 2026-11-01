@@ -276,8 +276,7 @@ int QHttpConnection::HeaderField(http_parser *parser, const char *at, size_t len
 
     // insert the header we parsed previously
     // into the header map
-    if (!theConnection->m_currentHeaderField.isEmpty() &&
-        !theConnection->m_currentHeaderValue.isEmpty()) {
+    if (!theConnection->m_currentHeaderField.isEmpty()) {
         // header names are always lower-cased
         theConnection->m_currentHeaders[theConnection->m_currentHeaderField.toLower()] =
             theConnection->m_currentHeaderValue;
