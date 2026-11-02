@@ -1051,19 +1051,17 @@ TEST_F(PpwPopTest, slotCloseTimeTimeOut_closesOpenedPopup)
     openPopup();
     ASSERT_EQ(pl->state(), Platform_PlaylistWidget::Opened);
 
-    // Act: fire the real slot from a live QTimer (sender() must be a QTimer,
-    // the source deleteLater()s it). A transient WM state change can race the
-    // single fire — retry once with a fresh timer if the popup is still open.
-    for (int i = 0; i < 2 && pl->state() == Platform_PlaylistWidget::Opened; ++i) {
-        QTimer *timer = new QTimer;   // heap: the source deleteLater()s its sender
-        QObject::connect(timer, &QTimer::timeout, pl, &Platform_PlaylistWidget::slotCloseTimeTimeOut);
-        QObject::connect(timer, &QTimer::timeout, pl, []() {
-            qInfo() << "T27PROBE timer fired";
-        });
-        timer->start(10);
-        QTest::qWait(200);
-        qInfo() << "T27PROBE attempt" << i << "state" << int(pl->state());
-    }
+    // Act: deliver the timeout synchronously. Native timer delivery starves
+    // under X11 event floods (observed in CI), so synthesize the QTimerEvent:
+    // QTimer::timerEvent re-emits timeout() with sender() == the live timer,
+    // exactly as a real fire would (the source deleteLater()s its sender).
+    QTimer *timer = new QTimer;   // heap: the source deleteLater()s its sender
+    QObject::connect(timer, &QTimer::timeout, pl, &Platform_PlaylistWidget::slotCloseTimeTimeOut);
+    timer->start(10);
+    QTimerEvent te(timer->timerId());
+    QCoreApplication::sendEvent(timer, &te);
+    timer->stop();       // cancel the pending native fire (one-shot semantics)
+    QTest::qWait(30);    // process the queued deleteLater
 
     // Assert: the real slot toggled the popup closed (synchronous on X86).
     EXPECT_EQ(pl->state(), Platform_PlaylistWidget::Closed);

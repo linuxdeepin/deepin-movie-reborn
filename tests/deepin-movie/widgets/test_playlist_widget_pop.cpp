@@ -1075,9 +1075,15 @@ TEST_F(PwPopTest, slotCloseTimeTimeOut_closesOpenedPopup)
     QTimer *timer = new QTimer;   // heap: the source deleteLater()s its sender
     QObject::connect(timer, &QTimer::timeout, pl, &PlaylistWidget::slotCloseTimeTimeOut);
 
-    // Act
+    // Act: deliver the timeout synchronously. Native timer delivery starves
+    // under X11 event floods (observed in CI), so synthesize the QTimerEvent:
+    // QTimer::timerEvent re-emits timeout() with sender() == the live timer,
+    // exactly as a real fire would (the source deleteLater()s its sender).
     timer->start(10);
-    QTest::qWait(150);
+    QTimerEvent te(timer->timerId());
+    QCoreApplication::sendEvent(timer, &te);
+    timer->stop();       // cancel the pending native fire (one-shot semantics)
+    QTest::qWait(30);    // process the queued deleteLater
 
     // Assert: the slot toggled the popup closed; the close animation drives
     // the final setVisible(false) from its finished lambda.
