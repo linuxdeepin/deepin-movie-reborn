@@ -170,6 +170,11 @@ static bool ppwpop_isPad_false_stub() { return false; }
 // Swallow those async updates so every test sees exactly its populate() data.
 static void ppwpop_onAsyncUpdate_noop_stub(void *, PlayItemInfo) {}
 static void ppwpop_slotCloseTimeTimeOut_stub(void *) {}
+// Platform_MainWindow's window-event tail closes an Opened popup whenever
+// the WM transiently reports the window minimized during re-show — an X11
+// race that fires mid-test. Pin isMinimized() to false so the popup state
+// is fully test-controlled.
+static bool ppwpop_isMinimized_false_stub(void *) { return false; }
 // contextMenuEvent ends with playlistContextMenu()->clear() under USE_TEST,
 // which deletes the singleton menu's cached actions — actions still referenced
 // by ActionFactory::m_listContextMenuActions (dangling pointers kill any later
@@ -241,6 +246,7 @@ protected:
         stub.set(ADDR(Platform_ToolboxProxy, setBtnFocusSign), ppwpop_setBtnFocusSign_stub);
         stub.set(ADDR(CompositingManager, isPadSystem), ppwpop_isPad_false_stub);
         stub.set(ADDR(PlaylistModel, onAsyncUpdate), ppwpop_onAsyncUpdate_noop_stub);
+        stub.set(ADDR(Platform_MainWindow, isMinimized), ppwpop_isMinimized_false_stub);
 
         scrubState();
     }
@@ -1051,8 +1057,12 @@ TEST_F(PpwPopTest, slotCloseTimeTimeOut_closesOpenedPopup)
     for (int i = 0; i < 2 && pl->state() == Platform_PlaylistWidget::Opened; ++i) {
         QTimer *timer = new QTimer;   // heap: the source deleteLater()s its sender
         QObject::connect(timer, &QTimer::timeout, pl, &Platform_PlaylistWidget::slotCloseTimeTimeOut);
+        QObject::connect(timer, &QTimer::timeout, pl, []() {
+            qInfo() << "T27PROBE timer fired";
+        });
         timer->start(10);
         QTest::qWait(200);
+        qInfo() << "T27PROBE attempt" << i << "state" << int(pl->state());
     }
 
     // Assert: the real slot toggled the popup closed (synchronous on X86).

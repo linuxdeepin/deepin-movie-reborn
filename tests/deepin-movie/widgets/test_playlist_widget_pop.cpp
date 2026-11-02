@@ -176,6 +176,11 @@ static PlayerEngine::CoreState pwpop_engineState_idle_stub(void *)
 {
     return PlayerEngine::CoreState::Idle;
 }
+// MainWindow's window-event tail closes an Opened popup whenever the WM
+// transiently reports the window minimized during re-show — an X11 race
+// that fires mid-test. Pin isMinimized() to false so the popup state is
+// fully test-controlled.
+static bool pwpop_isMinimized_false_stub(void *) { return false; }
 // contextMenuEvent ends with playlistContextMenu()->clear() under USE_TEST,
 // which deletes the singleton menu's cached actions — actions still referenced
 // by ActionFactory::m_listContextMenuActions (dangling pointers kill any later
@@ -248,6 +253,7 @@ protected:
         stub.set(ADDR(ToolboxProxy, setBtnFocusSign), pwpop_setBtnFocusSign_stub);
         stub.set(ADDR(CompositingManager, isPadSystem), pwpop_isPad_false_stub);
         stub.set(ADDR(PlaylistModel, onAsyncUpdate), pwpop_onAsyncUpdate_noop_stub);
+        stub.set(ADDR(MainWindow, isMinimized), pwpop_isMinimized_false_stub);
 
         scrubState();
     }
