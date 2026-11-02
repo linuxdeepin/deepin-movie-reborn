@@ -25,7 +25,6 @@ DlnaContentServer::DlnaContentServer(QObject *parent, int nPort) : QObject(paren
     m_pThread = new QThread;
     moveToThread(m_pThread);
     qCDebug(dmrDlna) << "Creating DLNA content server on port" << nPort;
-    connect(m_pThread, &QThread::finished, this, &QObject::deleteLater);
     connect(m_pThread, &QThread::started, [=](){
         qCDebug(dmrDlna) << "Thread started. Initializing HTTP server.";
         m_bStartHttpServer = initializeHttpServer(nPort);
@@ -49,11 +48,17 @@ DlnaContentServer::~DlnaContentServer()
         qCDebug(dmrDlna) << "Quitting and waiting for thread to finish.";
         m_pThread->quit();
         m_pThread->wait();
-        m_pThread->deleteLater();
-        m_pThread = NULL;
+        delete m_pThread;
+        m_pThread = nullptr;
         qCDebug(dmrDlna) << "Thread cleaned up.";
     } else {
         qCDebug(dmrDlna) << "m_pThread is null, no cleanup needed.";
+    }
+    if(m_httpServer) {
+        qCDebug(dmrDlna) << "Closing and deleting HTTP server.";
+        m_httpServer->close();
+        delete m_httpServer;
+        m_httpServer = nullptr;
     }
     qCDebug(dmrDlna) << "Exiting DlnaContentServer destructor.";
 }
