@@ -1129,8 +1129,7 @@ void PlaylistWidget::removeClickedItem(bool isShortcut)
     if (isShortcut && isVisible()) {
         for (int i = 0; i < _playlist->count(); i++) {
             PlayItemWidget * piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
-            qCDebug(appMovie) << piw->getBIsSelect();
-            if (piw->getBIsSelect()) {
+            if (piw && piw->getBIsSelect()) {
                 _engine->playlist().remove(i);
                 qCDebug(appMovie) << "removeClickedItem, item is selected, remove it, return";
                 return;
@@ -1156,8 +1155,9 @@ void PlaylistWidget::removeClickedItem(bool isShortcut)
 void PlaylistWidget::slotCloseTimeTimeOut()
 {
     qCDebug(appMovie) << "slotCloseTimeTimeOut";
-    QTimer *pCloselistTimer = dynamic_cast<QTimer *>(sender());
-    pCloselistTimer->deleteLater();
+    if (auto *t = qobject_cast<QTimer *>(sender())) {
+        t->deleteLater();
+    }
     togglePopup(false);
     _mw->reflectActionToUI(ActionFactory::TogglePlaylist);
     qCDebug(appMovie) << "slotCloseTimeTimeOut, end";
@@ -1296,8 +1296,10 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
             pSelectItemWgt->setBIsSelect(false);
         }
         auto piw = dynamic_cast<PlayItemWidget *>(_mouseItem);
-        piw->setBIsSelect(true);
-        pSelectItemWgt = piw;
+        if (piw) {
+            piw->setBIsSelect(true);
+            pSelectItemWgt = piw;
+        }
     } else {
         qCDebug(appMovie) << "contextMenuEvent, not isPadSystem";
         auto piw = dynamic_cast<PlayItemWidget *>(_mouseItem);
@@ -1321,7 +1323,6 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
     }
 #ifdef USE_TEST
     ActionFactory::get().playlistContextMenu()->hide();
-    ActionFactory::get().playlistContextMenu()->clear();
 #endif
     qCDebug(appMovie) << "contextMenuEvent end";
 }
@@ -1511,9 +1512,10 @@ void PlaylistWidget::batchUpdateSizeHints()
 void PlaylistWidget::endAnimation()
 {
     qCDebug(appMovie) << "endAnimation";
-    if (paOpen != nullptr && paClose != nullptr) {
-        qCDebug(appMovie) << "endAnimation, paOpen and paClose are not null";
-        paOpen -> setDuration(0);
+    if (paOpen != nullptr) {
+        paOpen->setDuration(0);
+    }
+    if (paClose != nullptr) {
         paClose->setDuration(0);
     }
     qCDebug(appMovie) << "endAnimation, end";
@@ -1581,7 +1583,10 @@ void PlaylistWidget::togglePopup(bool isShortcut)
 
     if (_state == State::Opened) {
         qCDebug(appMovie) << "Closing playlist";
-        Q_ASSERT(isVisible());
+        if (!isVisible()) {
+            _state = State::Closed;
+            return;
+        }
 
         //Set this judgment to false when the playlist is collapsed
         m_bButtonFocusOut = false;
