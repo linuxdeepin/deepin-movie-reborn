@@ -722,6 +722,7 @@ mpv_handle *MpvProxy::mpv_init()
         if ( innodir.exists()) {
             qCDebug(dmrMpv) << "DEBUG: Inno-codec driver detected. Setting vo to gpu,x11.";
             my_set_property(pHandle, "vo", "gpu,x11");
+            my_set_property(pHandle, "hwdec", "vaapi");
             m_sInitVo = "gpu,x11";
         }
         if (QFile::exists("/sys/bus/pci/drivers/ljmcore")) {
