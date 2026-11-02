@@ -28,7 +28,7 @@ MovieApp::MovieApp(Platform_MainWindow *mw, QObject *parent)
 void MovieApp::initMpris(const QString &serviceName)
 {
     qCDebug(appMovie) << "Entering MovieApp::initMpris() with serviceName:" << serviceName;
-    MprisPlayer* mprisPlayer =  new MprisPlayer();
+    MprisPlayer* mprisPlayer =  new MprisPlayer(this);
     mprisPlayer->setServiceName(serviceName);
     qCDebug(appMovie) << "MprisPlayer service name set.";
 

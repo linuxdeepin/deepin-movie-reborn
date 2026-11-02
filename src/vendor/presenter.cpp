@@ -10,7 +10,7 @@ Presenter::Presenter(MainWindow *mw, QObject *parent)
     : QObject(parent), _mw(mw)
 {
     qCDebug(appMovie) << "Initializing Presenter with MainWindow";
-    MprisPlayer *mprisPlayer =  new MprisPlayer();
+    MprisPlayer *mprisPlayer =  new MprisPlayer(this);
     mprisPlayer->setServiceName("Deepinmovie");
 
     //mprisPlayer->setSupportedMimeTypes();
@@ -39,7 +39,7 @@ Presenter::Presenter(Platform_MainWindow *mw, QObject *parent)
     : QObject(parent), _platform_mw(mw)
 {
     qCDebug(appMovie) << "Initializing Presenter with Platform_MainWindow";
-    MprisPlayer *mprisPlayer =  new MprisPlayer();
+    MprisPlayer *mprisPlayer =  new MprisPlayer(this);
     mprisPlayer->setServiceName("Deepinmovie");
 
     //mprisPlayer->setSupportedMimeTypes();
@@ -76,10 +76,12 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
         qCDebug(appMovie) << "Connecting MainWindow signals";
         connect(_mw->engine(), &PlayerEngine::stateChanged, this, &Presenter::slotstateChanged);
         connect(_mw->engine()->getplaylist(), &PlaylistModel::playModeChanged, this, &Presenter::slotplayModeChanged);
-    } else {
+    } else if (_platform_mw) {
         qCDebug(appMovie) << "Connecting Platform_MainWindow signals";
         connect(_platform_mw->engine(), &PlayerEngine::stateChanged, this, &Presenter::slotstateChanged);
         connect(_platform_mw->engine()->getplaylist(), &PlaylistModel::playModeChanged, this, &Presenter::slotplayModeChanged);
+    } else {
+        qCWarning(appMovie) << "Both MainWindow and Platform_MainWindow are null, skipping signal connections";
     }
     connect(mprisPlayer, &MprisPlayer::playRequested, this, &Presenter::slotplay);
     connect(mprisPlayer, &MprisPlayer::pauseRequested, this, &Presenter::slotpause);
