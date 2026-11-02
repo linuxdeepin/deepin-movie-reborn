@@ -6186,6 +6186,10 @@ void MainWindow::updateGeometry(CornerEdge edge, QPoint pos)
 void MainWindow::setPresenter(Presenter *pPresenter)
 {
     qCDebug(appMovie) << "setPresenter";
+    if (!pPresenter) {
+        qCWarning(appMovie) << "setPresenter: pPresenter is null, skip";
+        return;
+    }
     m_pPresenter = pPresenter;
     m_pPresenter->slotvolumeChanged();
 }
