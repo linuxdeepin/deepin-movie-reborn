@@ -1704,10 +1704,12 @@ void Platform_ToolboxProxy::slotThemeTypeChanged()
         DApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
         DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
         DApplicationHelper::instance()->setPalette(m_pListBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pMircastBtn, pa);
 #else
         m_pFullScreenBtn->setPalette(pa);
         m_pVolBtn->setPalette(pa);
         m_pListBtn->setPalette(pa);
+        m_pMircastBtn->setPalette(pa);
 #endif
 
         DPalette pl = m_pPalyBox ->palette();
@@ -1744,10 +1746,12 @@ void Platform_ToolboxProxy::slotThemeTypeChanged()
         DApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
         DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
         DApplicationHelper::instance()->setPalette(m_pListBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pMircastBtn, pa);
 #else
         m_pFullScreenBtn->setPalette(pa);
         m_pVolBtn->setPalette(pa);
         m_pListBtn->setPalette(pa);
+        m_pMircastBtn->setPalette(pa);
 #endif
         DPalette pl = m_pPalyBox ->palette();
         QColor btnColor("#000000");
@@ -2521,6 +2525,11 @@ void Platform_ToolboxProxy::updatePlayState()
             pa = m_pMircastBtn->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::ButtonText, QColor(Qt::black));
+            QColor btnframecolor("#000000");
+            btnframecolor.setAlphaF(0.00);
+            pa.setColor(DPalette::FrameBorder, btnframecolor);
+            pa.setColor(DPalette::Shadow, btnframecolor);
             m_pMircastBtn->setPalette(pa);
         } else {
             qCDebug(appMovie) << "ThumbnailPreview updatePlayState playing DarkType";
@@ -2547,8 +2556,15 @@ void Platform_ToolboxProxy::updatePlayState()
             m_pListBtn->setPalette(pa);
 
             pa = m_pMircastBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
+            QColor btnMaskColor("#000000");
+            btnMaskColor.setAlphaF(0.30);
+            pa.setColor(DPalette::Light, btnMaskColor);
+            pa.setColor(DPalette::Dark, btnMaskColor);
+            pa.setColor(DPalette::ButtonText, QColor("#c5cfe0"));
+            QColor framecolor("#FFFFFF");
+            framecolor.setAlphaF(0.00);
+            pa.setColor(DPalette::FrameBorder, framecolor);
+            pa.setColor(DPalette::Shadow, framecolor);
             m_pMircastBtn->setPalette(pa);
         }
         m_pPlayBtn->setIcon(QIcon::fromTheme("dcc_suspend", QIcon(":/icons/deepin/builtin/light/normal/suspend_normal.svg")));
@@ -2584,6 +2600,11 @@ void Platform_ToolboxProxy::updatePlayState()
             pa = m_pMircastBtn->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::ButtonText, QColor(Qt::black));
+            QColor btnframecolor("#000000");
+            btnframecolor.setAlphaF(0.00);
+            pa.setColor(DPalette::FrameBorder, btnframecolor);
+            pa.setColor(DPalette::Shadow, btnframecolor);
             m_pMircastBtn->setPalette(pa);
         } else {
             qCDebug(appMovie) << "ThumbnailPreview updatePlayState not playing DarkType";
@@ -2610,8 +2631,15 @@ void Platform_ToolboxProxy::updatePlayState()
             m_pListBtn->setPalette(pa);
 
             pa = m_pMircastBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
+            QColor btnMaskColor("#000000");
+            btnMaskColor.setAlphaF(0.30);
+            pa.setColor(DPalette::Light, btnMaskColor);
+            pa.setColor(DPalette::Dark, btnMaskColor);
+            pa.setColor(DPalette::ButtonText, QColor("#c5cfe0"));
+            QColor framecolor("#FFFFFF");
+            framecolor.setAlphaF(0.00);
+            pa.setColor(DPalette::FrameBorder, framecolor);
+            pa.setColor(DPalette::Shadow, framecolor);
             m_pMircastBtn->setPalette(pa);
 
         }
