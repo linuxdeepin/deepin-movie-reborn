@@ -1402,6 +1402,8 @@ void MpvProxy::processPropertyChange(const QString &name)
         // Use cached values to avoid synchronous API calls
         QTimer::singleShot(0, this, [this]() {
             if (m_cachedPause) {
+                if (state() == PlayState::Stopped)
+                    return;
                 if (!m_cachedIdleActive)
                     setState(PlayState::Paused);
                 else
