@@ -379,22 +379,22 @@ mpv_handle *MpvProxy::mpv_init()
 
 #ifdef _LIBDMR_
     if (composited) {
-        qCDebug(dmrMpv) << "DEBUG: _LIBDMR_ defined and composited. Setting gpu-hwdec-interop based on QT_XCB_GL_INTERGRATION.";
+        qCDebug(dmrMpv) << "DEBUG: _LIBDMR_ defined and composited. Setting gpu-hwdec-interop based on QT_XCB_GL_INTEGRATION.";
         auto interop = QString::fromUtf8("vaapi-glx");
-        if (!qEnvironmentVariableIsEmpty("QT_XCB_GL_INTERGRATION")) {
-            auto gl_int = qgetenv("QT_XCB_GL_INTERGRATION");
+        if (!qEnvironmentVariableIsEmpty("QT_XCB_GL_INTEGRATION")) {
+            auto gl_int = qgetenv("QT_XCB_GL_INTEGRATION");
             if (gl_int == "xcb_egl") {
                 interop = "vaapi-egl";
-                qCDebug(dmrMpv) << "DEBUG: QT_XCB_GL_INTERGRATION set to xcb_egl, interop: vaapi-egl.";
+                qCDebug(dmrMpv) << "DEBUG: QT_XCB_GL_INTEGRATION set to xcb_egl, interop: vaapi-egl.";
             } else if (gl_int == "xcb_glx") {
                 interop = "vaapi-glx";
-                qCDebug(dmrMpv) << "DEBUG: QT_XCB_GL_INTERGRATION set to xcb_glx, interop: vaapi-glx.";
+                qCDebug(dmrMpv) << "DEBUG: QT_XCB_GL_INTEGRATION set to xcb_glx, interop: vaapi-glx.";
             } else {
                 interop = "auto";
-                qCDebug(dmrMpv) << "DEBUG: QT_XCB_GL_INTERGRATION set to unknown value, interop: auto.";
+                qCDebug(dmrMpv) << "DEBUG: QT_XCB_GL_INTEGRATION set to unknown value, interop: auto.";
             }
         } else {
-            qCDebug(dmrMpv) << "DEBUG: QT_XCB_GL_INTERGRATION environment variable is empty. Defaulting to vaapi-glx.";
+            qCDebug(dmrMpv) << "DEBUG: QT_XCB_GL_INTEGRATION environment variable is empty. Defaulting to vaapi-glx.";
         }
         my_set_property(pHandle, "gpu-hwdec-interop", interop.toUtf8().constData());
         qCInfo(dmrMpv) << "set gpu-hwdec-interop = " << interop;

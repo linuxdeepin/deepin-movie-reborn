@@ -669,28 +669,6 @@ void CompositingManager::softDecodeCheck()
     m_setSpecialControls = m_boardVendor.contains("PHYTIUM");
     qCDebug(dmrLib) << "m_setSpecialControls set based on PHYTIUM vendor check:" << m_setSpecialControls;
 
-    //判断N卡驱动版本
-    qCDebug(dmrLib) << "Starting NVIDIA driver version check via /proc/driver/nvidia/version.";
-    QFile nvidiaVersion("/proc/driver/nvidia/version");
-    if (nvidiaVersion.open(QIODevice::ReadOnly)) {
-        qCDebug(dmrLib) << "/proc/driver/nvidia/version opened successfully.";
-        QString str = nvidiaVersion.readLine();
-        int start = str.indexOf("Module");
-        start += 6;
-        QString version = str.mid(start, 6);
-        qCDebug(dmrLib) << "Initial NVIDIA driver version string:" << str.trimmed() << ", parsed version:" << version.trimmed();
-        while (version.left(1) == " ") {
-            start++;
-            version = str.mid(start, 6);
-            qCDebug(dmrLib) << "Trimmed NVIDIA driver version (loop):" << version.trimmed();
-        }
-        qCInfo(dmrLib) << "NVIDIA driver version:" << version;
-        if (version.toFloat() >= 460.39) {
-            m_bOnlySoftDecode = true;
-            qCInfo(dmrLib) << "NVIDIA driver version >= 460.39, enabling soft decode only";
-        }
-        nvidiaVersion.close();
-    }
     qCDebug(dmrLib) << "Exiting CompositingManager::softDecodeCheck()";
 }
 
@@ -754,7 +732,7 @@ void CompositingManager::detectOpenGLEarly()
     ///function probeHwdecInterop() always returns QString(""), this code was not used
 //    auto probed = probeHwdecInterop();
 //    qCInfo(dmrLib) << "probeHwdecInterop" << probed
-//             << qgetenv("QT_XCB_GL_INTERGRATION");
+//             << qgetenv("QT_XCB_GL_INTEGRATION");
 
 //    if (probed == "auto") {
 //        _interopKind = INTEROP_AUTO;
