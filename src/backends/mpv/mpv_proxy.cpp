@@ -1402,11 +1402,29 @@ void MpvProxy::processPropertyChange(const QString &name)
         // Use cached values to avoid synchronous API calls
         QTimer::singleShot(0, this, [this]() {
             if (m_cachedPause) {
-                if (!m_cachedIdleActive)
-                    setState(PlayState::Paused);
-                else
+                if (!m_cachedIdleActive) {
+                    if (m_bUserPaused) {
+                        setState(PlayState::Paused);
+                    } else {
+                        // Pause was not user-initiated (e.g. audio device
+                        // change from headphone plug/unplug). Attempt to
+                        // resume playback after a short delay so the video
+                        // keeps playing and the progress bar keeps moving.
+                        qCInfo(dmrMpv) << "Non-user pause detected, attempting resume";
+                        QTimer::singleShot(300, this, [this]() {
+                            if (m_cachedPause && !m_bUserPaused &&
+                                state() != PlayState::Stopped) {
+                                qCInfo(dmrMpv) << "Resuming playback after non-user pause";
+                                my_set_property_async(m_handle, "pause", false, 0);
+                            }
+                        });
+                        setState(PlayState::Paused);
+                    }
+                } else {
                     my_set_property_async(m_handle, "pause", false, 0);
+                }
             } else {
+                m_bUserPaused = false;
                 if (state() != PlayState::Stopped) {
                     setState(PlayState::Playing);
                 }
@@ -2032,7 +2050,8 @@ void MpvProxy::initMember()
 void MpvProxy::play()
 {
     qCInfo(dmrMpv) << "Starting playback";
-    
+    m_bUserPaused = false;
+
     if(m_bLoadMedia) {
         qCInfo(dmrMpv) << "Media already loading, scheduling retry in 5 seconds";
         QTimer::singleShot(5000, [=](){ //超时5s恢复状态，视频加载成功后也会重置状态，正常播放状态下不会进入此函数
@@ -2179,8 +2198,10 @@ void MpvProxy::pauseResume()
         return;
     }
 
-    qCInfo(dmrMpv) << "Toggling pause state - current state:" << paused();
-    my_set_property(m_handle, "pause", !paused());
+    bool bWillPause = !paused();
+    m_bUserPaused = bWillPause;
+    qCInfo(dmrMpv) << "Toggling pause state - current state:" << paused() << "will pause:" << bWillPause;
+    my_set_property(m_handle, "pause", bWillPause);
     qCDebug(dmrMpv) << "Exiting MpvProxy::pauseResume()";
 }
 
@@ -2188,6 +2209,7 @@ void MpvProxy::stop()
 {
     qCDebug(dmrMpv) << "Entering MpvProxy::stop()";
     qCInfo(dmrMpv) << "Stopping playback";
+    m_bUserPaused = false;
 
     // Check if mpv handle is valid before sending stop command
     if (!m_handle) {
