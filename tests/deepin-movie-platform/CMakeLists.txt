@@ -147,6 +147,7 @@ if (Qt6_FOUND)
     libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
     xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt6 libva libva-x11
     gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0 libdrm
+    libavformat libavcodec libswscale libavutil
     )
 else()
 # Qt5 environment
@@ -155,6 +156,7 @@ else()
             libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
             xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 libva libva-x11
             gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0 libdrm
+            libavformat libavcodec libswscale libavutil
             )
 endif()
 # 添加第三方库的所有文件夹路径到工程中来(注意 *_INCLUDE_DIRS)
