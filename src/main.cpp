@@ -253,6 +253,20 @@ int main(int argc, char *argv[])
     if (jmfi.exists() || innodir.exists()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
     }
+
+    // gpuinfo 按显卡型号绑定：interop=vaapi-egl 表示该 GPU 在影院/libmpv
+    // 路径下使用 vaapi 零拷贝，需要 EGL context + vaapi-egl interop。
+    if (qEnvironmentVariableIsEmpty("QT_XCB_GL_INTEGRATION")
+            && !dmr::utils::check_wayland_env()) {
+        const QString gpuInterop = dmr::utils::gpuInfoInterop();
+        if (gpuInterop == "vaapi-egl") {
+            qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+            qInfo() << "gpuinfo interop=vaapi-egl, set QT_XCB_GL_INTEGRATION=xcb_egl";
+        } else if (gpuInterop == "vaapi-glx") {
+            qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
+            qInfo() << "gpuinfo interop=vaapi-glx, set QT_XCB_GL_INTEGRATION=xcb_glx";
+        }
+    }
     /**
       *This function dtk is obsolete and has no
       * impact after testing on x86 platform.
