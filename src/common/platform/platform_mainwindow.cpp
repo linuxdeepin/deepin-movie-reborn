@@ -2519,8 +2519,27 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
 
     case ActionFactory::ActionKind::WindowAbove: {
         qCDebug(appMovie) << "ActionFactory::ActionKind::WindowAbove";
+        if (!utils::check_wayland_env()) {
+            qCDebug(appMovie) << "!utils::check_wayland_env()";
+            my_setStayOnTop(this, !m_bWindowAbove);
+        } else {
+            //wayland 置顶实现
+            QFunctionPointer setWindowProperty = qApp->platformFunction("_d_setWindowProperty");
+            qCDebug(appMovie) << "setWindowProperty";
+            QWindow *window = windowHandle();
+            if (!setWindowProperty || !window)
+                break;
+
+            if (!m_bWindowAbove) { //置顶
+                qCDebug(appMovie) << "m_bWindowAbove";
+                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", true);
+
+            } else {//取消置顶
+                qCDebug(appMovie) << "!m_bWindowAbove";
+                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", false);
+            }
+        }
         m_bWindowAbove = !m_bWindowAbove;
-        my_setStayOnTop(this, m_bWindowAbove);
         if (!bFromUI) {
             qCDebug(appMovie) << "!bFromUI";
             reflectActionToUI(actionKind);
@@ -3984,6 +4003,10 @@ void Platform_MainWindow::my_setStayOnTop(const QWidget *pWidget, bool bOn)
     Q_ASSERT(pWidget);
 
     const auto display = QX11Info::display();
+    if (display == nullptr) {
+        qCWarning(appMovie) << "my_setStayOnTop: no X11 display available, skip";
+        return;
+    }
     const auto screen = QX11Info::appScreen();
 
     const auto wmStateAtom = XInternAtom(display, kAtomNameWmState, false);
@@ -5410,8 +5433,9 @@ void Platform_MainWindow::toggleUIMode()
 
         if (!m_bWindowAbove) {
             qCDebug(appMovie) << "!m_bWindowAbove";
-            m_nStateBeforeMiniMode |= SBEM_Above;
             requestAction(ActionFactory::WindowAbove);
+            if (m_bWindowAbove)
+                m_nStateBeforeMiniMode |= SBEM_Above;
         }
 
         QSize sz = QSize(380, 380);
