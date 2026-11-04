@@ -122,8 +122,6 @@ namespace dmr {
         bool isTypeHaveHwdec(const AVCodec *pDec, AVHWDeviceType type);
 
     private:
-        //单例指针
-        static HwdecProbe             m_ffmpegProbe;
         //硬解设备上下文
         AVBufferRef                     *m_hwDeviceCtx;
         //所有硬解类型

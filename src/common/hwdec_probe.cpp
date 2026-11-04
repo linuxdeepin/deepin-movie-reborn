@@ -10,8 +10,6 @@
 
 namespace dmr {
 
-HwdecProbe HwdecProbe::m_ffmpegProbe;
-
 HwdecProbe::HwdecProbe():m_hwDeviceCtx(nullptr)
 {
     qCDebug(appMovie) << "Initializing HwdecProbe";
@@ -21,7 +19,10 @@ HwdecProbe::HwdecProbe():m_hwDeviceCtx(nullptr)
 
 HwdecProbe& HwdecProbe::get()
 {
-    return m_ffmpegProbe;
+    // 惰性构造：首次调用 get() 时才创建实例（C++11 起局部静态初始化线程安全），
+    // 避免库加载阶段就 dlopen FFmpeg 并探测硬解类型
+    static HwdecProbe instance;
+    return instance;
 }
 
 bool HwdecProbe::isFileCanHwdec(const QUrl& url, QList<QString>& hwList)
