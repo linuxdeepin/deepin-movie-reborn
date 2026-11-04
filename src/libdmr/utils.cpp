@@ -8,6 +8,8 @@
 #include <QtDBus>
 #include <QtWidgets>
 #include <QPainterPath>
+#include <QLibrary>
+#include <QLibraryInfo>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -753,6 +755,46 @@ QString getJjwGPUPath()
     }
 
     return QString();
+}
+
+QString gpuInfoInterop()
+{
+    static bool s_checked = false;
+    static QString s_interop;
+    if (s_checked)
+        return s_interop;
+    s_checked = true;
+
+    // 先按普通库名加载，支持 LD_LIBRARY_PATH 下的本地测试库；
+    // 失败时再回退到系统库目录。
+    QLibrary gpuinfoLib("libgpuinfo.so");
+    if (!gpuinfoLib.load()) {
+        const QString path = QLibraryInfo::location(QLibraryInfo::LibrariesPath)
+                + QDir::separator() + "libgpuinfo.so";
+        if (!QFileInfo::exists(path)) {
+            qWarning() << "libgpuinfo.so not found, gpuinfo interop is unavailable";
+            return s_interop;
+        }
+        gpuinfoLib.setFileName(path);
+        if (!gpuinfoLib.load()) {
+            qWarning() << "load libgpuinfo.so failed:" << gpuinfoLib.errorString();
+            return s_interop;
+        }
+    }
+
+    typedef const char *(*GpuInfoGetInterop)();
+    auto getInterop = reinterpret_cast<GpuInfoGetInterop>(gpuinfoLib.resolve("gpuinfo_get_interop"));
+    if (!getInterop) {
+        qWarning() << "gpuinfo_get_interop not found in libgpuinfo.so";
+        return s_interop;
+    }
+
+    const char *interop = getInterop();
+    if (interop && interop[0] != '\0')
+        s_interop = QString::fromUtf8(interop).trimmed();
+
+    qInfo() << "gpuinfo interop:" << s_interop;
+    return s_interop;
 }
 }
 }
