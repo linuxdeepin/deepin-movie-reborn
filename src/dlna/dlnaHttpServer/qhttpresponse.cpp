@@ -208,6 +208,8 @@ void QHttpResponse::connectionClosed()
 {
     qCWarning(dmrDlna) << "QHttpResponse::connectionClosed() Connection closed before response was finished";
     m_finished = true;
+    // 断开 done()→responseDone() 信号连接，避免析构期间 m_socket 已释放后被解引用（DEF-003）
+    disconnect(this, SIGNAL(done()), m_connection, SLOT(responseDone()));
     Q_EMIT done();
     deleteLater();
 }
