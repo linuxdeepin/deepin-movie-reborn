@@ -729,7 +729,7 @@ namespace dmr {
         }
         if (m_renderCreat(&m_pRenderCtx, m_handle, params) < 0) {
             qCCritical(dmrMpv) << "CRITICAL: Cannot initialize mpv gl context.";
-            std::runtime_error("can not init mpv gl");
+            return;
         }
         qCInfo(dmrMpv) << "MPV OpenGL render context initialized successfully";
 
