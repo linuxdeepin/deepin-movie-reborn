@@ -62,3 +62,4 @@ AGENTS.md
 
 # UT runtime artifacts (qt-autotest-generator)
 .ut/
+build-ut/

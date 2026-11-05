@@ -36,6 +36,7 @@
 #define protected public
 #define private public
 #include "src/backends/mpv/mpv_proxy.h"
+#include "src/backends/mpv/mpv_glwidget.h"
 #include "src/libdmr/compositing_manager.h"
 #include "src/libdmr/playlist_model.h"
 #include "src/libdmr/movie_configuration.h"
@@ -73,10 +74,14 @@ struct UtProp {
 };
 static QVector<UtProp> g_ut_props;        // my_set_property（m_bInited=true 时）
 static QVector<UtProp> g_ut_propsAsync;   // my_set_property_async
-static QVector<QVariantList> g_ut_cmds;   // my_command_async
+static QVector<QVariantList> g_ut_cmds;   // my_command_async / my_command（m_commandNode）
 static QVector<QString> g_ut_logLevels;   // m_requestLogMessage
 static QVector<int> g_ut_setStates;       // setState（经 ADDR stub 录制）
 static int g_ut_observeCalls = 0;         // m_observeProperty 调用计数
+static int g_ut_commandNodeRet = 0;       // m_commandNode 返回值（0 成功/负数错误）
+static mpv_node g_ut_commandNodeReply;    // m_commandNode 写回的应答节点（默认 NONE）
+static QHash<QString, QVariant> g_ut_propAnswers; // ut_getPropertyAnswer_stub 按属性名应答
+static QHash<QString, node_builder *> g_ut_propBuilders;  // 应答节点的 node_builder 缓存
 
 void ut_resetRecorders()
 {
@@ -86,6 +91,12 @@ void ut_resetRecorders()
     g_ut_logLevels.clear();
     g_ut_setStates.clear();
     g_ut_observeCalls = 0;
+    g_ut_commandNodeRet = 0;
+    g_ut_commandNodeReply.format = MPV_FORMAT_NONE;
+    g_ut_commandNodeReply.u.list = nullptr;
+    g_ut_propAnswers.clear();
+    qDeleteAll(g_ut_propBuilders);
+    g_ut_propBuilders.clear();
 }
 
 // mpv_node → QString（录制解析辅助）
@@ -162,6 +173,39 @@ int ut_commandNodeAsync_stub(mpv_handle *ctx, uint64_t userdata, mpv_node *args)
             lst << ut_nodeToString(&args->u.list->values[i]);
     }
     g_ut_cmds.append(lst);
+    return 0;
+}
+
+// m_commandNode：同步命令录制，应答由 g_ut_commandNodeReply 控制
+int ut_commandNode_stub(mpv_handle *ctx, mpv_node *args, mpv_node *res)
+{
+    Q_UNUSED(ctx);
+    QVariantList lst;
+    if (args && args->format == MPV_FORMAT_NODE_ARRAY && args->u.list) {
+        for (int i = 0; i < args->u.list->num; ++i)
+            lst << ut_nodeToString(&args->u.list->values[i]);
+    }
+    g_ut_cmds.append(lst);
+    if (res)
+        *res = g_ut_commandNodeReply;
+    return g_ut_commandNodeRet;
+}
+
+// m_getProperty：按属性名返回预置应答（g_ut_propAnswers），未命中返回 NONE
+int ut_getPropertyAnswer_stub(mpv_handle *ctx, const char *name, mpv_format format, void *data)
+{
+    Q_UNUSED(ctx);
+    if (format != MPV_FORMAT_NODE || !data)
+        return 0;
+    const QString n = QString::fromUtf8(name);
+    if (!g_ut_propAnswers.contains(n)) {
+        static_cast<mpv_node *>(data)->format = MPV_FORMAT_NONE;
+        return 0;
+    }
+    // 每次调用重建 node_builder（应答可跨用例变更；reset 时统一清理）
+    node_builder *b = new node_builder(g_ut_propAnswers.value(n));
+    g_ut_propBuilders.insert(n, b);
+    *static_cast<mpv_node *>(data) = *b->node();
     return 0;
 }
 
@@ -277,6 +321,39 @@ QFunctionPointer ut_qlibResolve_stub(const QString &, const char *)
     return (QFunctionPointer)(void *)0x1234;
 }
 QString ut_jjwPath_mwv207d_stub() { return QStringLiteral("mwv207d"); }
+QString ut_libPath_gpuinfo_stub(const QString &) { return QStringLiteral("/usr/lib/x86_64-linux-gnu/libgpuinfo.so"); }
+QFunctionPointer ut_qlibResolveMem_stub(QLibrary *, const char *)
+{
+    return (QFunctionPointer)(void *)0x1234;
+}
+QFunctionPointer ut_qlibResolveNullMem_stub(QLibrary *, const char *)
+{
+    return nullptr;
+}
+typedef QFunctionPointer (QLibrary::*UtResolveMemFn2)(const char *);
+
+// GL widget 转发录制器（slotStateChanged / updateRoundClip 用，避免触碰 GL 管线）
+static bool g_ut_setPlayingVal = false;
+static int g_ut_setPlayingCalls = 0;
+static void ut_setPlaying_rec(void *, bool v)
+{
+    g_ut_setPlayingVal = v;
+    g_ut_setPlayingCalls++;
+}
+static int g_ut_toggleClipCalls = 0;
+static bool g_ut_toggleClipVal = false;
+static void ut_toggleRoundedClip_rec(void *, bool v)
+{
+    g_ut_toggleClipVal = v;
+    g_ut_toggleClipCalls++;
+}
+static void ut_qwidget_update_noop(void *) {}
+static void ut_qglwidget_makeCurrent_noop(void *) {}
+// m_getProperty 返回固定错误码（my_get_property_variant 错误分支）
+int ut_getPropertyError_stub(mpv_handle *, const char *, mpv_format, void *)
+{
+    return -5;
+}
 QString ut_jjwPath_jmgpu_stub() { return QStringLiteral("/dev/jmgpu"); }
 QString ut_jjwPath_mwv206_stub() { return QStringLiteral("/dev/mwv206_0"); }
 bool ut_qdirExistsTrue_stub(void *) { return true; }
@@ -323,6 +400,7 @@ void ut_installMpvStubs(MpvProxy *proxy)
     proxy->m_setProperty = ut_setProperty_stub;
     proxy->m_setPropertyAsync = ut_setPropertyAsync_stub;
     proxy->m_commandNodeAsync = ut_commandNodeAsync_stub;
+    proxy->m_commandNode = ut_commandNode_stub;
     proxy->m_getProperty = ut_getProperty_stub;
     proxy->m_observeProperty = ut_observeProperty_stub;
     proxy->m_setOptionString = ut_setOptionString_stub;
@@ -381,6 +459,9 @@ TEST_F(MpvProxyTest, mpv_init_CreateNullReturnsNull)
 
 // 已知现状（缺陷记录）：m_initialize < 0 时源码构造了 std::runtime_error 却未 throw，
 // 按"现状"验证：不抛异常且返回非空 handle，同时后续属性设置流程正常执行
+// 重写（原用例断言旧缺陷行为「initialize 失败不 throw 仍返回 handle」；
+// 当前源码 mpv_proxy.cpp:830 已 throw std::runtime_error，防御行为正确，
+// 用例同步更新为验证抛出语义）
 TEST_F(MpvProxyTest, mpv_init_InitializeFailNoThrowByDesign)
 {
     Stub stub;
@@ -390,10 +471,7 @@ TEST_F(MpvProxyTest, mpv_init_InitializeFailNoThrowByDesign)
     proxy->m_decodeMode = DecodeMode::SOFTWARE;
     ut_resetRecorders();
 
-    mpv_handle *h = nullptr;
-    EXPECT_NO_THROW(h = proxy->mpv_init());
-    // 缺陷现状：未 throw，仍返回 handle
-    EXPECT_NE(nullptr, h);
+    EXPECT_THROW(proxy->mpv_init(), std::runtime_error);
 }
 
 // BUG351097：AUTO 模式下 gpuinfo VO 命中时，vo 应先记录 GPU 特定值，最终仍被 libmpv 覆盖
@@ -540,9 +618,11 @@ TEST_F(MpvProxyTest, initGpuInfoFuns_ResolveSuccessAssignsPointers)
     MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
     ASSERT_NE(nullptr, proxy);
     stub.set(ADDR(SysUtils, libExist), ut_libExistTrue_stub);
-    // QLibrary::resolve 多重重载，typedef 消歧
-    typedef QFunctionPointer (*ResolveFn)(const QString &, const char *);
-    stub.set((ResolveFn)&QLibrary::resolve, ut_qlibResolve_stub);
+    stub.set(ADDR(SysUtils, libPath), ut_libPath_gpuinfo_stub);   // 非空路径（空路径 QLibrary 不 resolve）
+    // QLibrary::resolve 实例重载打桩（静态重载打桩在本环境不生效，实例重载模式
+    // 已在 test_mpv_glwidget.cpp 套件验证可行）
+    typedef QFunctionPointer (QLibrary::*ResolveMemFn)(const char *);
+    stub.set((ResolveMemFn)&QLibrary::resolve, ut_qlibResolveMem_stub);
 
     proxy->m_gpuInfo = nullptr;
     proxy->m_gpuInfoVo = nullptr;
@@ -2048,3 +2128,822 @@ TEST_F(MpvProxyTest, showEvent_KeepsFlagWhenAlreadySet)
     EXPECT_NO_THROW(proxy->showEvent(&ev));
     EXPECT_TRUE(proxy->m_bConnectStateChange);
 }
+
+// ============================ 高危方法补充（第二轮） ============================
+// 覆盖：my_command / setProperty / setSubCodepage / loadSubtitle /
+//       takeOneScreenshot / burstScreenshot / previousFrame /
+//       updatePlayingMovieInfo / processPropertyChange（双重载）
+// 分支→用例映射：
+//   my_command:     !m_bInited→入等待队列 | inited→m_commandNode 同步发送
+//   setProperty:    pause-on-start/video-zoom/color/dmrhwdec-switch/vo/泛用
+//   setSubCodepage: auto 保留 | 裸编码前置 + | 已带 + 保留
+//   loadSubtitle:   文件不存在→false | 存在→sub-add select + true
+//   takeOneScreenshot: Stopped 早退 | 命令失败→空图 | 无 data 键→空图 | 有像素→有效图
+//   burstScreenshot:  已在连拍早退 | Stopped 早退 | 时长<35 发空图并停止 | 长视频出 15 点并置位
+//   previousFrame:  Stopped 早退 | Playing 发 frame-back-step
+//   updatePlayingMovieInfo: 混合轨道解析（音频/字幕内外部标题回退）| 空轨道清空
+//   processPropertyChange: 事件重载缓存+信号 | 字符串重载各属性信号 | pause 缓存联动状态
+
+// takeOneScreenshot 应答节点：NODE_MAP{w:2,h:2,stride:8,format:"bgr0",data:BYTE_ARRAY}
+namespace {
+char ut_s_pix[16] = {};   // 2×2×4B 像素
+mpv_byte_array ut_s_ba { ut_s_pix, sizeof(ut_s_pix) };
+
+mpv_node ut_screenshotReplyNode()
+{
+    static mpv_node node;
+    static mpv_node_list list;
+    static mpv_node values[5];
+    static char *keys[5];
+    static const char *kNames[5] = { "w", "h", "stride", "format", "data" };
+    static bool inited = false;
+    if (!inited) {
+        inited = true;
+        for (int i = 0; i < 5; ++i)
+            keys[i] = const_cast<char *>(kNames[i]);
+        values[0].format = MPV_FORMAT_INT64; values[0].u.int64 = 2;
+        values[1].format = MPV_FORMAT_INT64; values[1].u.int64 = 2;
+        values[2].format = MPV_FORMAT_INT64; values[2].u.int64 = 8;
+        values[3].format = MPV_FORMAT_STRING;
+        values[3].u.string = const_cast<char *>("bgr0");
+        values[4].format = MPV_FORMAT_BYTE_ARRAY;
+        values[4].u.ba = &ut_s_ba;
+        list.num = 5; list.keys = keys; list.values = values;
+        node.format = MPV_FORMAT_NODE_MAP;
+        node.u.list = &list;
+    }
+    return node;
+}
+}  // namespace
+
+// my_command：未初始化时入等待队列，不触达 mpv
+TEST_F(MpvProxyTest, my_command_NotInited_AppendsToWaitQueue)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = false;
+    ut_resetRecorders();
+
+    QVariant r = proxy->my_command(proxy->m_handle, QVariantList { "frame-step" });
+    EXPECT_EQ(1, proxy->m_vecWaitCommand.size());
+    EXPECT_FALSE(r.isValid());   // NONE 节点 → 空 QVariant
+    EXPECT_TRUE(g_ut_cmds.isEmpty());
+}
+
+// my_command：已初始化时经 m_commandNode 同步发送
+TEST_F(MpvProxyTest, my_command_Inited_SendsViaCommandNode)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->my_command(proxy->m_handle, QVariantList { "frame-step" });
+    ASSERT_EQ(1, g_ut_cmds.size());
+    EXPECT_EQ(QString("frame-step"), g_ut_cmds.at(0).value(0).toString());
+}
+
+// setProperty：pause-on-start 仅存标志，不触达 mpv
+TEST_F(MpvProxyTest, setProperty_PauseOnStart_StoresFlagWithoutMpvCall)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setProperty("pause-on-start", true);
+    EXPECT_TRUE(proxy->m_bPauseOnStart);
+    EXPECT_TRUE(g_ut_props.isEmpty());
+}
+
+// setProperty：video-zoom 发 double 属性
+TEST_F(MpvProxyTest, setProperty_VideoZoom_SendsProperty)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setProperty("video-zoom", 2.5);
+    ASSERT_EQ(1, g_ut_props.size());
+    EXPECT_EQ(QString("video-zoom"), g_ut_props.at(0).name);
+}
+
+// setProperty：color 走 QObject 动态属性，不触达 mpv
+TEST_F(MpvProxyTest, setProperty_Color_SetsDynamicPropertyNoMpvCall)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setProperty("color", QStringLiteral("red"));
+    EXPECT_EQ(QString("red"), proxy->property("color").toString());
+    EXPECT_TRUE(g_ut_props.isEmpty());
+}
+
+// setProperty：dmrhwdec-switch 走 QObject 动态属性
+TEST_F(MpvProxyTest, setProperty_DmrhwdecSwitch_SetsDynamicProperty)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setProperty("dmrhwdec-switch", true);
+    EXPECT_TRUE(proxy->property("dmrhwdec-switch").toBool());
+    EXPECT_TRUE(g_ut_props.isEmpty());
+}
+
+// setProperty：vo 记录 m_sInitVo 并发送属性
+TEST_F(MpvProxyTest, setProperty_Vo_RecordsInitVoAndSends)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setProperty("vo", QStringLiteral("vaapi"));
+    EXPECT_EQ(QString("vaapi"), proxy->m_sInitVo);
+    ASSERT_EQ(1, g_ut_props.size());
+    EXPECT_EQ(QString("vo"), g_ut_props.at(0).name);
+}
+
+// setProperty：泛用属性直接透传（UTF-8 名）
+TEST_F(MpvProxyTest, setProperty_GenericProperty_SendsUtf8Name)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setProperty("sub-font-size", 24);
+    ASSERT_EQ(1, g_ut_props.size());
+    EXPECT_EQ(QString("sub-font-size"), g_ut_props.at(0).name);
+}
+
+// setSubCodepage：auto 不加 + 前缀
+TEST_F(MpvProxyTest, setSubCodepage_Auto_KeptAsIs)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setSubCodepage(QStringLiteral("auto"));
+    ASSERT_FALSE(g_ut_props.isEmpty());
+    EXPECT_EQ(QString("sub-codepage"), g_ut_props.at(0).name);
+    EXPECT_EQ(QString("auto"), g_ut_props.at(0).value);
+}
+
+// setSubCodepage：裸编码前置 +（mpv 语义：+ 表示强制转换）
+TEST_F(MpvProxyTest, setSubCodepage_Plain_PrependPlus)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setSubCodepage(QStringLiteral("GB18030"));
+    ASSERT_FALSE(g_ut_props.isEmpty());
+    EXPECT_EQ(QString("+GB18030"), g_ut_props.at(0).value);
+}
+
+// setSubCodepage：已带 + 保留原样
+TEST_F(MpvProxyTest, setSubCodepage_AlreadyPlus_KeptAsIs)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setSubCodepage(QStringLiteral("+UTF-8"));
+    ASSERT_FALSE(g_ut_props.isEmpty());
+    EXPECT_EQ(QString("+UTF-8"), g_ut_props.at(0).value);
+}
+
+// loadSubtitle：文件不存在返回 false，不发送命令
+TEST_F(MpvProxyTest, loadSubtitle_NonExistentFile_ReturnsFalse)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    QFileInfo missing(QStringLiteral("/nonexistent/ut-movie-sub.srt"));
+    EXPECT_FALSE(proxy->loadSubtitle(missing));
+    EXPECT_TRUE(g_ut_cmds.isEmpty());
+}
+
+// loadSubtitle：存在的文件发送 sub-add select 并返回 true
+TEST_F(MpvProxyTest, loadSubtitle_ExistingFile_SendsSubAddSelect)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    QTemporaryDir tmpDir;
+    ASSERT_TRUE(tmpDir.isValid());
+    QString subPath = tmpDir.path() + "/ut-sub.srt";
+    QFile f(subPath);
+    ASSERT_TRUE(f.open(QIODevice::WriteOnly));
+    f.write("1\n00:00:01,000 --> 00:00:02,000\nut\n");
+    f.close();
+
+    QFileInfo info(subPath);
+    EXPECT_TRUE(proxy->loadSubtitle(info));
+    ASSERT_FALSE(g_ut_cmds.isEmpty());
+    EXPECT_EQ(QString("sub-add"), g_ut_cmds.at(0).value(0).toString());
+    EXPECT_EQ(subPath, g_ut_cmds.at(0).value(1).toString());
+    EXPECT_EQ(QString("select"), g_ut_cmds.at(0).value(2).toString());
+}
+
+// takeOneScreenshot：Stopped 状态早退返回空图
+TEST_F(MpvProxyTest, takeOneScreenshot_Stopped_ReturnsEmpty)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    ut_resetRecorders();
+
+    QImage img = proxy->takeOneScreenshot();
+    EXPECT_TRUE(img.isNull());
+    EXPECT_TRUE(g_ut_cmds.isEmpty());
+}
+
+// takeOneScreenshot：命令失败返回空图
+TEST_F(MpvProxyTest, takeOneScreenshot_CommandFails_ReturnsEmpty)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Playing;
+    ut_resetRecorders();
+    g_ut_commandNodeRet = -5;
+
+    QImage img = proxy->takeOneScreenshot();
+    EXPECT_TRUE(img.isNull());
+}
+
+// takeOneScreenshot：应答无 data 键返回空图
+TEST_F(MpvProxyTest, takeOneScreenshot_NoData_ReturnsEmpty)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Playing;
+    ut_resetRecorders();
+    static mpv_node_list ut_s_emptyList { 0, nullptr, nullptr };   // 合法空地图
+    g_ut_commandNodeReply.format = MPV_FORMAT_NODE_MAP;
+    g_ut_commandNodeReply.u.list = &ut_s_emptyList;
+
+    QImage img = proxy->takeOneScreenshot();
+    EXPECT_TRUE(img.isNull());
+}
+
+// takeOneScreenshot：应答带像素数据返回有效图
+TEST_F(MpvProxyTest, takeOneScreenshot_WithPixelData_ReturnsImage)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Playing;
+    ut_resetRecorders();
+    g_ut_commandNodeReply = ut_screenshotReplyNode();
+
+    QImage img = proxy->takeOneScreenshot();
+    EXPECT_FALSE(img.isNull());
+    EXPECT_EQ(2, img.width());
+    EXPECT_EQ(2, img.height());
+}
+
+// burstScreenshot：已在连拍状态早退
+TEST_F(MpvProxyTest, burstScreenshot_AlreadyInBurst_ReturnsEarly)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Playing;
+    proxy->m_bInBurstShotting = true;
+    ut_resetRecorders();
+
+    proxy->burstScreenshot();
+    EXPECT_TRUE(proxy->m_listBurstPoints.isEmpty());
+    proxy->m_bInBurstShotting = false;
+}
+
+// burstScreenshot：Stopped 状态早退
+TEST_F(MpvProxyTest, burstScreenshot_Stopped_ReturnsEarly)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    ut_resetRecorders();
+
+    proxy->burstScreenshot();
+    EXPECT_TRUE(proxy->m_listBurstPoints.isEmpty());
+    EXPECT_FALSE(proxy->m_bInBurstShotting);
+}
+
+// burstScreenshot：时长 < 35s 发空截图信号并立即停止
+TEST_F(MpvProxyTest, burstScreenshot_ShortVideo_EmitsEmptyScreenshotAndStops)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Playing;
+    proxy->m_cachedDuration = 30;
+    ut_resetRecorders();
+    QSignalSpy spy(proxy, &MpvProxy::notifyScreenshot);
+
+    proxy->burstScreenshot();
+    EXPECT_EQ(1, spy.count());
+    EXPECT_TRUE(spy.at(0).at(0).value<QImage>().isNull());
+    EXPECT_FALSE(proxy->m_bInBurstShotting);
+}
+
+// burstScreenshot：长视频生成 15 个连拍点并进入连拍状态
+TEST_F(MpvProxyTest, burstScreenshot_LongVideo_Generates15PointsAndFlags)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Paused;   // paused()=true 跳过 pauseResume
+    proxy->m_cachedDuration = 3600;
+    ut_resetRecorders();
+
+    proxy->burstScreenshot();
+    EXPECT_EQ(15, proxy->m_listBurstPoints.size());
+    EXPECT_EQ(0, proxy->m_nBurstStart);
+    EXPECT_TRUE(proxy->m_bInBurstShotting);
+    // 防止挂起的 singleShot 在后续用例事件循环中触发
+    proxy->m_bInBurstShotting = false;
+}
+
+// previousFrame：Stopped 早退
+TEST_F(MpvProxyTest, previousFrame_Stopped_ReturnsEarly)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    ut_resetRecorders();
+
+    proxy->previousFrame();
+    EXPECT_TRUE(g_ut_cmds.isEmpty());
+}
+
+// previousFrame：Playing 发 frame-back-step
+TEST_F(MpvProxyTest, previousFrame_Playing_SendsFrameBackStep)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Playing;
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->previousFrame();
+    ASSERT_EQ(1, g_ut_cmds.size());
+    EXPECT_EQ(QString("frame-back-step"), g_ut_cmds.at(0).value(0).toString());
+}
+
+// updatePlayingMovieInfo：混合轨道解析（音频/字幕标题回退）
+TEST_F(MpvProxyTest, updatePlayingMovieInfo_MixedTracks_ParsesSubsAndAudios)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    ut_resetRecorders();
+    proxy->m_getProperty = ut_getPropertyAnswer_stub;   // 按名应答轨道列表
+
+    QVariantMap audioTitled;
+    audioTitled["type"] = "audio";
+    audioTitled["id"] = 1;
+    audioTitled["lang"] = "eng";
+    audioTitled["external"] = false;
+    audioTitled["title"] = "English";
+    QVariantMap audioInternal;
+    audioInternal["type"] = "audio";
+    audioInternal["id"] = 2;
+    audioInternal["lang"] = QVariant();     // 无 lang
+    audioInternal["external"] = false;
+    audioInternal["title"] = "";
+    QVariantMap subExternal;
+    subExternal["type"] = "sub";
+    subExternal["id"] = 1;
+    subExternal["lang"] = "chi";
+    subExternal["external"] = true;
+    subExternal["external-filename"] = "/tmp/ut-sub.srt";
+    subExternal["title"] = "Chinese";
+    QVariantMap subNoTitle;
+    subNoTitle["type"] = "sub";
+    subNoTitle["id"] = 2;
+    subNoTitle["lang"] = QVariant();   // 无 lang → 回退 tr("Internal")
+    subNoTitle["external"] = false;
+    subNoTitle["title"] = "";
+    g_ut_propAnswers["track-list"] = QVariantList { audioTitled, audioInternal, subExternal, subNoTitle };
+
+    proxy->updatePlayingMovieInfo();
+    EXPECT_EQ(2, proxy->m_movieInfo.subs.size());
+    EXPECT_EQ(2, proxy->m_movieInfo.audios.size());
+    // 无标题且非外挂的音频 → [internal]
+    EXPECT_EQ(QString("[internal]"), proxy->m_movieInfo.audios.at(1)["title"].toString());
+    // 无标题且非外挂的字幕 → tr("Internal")
+    EXPECT_EQ(QString("Internal"), proxy->m_movieInfo.subs.at(1)["title"].toString());
+    // 外挂字幕保留文件名
+    EXPECT_EQ(QString("/tmp/ut-sub.srt"), proxy->m_movieInfo.subs.at(0)["external-filename"].toString());
+}
+
+// updatePlayingMovieInfo：空轨道清空既有信息
+TEST_F(MpvProxyTest, updatePlayingMovieInfo_EmptyTrackList_ClearsInfo)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    ut_resetRecorders();
+    proxy->m_getProperty = ut_getPropertyAnswer_stub;   // 按名应答轨道列表
+
+    QVariantMap audio;
+    audio["type"] = "audio";
+    audio["id"] = 1;
+    g_ut_propAnswers["track-list"] = QVariantList { audio };
+    proxy->updatePlayingMovieInfo();
+    ASSERT_EQ(1, proxy->m_movieInfo.audios.size());
+
+    g_ut_propAnswers["track-list"] = QVariantList {};
+    proxy->updatePlayingMovieInfo();
+    EXPECT_EQ(0, proxy->m_movieInfo.audios.size());
+    EXPECT_EQ(0, proxy->m_movieInfo.subs.size());
+}
+
+// processPropertyChange：事件重载按格式取值并更新缓存，异步触发信号
+TEST_F(MpvProxyTest, processPropertyChange_EventDouble_UpdatesCacheAndEmitsElapsed)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    ut_resetRecorders();
+    QSignalSpy spy(proxy, &MpvProxy::elapsedChanged);
+
+    double pos = 5.9;
+    mpv_event_property ev { "time-pos", MPV_FORMAT_DOUBLE, &pos };
+    proxy->processPropertyChange(&ev);
+    EXPECT_EQ(6, proxy->m_cachedElapsed);   // toLongLong(5.9) 四舍五入
+    QTRY_COMPARE(spy.count(), 1);   // singleShot(0) 经事件循环触发
+}
+
+// processPropertyChange：字符串重载 volume → volumeChanged
+TEST_F(MpvProxyTest, processPropertyChange_StringVolume_EmitsVolumeChanged)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    ut_resetRecorders();
+    QSignalSpy spy(proxy, &MpvProxy::volumeChanged);
+
+    proxy->processPropertyChange(QStringLiteral("volume"));
+    QTRY_COMPARE(spy.count(), 1);
+}
+
+// processPropertyChange：mute → muteChanged
+TEST_F(MpvProxyTest, processPropertyChange_Mute_EmitsMuteChanged)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    ut_resetRecorders();
+    QSignalSpy spy(proxy, &MpvProxy::muteChanged);
+
+    proxy->processPropertyChange(QStringLiteral("mute"));
+    QTRY_COMPARE(spy.count(), 1);
+}
+
+// processPropertyChange：aid → aidChanged
+TEST_F(MpvProxyTest, processPropertyChange_Aid_EmitsAidChanged)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    ut_resetRecorders();
+    QSignalSpy spy(proxy, &MpvProxy::aidChanged);
+
+    proxy->processPropertyChange(QStringLiteral("aid"));
+    QTRY_COMPARE(spy.count(), 1);
+}
+
+// processPropertyChange：dwidth → 延迟触发 videoSizeChanged（缓存非空）
+TEST_F(MpvProxyTest, processPropertyChange_Dwidth_TriggersVideoSizeChanged)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Playing;
+    proxy->m_cachedVideoSize = QSize(320, 240);
+    ut_resetRecorders();
+    QSignalSpy spy(proxy, &MpvProxy::videoSizeChanged);
+
+    proxy->processPropertyChange(QStringLiteral("dwidth"));
+    QTRY_COMPARE(spy.count(), 1);
+}
+
+// processPropertyChange：pause 缓存 true 且非 idle → 进入 Paused 状态
+// （setState 存在 dynamic_cast 空指针缺陷，用 ADDR stub 绕开并录制）
+TEST_F(MpvProxyTest, processPropertyChange_PauseCachedTrue_RecordsPausedState)
+{
+    Stub stub;
+    stub.set(ADDR(MpvProxy, setState), ut_setState_rec_stub);
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Playing;
+    proxy->m_cachedPause = true;
+    proxy->m_cachedIdleActive = false;
+    ut_resetRecorders();
+
+    proxy->processPropertyChange(QStringLiteral("pause"));
+    QTRY_VERIFY(!g_ut_setStates.isEmpty());
+    EXPECT_EQ(static_cast<int>(Backend::PlayState::Paused), g_ut_setStates.last());
+}
+
+// processPropertyChange：paused-for-cache → urlpause 信号携带缓存值
+TEST_F(MpvProxyTest, processPropertyChange_PausedForCache_EmitsUrlpause)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_cachedPausedForCache = true;
+    ut_resetRecorders();
+    QSignalSpy spy(proxy, &MpvProxy::urlpause);
+
+    proxy->processPropertyChange(QStringLiteral("paused-for-cache"));
+    QTRY_COMPARE(spy.count(), 1);
+    EXPECT_TRUE(spy.at(0).at(0).toBool());
+}
+
+// processPropertyChange：未知属性名不触发任何信号
+TEST_F(MpvProxyTest, processPropertyChange_UnknownName_NoSignal)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    ut_resetRecorders();
+    QSignalSpy spyElapsed(proxy, &MpvProxy::elapsedChanged);
+    QSignalSpy spyVolume(proxy, &MpvProxy::volumeChanged);
+
+    proxy->processPropertyChange(QStringLiteral("unknown-prop"));
+    QTest::qWait(50);
+    EXPECT_EQ(0, spyElapsed.count());
+    EXPECT_EQ(0, spyVolume.count());
+}
+
+// ============================ 覆盖补齐（Mode 2 第二批） ============================
+// 未覆盖 high 方法：aid / isSubVisible / makeCurrent / my_get_property_variant /
+// nextBurstShootPoint / pauseResume / slotStateChanged / updateRoundClip /
+// duration(null-engine 缓存分支) + glwidget getWaylandDisplay
+
+// aid()：返回缓存值 m_cachedAid，不做同步 API 调用
+TEST_F(MpvProxyTest, aid_ReturnsCachedValue)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_cachedAid = 7;
+    EXPECT_EQ(7, proxy->aid());
+}
+
+// isSubVisible()：读 sub-visibility 属性（true / false 两等价类）
+TEST_F(MpvProxyTest, isSubVisible_PropertyTrue_ReturnsTrue)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_getProperty = ut_getPropertyAnswer_stub;
+    g_ut_propAnswers.insert(QStringLiteral("sub-visibility"), true);
+    EXPECT_TRUE(proxy->isSubVisible());
+}
+
+TEST_F(MpvProxyTest, isSubVisible_PropertyFalse_ReturnsFalse)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_getProperty = ut_getPropertyAnswer_stub;
+    g_ut_propAnswers.insert(QStringLiteral("sub-visibility"), false);
+    EXPECT_FALSE(proxy->isSubVisible());
+}
+
+// my_get_property_variant()：成功→node_to_variant；错误→空 QVariant
+TEST_F(MpvProxyTest, my_get_property_variant_Success_ReturnsValue)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_getProperty = ut_getPropertyAnswer_stub;
+    g_ut_propAnswers.insert(QStringLiteral("duration"), 42.5);
+    QVariant v = proxy->my_get_property_variant(ut_fakeHandle(), QStringLiteral("duration"));
+    EXPECT_TRUE(v.isValid());
+    EXPECT_DOUBLE_EQ(42.5, v.toDouble());
+}
+
+TEST_F(MpvProxyTest, my_get_property_variant_Error_ReturnsInvalid)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_getProperty = ut_getPropertyError_stub;
+    QVariant v = proxy->my_get_property_variant(ut_fakeHandle(), QStringLiteral("duration"));
+    EXPECT_FALSE(v.isValid());
+}
+
+// duration()：无 PlayerEngine（父窗非引擎）→ 走 m_cachedDuration 缓存分支
+TEST_F(MpvProxyTest, duration_NullEngine_ReturnsCachedDuration)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_cachedDuration = 12345;
+    EXPECT_EQ(12345, proxy->duration());
+}
+
+// nextBurstShootPoint()：位置 < 时长原样返回；位置 >= 时长收敛为 duration-5
+TEST_F(MpvProxyTest, nextBurstShootPoint_BeyondDuration_ClampsToDurationMinus5)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_listBurstPoints = {10, 500};
+    proxy->m_nBurstStart = 0;
+    proxy->m_cachedDuration = 100;   // duration() 无引擎时返回缓存值
+
+    EXPECT_EQ(10, proxy->nextBurstShootPoint());   // 10 < 100 原样返回
+    EXPECT_EQ(95, proxy->nextBurstShootPoint());   // 500 >= 100 → 100-5
+    EXPECT_EQ(2, proxy->m_nBurstStart);
+}
+
+// pauseResume()：Stopped 早退不写属性；Playing/Paused 切换 pause 属性
+TEST_F(MpvProxyTest, pauseResume_StoppedState_EarlyReturnNoPropertyWrite)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Stopped;
+    ut_resetRecorders();
+
+    proxy->pauseResume();
+
+    EXPECT_EQ(0, g_ut_props.size());
+}
+
+TEST_F(MpvProxyTest, pauseResume_PlayingState_SetsPauseTrue)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Playing;
+    proxy->m_bInited = true;   // m_bInited=false 时 my_set_property 只入 m_mapWaitSet
+    ut_resetRecorders();
+
+    proxy->pauseResume();
+
+    ASSERT_EQ(1, g_ut_props.size());
+    EXPECT_EQ(QStringLiteral("pause"), g_ut_props.at(0).name);
+    EXPECT_EQ(QStringLiteral("true"), g_ut_props.at(0).value);
+}
+
+TEST_F(MpvProxyTest, pauseResume_PausedState_SetsPauseFalse)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Paused;
+    proxy->m_bInited = true;   // m_bInited=false 时 my_set_property 只入 m_mapWaitSet
+    ut_resetRecorders();
+
+    proxy->pauseResume();
+
+    ASSERT_EQ(1, g_ut_props.size());
+    EXPECT_EQ(QStringLiteral("pause"), g_ut_props.at(0).name);
+    EXPECT_EQ(QStringLiteral("false"), g_ut_props.at(0).value);
+}
+
+// slotStateChanged()：把 state!=Stopped 同步到 GL widget 的播放标志
+TEST_F(MpvProxyTest, slotStateChanged_Playing_SetsWidgetPlaying)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    QWidget wParent;
+    stub.set((void (MpvGLWidget::*)(bool))&MpvGLWidget::setPlaying, ut_setPlaying_rec);
+    stub.set((void (QWidget::*)())&QWidget::update, ut_qwidget_update_noop);
+    MpvGLWidget *w = new MpvGLWidget(&wParent, MpvHandle());
+    proxy->m_pMpvGLwidget = w;
+    proxy->_state = Backend::PlayState::Playing;
+    g_ut_setPlayingCalls = 0;
+
+    proxy->slotStateChanged();
+
+    EXPECT_EQ(1, g_ut_setPlayingCalls);
+    EXPECT_TRUE(g_ut_setPlayingVal);
+    proxy->m_pMpvGLwidget = nullptr;
+    delete w;
+}
+
+TEST_F(MpvProxyTest, slotStateChanged_Stopped_ClearsWidgetPlaying)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    QWidget wParent;
+    stub.set((void (MpvGLWidget::*)(bool))&MpvGLWidget::setPlaying, ut_setPlaying_rec);
+    stub.set((void (QWidget::*)())&QWidget::update, ut_qwidget_update_noop);
+    MpvGLWidget *w = new MpvGLWidget(&wParent, MpvHandle());
+    proxy->m_pMpvGLwidget = w;
+    proxy->_state = Backend::PlayState::Stopped;
+    g_ut_setPlayingCalls = 0;
+
+    proxy->slotStateChanged();
+
+    EXPECT_EQ(1, g_ut_setPlayingCalls);
+    EXPECT_FALSE(g_ut_setPlayingVal);
+    proxy->m_pMpvGLwidget = nullptr;
+    delete w;
+}
+
+// makeCurrent()：空 widget 安全早退；有 widget 转发调用
+TEST_F(MpvProxyTest, makeCurrent_NullWidget_SafeNoOp)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_pMpvGLwidget = nullptr;
+    EXPECT_NO_THROW(proxy->makeCurrent());
+}
+
+TEST_F(MpvProxyTest, makeCurrent_WithWidget_ForwardsCall)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    QWidget wParent;
+    stub.set((void (QOpenGLWidget::*)())&QOpenGLWidget::makeCurrent, ut_qglwidget_makeCurrent_noop);
+    MpvGLWidget *w = new MpvGLWidget(&wParent, MpvHandle());
+    proxy->m_pMpvGLwidget = w;
+
+    EXPECT_NO_THROW(proxy->makeCurrent());
+
+    proxy->m_pMpvGLwidget = nullptr;
+    delete w;
+}
+
+// updateRoundClip()：x86_64 路径转发 toggleRoundedClip（false→关闭自定义 FBO）
+TEST_F(MpvProxyTest, updateRoundClip_False_DisablesCustomFbo)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    QWidget wParent;
+    stub.set((void (MpvGLWidget::*)(bool))&MpvGLWidget::toggleRoundedClip, ut_toggleRoundedClip_rec);
+    MpvGLWidget *w = new MpvGLWidget(&wParent, MpvHandle());
+    proxy->m_pMpvGLwidget = w;
+    g_ut_toggleClipCalls = 0;
+
+    proxy->updateRoundClip(false);
+
+    EXPECT_EQ(1, g_ut_toggleClipCalls);
+    EXPECT_FALSE(g_ut_toggleClipVal);
+    proxy->m_pMpvGLwidget = nullptr;
+    delete w;
+}
+
+TEST_F(MpvProxyTest, updateRoundClip_True_EnablesCustomFbo)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    QWidget wParent;
+    stub.set((void (MpvGLWidget::*)(bool))&MpvGLWidget::toggleRoundedClip, ut_toggleRoundedClip_rec);
+    MpvGLWidget *w = new MpvGLWidget(&wParent, MpvHandle());
+    proxy->m_pMpvGLwidget = w;
+    g_ut_toggleClipCalls = 0;
+
+    proxy->updateRoundClip(true);
+
+    EXPECT_EQ(1, g_ut_toggleClipCalls);
+    EXPECT_TRUE(g_ut_toggleClipVal);
+    proxy->m_pMpvGLwidget = nullptr;
+    delete w;
+}
+
