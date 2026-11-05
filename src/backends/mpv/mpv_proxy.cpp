@@ -2395,7 +2395,11 @@ QImage MpvProxy::takeOneScreenshot()
         return QImage();
     }
 
-    Q_ASSERT(res.format == MPV_FORMAT_NODE_MAP);
+    if (res.format != MPV_FORMAT_NODE_MAP || !res.u.list) {
+        qCWarning(dmrMpv) << "screenshot-raw returned unexpected format or null list";
+        m_freeNodecontents(&res);
+        return QImage();
+    }
 
     int w = 0, h = 0, stride = 0;
 
@@ -2417,7 +2421,11 @@ QImage MpvProxy::takeOneScreenshot()
             auto format = QString::fromUtf8(pNodeList->values[n].u.string);
             qCInfo(dmrMpv) << "format" << format;
         } else if (key == "data") {
-            pData = static_cast<uchar *>(pNodeList->values[n].u.ba->data);
+            if (pNodeList->values[n].u.ba && pNodeList->values[n].u.ba->data) {
+                pData = static_cast<uchar *>(pNodeList->values[n].u.ba->data);
+            } else {
+                qCWarning(dmrMpv) << "screenshot-raw data field has null byte array";
+            }
             qCDebug(dmrMpv) << "pData" << pData;
         }
     }
