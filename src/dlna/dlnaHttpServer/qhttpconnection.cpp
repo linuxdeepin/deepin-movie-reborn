@@ -142,7 +142,12 @@ void QHttpConnection::responseDone()
     QHttpResponse *response = qobject_cast<QHttpResponse *>(QObject::sender());
     if (response->m_last) {
         qCDebug(dmrDlna) << "Last response, disconnecting socket.";
-        m_socket->disconnectFromHost();
+        // 空指针检查：m_socket 可能在析构期间已被置空（DEF-003 纵深防御）
+        if (m_socket) {
+            m_socket->disconnectFromHost();
+        } else {
+            qCWarning(dmrDlna) << "m_socket is null in responseDone(), skipping disconnectFromHost()";
+        }
     }
 }
 
