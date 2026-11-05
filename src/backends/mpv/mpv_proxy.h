@@ -124,7 +124,11 @@ class MpvProxy: public Backend
         explicit my_node_autofree(mpv_node *pValue) : pNode(pValue) {}
         ~my_node_autofree()
         {
-            mpv_freeNode_contents(pNode);
+            static QString libPath = SysUtils::libPath("libmpv.so");
+            static mpv_freeNode_contents freeFunc = reinterpret_cast<mpv_freeNode_contents>(QLibrary::resolve(libPath, "mpv_free_node_contents"));
+            if (freeFunc) {
+                freeFunc(pNode);
+            }
         }
     };
 
