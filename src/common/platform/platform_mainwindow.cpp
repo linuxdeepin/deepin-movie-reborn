@@ -84,6 +84,10 @@
 #include "utility.h"
 #endif
 
+#ifdef DMR_HAVE_TREELAND_SUPPORT
+#include "treeland/treeland_shell_surface_proxy.h"
+#endif
+
 //add by heyi
 //#define _NET_WM_MOVERESIZE_MOVE              8   /* movement only */
 //#define _NET_WM_MOVERESIZE_CANCEL           11   /* cancel operation */
@@ -1337,6 +1341,12 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     //解码初始化
     //decodeInit();
     qCDebug(appMovie) << "Platform_MainWindow constructor";
+
+#ifdef DMR_HAVE_TREELAND_SUPPORT
+    // treeland (V25) 下提前挂接置顶代理（wine-window-management 协议，
+    // 控制对象在窗口显示后惰性创建，见代理类注释）
+    TreelandShellSurfaceProxy::attachWindow(this);
+#endif
 }
 
 void Platform_MainWindow::setupTitlebar()
@@ -2524,19 +2534,30 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
             my_setStayOnTop(this, !m_bWindowAbove);
         } else {
             //wayland 置顶实现
-            QFunctionPointer setWindowProperty = qApp->platformFunction("_d_setWindowProperty");
-            qCDebug(appMovie) << "setWindowProperty";
             QWindow *window = windowHandle();
-            if (!setWindowProperty || !window)
-                break;
+#ifdef DMR_HAVE_TREELAND_SUPPORT
+            // treeland (V25) 下老的 _d_setWindowProperty 路径无效，改用
+            // treeland_wine_window_manager_v1 协议 set_z_order(topmost)
+            // 实现置顶；仅当窗口已成功创建控制对象时才走该路径
+            if (TreelandShellSurfaceProxy::isTreelandActive() && window
+                    && TreelandShellSurfaceProxy::isWindowManaged(window)) {
+                TreelandShellSurfaceProxy::setStayOnTop(window, !m_bWindowAbove);
+            } else
+#endif
+            {
+                QFunctionPointer setWindowProperty = qApp->platformFunction("_d_setWindowProperty");
+                qCDebug(appMovie) << "setWindowProperty";
+                if (!setWindowProperty || !window)
+                    break;
 
-            if (!m_bWindowAbove) { //置顶
-                qCDebug(appMovie) << "m_bWindowAbove";
-                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", true);
+                if (!m_bWindowAbove) { //置顶
+                    qCDebug(appMovie) << "m_bWindowAbove";
+                    reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", true);
 
-            } else {//取消置顶
-                qCDebug(appMovie) << "!m_bWindowAbove";
-                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", false);
+                } else {//取消置顶
+                    qCDebug(appMovie) << "!m_bWindowAbove";
+                    reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", false);
+                }
             }
         }
         m_bWindowAbove = !m_bWindowAbove;

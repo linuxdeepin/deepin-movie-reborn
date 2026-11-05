@@ -27,6 +27,31 @@ if (Qt6_FOUND)
         find_package(Qt6 COMPONENTS GuiPrivate REQUIRED)
     endif()
     find_package(Dtk6 REQUIRED COMPONENTS Core Widget Gui)
+
+    # treeland (V25) 置顶支持：依赖 Qt6 WaylandClient 私有 API 与 wayland-client；
+    # 缺少依赖时自动关闭该特性，保持原有构建可用（X11/Qt5 环境不受影响）
+    option(WITH_TREELAND_SUPPORT "Enable treeland (V25) stay-on-top support" ON)
+    find_package(Qt6 QUIET COMPONENTS WaylandClient)
+    pkg_check_modules(Wayland QUIET IMPORTED_TARGET wayland-client)
+    set(DMR_HAVE_TREELAND OFF)
+    if (WITH_TREELAND_SUPPORT AND Qt6WaylandClient_FOUND AND TARGET Qt6::WaylandClientPrivate AND TARGET PkgConfig::Wayland)
+        # 确认私有头存在（Qt6WaylandClientPrivate 的 include 属性含生成器
+        # 表达式，这里直接按 Qt6 安装布局检查文件），避免
+        # qt6-wayland-private-dev 未装时编译报错
+        find_path(DMR_WAYLAND_PRIVATE_HEADER
+            QtWaylandClient/private/qwaylandwindow_p.h
+            HINTS "${QT6_INSTALL_PREFIX}/${QT6_INSTALL_HEADERS}"
+            PATH_SUFFIXES "QtWaylandClient/${Qt6_VERSION}"
+            NO_DEFAULT_PATH)
+        if (DMR_WAYLAND_PRIVATE_HEADER)
+            set(DMR_HAVE_TREELAND ON)
+        endif()
+    endif()
+    if (DMR_HAVE_TREELAND)
+        message(STATUS "Treeland stay-on-top support: enabled")
+    else()
+        message(STATUS "Treeland stay-on-top support: disabled (Qt WaylandClient private headers not found)")
+    endif()
     # for Dtk_VERSION
     pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtk6core)
     pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
@@ -44,6 +69,15 @@ if (Qt6_FOUND)
     endif()
 
     file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp dlna/*.cpp dlna/*.c)
+    if (NOT DMR_HAVE_TREELAND)
+        # 特性关闭时排除 treeland 相关源文件
+        list(FILTER SRCS EXCLUDE REGEX ".*/treeland/.*")
+    else()
+        # GLOB 只收 .cpp，协议的 .c 绑定需显式加入（wine 协议引用
+        # xdg_toplevel_interface，xdg-shell 绑定需一并链接）
+        list(APPEND SRCS common/treeland/wayland-treeland-wine-window-management-unstable-v1-protocol.c)
+        list(APPEND SRCS common/treeland/wayland-xdg-shell-protocol.c)
+    endif()
     list(APPEND SRCS main.cpp)
 
     # mpv backend
@@ -79,6 +113,11 @@ if (Qt6_FOUND)
     add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 
     target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE} ${FFMPEG_INCLUDE_DIRS})
+
+    if (DMR_HAVE_TREELAND)
+        target_compile_definitions(${CMD_NAME} PRIVATE DMR_HAVE_TREELAND_SUPPORT)
+        target_link_libraries(${CMD_NAME} Qt6::WaylandClient Qt6::WaylandClientPrivate PkgConfig::Wayland)
+    endif()
 
     set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt6::Widgets Qt6::Network Qt6::DBus Qt6::Sql Qt6::Svg Qt6::Multimedia
         Qt6::MultimediaWidgets Dtk6::Core Dtk6::Widget Dtk6::Gui PkgConfig::MPRIS PkgConfig::Gst PkgConfig::DRM GL va va-x11
@@ -150,6 +189,8 @@ else()
 
 
     file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp dlna/*.cpp dlna/*.c)
+    # treeland 支持仅在 Qt6 分支启用，Qt5 构建排除相关源文件
+    list(FILTER SRCS EXCLUDE REGEX ".*/treeland/.*")
     list(APPEND SRCS main.cpp)
 
     # mpv backend

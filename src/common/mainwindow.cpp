@@ -75,6 +75,10 @@
 #include "utility.h"
 #endif
 
+#ifdef DMR_HAVE_TREELAND_SUPPORT
+#include "treeland/treeland_shell_surface_proxy.h"
+#endif
+
 //add by heyi
 //#define _NET_WM_MOVERESIZE_MOVE              8   /* movement only */
 //#define _NET_WM_MOVERESIZE_CANCEL           11   /* cancel operation */
@@ -1270,6 +1274,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(dynamic_cast<MpvProxy *>(m_pEngine->getMpvProxy()),&MpvProxy::crashCheck,&Settings::get(),&Settings::crashCheck);
     //解码初始化
     decodeInit();
+
+#ifdef DMR_HAVE_TREELAND_SUPPORT
+    // treeland (V25) 下提前挂接置顶代理（wine-window-management 协议，
+    // 控制对象在窗口显示后惰性创建，见代理类注释）
+    TreelandShellSurfaceProxy::attachWindow(this);
+#endif
 }
 
 void MainWindow::setupTitlebar()
@@ -2458,19 +2468,31 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             my_setStayOnTop(this, !m_bWindowAbove);
         } else {
             //wayland 置顶实现
-            QFunctionPointer setWindowProperty = qApp->platformFunction("_d_setWindowProperty");
-            qCDebug(appMovie) << "setWindowProperty";
             QWindow *window = windowHandle();
-            if (!setWindowProperty || !window)
-                break;
+#ifdef DMR_HAVE_TREELAND_SUPPORT
+            // treeland (V25) 下老的 _d_setWindowProperty 路径无效，改用
+            // treeland_wine_window_manager_v1 协议 set_z_order(topmost)
+            // 实现置顶。控制对象按需创建（首次置顶时窗口已可见，
+            // xdg_toplevel 必已存在），不要求 isWindowManaged ——
+            // 迷你模式强制置顶（未置顶→迷你）也走这里
+            if (TreelandShellSurfaceProxy::isTreelandActive() && window) {
+                TreelandShellSurfaceProxy::setStayOnTop(window, !m_bWindowAbove);
+            } else
+#endif
+            {
+                QFunctionPointer setWindowProperty = qApp->platformFunction("_d_setWindowProperty");
+                qCDebug(appMovie) << "setWindowProperty";
+                if (!setWindowProperty || !window)
+                    break;
 
-            if (!m_bWindowAbove) { //置顶
-                qCDebug(appMovie) << "m_bWindowAbove";
-                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", true);
+                if (!m_bWindowAbove) { //置顶
+                    qCDebug(appMovie) << "m_bWindowAbove";
+                    reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", true);
 
-            } else {//取消置顶
-                qCDebug(appMovie) << "!m_bWindowAbove";
-                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", false);
+                } else {//取消置顶
+                    qCDebug(appMovie) << "!m_bWindowAbove";
+                    reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(window, "_d_dwayland_staysontop", false);
+                }
             }
         }
         m_bWindowAbove = !m_bWindowAbove;
@@ -4995,6 +5017,17 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
 
     if (utils::check_wayland_env()) {
         qCDebug(appMovie) << "utils::check_wayland_env()";
+#ifdef DMR_HAVE_TREELAND_SUPPORT
+        // treeland (V25) 下属性路径无效，以置顶代理记录的置顶状态为准
+        if (TreelandShellSurfaceProxy::isTreelandActive() && windowHandle()
+                && TreelandShellSurfaceProxy::isWindowManaged(windowHandle())) {
+            bool bOnTop = TreelandShellSurfaceProxy::stayOnTopOf(windowHandle());
+            if (bOnTop != m_bWindowAbove) {
+                m_bWindowAbove = bOnTop;
+                reflectActionToUI(ActionFactory::WindowAbove);
+            }
+        } else
+#endif
         if (windowHandle()->property("_d_dwayland_staysontop").toBool() != m_bWindowAbove) {
             m_bWindowAbove = !m_bWindowAbove;
             reflectActionToUI(ActionFactory::WindowAbove);
