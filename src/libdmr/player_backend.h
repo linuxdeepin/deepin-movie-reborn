@@ -152,6 +152,7 @@ Q_SIGNALS:
     void mpvWarningLogsChanged(const QString prefix, const QString text);
     void urlpause(bool status);
     void sigMediaError();
+    void sigHDRDetected();
 
 public slots:
     virtual void play() = 0;
