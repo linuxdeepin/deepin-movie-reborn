@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -3635,6 +3635,10 @@ void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString s
     } else if ((sErrorMessage.toLower().contains(QString("can't"))) &&
                (sErrorMessage.toLower().contains(QString("open")))) {
         m_pCommHintWid->updateWithMessage(tr("No video file found"));
+    } else if (sErrorMessage.toLower().contains(QString("avhwdevicecontext")) ||
+               sErrorMessage.toLower().contains(QString("libcuda")) ||
+               sErrorMessage.toLower().contains(QString("opengl error invalid_operation"))) {
+        m_pCommHintWid->updateWithMessage(tr("Hardware decoding may be unavailable, please try software decoding"));
     }
 }
 
