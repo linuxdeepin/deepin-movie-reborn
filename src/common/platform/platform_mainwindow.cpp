@@ -833,7 +833,11 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
             m_pProgIndicator->updateMovieProgress(m_pEngine->duration(), m_pEngine->elapsed());
         });
 
-        m_pFullScreenTimeLabel->setAttribute(Qt::WA_TranslucentBackground);
+        if (CompositingManager::get().composited()) {
+            m_pFullScreenTimeLabel->setAttribute(Qt::WA_TranslucentBackground);
+        } else {
+            m_pFullScreenTimeLabel->setAutoFillBackground(true);
+        }
         m_pFullScreenTimeLabel->setWindowFlags(Qt::FramelessWindowHint);
         m_pFullScreenTimeLabel->setParent(this);
         m_pFullScreenTimeLabel->setWindowFlags(m_pFullScreenTimeLabel->windowFlags() | Qt::ToolTip);
