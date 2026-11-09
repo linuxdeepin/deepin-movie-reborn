@@ -74,7 +74,6 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
     ExitButton *exitBtn = new ExitButton();
     exitBtn->setToolTip(tr("Exit Miracast"));
     exitBtn->move((m_pScene->width() - exitBtn->width()) / 2, (m_pScene->height() - exitBtn->height()) / 2);
-    exitBtn->show();
     connect(exitBtn, &ExitButton::exitMircast, this, &MircastShowWidget::exitMircast);
     qCDebug(appMovie) << "Exit button created and positioned";
 
