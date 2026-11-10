@@ -1,5 +1,5 @@
-// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// Copyright (C) 2020 ~ 2026, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -456,6 +456,8 @@ namespace dmr {
 
     void MpvGLWidget::prepareSplashImages()
     {
+        qreal dpr = qApp->devicePixelRatio();
+
         QPixmap pixmap;
         QImage img=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg");
         pixmap=pixmap.fromImage(img);
@@ -476,7 +478,8 @@ namespace dmr {
         pixmap3=pixmap3.fromImage(image);
 
         QPixmap pixmap4;
-        QImage img2=QIcon::fromTheme("deepin-movie").pixmap(130, 130).toImage();
+        QImage img2=QIcon::fromTheme("deepin-movie").pixmap(130 * dpr, 130 * dpr).toImage();
+        img2.setDevicePixelRatio(qApp->devicePixelRatio());
         pixmap4=pixmap4.fromImage(img2);
 
         QPainter painter1(&pixmap3);
