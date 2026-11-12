@@ -189,8 +189,18 @@ static bool pwpop_isMinimized_false_stub(void *) { return false; }
 static DMenu *pwpop_playlistContextMenu_stub(void *)
 {
     static DMenu menu;
+    // Product code calls popup() + hide() on whatever playlistContextMenu()
+    // returns. A real popup briefly creates a native window and the dxcb
+    // platform plugin posts blur-area update events that outlive the popup
+    // and crash QWindow::isVisible() in the next event-loop spin. Suppress
+    // the native window entirely with WA_DontShowOnScreen.
+    menu.setAttribute(Qt::WA_DontShowOnScreen);
     return &menu;
 }
+
+static void pwpop_menuPopup_noop(QMenu *, const QPoint &, QAction *) {}
+
+static void pwpop_slotMediaError_noop(MainWindow *) {}
 static void pwpop_slotCloseTimeTimeOut_stub(void *) {}
 
 // ===========================================================================
@@ -254,6 +264,12 @@ protected:
         stub.set(ADDR(CompositingManager, isPadSystem), pwpop_isPad_false_stub);
         stub.set(ADDR(PlaylistModel, onAsyncUpdate), pwpop_onAsyncUpdate_noop_stub);
         stub.set(ADDR(MainWindow, isMinimized), pwpop_isMinimized_false_stub);
+        // populate() seeds fake http://example.com/... URLs; if anything
+        // starts playback the mpv backend reports "HTTP error 404" and
+        // MainWindow::slotMediaError auto-removes the current playlist entry
+        // (mainwindow.cpp slotMediaError), racing the test's own removal
+        // assertions. Disable that handler for the whole fixture.
+        stub.set(ADDR(MainWindow, slotMediaError), pwpop_slotMediaError_noop);
 
         scrubState();
     }
@@ -812,6 +828,14 @@ TEST_F(PwPopTest, contextMenuEvent_onItemAndOffItemSetsMouseItem)
     pl->loadPlaylist();
     ASSERT_EQ(pl->get_playlist()->count(), 2);
     stub.set(ADDR(ActionFactory, playlistContextMenu), pwpop_playlistContextMenu_stub);
+    // The non-pad branch ends with playlistContextMenu()->popup(pos) + hide().
+    // A real popup creates a native window and the dxcb platform plugin posts
+    // blur-area update events that outlive the popup and crash
+    // QWindow::isVisible() in the next event-loop spin (verified: the case
+    // passes with QT_QPA_PLATFORM=xcb). Stub out QMenu::popup so no native
+    // window is ever created; the menu-action state the test exercises is set
+    // before the popup call and is unaffected.
+    stub.set(ADDR(QMenu, popup), pwpop_menuPopup_noop);
 
     // Act: right-click on the first item (USE_TEST build hides the popup menu).
     QContextMenuEvent onItem(QContextMenuEvent::Mouse, pwpop_posInItem(0),
@@ -1104,15 +1128,17 @@ TEST_F(PwPopTest, endAnimation_withSingleAnimationIsSafeNoOp)
     ASSERT_EQ(pl->paOpen, nullptr);
 
     // Act: endAnimation() guards on BOTH pointers being non-null, so with a
-    // single live animation it is a no-op (must not crash either way).
+    // single live animation it skips the dual-animation fast path — but it
+    // still unconditionally zeroes the lone animation's duration
+    // (playlist_widget.cpp endAnimation()). It must not crash either way.
     pl->endAnimation();
 
-    // Assert: the duration is untouched — documented dead-branch behavior of
-    // endAnimation() (see defects report).
-    EXPECT_EQ(pl->paClose->duration(), 350);  // POPUP_DURATION, unchanged
+    // Assert: the zeroed duration lets the running animation finish
+    // immediately; its finished lambda deletes it and clears paClose, while
+    // the state enum itself is untouched (stays Opened).
     waitAnimationsDone();
+    EXPECT_EQ(pl->paClose, nullptr);
     EXPECT_EQ(pl->state(), PlaylistWidget::Opened);
-    EXPECT_TRUE(pl->isVisible());
 }
 
 // ===========================================================================

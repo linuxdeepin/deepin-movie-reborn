@@ -72,7 +72,12 @@ TEST(Settings, mwDeconstruction)
     MainWindow *w = dApp->getMainWindow();
     w->close();
     delete w;
-    w = nullptr;
+    // Application::setMainWindow ignores nullptr, so the dangling m_mainwindow
+    // cannot be reset directly; recreate a fresh window and re-register it so
+    // every later dApp->getMainWindow() caller gets a live object.
+    MainWindow *nw = new MainWindow();
+    dApp->setMainWindow(nw);
+    QTest::qWait(400);   // the ctor defers loadPlayList by 300ms
 }
 
 

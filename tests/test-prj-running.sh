@@ -108,7 +108,7 @@ suite_names() {
 case_names() {  # $1=源码目录 $2=套件名
     find "$1" -name '*.cpp' ! -name 'test_main*' \
         -exec grep -hE "^TEST(_F)?\([[:space:]]*$2[[:space:]]*," {} + 2>/dev/null \
-        | sed -E "s/^TEST(_F)?\([[:space:]]*[A-Za-z0-9_]+[[:space:]]*,[[:space:]]*([A-Za-z0-9_]+).*/\1/" \
+        | sed -E "s/^TEST(_F)?\([[:space:]]*[A-Za-z0-9_]+[[:space:]]*,[[:space:]]*([A-Za-z0-9_]+).*/\2/" \
         | grep -E '^[A-Za-z0-9_]+$'
 }
 

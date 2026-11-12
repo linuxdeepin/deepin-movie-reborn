@@ -998,8 +998,27 @@ TEST(ToolBox, playListWidget)
     MainWindow *w = dApp->getMainWindow();
     ToolboxProxy *toolboxProxy = w->toolbox();
     ToolButton *listBtn = toolboxProxy->listBtn();
+    // m_pPlaylist is created asynchronously via QTimer::singleShot(300,
+    // loadPlayList) in the MainWindow ctor; when this test runs early enough
+    // it is still null. Wait for it, and also make sure the playlist holds
+    // two rows: the body below dereferences itemWidget(item(0)) /
+    // itemWidget(item(1)) and QTest::mouseMove() segfaults on a null widget.
     PlaylistWidget *playlistWidget = w->playlist();
+    for (int i = 0; i < 20 && !playlistWidget; ++i) {
+        QTest::qWait(100);
+        playlistWidget = w->playlist();
+    }
+    ASSERT_NE(playlistWidget, nullptr);
     DListWidget *playlist = playlistWidget->get_playlist();
+    ASSERT_NE(playlist, nullptr);
+    if (playlist->count() < 2) {
+        QList<QUrl> listPlayFiles;
+        listPlayFiles << QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/demo.mp4")
+                      << QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/bensound-sunny.mp3");
+        w->engine()->addPlayFiles(listPlayFiles);
+        QTest::qWait(200);   // let the playlist rows get created
+    }
+    ASSERT_GE(playlist->count(), 2);
     DFloatingButton *playItemCloseBtn;
     //playlist item event
     QEvent tooltipEvent(QEvent::ToolTip);
