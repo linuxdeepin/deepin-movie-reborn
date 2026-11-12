@@ -813,8 +813,8 @@ QVariant readDBusProperty(const QString &sService, const QString &sPath, const Q
 void switchToDefaultSink()
 {
 
-    QVariant v = readDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                             "com.deepin.daemon.Audio", "SinkInputs");
+    QVariant v = readDBusProperty("org.deepin.dde.Audio1", "/org/deepin/dde/Audio1",
+                                             "org.deepin.dde.Audio1", "SinkInputs");
 
     if (!v.isValid())
         return;
@@ -824,8 +824,8 @@ void switchToDefaultSink()
     int inputIndex = -1; //当前音乐的索引值
     int curSinkIndex = -1;
     for (auto curPath : allSinkInputsList) {
-        QVariant nameV = readDBusProperty("com.deepin.daemon.Audio", curPath.path(),
-                                                     "com.deepin.daemon.Audio.SinkInput", "Name");
+        QVariant nameV = readDBusProperty("org.deepin.dde.Audio1", curPath.path(),
+                                                     "org.deepin.dde.Audio1.SinkInput", "Name");
 
         if (!nameV.isValid() || nameV.toString() != QObject::tr("Movie"))
             continue;
@@ -838,8 +838,8 @@ void switchToDefaultSink()
         } else
             return;
 
-        QVariant sinkV = readDBusProperty("com.deepin.daemon.Audio", curPath.path(),
-                                                     "com.deepin.daemon.Audio.SinkInput", "SinkIndex");
+        QVariant sinkV = readDBusProperty("org.deepin.dde.Audio1", curPath.path(),
+                                                     "org.deepin.dde.Audio1.SinkInput", "SinkIndex");
         if (!sinkV.isValid())
             continue;
         curSinkIndex = sinkV.toInt();
@@ -849,8 +849,8 @@ void switchToDefaultSink()
         return;
 
     //获取默认输出设备
-    QVariant varsink = readDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                                   "com.deepin.daemon.Audio", "DefaultSink");
+    QVariant varsink = readDBusProperty("org.deepin.dde.Audio1", "/org/deepin/dde/Audio1",
+                                                   "org.deepin.dde.Audio1", "DefaultSink");
     if (!varsink.isValid())
         return;
     QString sinkpath = varsink.value<QDBusObjectPath >().path();
