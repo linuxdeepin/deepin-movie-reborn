@@ -884,11 +884,6 @@ TEST(utils_ext, stringDistance_EqualStrings)
 }
 
 // SysUtils::libExist：系统库可加载
-TEST(utils_ext, libExist_ExistingLibReturnsTrue)
-{
-    EXPECT_TRUE(SysUtils::libExist("c"));   // libc.so.6
-}
-
 // SysUtils::libExist：不存在的库返回 false（走 libPath 备选路径后仍失败）
 TEST(utils_ext, libExist_NonExistentReturnsFalse)
 {

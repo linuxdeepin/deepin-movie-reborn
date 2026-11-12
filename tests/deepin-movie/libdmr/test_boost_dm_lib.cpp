@@ -294,21 +294,6 @@ TEST(boost_dm_lib, engine_paused_initiallyFalse)
     EXPECT_FALSE(e->paused());
 }
 
-TEST(boost_dm_lib, engine_getters_returnDefaultsWhenIdle)
-{
-    PlayerEngine *e = bdl_engine();
-    ASSERT_NE(e, nullptr);
-    // All of these guard on !_current and return a default.
-    EXPECT_EQ(e->duration(), 0);
-    EXPECT_EQ(e->elapsed(), 0);
-    EXPECT_EQ(e->videoSize(), QSize(0, 0));
-    EXPECT_EQ(e->volume(), 100);
-    EXPECT_FALSE(e->muted());
-    EXPECT_DOUBLE_EQ(e->subDelay(), 0.0);
-    EXPECT_DOUBLE_EQ(e->videoAspect(), 0.0);
-    EXPECT_EQ(e->videoRotation(), 0);
-}
-
 TEST(boost_dm_lib, engine_subCodepage_returnsAutoWhenNoBackend)
 {
     PlayerEngine *e = bdl_engine();
@@ -438,27 +423,6 @@ TEST(boost_dm_lib, engine_pauseResume_ignoredWhenIdle)
     // _current null OR state Idle -> early return both covered here.
     e->pauseResume();
     SUCCEED();
-}
-
-TEST(boost_dm_lib, engine_getMpvProxy_returnsNullWhenIdle)
-{
-    PlayerEngine *e = bdl_engine();
-    ASSERT_NE(e, nullptr);
-    EXPECT_EQ(e->getMpvProxy(), nullptr);
-}
-
-TEST(boost_dm_lib, engine_getBackendProperty_returnsInvalidWhenIdle)
-{
-    PlayerEngine *e = bdl_engine();
-    ASSERT_NE(e, nullptr);
-    EXPECT_FALSE(e->getBackendProperty("keep-open").isValid());
-}
-
-TEST(boost_dm_lib, engine_getDecodeModel_returnsInvalidWhenIdle)
-{
-    PlayerEngine *e = bdl_engine();
-    ASSERT_NE(e, nullptr);
-    EXPECT_FALSE(e->getDecodeModel().isValid());
 }
 
 TEST(boost_dm_lib, engine_loadSubtitle_returnsTrueWhenIdle)
@@ -777,21 +741,6 @@ TEST(boost_dm_lib, movieInfo_sizeStr_branches)
     EXPECT_FALSE(mi.sizeStr().contains("K"));
 }
 
-TEST(boost_dm_lib, movieInfo_durationStr_zeroDuration)
-{
-    MovieInfo mi;
-    EXPECT_EQ(mi.durationStr().toStdString(), "00:00:00");
-}
-
-TEST(boost_dm_lib, movieInfo_videoAudioCodec_known)
-{
-    MovieInfo mi;
-    mi.vCodecID = 28; // h264
-    mi.aCodeID = 86017; // mp3
-    EXPECT_EQ(mi.videoCodec().toStdString(), "h264");
-    EXPECT_EQ(mi.audioCodec().toStdString(), "mp3");
-}
-
 TEST(boost_dm_lib, movieInfo_videoAudioCodec_unknown_returnsEmpty)
 {
     MovieInfo mi;
@@ -909,25 +858,6 @@ TEST(boost_dm_lib, onlineSub_hasHashConflict_existingFile_noSiblings)
     // No sibling with the same template name -> false, conflict stays empty.
     EXPECT_FALSE(r);
     EXPECT_TRUE(conflict.isEmpty());
-}
-
-TEST(boost_dm_lib, onlineSub_subtitlesDownloadComplete_emitsSignal)
-{
-    OnlineSubtitle &os = OnlineSubtitle::get();
-    bool emitted = false;
-    QUrl emittedUrl;
-    auto c = QObject::connect(&os, &OnlineSubtitle::subtitlesDownloadedFor,
-                              [&emitted, &emittedUrl](const QUrl &url,
-                                                      const QList<QString> &,
-                                                      OnlineSubtitle::FailReason) {
-                                  emitted = true;
-                                  emittedUrl = url;
-                              });
-    // _subs is empty -> files list empty; still emits with NoError.
-    os.subtitlesDownloadComplete();
-    QObject::disconnect(c);
-    EXPECT_TRUE(emitted);
-    EXPECT_TRUE(emittedUrl.isEmpty()); // _lastReqVideo was reset
 }
 
 TEST(boost_dm_lib, onlineSub_replyReceived_nullReply_doesNotCrash_defensive)

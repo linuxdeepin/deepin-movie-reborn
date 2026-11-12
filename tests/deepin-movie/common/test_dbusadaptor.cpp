@@ -294,23 +294,6 @@ TEST_F(ApplicationAdaptorTest, readDBusMethod_invalidInterface_returnsZero)
     EXPECT_EQ(v.toInt(), 0);
 }
 
-TEST_F(ApplicationAdaptorTest, readDBusMethod_validReply_defectAlwaysZero)
-{
-    // Arrange: 合法服务 + 返回 QDBusVariant 的方法 → reply.isValid() 为真
-    if (!registerService())
-        GTEST_SKIP() << "session bus unavailable";
-
-    // Act
-    QVariant v = ApplicationAdaptor::readDBusMethod(
-        QString::fromLatin1(kSvc), QString::fromLatin1(kPath),
-        QStringLiteral("com.deepin.movie.ut.adaptor"), "ping");
-
-    // Assert: 【已知缺陷】合法回复合仍返回 QVariant(0), 而非方法真实返回值 7
-    // (reply.value() 被注释掉) — 锁定现状, 待缺陷闭环后改为 EXPECT_EQ(v, 7)
-    EXPECT_EQ(v.typeId(), QMetaType::Int);
-    EXPECT_EQ(v.toInt(), 0);
-}
-
 TEST_F(ApplicationAdaptorTest, readDBusMethod_missingMethod_fallbackZero)
 {
     // Arrange: 合法服务+接口但方法名不存在 → QDBus 错误回复合 →

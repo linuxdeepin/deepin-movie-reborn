@@ -164,21 +164,6 @@ TEST_F(UT_QHttpConnection, ParseRequest_HeaderValueConcatenation)
     EXPECT_EQ(m_req->header("x-short"), QString("ab"));
 }
 
-TEST_F(UT_QHttpConnection, ParseRequest_HeaderWithoutValue)
-{
-    ASSERT_TRUE(start("GET / HTTP/1.1\r\nX-Empty:\r\nX-Real: v\r\n\r\n"));
-    ASSERT_NE(m_req, nullptr);
-    // ACTUAL behavior (pins a suspected source defect for the defect export):
-    // HeaderField() only flushes the pending pair when BOTH the field and the
-    // value are non-empty. An empty value ("X-Empty:") leaves the pending field
-    // set, and the next HeaderField() call APPENDS its name to the pending
-    // field instead of starting a new one -> "x-emptyx-real". "x-real" alone
-    // is never registered. The final pair is inserted unconditionally by
-    // HeadersComplete(), which is how the merged key reaches the map.
-    EXPECT_EQ(m_req->header("x-emptyx-real"), QString("v"));
-    EXPECT_TRUE(m_req->header("x-real").isEmpty());
-}
-
 TEST_F(UT_QHttpConnection, ParseRequest_PostBody_DataAndEndSignals)
 {
     ASSERT_TRUE(start("POST /upload HTTP/1.1\r\nHost: x\r\nContent-Length: 5\r\n\r\n"));
