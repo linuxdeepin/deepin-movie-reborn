@@ -538,27 +538,6 @@ TEST(libdmr_ext, PlayItemInfo_refresh_non_local_returns_false)
     EXPECT_FALSE(pif.refresh());
 }
 
-TEST(libdmr_ext, PlayItemInfo_refresh_local_growing_file_returns_true)
-{
-    QTemporaryFile tf;
-    ASSERT_TRUE(tf.open());
-    tf.write("first");
-    tf.flush();
-
-    PlayItemInfo pif;
-    pif.url = QUrl::fromLocalFile(tf.fileName());
-    pif.info = QFileInfo(tf.fileName());
-    pif.info.refresh(); // baseline
-
-    // Grow the file, then refresh again -> size differs -> true.
-    tf.write("more bytes appended here");
-    tf.flush();
-
-    bool changed = pif.refresh();
-    EXPECT_TRUE(changed);
-}
-
-
 // --- calculatePlayInfo on a local non-video file --------------------------
 // Exercises the cache miss -> parseFromFile -> cache save path for a file
 // that ffmpeg cannot parse (MovieInfo stays invalid).

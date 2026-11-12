@@ -26,7 +26,7 @@ TEST(requestAction, onlineSub)
 {
     Platform_MainWindow* w = dApp->getMainWindow();
     PlayerEngine* engine =  w->engine();
-    QUrl url(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/天空之眼 高清1080P.mp4"));
+    QUrl url(QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/天空之眼 高清1080P.mp4"));
 
     w->show();
 
@@ -88,8 +88,8 @@ TEST(requestAction, playMode)
 
     QList<QUrl> listPlayFiles;
 
-    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
-                  << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
+    listPlayFiles << QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/demo.mp4")\
+                  << QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/bensound-sunny.mp3");
 
     const QList<QUrl> &valids = engine->addPlayFiles(listPlayFiles);
     qDebug() << __func__ << valids;
@@ -217,7 +217,7 @@ TEST(requestAction, subtitle)
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::LoadSubtitle);
     QTest::qWait(100);
-    engine->loadSubtitle(QFileInfo(QString("/data/source/deepin-movie-reborn/movie/Hachiko.A.Dog's.Story.ass")));
+    engine->loadSubtitle(QFileInfo(QString(DMR_TEST_ASSETS_DIR "/Hachiko.A.Dog's.Story.ass")));
     QTest::qWait(100);
     w->requestAction(ActionFactory::ActionKind::HideSubtitle);
     QTest::qWait(100);
@@ -253,7 +253,7 @@ TEST(requestAction, settings)
     Platform_MainWindow* w = dApp->getMainWindow();
 
     Settings::get().settings()->setOption("base.screenshot.location",
-                                          "/data/source/deepin-movie-reborn/movie/DMovie");
+                                          DMR_TEST_ASSETS_DIR "/DMovie");
     QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::Settings);
     QTest::qWait(200);

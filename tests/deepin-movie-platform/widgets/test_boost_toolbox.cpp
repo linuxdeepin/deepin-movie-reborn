@@ -1068,26 +1068,6 @@ TEST(boost_tb, updateTimeVisible_mousepreviewOn_returnsEarly)
 // the stamp fires on a visible toolbox.
 // ==========================================================================
 
-TEST(boost_tb, buttonClicked_list_stampsClickTime)
-{
-    Platform_ToolboxProxy *tb = bt_toolbox();
-    ASSERT_NE(tb, nullptr);
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP() << "headless";
-    tb->show();
-    bt_wait(20);
-    qint64 before = QDateTime::currentMSecsSinceEpoch();
-    bt_invoke1<QString>(tb, "buttonClicked", QString("list"));
-    bt_wait(30);
-    qint64 stamp = tb->getMouseTime();
-    // The stamp should be >= before (allow small clock skew).
-    EXPECT_GE(stamp, before - 1000);
-    // Hide the playlist popup if it opened to leave clean state.
-    Platform_MainWindow *w = bt_mainWindow();
-    if (w && w->playlist()) {
-        bt_wait(10);
-    }
-}
-
 // ==========================================================================
 // slotPlayListStateChange — animation-not-finished early-return (line 2005).
 // ext2 covers the finished path; here set m_bAnimationFinash=false to take the

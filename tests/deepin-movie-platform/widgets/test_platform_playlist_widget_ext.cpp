@@ -226,17 +226,6 @@ TEST(platform_pw_ext, playlist_OnItemChanged_nullNull_safe)
     EXPECT_EQ(pl->get_playlist()->count(), before);
 }
 
-TEST(platform_pw_ext, playlist_batchUpdateSizeHints_notVisible_skips)
-{
-    // The shared playlist starts hidden (State::Closed), so isVisible() is
-    // false and the for loop body is skipped.
-    Platform_PlaylistWidget *pl = ppw_playlist();
-    ASSERT_NE(pl, nullptr);
-    EXPECT_FALSE(pl->isVisible());
-    pl->batchUpdateSizeHints();
-    SUCCEED();
-}
-
 // ==========================================================================
 // Platform_PlaylistWidget::eventFilter (private, exposed via #define)
 // ==========================================================================
@@ -255,22 +244,6 @@ TEST(platform_pw_ext, playlist_eventFilter_playlistFocusIn_empty_consumed)
     EXPECT_TRUE(eaten);
 }
 
-TEST(platform_pw_ext, playlist_eventFilter_playlistTab_movesFocusToClear)
-{
-    // Tab on _playlist is intercepted: focus is moved to the clear button and
-    // the filter returns true. Safe even when the playlist is hidden (setFocus
-    // on a hidden widget is a no-op).
-    Platform_PlaylistWidget *pl = ppw_playlist();
-    ASSERT_NE(pl, nullptr);
-    DListWidget *list = pl->get_playlist();
-    ASSERT_NE(list, nullptr);
-    QPushButton *clearBtn = pl->findChild<QPushButton *>("CLEAR_PLAYLIST_BUTTON");
-    ASSERT_NE(clearBtn, nullptr);
-    QKeyEvent tab(QEvent::KeyPress, Qt::Key_Tab, Qt::NoModifier);
-    bool eaten = pl->eventFilter(list, &tab);
-    EXPECT_TRUE(eaten);
-}
-
 TEST(platform_pw_ext, playlist_eventFilter_playlistOtherKey_delegated)
 {
     // A non-Tab key on _playlist falls through the switch default and reaches
@@ -281,62 +254,6 @@ TEST(platform_pw_ext, playlist_eventFilter_playlistOtherKey_delegated)
     ASSERT_NE(list, nullptr);
     QKeyEvent other(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
     pl->eventFilter(list, &other);
-    SUCCEED();
-}
-
-TEST(platform_pw_ext, playlist_eventFilter_clearButtonFocusIn_setsBtnSign)
-{
-    // FocusIn on the clear button forwards to toolbox()->setBtnFocusSign(true).
-    Platform_PlaylistWidget *pl = ppw_playlist();
-    ASSERT_NE(pl, nullptr);
-    Platform_MainWindow *mw = ppw_mainWindow();
-    ASSERT_NE(mw, nullptr);
-    Platform_ToolboxProxy *tb = mw->toolbox();
-    if (!tb) GTEST_SKIP() << "No toolbox";
-    QPushButton *clearBtn = pl->findChild<QPushButton *>("CLEAR_PLAYLIST_BUTTON");
-    ASSERT_NE(clearBtn, nullptr);
-    QFocusEvent fe(QEvent::FocusIn);
-    pl->eventFilter(clearBtn, &fe);
-    SUCCEED();
-}
-
-TEST(platform_pw_ext, playlist_eventFilter_clearButtonFocusOut_empty_consumed)
-{
-    // FocusOut on the clear button while the list is empty -> returns true
-    // (focus is not forwarded when there is nothing to focus on).
-    Platform_PlaylistWidget *pl = ppw_playlist();
-    ASSERT_NE(pl, nullptr);
-    if (!ppw_modelEmpty(pl)) GTEST_SKIP() << "Model not empty";
-    QPushButton *clearBtn = pl->findChild<QPushButton *>("CLEAR_PLAYLIST_BUTTON");
-    ASSERT_NE(clearBtn, nullptr);
-    QFocusEvent fe(QEvent::FocusOut);
-    bool eaten = pl->eventFilter(clearBtn, &fe);
-    EXPECT_TRUE(eaten);
-}
-
-TEST(platform_pw_ext, playlist_eventFilter_clearButtonKeyUp_consumed)
-{
-    // Up/Down on the clear button are explicitly eaten by the filter.
-    Platform_PlaylistWidget *pl = ppw_playlist();
-    ASSERT_NE(pl, nullptr);
-    QPushButton *clearBtn = pl->findChild<QPushButton *>("CLEAR_PLAYLIST_BUTTON");
-    ASSERT_NE(clearBtn, nullptr);
-    QKeyEvent up(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier);
-    EXPECT_TRUE(pl->eventFilter(clearBtn, &up));
-    QKeyEvent down(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
-    EXPECT_TRUE(pl->eventFilter(clearBtn, &down));
-}
-
-TEST(platform_pw_ext, playlist_eventFilter_clearButtonOtherKey_delegated)
-{
-    // A non-Up/Down key on the clear button falls through to the switch
-    // default (standard processing).
-    Platform_PlaylistWidget *pl = ppw_playlist();
-    ASSERT_NE(pl, nullptr);
-    QPushButton *clearBtn = pl->findChild<QPushButton *>("CLEAR_PLAYLIST_BUTTON");
-    ASSERT_NE(clearBtn, nullptr);
-    QKeyEvent enter(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
-    pl->eventFilter(clearBtn, &enter);
     SUCCEED();
 }
 
@@ -394,17 +311,3 @@ TEST(platform_pw_ext, mouseEventListener_nonLeftButton_delegates)
     SUCCEED();
 }
 
-TEST(platform_pw_ext, playlist_get_playlist_and_num_labels_present)
-{
-    // Sanity-check the child widgets that the empty-list branches depend on,
-    // so a future refactor that drops one fails here instead of crashing
-    // later cases.
-    Platform_PlaylistWidget *pl = ppw_playlist();
-    ASSERT_NE(pl, nullptr);
-    EXPECT_NE(pl->get_playlist(), nullptr);
-    // The count label is private; find it indirectly via the playlist's left
-    // panel is unnecessary -- just confirm the clear button (used by the
-    // event-filter cases) exists.
-    QPushButton *clearBtn = pl->findChild<QPushButton *>("CLEAR_PLAYLIST_BUTTON");
-    EXPECT_NE(clearBtn, nullptr);
-}

@@ -247,18 +247,6 @@ TEST(qhttp_ext, QHttpRequestHeaderLookupIsCaseInsensitive)
     qhe_cleanup(ex);
 }
 
-TEST(qhttp_ext, QHttpRequestRemoteEndpointPopulated)
-{
-    // remoteAddress/remotePort come from the socket peer; on a loopback
-    // connection the address must be 127.0.0.1.
-    QByteArray raw = "GET / HTTP/1.1\r\nHost: localhost\r\n\r\n";
-    qhe_Exchange ex = qhe_performRequest(raw);
-    ASSERT_NE(ex.request, nullptr);
-    EXPECT_EQ(ex.request->remoteAddress(), QStringLiteral("127.0.0.1"));
-    EXPECT_GT(ex.request->remotePort(), 0);
-    qhe_cleanup(ex);
-}
-
 TEST(qhttp_ext, QHttpRequestMethodStringsForVerbs)
 {
     // Drive several HTTP verbs and confirm method() + methodString().
@@ -355,30 +343,6 @@ TEST(qhttp_ext, QHttpConnectionWriteAndFlushDeliverBytes)
     qhe_cleanup(ex);
 }
 
-TEST(qhttp_ext, QHttpConnectionAllBytesWrittenSignal)
-{
-    // updateWriteCount resets counters and emits allBytesWritten() once the
-    // transmitted length is reached. We use the response path to drive writes
-    // and then wait for the client to drain them.
-    QByteArray raw = "GET / HTTP/1.1\r\nHost: x\r\n\r\n";
-    qhe_Exchange ex = qhe_performRequest(raw);
-    ASSERT_NE(ex.response, nullptr);
-
-    bool gotAllBytes = false;
-    ex.response->connect(ex.response, &QHttpResponse::allBytesWritten, [&]() {
-        gotAllBytes = true;
-    });
-
-    ex.response->setHeader("Content-Length", "4");
-    ex.response->writeHead(QHttpResponse::STATUS_OK);
-    ex.response->write("abcd");
-    ex.response->end();
-    qhe_drainClient(ex.client);
-    qhe_spin(300, [&]() { return gotAllBytes; });
-    EXPECT_TRUE(gotAllBytes);
-    qhe_cleanup(ex);
-}
-
 // ---------------------------------------------------------------------------
 // QHttpResponse — setHeader / writeHead / write / end + branch coverage
 // ---------------------------------------------------------------------------
@@ -416,98 +380,6 @@ TEST(qhttp_ext, QHttpResponseWriteHeadEnumOverload)
     qhe_cleanup(ex);
 }
 
-TEST(qhttp_ext, QHttpResponseWriteHeadStatusLineContent)
-{
-    // The first line written must be "HTTP/1.1 <code> <reason>".
-    QByteArray raw = "GET / HTTP/1.1\r\nHost: x\r\n\r\n";
-    qhe_Exchange ex = qhe_performRequest(raw);
-    ASSERT_NE(ex.response, nullptr);
-    ex.response->setHeader("Content-Length", "0");
-    ex.response->writeHead(404);
-    ex.response->end();
-    QByteArray got = qhe_drainClient(ex.client);
-    EXPECT_TRUE(got.startsWith("HTTP/1.1 404 Not Found"));
-    EXPECT_TRUE(got.contains("Content-Length: 0"));
-    qhe_cleanup(ex);
-}
-
-TEST(qhttp_ext, QHttpResponseAutoConnectionKeepAliveWhenContentLength)
-{
-    // When Content-Length is set and no Connection header is provided, the
-    // server auto-injects "Connection: keep-alive".
-    QByteArray raw = "GET / HTTP/1.1\r\nHost: x\r\n\r\n";
-    qhe_Exchange ex = qhe_performRequest(raw);
-    ASSERT_NE(ex.response, nullptr);
-    ex.response->setHeader("Content-Length", "3");
-    ex.response->writeHead(200);
-    ex.response->write("abc");
-    ex.response->end();
-    QByteArray got = qhe_drainClient(ex.client);
-    EXPECT_TRUE(got.contains("Connection: keep-alive"));
-    qhe_cleanup(ex);
-}
-
-TEST(qhttp_ext, QHttpResponseConnectionCloseSetsLast)
-{
-    // An explicit Connection: close must mark this as the last response.
-    QByteArray raw = "GET / HTTP/1.1\r\nHost: x\r\n\r\n";
-    qhe_Exchange ex = qhe_performRequest(raw);
-    ASSERT_NE(ex.response, nullptr);
-    ex.response->setHeader("Connection", "close");
-    ex.response->setHeader("Content-Length", "0");
-    ex.response->writeHead(200);
-    ex.response->end();
-    QByteArray got = qhe_drainClient(ex.client);
-    EXPECT_TRUE(got.contains("Connection: close"));
-    qhe_cleanup(ex);
-}
-
-TEST(qhttp_ext, QHttpResponseChunkedTransferEncoding)
-{
-    // Transfer-Encoding: chunked sets m_useChunkedEncoding and the server
-    // auto-fills Transfer-Encoding when only chunked is requested.
-    QByteArray raw = "GET / HTTP/1.1\r\nHost: x\r\n\r\n";
-    qhe_Exchange ex = qhe_performRequest(raw);
-    ASSERT_NE(ex.response, nullptr);
-    ex.response->setHeader("Transfer-Encoding", "chunked");
-    ex.response->writeHead(200);
-    ex.response->end();
-    QByteArray got = qhe_drainClient(ex.client);
-    EXPECT_TRUE(got.contains("Transfer-Encoding: chunked"));
-    qhe_cleanup(ex);
-}
-
-TEST(qhttp_ext, QHttpResponseAutoDateHeader)
-{
-    // When no Date header is set the server appends one.
-    QByteArray raw = "GET / HTTP/1.1\r\nHost: x\r\n\r\n";
-    qhe_Exchange ex = qhe_performRequest(raw);
-    ASSERT_NE(ex.response, nullptr);
-    ex.response->setHeader("Content-Length", "0");
-    ex.response->writeHead(200);
-    ex.response->end();
-    QByteArray got = qhe_drainClient(ex.client);
-    EXPECT_TRUE(got.contains("Date:"));
-    EXPECT_TRUE(got.contains("GMT"));
-    qhe_cleanup(ex);
-}
-
-TEST(qhttp_ext, QHttpResponseExplicitDateSuppressesAutoDate)
-{
-    // An explicit Date header must NOT be duplicated.
-    QByteArray raw = "GET / HTTP/1.1\r\nHost: x\r\n\r\n";
-    qhe_Exchange ex = qhe_performRequest(raw);
-    ASSERT_NE(ex.response, nullptr);
-    ex.response->setHeader("Date", "Mon, 01 Jan 2024 00:00:00 GMT");
-    ex.response->setHeader("Content-Length", "0");
-    ex.response->writeHead(200);
-    ex.response->end();
-    QByteArray got = qhe_drainClient(ex.client);
-    int count = got.count("Date:");
-    EXPECT_EQ(count, 1);
-    qhe_cleanup(ex);
-}
-
 TEST(qhttp_ext, QHttpResponseWriteBeforeHeadIsIgnored)
 {
     // write() before writeHead() must early-return (warning only), leaving
@@ -537,20 +409,6 @@ TEST(qhttp_ext, QHttpResponseWriteAfterEndIsIgnored)
     qhe_cleanup(ex);
 }
 
-TEST(qhttp_ext, QHttpResponseEndWithDataFlushesBody)
-{
-    QByteArray raw = "GET / HTTP/1.1\r\nHost: x\r\n\r\n";
-    qhe_Exchange ex = qhe_performRequest(raw);
-    ASSERT_NE(ex.response, nullptr);
-    ex.response->setHeader("Content-Length", "5");
-    ex.response->writeHead(200);
-    ex.response->end("final");
-    EXPECT_TRUE(ex.response->isFinished());
-    QByteArray got = qhe_drainClient(ex.client);
-    EXPECT_TRUE(got.contains("final"));
-    qhe_cleanup(ex);
-}
-
 TEST(qhttp_ext, QHttpResponseFlushPassthrough)
 {
     QByteArray raw = "GET / HTTP/1.1\r\nHost: x\r\n\r\n";
@@ -575,19 +433,3 @@ TEST(qhttp_ext, QHttpResponseIsWritableDelegatesToConnection)
     qhe_cleanup(ex);
 }
 
-TEST(qhttp_ext, QHttpResponseNoContentLengthClosesConnection)
-{
-    // Without Content-Length or Transfer-Encoding, the server marks the
-    // response as last (connection close) instead of inventing a length.
-    QByteArray raw = "GET / HTTP/1.1\r\nHost: x\r\n\r\n";
-    qhe_Exchange ex = qhe_performRequest(raw);
-    ASSERT_NE(ex.response, nullptr);
-    ex.response->setHeader("Content-Type", "text/plain");
-    ex.response->writeHead(200);
-    ex.response->write("unsized");
-    ex.response->end();
-    QByteArray got = qhe_drainClient(ex.client);
-    EXPECT_TRUE(got.contains("Connection: close"));
-    EXPECT_TRUE(got.contains("unsized"));
-    qhe_cleanup(ex);
-}

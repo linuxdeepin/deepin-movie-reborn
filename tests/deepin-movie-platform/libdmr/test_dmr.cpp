@@ -28,7 +28,7 @@ TEST(libdmr, libdmrTest)
     PlayerWidget *player = new PlayerWidget();
     player->engine().changeVolume(120);
 #ifndef __aarch64__
-    player->play(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
+    player->play(QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/demo.mp4"));
 #endif
 
     auto &mc = MovieConfiguration::get();
@@ -54,9 +54,9 @@ TEST(libdmr, utils)
 
     Platform_MainWindow* w = dApp->getMainWindow();
 
-    bool ret = utils::CompareNames("/data/source/deepin-movie-reborn/movie/demo.mp4", "/data/source/deepin-movie-reborn/movie/demo.mp3");
-    ret = utils::CompareNames("/data/source/deepin-movie-reborn/movie/demo.mp4", "/data/source/deepin-movie-reborn//movie/demo.mp4");
-    //QCOMPARE(ret, true);
+    bool ret = utils::CompareNames(DMR_TEST_ASSETS_DIR "/demo.mp4", DMR_TEST_ASSETS_DIR "/demo.mp3");
+    ret = utils::CompareNames(DMR_TEST_ASSETS_DIR "/demo.mp4", "/data/source/deepin-movie-reborn//movie/demo.mp4");
+    //ASSERT_TRUE(ret);
     utils::UnInhibitPower(20);
     utils::MoveToCenter(w);
     utils::Time2str(90000);
@@ -64,7 +64,7 @@ TEST(libdmr, utils)
     utils::ValidateScreenshotPath(QString("~/uos"));
     utils::MakeRoundedPixmap(QPixmap("/data/source/deepin-movie-reborn/test.jpg"), 10, 10);
     utils::MakeRoundedPixmap(QSize(20, 30), QPixmap("/data/source/deepin-movie-reborn/test.jpg"), 10, 10, 20);
-    utils::ShowInFileManager("/data/source/deepin-movie-reborn/movie/demo.mp4");
+    utils::ShowInFileManager(DMR_TEST_ASSETS_DIR "/demo.mp4");
     utils::ShowInFileManager("/data/source/deepin-movie-reborn/test");  //path is not exist
 }
 
@@ -75,7 +75,7 @@ TEST(libdmr, playlistModel)
     engine->playlist().savePlaylist();
     engine->playlist().clearPlaylist();
 
-    QUrl url = QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
+    QUrl url = QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/demo.mp4");
     bool is = false;
     engine->playlist().getMovieInfo(url, &is);
     engine->playlist().getMovieCover(url);
@@ -97,7 +97,7 @@ TEST(libdmr, compositingManager)
 TEST(libdmr, movieConfiguration)
 {
     MovieConfiguration::get().removeFromListUrl(
-                QUrl("/data/source/deepin-movie-reborn/Hachiko.A.Dog's.Story.ass"),
+                QUrl(DMR_TEST_ASSETS_DIR "/Hachiko.A.Dog's.Story.ass"),
                 ConfigKnownKey::ExternalSubs, QString());
 }
 

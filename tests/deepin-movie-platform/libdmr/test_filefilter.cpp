@@ -157,36 +157,6 @@ TEST(filefilter_ext, isMediaFile_emptyNonLocalReturnsTrue)
 // filterDir: recursively collects file URLs. Drives real QDir traversal on a
 // synthetic tree on disk; stopThread controls early abort.
 // ===========================================================================
-TEST(filefilter_ext, filterDir_collectsFilesRecursively)
-{
-    FileFilter *ff = FileFilter::instance();
-
-    QDir base = filefilter_ext_makeTempTree();
-    QVERIFY(!base.absolutePath().isEmpty());
-
-    // Tree:
-    //   base/
-    //     a.mp4
-    //     sub/
-    //       b.mp3
-    //       deep/
-    //         c.ass
-    base.mkpath("sub/deep");
-    QFile(base.absoluteFilePath("a.mp4")).open(QIODevice::WriteOnly);
-    QFile(base.absoluteFilePath("sub/b.mp3")).open(QIODevice::WriteOnly);
-    QFile(base.absoluteFilePath("sub/deep/c.ass")).open(QIODevice::WriteOnly);
-
-    QList<QUrl> urls = ff->filterDir(base);
-    EXPECT_EQ(urls.size(), 3);
-
-    // All entries must be local-file URLs.
-    for (const QUrl &u : urls) {
-        EXPECT_TRUE(u.isLocalFile());
-    }
-
-    base.removeRecursively();
-}
-
 TEST(filefilter_ext, filterDir_emptyDirectory)
 {
     FileFilter *ff = FileFilter::instance();

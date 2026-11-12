@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -111,7 +111,7 @@ protected:
     QWidget                   *m_pMainWindow;             ///主窗口指针
     QPixmap                    m_pixmap;                  ///当前动画显示的图像
     QString                    m_sFileName;               ///动画当前显示的图像文件
-    bool                       m_bIsWM;
+    bool                       m_bIsWM = false;   // set via setWM(); ctor path reads it before any setWM call
 };
 
 #endif  // Platform_ANIMATIONLABEL_H

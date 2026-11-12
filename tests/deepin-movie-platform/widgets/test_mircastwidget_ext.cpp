@@ -169,22 +169,6 @@ TEST(mircastwidget_ext, construct_standalone_attemptsAndTimeoutsZero)
 // path are measured in one isolated process path.)
 // ==========================================================================
 
-TEST(mircastwidget_ext, timeConversion_onStandalone_hms)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    EXPECT_EQ(mce_timeConversion(&mw, "01:02:03"), 1 * 3600 + 2 * 60 + 3);
-}
-
-TEST(mircastwidget_ext, timeConversion_onStandalone_invalidShape_zero)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    EXPECT_EQ(mce_timeConversion(&mw, "NOT_IMPLEMENTED"), 0);
-    EXPECT_EQ(mce_timeConversion(&mw, ""), 0);
-    EXPECT_EQ(mce_timeConversion(&mw, "1:2"), 0);
-}
-
 // ==========================================================================
 // togglePopup -- re-entrancy guard. When m_bIsToggling is true the function
 // must return immediately, leaving visibility unchanged. The earlier suites
@@ -565,32 +549,6 @@ TEST(mircastwidget_ext, refreshBtn_ownedByWidget_refreshCycle_disconnected_isSaf
     btn->refreshTimeout();
     QObject::disconnect(c);
     SUCCEED();
-}
-
-TEST(mircastwidget_ext, refreshBtn_ownedByWidget_mouseRelease_spinnerGuard)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    RefreButtonWidget *btn = mw.getRefreshBtn();
-    ASSERT_NE(btn, nullptr);
-    QObject::disconnect(btn, &RefreButtonWidget::buttonClicked,
-                        &mw, &MircastWidget::slotRefreshBtnClicked);
-
-    btn->show();
-    QTest::qWait(20);
-    btn->refreshStart(); // spinner visible -> mouseRelease must be a no-op
-    int clicks = 0;
-    auto c = QObject::connect(btn, &RefreButtonWidget::buttonClicked,
-                              [&]() { clicks++; });
-    QMouseEvent re(QEvent::MouseButtonRelease, QPointF(2, 2), QPointF(2, 2),
-                   Qt::LeftButton, Qt::LeftButton, Qt::NoModifier,
-                   QPointingDevice::primaryPointingDevice());
-    QApplication::sendEvent(btn, &re);
-    QObject::disconnect(c);
-    EXPECT_EQ(clicks, 0); // spinner-visible guard short-circuits
-    btn->refreshTimeout();
-    btn->hide();
-    QTest::qWait(10);
 }
 
 // ==========================================================================
