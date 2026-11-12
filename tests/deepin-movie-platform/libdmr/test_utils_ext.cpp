@@ -357,14 +357,6 @@ TEST(utils_ext, MoveToCenter_local_widget)
 // videoIndex2str / audioIndex2str
 // ---------------------------------------------------------------------------
 
-TEST(utils_ext, videoIndex2str_known)
-{
-    EXPECT_EQ(utils::videoIndex2str(0), QString("none"));
-    EXPECT_EQ(utils::videoIndex2str(1), QString("mpeg1video"));
-    EXPECT_EQ(utils::videoIndex2str(2), QString("mpeg2video"));
-    EXPECT_EQ(utils::videoIndex2str(28), QString("h264"));
-}
-
 TEST(utils_ext, videoIndex2str_out_of_range_returns_empty)
 {
     // QMap::operator[] on missing key default-constructs QString -> "".

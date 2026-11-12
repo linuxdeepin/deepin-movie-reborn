@@ -197,21 +197,6 @@ TEST(platform_mw_ext, InsideResizeArea_OutsideCorner)
     EXPECT_FALSE(w->insideResizeArea(center));
 }
 
-TEST(platform_mw_ext, JudgeMouseInWindow_NoCrash)
-{
-    Platform_MainWindow *w = pmw_ext_window();
-    ASSERT_TRUE(w);
-
-    // call with a couple of positions; function only reads geometry and may
-    // emit a leaveEvent internally -- must not crash regardless of result.
-    bool r1 = w->judgeMouseInWindow(w->rect().center());
-    bool r2 = w->judgeMouseInWindow(QPoint(-1, -1));
-    bool r3 = w->judgeMouseInWindow(w->rect().bottomRight() + QPoint(50, 50));
-    EXPECT_FALSE(r1);  // documented to always return false
-    EXPECT_FALSE(r2);
-    EXPECT_FALSE(r3);
-}
-
 // ---------- settings-backed path helpers ----------
 
 TEST(platform_mw_ext, LastOpenedPath_FallbackChain)

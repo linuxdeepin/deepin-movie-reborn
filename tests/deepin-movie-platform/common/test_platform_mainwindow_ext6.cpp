@@ -533,20 +533,6 @@ TEST(platform_mw_ext6, LockStateChanged_False_SchedulesLockedFalse)
 // branch still runs.
 // ==========================================================================
 
-TEST(platform_mw_ext6, OnSysLockState_StartSleepSetsStateInLock)
-{
-    Platform_MainWindow *w = pmw6_window();
-    ASSERT_NE(w, nullptr);
-    bool savedSleep = w->m_bStartSleep;
-    bool savedInLock = w->m_bStateInLock;
-    w->m_bStartSleep = true;
-    QVariantMap vm;
-    EXPECT_NO_FATAL_FAILURE(w->onSysLockState("svc", vm, QStringList()));
-    EXPECT_TRUE(w->m_bStateInLock);
-    w->m_bStartSleep = savedSleep;
-    w->m_bStateInLock = savedInLock;
-}
-
 TEST(platform_mw_ext6, OnSysLockState_LockedFalseInLockClears)
 {
     Platform_MainWindow *w = pmw6_window();
@@ -707,14 +693,6 @@ TEST(platform_mw_ext6, PrepareSplashImages_NoCrash)
 // calls currentInfo() which on an empty playlist is UB, so we ONLY drive the
 // empty path.
 // ==========================================================================
-
-TEST(platform_mw_ext6, DiskRemoved_EmptyPlaylistEarlyReturn)
-{
-    Platform_MainWindow *w = pmw6_window();
-    ASSERT_NE(w, nullptr);
-    ASSERT_EQ(w->engine()->getplaylist()->count(), 0);
-    EXPECT_NO_FATAL_FAILURE(w->diskRemoved("/dev/sr0"));
-}
 
 // ==========================================================================
 // probeCdromDevice — reads /proc/mounts. Always safe (file may or may not

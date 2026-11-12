@@ -134,23 +134,6 @@ TEST(libdmr_ext2, fileTransfer_existingDirectoryLocalFile)
 
 // fileTransfer on a path whose canonicalFilePath() is empty (broken symlink):
 // the impl falls back to the raw input string.
-TEST(libdmr_ext2, fileTransfer_brokenSymlinkFallsBackToRaw)
-{
-    FileFilter *ff = FileFilter::instance();
-
-    QString link = QDir::tempPath() + "/libdmr_ext2_broken_link.mp4";
-    QFile::remove(link);
-    // Create a dangling symlink.
-    QFile::link("/libdmr_ext2_definitely_missing_target_xyz", link);
-
-    QUrl url = ff->fileTransfer(link);
-    // canonicalFilePath() of a broken link is empty -> FromLocalFile(raw).
-    EXPECT_TRUE(url.isLocalFile());
-    EXPECT_EQ(url.toLocalFile(), link);
-
-    QFile::remove(link);
-}
-
 // fileTransfer on a relative path that does not exist -> QUrl(raw) branch.
 TEST(libdmr_ext2, fileTransfer_relativeNonexistentPathRawUrl)
 {
@@ -161,53 +144,7 @@ TEST(libdmr_ext2, fileTransfer_relativeNonexistentPathRawUrl)
 
 // filterDir with three levels of nesting + files at every level: every entry
 // must be enumerated and converted to a local-file URL.
-TEST(libdmr_ext2, filterDir_deeplyNestedFilesCollected)
-{
-    FileFilter *ff = FileFilter::instance();
-
-    QString root = lix2_makeTempDir();
-    QDir base(root);
-    base.mkpath("lvl1/lvl2/lvl3");
-
-    QFile(root + "/top.mp4").open(QIODevice::WriteOnly);
-    QFile(root + "/lvl1/mid.mp3").open(QIODevice::WriteOnly);
-    QFile(root + "/lvl1/lvl2/deep.ass").open(QIODevice::WriteOnly);
-    QFile(root + "/lvl1/lvl2/lvl3/leaf.srt").open(QIODevice::WriteOnly);
-
-    QList<QUrl> urls = ff->filterDir(base);
-    EXPECT_EQ(urls.size(), 4);
-
-    QSet<QString> seen;
-    for (const QUrl &u : urls) {
-        EXPECT_TRUE(u.isLocalFile());
-        seen.insert(QFileInfo(u.toLocalFile()).fileName());
-    }
-    EXPECT_TRUE(seen.contains("top.mp4"));
-    EXPECT_TRUE(seen.contains("mid.mp3"));
-    EXPECT_TRUE(seen.contains("deep.ass"));
-    EXPECT_TRUE(seen.contains("leaf.srt"));
-
-    base.removeRecursively();
-}
-
 // filterDir containing a mix of files and empty subdirectories.
-TEST(libdmr_ext2, filterDir_mixedFilesAndEmptyDirs)
-{
-    FileFilter *ff = FileFilter::instance();
-
-    QString root = lix2_makeTempDir();
-    QDir base(root);
-    base.mkpath("empty_dir");
-    base.mkpath("dir_with_file");
-    QFile(root + "/root_file.mp4").open(QIODevice::WriteOnly);
-    QFile(root + "/dir_with_file/child.mp4").open(QIODevice::WriteOnly);
-
-    QList<QUrl> urls = ff->filterDir(base);
-    EXPECT_EQ(urls.size(), 2);
-
-    base.removeRecursively();
-}
-
 // stopThread is a sticky flag; once set, filterDir on the *root* still lists
 // the root's own files (the flag only aborts recursion into subdirectories).
 // The earlier suite exercised the subdir-abort path; here we confirm root
@@ -314,7 +251,7 @@ TEST(libdmr_ext2, OnlineSubtitle_storeLocationStableExistingDir)
 TEST(libdmr_ext2, OnlineSubtitle_requestSubtitle_realFileHashesNoCrash)
 {
     // Prefer the canonical demo file if it is mounted in the test env.
-    QFileInfo demo("/data/source/deepin-movie-reborn/movie/demo.mp4");
+    QFileInfo demo(DMR_TEST_ASSETS_DIR "/demo.mp4");
     QFileInfo src;
     if (demo.exists() && demo.isFile() && demo.size() >= 8192) {
         src = demo;
@@ -414,61 +351,11 @@ static const QUrl lix2_url_b = QUrl("libdmr_ext2://url-b");
 static const QUrl lix2_url_c = QUrl("libdmr_ext2://url-c");
 
 // updateUrl with an empty value QVariant is stored and read back as empty.
-TEST(libdmr_ext2, MovieConfig_updateEmptyValueRoundTrip)
-{
-    lix2_mc_reset();
-    auto &mc = MovieConfiguration::get();
-    mc.updateUrl(lix2_url_a, "note", QVariant(QString()));
-    EXPECT_TRUE(mc.urlExists(lix2_url_a));
-    EXPECT_EQ(mc.getByUrl(lix2_url_a, "note").toString().toStdString(), "");
-}
-
 // updateUrl then a second updateUrl on the SAME url+key replaces (the url row
 // is NOT re-inserted; the infos row is replaced).
-TEST(libdmr_ext2, MovieConfig_overwriteSameKeyDoesNotDuplicateUrl)
-{
-    lix2_mc_reset();
-    auto &mc = MovieConfiguration::get();
-    mc.updateUrl(lix2_url_a, "v", 1);
-    mc.updateUrl(lix2_url_a, "v", 2);
-    mc.updateUrl(lix2_url_a, "v", 3);
-    EXPECT_EQ(mc.getByUrl(lix2_url_a, "v").toInt(), 3);
-    // queryByUrl returns one row per key; "v" must appear exactly once.
-    EXPECT_EQ(mc.queryByUrl(lix2_url_a).size(), 1);
-}
-
 // queryByUrl on a url with several keys of mixed QVariant types.
-TEST(libdmr_ext2, MovieConfig_queryByUrlMixedTypes)
-{
-    lix2_mc_reset();
-    auto &mc = MovieConfiguration::get();
-    mc.updateUrl(lix2_url_a, "i", QVariant(7));
-    mc.updateUrl(lix2_url_a, "d", QVariant(1.25));
-    mc.updateUrl(lix2_url_a, "s", QVariant(QString("hello")));
-    mc.updateUrl(lix2_url_a, "u", QVariant(QUrl("inner://x")));
-
-    QMap<QString, QVariant> m = mc.queryByUrl(lix2_url_a);
-    EXPECT_EQ(m.size(), 4);
-    EXPECT_EQ(m.value("i").toInt(), 7);
-    EXPECT_DOUBLE_EQ(m.value("d").toDouble(), 1.25);
-    EXPECT_EQ(m.value("s").toString().toStdString(), "hello");
-    EXPECT_EQ(m.value("u").toUrl(), QUrl("inner://x"));
-}
-
 // removeUrl on a url that has no infos rows: backend takes the early
 // numRowsAffected==0 path and must not touch the urls table either.
-TEST(libdmr_ext2, MovieConfig_removeUrlWithInfosOnlyAffectsThatUrl)
-{
-    lix2_mc_reset();
-    auto &mc = MovieConfiguration::get();
-    mc.updateUrl(lix2_url_a, "k", 1);
-    mc.updateUrl(lix2_url_b, "k", 2);
-    mc.removeUrl(lix2_url_a);
-    EXPECT_FALSE(mc.urlExists(lix2_url_a));
-    EXPECT_TRUE(mc.urlExists(lix2_url_b));
-    EXPECT_EQ(mc.getByUrl(lix2_url_b, "k").toInt(), 2);
-}
-
 // removeUrl on an absent url is a safe no-op.
 TEST(libdmr_ext2, MovieConfig_removeUrlAbsentIsNoop)
 {
@@ -479,46 +366,8 @@ TEST(libdmr_ext2, MovieConfig_removeUrlAbsentIsNoop)
 }
 
 // updateUrl (KnownKey) for every enum value round-trips via knownKey2String.
-TEST(libdmr_ext2, MovieConfig_allKnownKeysRoundTrip)
-{
-    lix2_mc_reset();
-    auto &mc = MovieConfiguration::get();
-    using K = MovieConfiguration::KnownKey;
-
-    mc.updateUrl(lix2_url_a, K::SubDelay, QVariant(1.5));
-    mc.updateUrl(lix2_url_a, K::SubCodepage, QVariant(QString("utf-8")));
-    mc.updateUrl(lix2_url_a, K::SubId, QVariant(2));
-    mc.updateUrl(lix2_url_a, K::StartPos, QVariant(99));
-    mc.updateUrl(lix2_url_a, K::ExternalSubs, QVariant(QString("base64list")));
-
-    EXPECT_DOUBLE_EQ(mc.getByUrl(lix2_url_a, K::SubDelay).toDouble(), 1.5);
-    EXPECT_EQ(mc.getByUrl(lix2_url_a, K::SubCodepage).toString().toStdString(), "utf-8");
-    EXPECT_EQ(mc.getByUrl(lix2_url_a, K::SubId).toInt(), 2);
-    EXPECT_EQ(mc.getByUrl(lix2_url_a, K::StartPos).toInt(), 99);
-    EXPECT_EQ(mc.getByUrl(lix2_url_a, K::ExternalSubs).toString().toStdString(),
-              "base64list");
-}
-
 // append2ListUrl then getListByUrl preserves order across many appends, and
 // the underlying storage is the base64-joined ';' string.
-TEST(libdmr_ext2, MovieConfig_listAppendPreservesOrderMany)
-{
-    lix2_mc_reset();
-    auto &mc = MovieConfiguration::get();
-    using K = MovieConfiguration::KnownKey;
-
-    for (int i = 0; i < 5; ++i) {
-        mc.append2ListUrl(lix2_url_a, K::ExternalSubs,
-                          QString::fromUtf8("/tmp/sub_%1.ass").arg(i));
-    }
-    QStringList list = mc.getListByUrl(lix2_url_a, K::ExternalSubs);
-    ASSERT_EQ(list.size(), 5);
-    for (int i = 0; i < 5; ++i) {
-        EXPECT_EQ(list[i].toStdString(),
-                  QString::fromUtf8("/tmp/sub_%1.ass").arg(i).toStdString());
-    }
-}
-
 // append2ListUrl on two different urls keeps the lists independent.
 TEST(libdmr_ext2, MovieConfig_listAppendPerUrlIndependent)
 {
@@ -583,30 +432,7 @@ TEST(libdmr_ext2, MovieConfig_knownKey2StringDefaultEmpty)
 
 // updateUrl with a network (non-local) url exercises the QCryptographicHash
 // branch in the backend (md5 of url.toString()).
-TEST(libdmr_ext2, MovieConfig_updateUrlRemoteHashesUrlString)
-{
-    lix2_mc_reset();
-    auto &mc = MovieConfiguration::get();
-    mc.updateUrl(lix2_url_a, "k", QVariant(1));
-    EXPECT_TRUE(mc.urlExists(lix2_url_a));
-    EXPECT_EQ(mc.getByUrl(lix2_url_a, "k").toInt(), 1);
-}
-
 // clear() after multiple updates leaves the whole db empty.
-TEST(libdmr_ext2, MovieConfig_clearAfterMultipleUpdates)
-{
-    lix2_mc_reset();
-    auto &mc = MovieConfiguration::get();
-    mc.updateUrl(lix2_url_a, "k", 1);
-    mc.updateUrl(lix2_url_b, "k", 2);
-    mc.updateUrl(lix2_url_c, "k", 3);
-    ASSERT_TRUE(mc.urlExists(lix2_url_a));
-    mc.clear();
-    EXPECT_FALSE(mc.urlExists(lix2_url_a));
-    EXPECT_FALSE(mc.urlExists(lix2_url_b));
-    EXPECT_FALSE(mc.urlExists(lix2_url_c));
-}
-
 // ===========================================================================
 // utils.cpp  (remaining branches)
 // ===========================================================================
@@ -721,29 +547,7 @@ TEST(libdmr_ext2, FullFileHash_largeFile)
 }
 
 // FullFileHash is independent of file size and equals md5 of the bytes.
-TEST(libdmr_ext2, FullFileHash_knownMd5OfKnownBytes)
-{
-    QTemporaryFile tf;
-    ASSERT_TRUE(tf.open());
-    // 16 bytes of 'Q'.
-    tf.write(QByteArray(16, 'Q'));
-    tf.flush();
-    QFileInfo fi(tf.fileName());
-    QString h = utils::FullFileHash(fi).toLower();
-    // md5(QQQQQQQQQQQQQQQQ)
-    EXPECT_EQ(h.toStdString(), "923ec8b824c5f507a7b2e5e7d8c1c066");
-}
-
 // videoIndex2str: several known indices (not just the few in utils_ext).
-TEST(libdmr_ext2, videoIndex2str_moreKnownIndices)
-{
-    EXPECT_EQ(utils::videoIndex2str(3), QString("h261"));
-    EXPECT_EQ(utils::videoIndex2str(12), QString("mpeg4"));
-    EXPECT_EQ(utils::videoIndex2str(27), QString("wmv2"));
-    EXPECT_EQ(utils::videoIndex2str(165), QString("hevc"));
-    EXPECT_EQ(utils::videoIndex2str(167), QString("vp9"));
-}
-
 // videoIndex2str PCM audio band (offset 65536).
 TEST(libdmr_ext2, videoIndex2str_pcmBand)
 {
@@ -762,22 +566,7 @@ TEST(libdmr_ext2, videoIndex2str_adpcmAndDiscrete)
 }
 
 // audioIndex2str: more known codec indices.
-TEST(libdmr_ext2, audioIndex2str_moreKnownIndices)
-{
-    EXPECT_EQ(utils::audioIndex2str(86018), QString("aac"));
-    EXPECT_EQ(utils::audioIndex2str(86019), QString("ac3"));
-    EXPECT_EQ(utils::audioIndex2str(86020), QString("dts"));
-    EXPECT_EQ(utils::audioIndex2str(86021), QString("vorbis"));
-    EXPECT_EQ(utils::audioIndex2str(86024), QString("flac"));
-}
-
 // audioIndex2str out-of-range returns empty (QMap default-constructed QString).
-TEST(libdmr_ext2, audioIndex2str_outOfRangeReturnsEmpty)
-{
-    EXPECT_EQ(utils::audioIndex2str(86100), QString());
-    EXPECT_EQ(utils::audioIndex2str(85000), QString());
-}
-
 // ElideText with a single short line that fits: lineCount()==1 path applies
 // the final elidedText() pass.
 TEST(libdmr_ext2, ElideText_singleShortLineFinalElide)

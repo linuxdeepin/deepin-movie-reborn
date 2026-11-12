@@ -51,8 +51,8 @@ TEST(Wayland, wayland)
 
 //    QTest::qWait(800);
 
-    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
-                  << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
+    listPlayFiles << QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/demo.mp4")\
+                  << QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/bensound-sunny.mp3");
     const auto &valids = engine->addPlayFiles(listPlayFiles);
 
 
@@ -97,10 +97,10 @@ TEST(Wayland, wayland)
     }
     ApplicationAdaptor *appAdaptor = new ApplicationAdaptor(w_wayland);
     appAdaptor->Raise();
-    appAdaptor->openFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
+    appAdaptor->openFile(DMR_TEST_ASSETS_DIR "/demo.mp4");
     QStringList fileList;
-    fileList << "/data/source/deepin-movie-reborn/movie/demo.mp4"\
-             <<"/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3";
+    fileList << DMR_TEST_ASSETS_DIR "/demo.mp4"\
+             <<DMR_TEST_ASSETS_DIR "/bensound-sunny.mp3";
     appAdaptor->openFiles(fileList);
 
 

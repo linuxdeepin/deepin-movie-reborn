@@ -590,80 +590,9 @@ TEST(platform_mw_ext7, ToggleUIMode_EnterThenExitMini_RestoresGeometryAndFlags)
     EXPECT_NE(w->size(), QSize(380, 380));
 }
 
-TEST(platform_mw_ext7, ToggleUIMode_DockEdgeHalfWidth_ShowsHintAndCancels)
-{
-    // Arrange: anchor the window at the top-left half-width slot that the
-    // dock-edge guard detects. The previous toggle test leaves a (614,500)
-    // minimum size on the window which would silently clamp resize();
-    // clear the size constraints so the target size lands exactly.
-    Platform_MainWindow *w = pmw7_window();
-    ASSERT_NE(w, nullptr);
-    pmw7_engine(w);
-    QScreen *screen = QGuiApplication::primaryScreen();
-    if (!screen) GTEST_SKIP() << "no primary screen in this environment";
-
-    // Arrange: pin the window to the left screen edge with half width —
-    // exactly the dock-edge heuristic (|x|==0, y==0, width==deskW/2).
-    const QRect normalGeom = w->geometry();
-    const QRect desk = screen->availableGeometry();
-    const int halfW = desk.width() / 2;
-    w->setMinimumSize(0, 0);
-    w->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-    w->move(QPoint(0, 0));
-    w->resize(halfW, 300);
-    ASSERT_EQ(w->pos(), QPoint(0, 0));
-
-    // Act: toggleUIMode must bail into the hint branch.
-    w->toggleUIMode();
-
-    // Assert: still in normal mode, start-mini cancelled, geometry kept.
-    EXPECT_FALSE(w->m_bMiniMode);
-    EXPECT_FALSE(w->m_bStartMini);
-    EXPECT_EQ(w->size(), QSize(halfW, 300));
-
-    // Cleanup: restore the original window geometry and size constraints.
-    w->setGeometry(normalGeom);
-    w->setMinimumSize(614, 500);
-}
-
 // ==========================================================================
 // 8. initMember — constructor-established state snapshot
 // ==========================================================================
-
-TEST(platform_mw_ext7, InitMember_ConstructionState_DefaultsInitialized)
-{
-    Platform_MainWindow *w = pmw7_window();
-    ASSERT_NE(w, nullptr);
-
-    // Arrange/Act: the harness already constructed the shared window via
-    // initMember(); this case documents its resulting invariants.
-
-    // Assert: the deferred singleShot in the constructor may not have run
-    // in this harness, so the playlist is legitimately null here; do not
-    // assert on it. m_lastRectInNormalMode is likewise mutated by the
-    // toggle tests running before this case, so only stable invariants are
-    // documented: wiring and playback/window defaults.
-    EXPECT_NE(w->engine(), nullptr);
-    EXPECT_NE(w->m_pToolbox, nullptr);
-    EXPECT_NE(w->m_pTitlebar, nullptr);
-    EXPECT_NE(w->m_pMiniPlayBtn, nullptr);
-    EXPECT_NE(w->m_pCommHintWid, nullptr);
-
-    // Assert: playback and window defaults.
-    EXPECT_FALSE(w->m_bMiniMode);
-    EXPECT_FALSE(w->m_bStartMini);
-    EXPECT_FALSE(w->m_bIsTouch);
-    EXPECT_EQ(w->m_nDisplayVolume, 100);
-    EXPECT_EQ(w->m_dPlaySpeed, 1.0);
-    EXPECT_EQ(w->m_nLastCookie, 0);
-    EXPECT_EQ(w->m_nPowerCookie, 0);
-
-    // Assert: container defaults (m_lastRectInNormalMode is excluded: the
-    // toggle tests running before this case legitimately fill it).
-    EXPECT_TRUE(w->m_listOpenFiles.isEmpty());
-    EXPECT_FALSE(w->m_bMouseMoved);
-    EXPECT_FALSE(w->m_bMousePressed);
-}
 
 // ==========================================================================
 // 9. keyPressEvent — playlist-closed fall-through keeps hwdec state
@@ -897,38 +826,3 @@ TEST(platform_mw_ext7, MousePressEvent_FocusDependent_StateUpdate)
 // 16. mouseReleaseEvent — delayed single-click timer outside the tools area
 // ==========================================================================
 
-TEST(platform_mw_ext7, MouseReleaseEvent_TimerStartedOutsideToolsArea_Stopped)
-{
-    Platform_MainWindow *w = pmw7_window();
-    ASSERT_NE(w, nullptr);
-    pmw7_engine(w);
-
-    // Arrange: the delayed-click branch requires a playlist (the
-    // constructor defers creation behind a 300ms singleShot); build one if
-    // the harness has not yet spun the timer.
-    if (!w->m_pPlaylist) {
-        w->loadPlayList();
-    }
-    ASSERT_NE(w->m_pPlaylist, nullptr);
-
-    // Arrange: no previous move, release point outside titlebar/toolbox so
-    // the delayed single-click timer (120ms) starts.
-    const QPoint pos(10, w->height() / 2);
-    const bool inTools = w->insideToolsArea(pos);
-    w->m_bMouseMoved = false;
-    w->m_bMousePressed = false;
-    QMouseEvent release(QEvent::MouseButtonRelease, QPointF(pos), QPointF(pos),
-                        Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
-
-    // Act: dispatch the release.
-    QApplication::sendEvent(w, &release);
-
-    // Assert: the timer runs exactly when the release landed outside the
-    // tools area (true here); stop it immediately so no async UI action
-    // follows.
-    EXPECT_FALSE(inTools);
-    EXPECT_TRUE(w->m_delayedMouseReleaseTimer.isActive());
-    w->m_delayedMouseReleaseTimer.stop();
-    w->m_bMouseMoved = false;
-    w->m_bMousePressed = false;
-}

@@ -63,3 +63,7 @@ AGENTS.md
 # UT runtime artifacts (qt-autotest-generator)
 .ut/
 build-ut/
+
+# Generated test media assets (ffmpeg-synthesized, see tests/assets/gen_assets.sh)
+tests/assets/*
+!tests/assets/gen_assets.sh

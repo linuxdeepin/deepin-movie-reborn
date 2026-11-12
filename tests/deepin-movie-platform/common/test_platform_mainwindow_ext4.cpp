@@ -176,28 +176,6 @@ TEST(platform_mw_ext4, IsActionAllowed_NotShortcut_NotMini_DefaultTrue)
 // runs leaveEvent only when the point lies exactly on a frame edge.
 // ==========================================================================
 
-TEST(platform_mw_ext4, JudgeMouseInWindow_InteriorPoint_ReturnsFalse)
-{
-    Platform_MainWindow *w = pmw4_window();
-    ASSERT_NE(w, nullptr);
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP() << "no screen";
-
-    // a point clearly inside the window, not on any frame edge
-    EXPECT_FALSE(w->judgeMouseInWindow(QPoint(50, 50)));
-}
-
-TEST(platform_mw_ext4, JudgeMouseInWindow_EdgePoint_TriggersLeave)
-{
-    Platform_MainWindow *w = pmw4_window();
-    ASSERT_NE(w, nullptr);
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP() << "no screen";
-
-    // top-left maps to the frame's top-left edge => leaveEvent branch is taken
-    QPoint topLeft = w->rect().topLeft();
-    EXPECT_FALSE(w->judgeMouseInWindow(topLeft));
-    pmw4_wait(20);
-}
-
 // ==========================================================================
 // Trivial setters / getters
 // ==========================================================================

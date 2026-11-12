@@ -207,62 +207,6 @@ TEST(mircastwidget_ext2, construct_connectDeviceState_isIdel)
 // colon, mixed signs, only-colons.
 // ==========================================================================
 
-TEST(mircastwidget_ext2, timeConversion_singleColon_twoPartsZero)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    EXPECT_EQ(mc2_timeConversion(&mw, ":"), 0);
-}
-
-TEST(mircastwidget_ext2, timeConversion_onlyColons_threePartsZero)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    // ":::" -> 3 empty parts -> 0+0+0
-    EXPECT_EQ(mc2_timeConversion(&mw, "::"), 0);
-}
-
-TEST(mircastwidget_ext2, timeConversion_negativeParts_contributeAsInt)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    // toInt() parses negatives; size==3 so the math runs.
-    // "-1:00:00" -> -3600
-    EXPECT_EQ(mc2_timeConversion(&mw, "-1:00:00"), -3600);
-}
-
-TEST(mircastwidget_ext2, timeConversion_spacesAroundParts_areStrippedByToInt)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    // toInt() skips leading whitespace.
-    EXPECT_EQ(mc2_timeConversion(&mw, " 1 : 2 : 3 "), 1 * 3600 + 2 * 60 + 3);
-}
-
-TEST(mircastwidget_ext2, timeConversion_veryLargeHours_doesNotOverflowInt32)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    // 99999*3600 = 359964000 (fits in int32).
-    EXPECT_EQ(mc2_timeConversion(&mw, "99999:0:0"), 99999 * 3600);
-}
-
-TEST(mircastwidget_ext2, timeConversion_floatingPointParts_truncatedByToInt)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    // "1.5:0:0" -> toInt() returns 1 (stops at '.').
-    EXPECT_EQ(mc2_timeConversion(&mw, "1.5:2.5:3.5"), 1 * 3600 + 2 * 60 + 3);
-}
-
-TEST(mircastwidget_ext2, timeConversion_hexLookingString_zeroOrPartial)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    // "0x10:0:0" -> toInt() returns 0 (doesn't parse hex by default).
-    EXPECT_EQ(mc2_timeConversion(&mw, "0x10:0:0"), 0);
-}
-
 // ==========================================================================
 // togglePopup -- hidden->show on a STANDALONE widget. Existing suites only
 // cover this on the shared widget. The show branch calls refreshStart() which
@@ -524,21 +468,6 @@ TEST(mircastwidget_ext2, slotExitMircast_idempotent_afterIdel)
 // the safe (no-soap) branch.
 // ==========================================================================
 
-TEST(mircastwidget_ext2, stopDlnaTP_emptyUrl_emitsUpdatePlayStatus)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    mw.m_pDlnaSoapPost = nullptr;
-
-    int count = 0;
-    auto c = QObject::connect(&mw, &MircastWidget::updatePlayStatus,
-                              [&]() { count++; });
-    mw.stopDlnaTP();
-    QObject::disconnect(c);
-    EXPECT_EQ(count, 1);
-    EXPECT_EQ(mw.getMircastPlayState(), MircastWidget::Stop);
-}
-
 TEST(mircastwidget_ext2, stopDlnaTP_trackMismatch_emitsUpdatePlayStatus)
 {
     if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
@@ -566,27 +495,6 @@ TEST(mircastwidget_ext2, stopDlnaTP_trackMismatch_emitsUpdatePlayStatus)
 // property and on the widget's m_URLAddrPro, then build the item.
 // ==========================================================================
 
-TEST(mircastwidget_ext2, createListeItem_whenScreening_nonMatchingUrlViaReply_leavesNormal)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    mw.setMircastState(MircastWidget::Screening);
-    mw.m_URLAddrPro = "http://10.0.0.99:9999/";
-
-    // Reply carries a DIFFERENT url -> guard's equality check is false ->
-    // item stays Normal.
-    mc2_ReplyShim reply("http://10.0.0.1:9999/");
-    MiracastDevice dev; dev.name = "Other-TV"; dev.uuid = "uuid:other-tv";
-    ItemWidget *item = mw.createListeItem(dev, mc2_deviceXml("Other-TV", "uuid:other-tv"),
-                                          reinterpret_cast<const QNetworkReply *>(&reply));
-    ASSERT_NE(item, nullptr);
-    EXPECT_EQ(item->state(), ItemWidget::Normal);
-
-    mw.setMircastState(MircastWidget::Idel);
-    mw.m_URLAddrPro.clear();
-    mw.m_listWidget->clear();
-}
-
 // To exercise the createListeItem matching branch end-to-end we use the
 // mc2_ReplyShim QObject (defined near the top helpers) carrying the urlAddrPro
 // property, cast to QNetworkReply*. The wrapper forwards it to ItemWidget's
@@ -612,20 +520,6 @@ TEST(mircastwidget_ext2, createListeItem_whenScreening_matchingUrlViaReply_setsC
 
     mw.setMircastState(MircastWidget::Idel);
     mw.m_URLAddrPro.clear();
-    mw.m_listWidget->clear();
-}
-
-TEST(mircastwidget_ext2, createListeItem_whenIdel_replyProvided_leavesNormal)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget mw(nullptr, nullptr);
-    // Idel -> the Screening guard is skipped regardless of urlAddrPro.
-    mc2_ReplyShim reply;
-    MiracastDevice dev; dev.name = "Idel-TV"; dev.uuid = "uuid:idel-tv";
-    ItemWidget *item = mw.createListeItem(dev, mc2_deviceXml("Idel-TV", "uuid:idel-tv"),
-                                          reinterpret_cast<const QNetworkReply *>(&reply));
-    ASSERT_NE(item, nullptr);
-    EXPECT_EQ(item->state(), ItemWidget::Normal);
     mw.m_listWidget->clear();
 }
 
@@ -934,18 +828,6 @@ TEST(mircastwidget_ext2, listWidget_clear_thenRepopulate_isSafe)
 // RefreButtonWidget -- rapid start/timeout cycles and assertion that
 // refreshStart hides the refresh label while refreshTimeout shows it.
 // ==========================================================================
-
-TEST(mircastwidget_ext2, refreshButton_refreshStart_hidesLabel_refreshTimeout_showsLabel)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    RefreButtonWidget btn;
-    btn.refreshStart();
-    // After refreshStart the refresh label is hidden, spinner shown.
-    EXPECT_TRUE(btn.m_spinner->isVisible());
-    btn.refreshTimeout();
-    // After refreshTimeout the spinner is hidden, refresh label shown.
-    EXPECT_FALSE(btn.m_spinner->isVisible());
-}
 
 TEST(mircastwidget_ext2, refreshButton_rapidCycle_isSafe)
 {

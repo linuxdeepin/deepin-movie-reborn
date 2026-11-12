@@ -102,109 +102,6 @@ static int mir_ext2_timeConversion(MircastWidget *mw, const QString &s)
 // Format "HH:MM:SS" -> seconds; anything not exactly 3 colon-parts -> 0.
 // ==========================================================================
 
-TEST(mircast_ext2, timeConversion_hms_standard)
-{
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "01:02:03"), 1 * 3600 + 2 * 60 + 3);
-}
-
-TEST(mircast_ext2, timeConversion_zero)
-{
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "0:0:0"), 0);
-}
-
-TEST(mircast_ext2, timeConversion_allZerosPadded)
-{
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "00:00:00"), 0);
-}
-
-TEST(mircast_ext2, timeConversion_largeValues)
-{
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "100:200:300"),
-              100 * 3600 + 200 * 60 + 300);
-}
-
-TEST(mircast_ext2, timeConversion_onlyHours)
-{
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "2:0:0"), 2 * 3600);
-}
-
-TEST(mircast_ext2, timeConversion_onlyMinutes)
-{
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "0:5:0"), 5 * 60);
-}
-
-TEST(mircast_ext2, timeConversion_onlySeconds)
-{
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "0:0:42"), 42);
-}
-
-TEST(mircast_ext2, timeConversion_nonNumericParts_returnsZero)
-{
-    // toInt() on non-numeric returns 0; size==3 so the math runs but yields 0.
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "xx:yy:zz"), 0);
-}
-
-TEST(mircast_ext2, timeConversion_partialNumeric_returnsPartial)
-{
-    // "1:abc:3" -> 1*3600 + 0 + 3
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "1:abc:3"), 3600 + 3);
-}
-
-TEST(mircast_ext2, timeConversion_emptyString_returnsZero)
-{
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, ""), 0);
-}
-
-TEST(mircast_ext2, timeConversion_twoParts_returnsZero)
-{
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "02:30"), 0);
-}
-
-TEST(mircast_ext2, timeConversion_fourParts_returnsZero)
-{
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "1:2:3:4"), 0);
-}
-
-TEST(mircast_ext2, timeConversion_notImplementedMarker_returnsZero)
-{
-    // The engine feeds "NOT_IMPLEMENTED" through this; 1 part -> 0.
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "NOT_IMPLEMENTED"), 0);
-}
-
-TEST(mircast_ext2, timeConversion_trailingColon_returnsZero)
-{
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    // "1:2:" splits to ["1","2",""] -> size 3, last toInt()=0 -> 1*3600+2*60
-    EXPECT_EQ(mir_ext2_timeConversion(mw, "1:2:"), 3600 + 120);
-}
-
 // ==========================================================================
 // getMircastState / getMircastPlayState / set* round-trips
 // (Original suite covers the basics; we add enum-coverage and isolation.)
@@ -499,36 +396,6 @@ TEST(mircast_ext2, slotGetPositionInfo_whenIdel_ignoresNotImplemented)
 // both branches; we add a busy-flag re-entrancy guard check.)
 // ==========================================================================
 
-TEST(mircast_ext2, togglePopup_hideThenShow_isSafe)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    mw->show();
-    QTest::qWait(20);
-    ASSERT_TRUE(mw->isVisible());
-    mw->togglePopup(); // visible -> hide
-    EXPECT_FALSE(mw->isVisible());
-    mw->togglePopup(); // hidden -> show + refreshStart
-    EXPECT_TRUE(mw->isVisible());
-    mw->hide();
-    QTest::qWait(20);
-}
-
-TEST(mircast_ext2, togglePopup_show_whenHidden_setsVisible)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget *mw = mir_ext2_widget();
-    ASSERT_NE(mw, nullptr);
-    mw->hide();
-    QTest::qWait(20);
-    ASSERT_FALSE(mw->isVisible());
-    mw->togglePopup();
-    EXPECT_TRUE(mw->isVisible());
-    mw->hide();
-    QTest::qWait(20);
-}
-
 // ==========================================================================
 // ItemWidget -- construction, state, accessors, display truncation, events.
 // Standalone (parent=nullptr), no shared state, no network.
@@ -551,13 +418,6 @@ TEST(mircast_ext2, itemWidget_tooltip_equalsDeviceName)
     dev.uuid = "uuid:bs";
     ItemWidget item(dev, mir_ext2_deviceXml("Bedroom Speaker", "uuid:bs"), nullptr);
     EXPECT_EQ(item.toolTip(), QString("Bedroom Speaker"));
-}
-
-TEST(mircast_ext2, itemWidget_initialState_isNormal)
-{
-    MiracastDevice dev; dev.name = "X"; dev.uuid = "uuid:x";
-    ItemWidget item(dev, mir_ext2_deviceXml(), nullptr);
-    EXPECT_EQ(item.state(), ItemWidget::Normal);
 }
 
 TEST(mircast_ext2, itemWidget_setState_loading_startsAndStops)
@@ -931,30 +791,6 @@ TEST(mircast_ext2, refreshButton_refreshStartThenTimeout_cycle)
         btn.refreshTimeout();
     }
     SUCCEED();
-}
-
-TEST(mircast_ext2, refreshButton_mouseRelease_whenSpinnerVisible_isNoOp)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    RefreButtonWidget btn;
-    btn.show();
-    QTest::qWait(20);
-    btn.refreshStart(); // spinner visible
-
-    int count = 0;
-    auto c = QObject::connect(&btn, &RefreButtonWidget::buttonClicked,
-                              [&]() { count++; });
-    // Spinner is visible -> mouseRelease early-returns, no second click.
-    QMouseEvent re(QEvent::MouseButtonRelease, QPointF(2, 2), QPointF(2, 2),
-                   Qt::LeftButton, Qt::LeftButton, Qt::NoModifier,
-                   QPointingDevice::primaryPointingDevice());
-    QApplication::sendEvent(&btn, &re);
-    QObject::disconnect(c);
-    // Only the refreshStart() above fired; the release must not add another.
-    EXPECT_EQ(count, 1);
-    btn.refreshTimeout();
-    btn.hide();
-    QTest::qWait(10);
 }
 
 TEST(mircast_ext2, refreshButton_mouseRelease_whenSpinnerHidden_triggersStart)

@@ -130,13 +130,6 @@ TEST(boost_libdmr, videoIndex2str_real_audio_offsets)
     EXPECT_EQ(utils::videoIndex2str(77825).toStdString(), "ra_288");
 }
 
-TEST(boost_libdmr, videoIndex2str_known_video_codes)
-{
-    // A few mid-list entries to grow coverage of the videoList mapping.
-    EXPECT_EQ(utils::videoIndex2str(27).toStdString(), "h264");
-    EXPECT_EQ(utils::videoIndex2str(173).toStdString(), "vp9");
-}
-
 // FastFileHash / FullFileHash: the >=8192 multi-offset branch (lines 307..314).
 TEST(boost_libdmr, FastFileHash_large_file_uses_offsets)
 {

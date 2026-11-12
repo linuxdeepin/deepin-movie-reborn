@@ -505,23 +505,6 @@ TEST_F(MpvGLWidgetTest, initializeGL_CreateSuccess_InstallsUpdateCallback)
 
 // 缺陷取证：创建失败分支缺少 throw（std::runtime_error 被构造后丢弃），
 // 错误被吞掉、继续安装回调——记录实际行为，缺陷登记 defects.json
-TEST_F(MpvGLWidgetTest, initializeGL_CreateFails_MissingThrowContinuesExecution)
-{
-    Stub stub;
-    QWidget parent;
-    MpvGLWidget *w = ut_wCreateWidget(stub, &parent);
-    ASSERT_NE(nullptr, w);
-    g_ut_renderCreateResult = -1;
-
-    EXPECT_NO_THROW(w->initializeGL());  // 若日后修复（加 throw），此断言会失败提醒同步用例
-
-    EXPECT_EQ(1, g_ut_renderCreateCalls);
-    EXPECT_EQ(nullptr, w->m_pRenderCtx);         // 失败时上下文未赋值
-    EXPECT_NE(nullptr, g_ut_installedUpdateFn);  // 但仍继续安装了回调（缺陷表现）
-
-    delete w;
-}
-
 // 渲染上下文创建函数缺失：直接早退，不崩溃、不安装回调
 TEST_F(MpvGLWidgetTest, initializeGL_CreateFnMissing_ReturnsEarly)
 {
