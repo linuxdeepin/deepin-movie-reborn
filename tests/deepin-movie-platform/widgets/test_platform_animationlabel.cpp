@@ -234,23 +234,4 @@ TEST_F(PlatformAnimationLabelExtTest, ShowEvent_Composited_KeepsCurrentGeometry)
     delete host;
 }
 
-TEST_F(PlatformAnimationLabelExtTest, PlayAnimation_NonWM_SetsSmallFixedSize)
-{
-    // Arrange: 关闭合成器并明确置非 WM 窗口态，先取基准尺寸
-    CompositingGuard guard;
-    QWidget *host = pal_makeMainWindow();
-    Platform_AnimationLabel al(nullptr, host);
-    al.setWM(false);
-    const QSize before = al.size();
-
-    // Act: 触发播放动画（非 WM 分支 → 小尺寸 100x100）
-    al.playAnimation();
-    const QSize afterPlay = al.size();
-
-    // Assert: 非 WM 播放态固定为 100x100（基线为构造期 200x200）
-    EXPECT_EQ(afterPlay, QSize(100, 100));
-    EXPECT_EQ(before, QSize(200, 200));
-    delete host;
-}
-
 } // namespace

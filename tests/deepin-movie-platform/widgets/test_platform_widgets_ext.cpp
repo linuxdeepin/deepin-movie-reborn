@@ -68,9 +68,15 @@ static Platform_MainWindow *pw_mainWindow()
 }
 
 // Shared playlist widget owned by the main window.
+// Platform_MainWindow::loadPlayList() defers playlist creation via
+// QTimer::singleShot(300ms) from the constructor; the StartupDrain environment
+// normally fires it before the first test, but keep this helper self-sufficient
+// (bounded spin) so suite isolation never sees a null playlist.
 static Platform_PlaylistWidget *pw_playlist()
 {
     Platform_MainWindow *w = pw_mainWindow();
+    for (int i = 0; w && !w->playlist() && i < 30; ++i)
+        QTest::qWait(50);
     return w ? w->playlist() : nullptr;
 }
 
@@ -148,11 +154,11 @@ TEST(platform_widgets_ext, playlist_isFocusInPlaylist_false_otherwise)
 {
     Platform_PlaylistWidget *pl = pw_playlist();
     ASSERT_NE(pl, nullptr);
-    // Clear focus away from playlist / clear button by focusing the main
-    // window itself.
-    if (Platform_MainWindow *mw = pw_mainWindow()) {
-        mw->setFocus();
-    }
+    // isFocusInPlaylist() reads QApplication::focusWidget() and returns true
+    // only when it is the list or the clear button. Clear the list focus so
+    // focus lands on any outer widget (list parent / main window) instead.
+    if (DListWidget *list = pl->get_playlist())
+        list->clearFocus();
     pw_wait(20);
     EXPECT_FALSE(pl->isFocusInPlaylist());
 }
@@ -275,8 +281,10 @@ TEST(platform_widgets_ext, playlist_eventFilter_clearButton_keyUpDown_consumed)
     // filter by sending the key to the clear button (which has the filter
     // installed).
     QPushButton *clearBtn = nullptr;
-    // The clear button is private; find it by object name.
-    clearBtn = pl->findChild<QPushButton *>("CLEAR_PLAYLIST_BUTTON");
+    // The clear button is private; find it by object name. The name comes from
+    // the accessibility macro CLEAR_PLAYLIST_BUTTON (ac-deepin-movie-define.h),
+    // whose literal value is "clearButton" (NOT the macro identifier text).
+    clearBtn = pl->findChild<QPushButton *>("clearButton");
     ASSERT_NE(clearBtn, nullptr);
     if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
     clearBtn->setFocus();

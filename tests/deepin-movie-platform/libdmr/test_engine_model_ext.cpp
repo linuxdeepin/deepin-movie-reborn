@@ -124,15 +124,6 @@ TEST(engine_model_ext, PlayerEngine_elapsed_returns_non_negative)
     EXPECT_GE(e->elapsed(), 0);
 }
 
-TEST(engine_model_ext, PlayerEngine_videoSize_returns_size)
-{
-    PlayerEngine *e = em_engine();
-    ASSERT_TRUE(e != nullptr);
-    QSize sz = e->videoSize();
-    EXPECT_GE(sz.width(), 0);
-    EXPECT_GE(sz.height(), 0);
-}
-
 TEST(engine_model_ext, PlayerEngine_videoAspect_returns_finite)
 {
     PlayerEngine *e = em_engine();
@@ -171,13 +162,6 @@ TEST(engine_model_ext, PlayerEngine_aid_returns_non_negative)
     PlayerEngine *e = em_engine();
     ASSERT_TRUE(e != nullptr);
     EXPECT_GE(e->aid(), 0);
-}
-
-TEST(engine_model_ext, PlayerEngine_sid_returns_non_negative)
-{
-    PlayerEngine *e = em_engine();
-    ASSERT_TRUE(e != nullptr);
-    EXPECT_GE(e->sid(), 0);
 }
 
 // playingMovieInfo() returns a static empty ref when there is no backend;

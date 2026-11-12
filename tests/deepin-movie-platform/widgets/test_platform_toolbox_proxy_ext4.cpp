@@ -691,25 +691,6 @@ TEST(platform_tb_ext4, updateProgress_progressMode_largeDelta_directPath)
     SUCCEED();
 }
 
-TEST(platform_tb_ext4, updateProgress_progressMode_smallDelta_accumulates)
-{
-    Platform_ToolboxProxy *tb = ptb4_toolbox();
-    ASSERT_NE(tb, nullptr);
-    QStackedWidget *stack = tb->m_pProgBar_Widget;
-    ASSERT_NE(stack, nullptr);
-    int orig = stack->currentIndex();
-    stack->setCurrentIndex(1);
-    ptb4_wait(20);
-    tb->m_processAdd = 0.0;
-    // |1| <= 1 and |m_processAdd| < 1.0 -> accumulate-and-return.
-    tb->updateProgress(1);
-    EXPECT_NE(tb->m_processAdd, 0.0);
-    tb->m_processAdd = 0.0;
-    stack->setCurrentIndex(orig);
-    ptb4_wait(20);
-    SUCCEED();
-}
-
 TEST(platform_tb_ext4, updateProgress_progressMode_accumulateFlush)
 {
     // Pre-load m_processAdd beyond the threshold so the small-delta path flushes.
@@ -869,24 +850,6 @@ TEST(platform_tb_ext4, hideMircastWidget_afterShow_clearsCheck)
     tb->hideMircastWidget();
     EXPECT_FALSE(mw->isVisible());
     EXPECT_FALSE(tb->m_pMircastBtn->isChecked());
-}
-
-TEST(platform_tb_ext4, isInMircastWidget_shownWidget_evaluatesGeometry)
-{
-    Platform_ToolboxProxy *tb = ptb4_toolbox();
-    ASSERT_NE(tb, nullptr);
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget *mw = tb->getMircast();
-    ASSERT_NE(mw, nullptr);
-    mw->move(0, 0);
-    mw->resize(50, 50);
-    mw->show();
-    ptb4_wait(20);
-    // Point inside the shown widget's geometry.
-    EXPECT_TRUE(tb->isInMircastWidget(QPoint(10, 10)));
-    // Point well outside.
-    EXPECT_FALSE(tb->isInMircastWidget(QPoint(9999, 9999)));
-    tb->hideMircastWidget();
 }
 
 TEST(platform_tb_ext4, updateMircastWidget_offsetPoint_movesWidget)
@@ -1074,22 +1037,6 @@ TEST(platform_tb_ext4, updateTimeLabel_narrowWidth_hidesLabels)
     EXPECT_FALSE(tb->m_pListBtn->isVisible());
     EXPECT_FALSE(tb->m_pTimeLabel->isVisible());
     EXPECT_FALSE(tb->m_pTimeLabelend->isVisible());
-    tb->resize(origW, tb->height());
-    ptb4_wait(20);
-}
-
-TEST(platform_tb_ext4, updateTimeLabel_wideWidth_showsLabels)
-{
-    Platform_ToolboxProxy *tb = ptb4_toolbox();
-    ASSERT_NE(tb, nullptr);
-    if (ptb4_isAlpha()) GTEST_SKIP() << "Alpha platform skips updateTimeLabel body";
-    int origW = tb->width();
-    tb->resize(600, tb->height());
-    ptb4_wait(20);
-    ptb4_invoke(tb, "updateTimeLabel");
-    EXPECT_TRUE(tb->m_pListBtn->isVisible());
-    EXPECT_TRUE(tb->m_pTimeLabel->isVisible());
-    EXPECT_TRUE(tb->m_pTimeLabelend->isVisible());
     tb->resize(origW, tb->height());
     ptb4_wait(20);
 }

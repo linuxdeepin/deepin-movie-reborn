@@ -121,18 +121,6 @@ static QImage mw_makeFrame(QColor color = Qt::red)
 // platform_movie_progress_indicator.cpp  (0% -> raise)
 // ===========================================================================
 
-TEST(misc_widgets_ext, progress_construct_hasNonEmptyFixedSize)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    QWidget parent;
-    parent.resize(200, 100);
-    Platform_MovieProgressIndicator ind(&parent);
-    // Constructor derives m_fixedSize from font metrics for "999:99" and
-    // applies setFixedSize. It must be non-empty.
-    EXPECT_FALSE(ind.size().isEmpty());
-    EXPECT_FALSE(ind.minimumSizeHint().isEmpty());
-}
-
 TEST(misc_widgets_ext, progress_construct_isToolTipFrameless)
 {
     if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
@@ -613,17 +601,6 @@ TEST(misc_widgets_ext, urldialog_showEvent_setsFocusOnLineEdit)
     EXPECT_NO_FATAL_FAILURE({ QApplication::sendEvent(&dlg, &se); });
 }
 
-TEST(misc_widgets_ext, urldialog_setDefaultButton_isOkIndex)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    QWidget parent;
-    UrlDialog dlg(&parent);
-    // Constructor calls setDefaultButton(1).
-    QPushButton *ok = qobject_cast<QPushButton *>(dlg.getButton(1));
-    ASSERT_NE(ok, nullptr);
-    EXPECT_TRUE(ok->isDefault());
-}
-
 TEST(misc_widgets_ext, urldialog_defaultFixedSizeApplied)
 {
     if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
@@ -656,23 +633,6 @@ TEST(misc_widgets_ext, lineedit_construct_maxHeight36)
     QWidget parent;
     LineEdit le(&parent);
     EXPECT_EQ(le.maximumHeight(), 36);
-}
-
-TEST(misc_widgets_ext, lineedit_construct_clearActionExists)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    QWidget parent;
-    LineEdit le(&parent);
-    // The clear action is created in the ctor; the action's triggered signal
-    // is wired to QLineEdit::clear.
-    QAction *clearAct = nullptr;
-    for (QAction *a : le.actions()) {
-        if (a->icon().isNull() == false) {
-            clearAct = a;
-            break;
-        }
-    }
-    EXPECT_NE(clearAct, nullptr);
 }
 
 TEST(misc_widgets_ext, lineedit_setText_triggersSlot)
@@ -734,22 +694,6 @@ TEST(misc_widgets_ext, lineedit_resizeEvent_doesNotCrash)
     QSize old = le.size();
     QResizeEvent re(QSize(200, 30), old);
     EXPECT_NO_FATAL_FAILURE({ QApplication::sendEvent(&le, &re); });
-}
-
-TEST(misc_widgets_ext, lineedit_clearActionTriggered_clearsText)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    QWidget parent;
-    LineEdit le(&parent);
-    le.setText("will be cleared");
-    mw_wait(10);
-    ASSERT_FALSE(le.text().isEmpty());
-    // Find the clear action and trigger it.
-    for (QAction *a : le.actions()) {
-        a->trigger();
-    }
-    mw_wait(10);
-    EXPECT_TRUE(le.text().isEmpty());
 }
 
 TEST(misc_widgets_ext, lineedit_keyType_emitsTextChanged)

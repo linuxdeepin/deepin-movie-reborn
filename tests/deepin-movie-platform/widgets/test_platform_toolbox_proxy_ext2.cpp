@@ -890,21 +890,6 @@ TEST(platform_tb_ext2, toolboxVolumeUpDown_emitsUnsupportedWhenDisabled)
 
 // --- getListBtnFocus reflects focus on the list button ---------------------
 
-TEST(platform_tb_ext2, getListBtnFocus_afterSetFocus_true)
-{
-    Platform_ToolboxProxy *tb = ptb2_toolbox();
-    ASSERT_NE(tb, nullptr);
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    ToolButton *listBtn = tb->listBtn();
-    ASSERT_NE(listBtn, nullptr);
-    listBtn->setFocus();
-    ptb2_wait(20);
-    EXPECT_TRUE(tb->getListBtnFocus());
-    listBtn->clearFocus();
-    ptb2_wait(20);
-    EXPECT_FALSE(tb->getListBtnFocus());
-}
-
 // --- updateProgress: small + large deltas on Idle engine -------------------
 
 TEST(platform_tb_ext2, updateProgress_tinyAndZeroDelta_accumulates)

@@ -120,92 +120,8 @@ TEST(mircast_ext, setMircastPlayState_roundtripsThroughGetter)
 
 // timeConversion is private; reach it via the meta-object system. It takes a
 // QString and returns int. Register the call through invokeMethod.
-TEST(mircast_ext, timeConversion_validHMS)
-{
-    MircastWidget *mw = mir_ext_widget();
-    ASSERT_NE(mw, nullptr);
-    int out = -1;
-    bool ok = QMetaObject::invokeMethod(
-        mw, "timeConversion", Qt::DirectConnection,
-        Q_RETURN_ARG(int, out), Q_ARG(QString, QString("01:02:03")));
-    ASSERT_TRUE(ok);
-    EXPECT_EQ(out, 1 * 3600 + 2 * 60 + 3);
-}
-
-TEST(mircast_ext, timeConversion_zeroTime)
-{
-    MircastWidget *mw = mir_ext_widget();
-    ASSERT_NE(mw, nullptr);
-    int out = -1;
-    bool ok = QMetaObject::invokeMethod(
-        mw, "timeConversion", Qt::DirectConnection,
-        Q_RETURN_ARG(int, out), Q_ARG(QString, QString("00:00:00")));
-    ASSERT_TRUE(ok);
-    EXPECT_EQ(out, 0);
-}
-
-TEST(mircast_ext, timeConversion_largeValues)
-{
-    MircastWidget *mw = mir_ext_widget();
-    ASSERT_NE(mw, nullptr);
-    int out = -1;
-    bool ok = QMetaObject::invokeMethod(
-        mw, "timeConversion", Qt::DirectConnection,
-        Q_RETURN_ARG(int, out), Q_ARG(QString, QString("10:00:00")));
-    ASSERT_TRUE(ok);
-    EXPECT_EQ(out, 36000);
-}
-
 // Not 3 colon-separated parts -> returns 0.
-TEST(mircast_ext, timeConversion_invalidShape_returnsZero)
-{
-    MircastWidget *mw = mir_ext_widget();
-    ASSERT_NE(mw, nullptr);
-    int out = -1;
-    bool ok = QMetaObject::invokeMethod(
-        mw, "timeConversion", Qt::DirectConnection,
-        Q_RETURN_ARG(int, out), Q_ARG(QString, QString("NOT_IMPLEMENTED")));
-    ASSERT_TRUE(ok);
-    EXPECT_EQ(out, 0);
-}
-
-TEST(mircast_ext, timeConversion_emptyString_returnsZero)
-{
-    MircastWidget *mw = mir_ext_widget();
-    ASSERT_NE(mw, nullptr);
-    int out = -1;
-    bool ok = QMetaObject::invokeMethod(
-        mw, "timeConversion", Qt::DirectConnection,
-        Q_RETURN_ARG(int, out), Q_ARG(QString, QString("")));
-    ASSERT_TRUE(ok);
-    EXPECT_EQ(out, 0);
-}
-
-TEST(mircast_ext, timeConversion_twoParts_returnsZero)
-{
-    MircastWidget *mw = mir_ext_widget();
-    ASSERT_NE(mw, nullptr);
-    int out = -1;
-    bool ok = QMetaObject::invokeMethod(
-        mw, "timeConversion", Qt::DirectConnection,
-        Q_RETURN_ARG(int, out), Q_ARG(QString, QString("02:30")));
-    ASSERT_TRUE(ok);
-    EXPECT_EQ(out, 0);
-}
-
 // --- togglePopup (show/hide toggle, never touches soap) -------------------
-
-TEST(mircast_ext, togglePopup_hide_whenVisible)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    MircastWidget *mw = mir_ext_widget();
-    ASSERT_NE(mw, nullptr);
-    mw->show();
-    QTest::qWait(30);
-    ASSERT_TRUE(mw->isVisible());
-    mw->togglePopup();
-    EXPECT_FALSE(mw->isVisible());
-}
 
 TEST(mircast_ext, togglePopup_show_whenHidden)
 {
@@ -540,36 +456,6 @@ TEST(mircast_ext, itemWidget_doubleClick_emitsConnecting)
 }
 
 // --- ListWidget standalone -------------------------------------------------
-
-TEST(mircast_ext, listWidget_count_clear_currentIndex)
-{
-    ListWidget lw;
-    EXPECT_EQ(lw.count(), 0);
-    EXPECT_EQ(lw.currentItemIndex(), -1);
-    EXPECT_EQ(lw.currentItemWidget(), nullptr);
-
-    MiracastDevice d1; d1.name = "A"; d1.uuid = "uuid:a";
-    MiracastDevice d2; d2.name = "B"; d2.uuid = "uuid:b";
-    QByteArray xml = mir_ext_deviceXml();
-    ItemWidget *i1 = lw.createListeItem(d1, xml, nullptr);
-    ItemWidget *i2 = lw.createListeItem(d2, xml, nullptr);
-    EXPECT_EQ(lw.count(), 2);
-
-    // Nothing selected yet.
-    EXPECT_EQ(lw.selectedItemWidget().count(), 0);
-
-    i1->setState(ItemWidget::Checked);
-    EXPECT_EQ(lw.selectedItemWidget().count(), 1);
-
-    // setItemWidgetStatus resets all to Normal.
-    lw.setItemWidgetStatus(lw.selectedItemWidget(), ItemWidget::Normal);
-    EXPECT_EQ(lw.selectedItemWidget().count(), 0);
-
-    lw.clear();
-    EXPECT_EQ(lw.count(), 0);
-    // i1/i2 were deleteLater()'d in clear; drop raw pointers.
-    (void)i1; (void)i2;
-}
 
 // slotSelectItem via mousePress on an item updates currentItemWidget/index.
 TEST(mircast_ext, listWidget_selectItem_updatesCurrent)

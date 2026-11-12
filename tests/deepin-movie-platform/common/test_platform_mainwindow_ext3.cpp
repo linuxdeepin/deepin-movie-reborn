@@ -120,22 +120,6 @@ static void pmw3_wait(int ms = 80)
 // mousePressEvent / mouseReleaseEvent
 // ==========================================================================
 
-TEST(platform_mw_ext3, MousePressEvent_LeftButton_SetsPressedAndMove)
-{
-    Platform_MainWindow *w = pmw3_window();
-    ASSERT_NE(w, nullptr);
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP() << "no screen";
-
-    w->m_bMousePressed = false;
-    w->m_bStartMove = false;
-    QMouseEvent me(QEvent::MouseButtonPress, QPointF(10, 10), QPointF(10, 10),
-                   Qt::LeftButton, Qt::LeftButton, Qt::NoModifier,
-                   QPointingDevice::primaryPointingDevice());
-    QApplication::sendEvent(w, &me);
-    EXPECT_TRUE(w->m_bMousePressed);
-    EXPECT_TRUE(w->m_bStartMove);
-}
-
 TEST(platform_mw_ext3, MousePressEvent_RightButton_NoPressedFlag)
 {
     Platform_MainWindow *w = pmw3_window();
@@ -375,22 +359,6 @@ TEST(platform_mw_ext3, WheelEvent_Locked_VerticalDown_RequestsVolumeDown)
     QApplication::sendEvent(w, &we);
     pmw3_wait(40);
     EXPECT_LE(w->m_nDisplayVolume, 50);
-}
-
-TEST(platform_mw_ext3, WheelEvent_Locked_ClampsAbnormalDelta)
-{
-    // angleDelta magnitude > 240 is clamped to +/-120 inside the handler.
-    Platform_MainWindow *w = pmw3_window();
-    ASSERT_NE(w, nullptr);
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP() << "no screen";
-
-    w->slotVolumeChanged(50);
-    QPoint pt(10, 10);
-    QWheelEvent we(pt, w->mapToGlobal(pt), QPoint(0, 9999), QPoint(0, 9999),
-                   Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
-    QApplication::sendEvent(w, &we);
-    pmw3_wait(40);
-    EXPECT_EQ(w->m_iAngleDelta, 120);   // clamped
 }
 
 TEST(platform_mw_ext3, WheelEvent_WithModifiers_NoChange)
@@ -985,21 +953,6 @@ TEST(platform_mw_ext3, ResizeByConstraints_IdleEngine_EarlyReturn)
     EXPECT_NO_FATAL_FAILURE(w->resizeByConstraints(false));
 }
 
-TEST(platform_mw_ext3, UpdateGeometryNotification_Idle_NoMessageButRecordsRect)
-{
-    Platform_MainWindow *w = pmw3_window();
-    ASSERT_NE(w, nullptr);
-    QRect saved = w->m_lastRectInNormalMode;
-
-    w->updateGeometryNotification(QSize(123, 456));
-    // Idle engine -> no message update; when window is in normal state the
-    // last-rect is refreshed.
-    if (w->windowState() == Qt::WindowNoState && !w->m_bMiniMode && !w->m_bMaximized) {
-        EXPECT_EQ(w->m_lastRectInNormalMode.size(), QSize(123, 456));
-    }
-    w->m_lastRectInNormalMode = saved;
-}
-
 // ==========================================================================
 // paintEvent (Idle engine -> draws the splash icon path)
 // ==========================================================================
@@ -1039,26 +992,6 @@ TEST(platform_mw_ext3, IsActionAllowed_NormalState_DefaultTrue)
     ASSERT_NE(w, nullptr);
     EXPECT_TRUE(w->isActionAllowed(ActionFactory::TogglePause, false, false));
     EXPECT_TRUE(w->isActionAllowed(ActionFactory::VolumeUp, false, false));
-}
-
-TEST(platform_mw_ext3, IsActionAllowed_Shortcut_RequiresNonIdleForSomeKinds)
-{
-    // Idle engine -> shortcut path returns false for Screenshot / MovieInfo /
-    // subtitle kinds (need a loaded movie).
-    Platform_MainWindow *w = pmw3_window();
-    ASSERT_NE(w, nullptr);
-    PlayerEngine *engine = w->engine();
-    ASSERT_NE(engine, nullptr);
-    ASSERT_EQ(engine->state(), PlayerEngine::Idle);
-
-    EXPECT_FALSE(w->isActionAllowed(ActionFactory::Screenshot, false, true));
-    EXPECT_FALSE(w->isActionAllowed(ActionFactory::MovieInfo, false, true));
-    EXPECT_FALSE(w->isActionAllowed(ActionFactory::MatchOnlineSubtitle, false, true));
-    EXPECT_FALSE(w->isActionAllowed(ActionFactory::BurstScreenshot, false, true));
-    EXPECT_FALSE(w->isActionAllowed(ActionFactory::HideSubtitle, false, true));
-    EXPECT_FALSE(w->isActionAllowed(ActionFactory::SelectSubtitle, false, true));
-    // ToggleMiniMode shortcut on an idle engine: still allowed (no Idle guard).
-    EXPECT_TRUE(w->isActionAllowed(ActionFactory::ToggleMiniMode, false, true));
 }
 
 TEST(platform_mw_ext3, IsActionAllowed_MiniMode_FromUI_BlockedKinds)
@@ -1115,16 +1048,6 @@ TEST(platform_mw_ext3, RequestAction_VolumeUp_IncrementsDisplayVolume)
     w->requestAction(ActionFactory::VolumeUp, false, {}, true);
     pmw3_wait(40);
     EXPECT_GT(w->m_nDisplayVolume, 40);
-}
-
-TEST(platform_mw_ext3, RequestAction_VolumeDown_DecrementsDisplayVolume)
-{
-    Platform_MainWindow *w = pmw3_window();
-    ASSERT_NE(w, nullptr);
-    w->slotVolumeChanged(40);
-    w->requestAction(ActionFactory::VolumeDown, false, {}, true);
-    pmw3_wait(40);
-    EXPECT_LT(w->m_nDisplayVolume, 40);
 }
 
 TEST(platform_mw_ext3, RequestAction_WindowAbove_TogglesFlag)

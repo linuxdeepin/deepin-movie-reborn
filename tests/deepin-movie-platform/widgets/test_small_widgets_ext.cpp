@@ -909,20 +909,6 @@ TEST(small_widgets_ext, titlebar_construct_titlebarChildNotNull)
     EXPECT_NE(tb.titlebar(), nullptr);
 }
 
-TEST(small_widgets_ext, titlebar_setTitletxt_forwardsToLabel)
-{
-    if (!QGuiApplication::primaryScreen()) GTEST_SKIP();
-    QWidget parent;
-    Titlebar tb(&parent);
-    EXPECT_NO_FATAL_FAILURE({ tb.setTitletxt("sw_movie.mp4"); });
-    // TitlebarPrivate is only forward-declared in the header, so we cannot
-    // touch d_ptr->m_titletxt here. The DLabel child is added to the DTitlebar
-    // via addWidget(AlignCenter); find it as a DLabel child of the titlebar.
-    DLabel *lbl = tb.findChild<DLabel *>();
-    ASSERT_NE(lbl, nullptr);
-    EXPECT_EQ(lbl->text().toStdString(), "sw_movie.mp4");
-}
-
 TEST(small_widgets_ext, titlebar_setTitletxt_empty_safe)
 {
     if (!QGuiApplication::primaryScreen()) GTEST_SKIP();

@@ -22,7 +22,7 @@ TEST(Presenter, slotplay)
     MovieConfiguration::get().init();
     Presenter *presenter = new Presenter(w);
 
-    presenter->slotopenUrlRequested(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3"));
+    presenter->slotopenUrlRequested(QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/bensound-sunny.mp3"));
     presenter->slotplay();
     presenter->slotpause();
     presenter->slotplaynext();

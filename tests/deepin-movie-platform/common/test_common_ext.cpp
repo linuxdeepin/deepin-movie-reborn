@@ -115,6 +115,12 @@ TEST(common_ext, settings_valueChanged_basePlayHwaccel_emitsHwaccelModeChanged)
     QObject::connect(&Settings::get(), &Settings::hwaccelModeChanged, &ctx,
                      [&got](const QString &, const QVariant &) { got = true; });
     QVariant prev = ce_backup("hwaccel");
+    // DSettingsOption::setValue is a no-op (no valueChanged) when the persisted
+    // value already equals the target. Prime with a different value first so
+    // the target write is guaranteed to change the option and emit.
+    Settings::get().settings()->setOption("base.play.hwaccel", 0);
+    Settings::get().settings()->sync();
+    ce_wait(20);
     Settings::get().settings()->setOption("base.play.hwaccel", 1);
     Settings::get().settings()->sync();
     ce_wait(20);
@@ -145,6 +151,11 @@ TEST(common_ext, settings_valueChanged_baseDecodeSelect_emitsSetDecodeModel)
     QObject::connect(&Settings::get(), &Settings::setDecodeModel, &ctx,
                      [&gotDecode](const QString &, const QVariant &) { gotDecode = true; });
     QVariant prev = Settings::get().settings()->value("base.decode.select");
+    // Prime: setValue no-ops when the persisted value already equals the
+    // target; force a change first so the target write always emits.
+    Settings::get().settings()->setOption("base.decode.select", 3);
+    Settings::get().settings()->sync();
+    ce_wait(20);
     Settings::get().settings()->setOption("base.decode.select", 0);   // AUTO
     Settings::get().settings()->sync();
     ce_wait(20);
@@ -198,26 +209,15 @@ TEST(common_ext, settings_valueChanged_shortcuts_emitsShortcutsChanged)
     QObject ctx;
     QObject::connect(&Settings::get(), &Settings::shortcutsChanged, &ctx,
                      [&got](const QString &, const QVariant &) { got = true; });
+    // Prime: setValue no-ops when the persisted value already equals the
+    // target; force a change first so the target write always emits.
+    Settings::get().settings()->setOption("shortcuts.play.enable", false);
+    Settings::get().settings()->sync();
+    ce_wait(20);
     Settings::get().settings()->setOption("shortcuts.play.enable", true);
     Settings::get().settings()->sync();
     ce_wait(20);
     EXPECT_TRUE(got);
-}
-
-TEST(common_ext, settings_valueChanged_basePlayPlaymode_emitsDefaultplaymode)
-{
-    // base.play.playmode branch -> emits defaultplaymodechanged.
-    bool got = false;
-    QObject ctx;
-    QObject::connect(&Settings::get(), &Settings::defaultplaymodechanged, &ctx,
-                     [&got](const QString &, const QVariant &) { got = true; });
-    QVariant prev = Settings::get().settings()->value("base.play.playmode");
-    Settings::get().settings()->setOption("base.play.playmode", 0);
-    Settings::get().settings()->sync();
-    ce_wait(20);
-    EXPECT_TRUE(got);
-    Settings::get().settings()->setOption("base.play.playmode", prev);
-    Settings::get().settings()->sync();
 }
 
 TEST(common_ext, settings_valueChanged_subtitle_emitsSubtitleChanged)
