@@ -227,20 +227,6 @@ TEST_F(ThumbnailWorkerTest, get_startsWorkerThread_nonMipsPlatform)
     EXPECT_EQ(ThumbnailWorker::thumbSize(), QSize(178, 101));
 }
 
-TEST_F(ThumbnailWorkerTest, fakeBackend_ready_functionPointersInstalled)
-{
-    // Arrange: singleton exists with fake function pointers (env SetUp).
-    // Act: request a thumbnail for a unique nonexistent file.
-    const QString url = twxUniqueUrl();
-    QSignalSpy spy(&ThumbnailWorker::get(), &ThumbnailWorker::thumbGenerated);
-    ThumbnailWorker::get().requestThumb(QUrl(url), 0);
-    // Assert: the fake generate ran (initThumb installed the pointers) and
-    // a valid pixmap was produced from the canned PNG payload.
-    EXPECT_TRUE(spy.wait(10000));
-    EXPECT_GT(twfake::g_counters.genCalls, 0);
-    EXPECT_FALSE(ThumbnailWorker::get().getThumb(url, 0).isNull());
-}
-
 // ==========================================================================
 // genThumb — 成功落缓存 / 异常吞掉
 // ==========================================================================

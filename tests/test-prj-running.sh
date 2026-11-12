@@ -9,11 +9,11 @@
 # → 采集 lcov 覆盖率 → 生成 HTML 报告与 ut-summary.json 统计摘要
 #
 # 分片说明: 两个主测试二进制(deepin-movie-test / deepin-movie-platform-test)
-# 以 QTest 包装 gtest 全量用例, 单进程全量运行在 UT 环境中会被个别
-# 播放/解码类用例挂死(无崩溃信号, crashHandler 无法兜底), 且 QTest::qExec
-# 会吞掉命令行参数, gtest CLI 过滤不可用。故:
-# - 通过 DMR_GTEST_FILTER 环境变量注入正模式套件过滤(机制见
-#   tests/*/test_qtestmain.cpp, 已知崩溃/挂死用例在二进制内始终排除)
+# 为纯 gtest 入口(tests/*/test_main.cpp, 无 QTest::qExec 包装), gtest CLI
+# (--gtest_filter 等)直达 RUN_ALL_TESTS。单进程全量运行在 UT 环境中仍会被
+# 个别播放/解码类用例挂死(无崩溃信号, crashHandler 无法兜底), 故:
+# - 通过 --gtest_filter 注入正模式套件过滤(机制见 tests/*/test_main.cpp,
+#   已知崩溃/挂死用例在二进制内始终排除)
 # - 按套件分片运行: 片挂死(SIGABRT 超时)重试, 整片持续失败再拆单套件,
 #   仍失败拆单用例, 单用例仍挂死则记录并跳过
 # - 超时信号用 SIGABRT: crashHandler 会 __gcov_dump() 刷新 .gcda,
@@ -39,12 +39,21 @@ mkdir -p "${report_path}"
 
 cd "${build_path}"
 
-# 单测 GUI 程序需要 X 环境
-export DISPLAY="${DISPLAY:-:0}"
-export QT_QPA_PLATFORM=
-# 全量套件在单个 QTest 槽内运行,耗时可能超过 5 分钟,须调大函数级超时
-# (较小值会触发 QFATAL -> SIGABRT 中止整个套件)
-export QTEST_FUNCTION_TIMEOUT='3600000'
+# 运行环境分两类:
+#  - RUNNER_MOVIE: deepin-movie-test 含真实 mpv 视频渲染用例, 必须 X11 (Xvfb)
+#  - RUNNER_UI   : platform/ut_dmr 的用例只依赖事件派发/定时器/widget 状态,
+#                  走 Qt offscreen (dxcb+Xvfb 软件渲染下多套用例崩溃)
+if command -v xvfb-run >/dev/null 2>&1; then
+    RUNNER_MOVIE=(xvfb-run -a --server-args="-screen 0 1600x1200x24" env DMR_UT_XVFB=1)
+else
+    RUNNER_MOVIE=(env DMR_UT_FORCE_DISPLAY=1)
+    export DISPLAY="${DISPLAY:-:0}"
+fi
+RUNNER_UI=(env)
+# 平台选择由测试入口 (tests/*/test_main.cpp) 按 DMR_UT_XVFB/DMR_UT_FORCE_DISPLAY
+# 决定, 不在此处设置 QT_QPA_PLATFORM
+# 纯 gtest 入口没有 QTest 的函数级超时(QTEST_FUNCTION_TIMEOUT), 挂死用例由
+# 下方的 timeout -s ABRT 兜底
 
 # DB/用户数据隔离: 清理历史残留,避免跨运行状态影响
 rm -rf "${HOME}/.config/deepin-movie-test" "${HOME}/.config/deepin-movie"
@@ -69,28 +78,33 @@ mkdir -p "${build_path}/report"
 
 clean_user_state() {
     rm -rf "${HOME}/.config/deepin-movie-test" "${HOME}/.config/deepin-movie"
+    rm -rf "${HOME}/.config/deepin-movie-platform-test" "${HOME}/.config/deepin-movie-platform"
+    rm -rf "${HOME}/.config/ut_dmr-test"
+    rm -rf "${HOME}/Pictures/DMovie"
 }
 
-# 从测试源码 TEST/TEST_F 宏提取套件名/用例名 (gtest CLI 在 QTest 包装下不可用)
+# 从测试源码 TEST/TEST_F 宏提取套件名/用例名 (入口文件本身无 TEST 宏)
 suite_names() {
-    find "$1" -name '*.cpp' ! -name 'test_qtestmain*' \
+    find "$1" -name '*.cpp' ! -name 'test_main*' \
         -exec grep -hE '^TEST(_F)?\([[:space:]]*[A-Za-z0-9_]+[[:space:]]*,' {} + 2>/dev/null \
-        | sed -E 's/^TEST(_F)?\([[:space:]]*([A-Za-z0-9_]+)[[:space:]]*,.*/\2/' | sort -u
+        | sed -E 's/^TEST(_F)?\([[:space:]]*([A-Za-z0-9_]+)[[:space:]]*,.*/\2/' \
+        | grep -E '^[A-Za-z0-9_]+$' | sort -u
 }
 
 case_names() {  # $1=源码目录 $2=套件名
-    find "$1" -name '*.cpp' ! -name 'test_qtestmain*' \
+    find "$1" -name '*.cpp' ! -name 'test_main*' \
         -exec grep -hE "^TEST(_F)?\([[:space:]]*$2[[:space:]]*," {} + 2>/dev/null \
-        | sed -E "s/^TEST(_F)?\([[:space:]]*[A-Za-z0-9_]+[[:space:]]*,[[:space:]]*([A-Za-z0-9_]+).*/\1/"
+        | sed -E "s/^TEST(_F)?\([[:space:]]*[A-Za-z0-9_]+[[:space:]]*,[[:space:]]*([A-Za-z0-9_]+).*/\1/" \
+        | grep -E '^[A-Za-z0-9_]+$'
 }
 
 # 运行一次分片: 运行二进制并把固定名 XML 归档为目标名
-# $1=rundir $2=exe $3=filter $4=超时秒 $5=目标xml $6=内置xml
+# $1=rundir $2=exe $3=filter $4=超时秒 $5=目标xml $6=内置xml $7=runner数组名
 # 返回 0 表示该次运行完成(rc<128)或已产出有效 XML
 run_once() {
-    local rundir="$1" exe="$2" filter="$3" tmo="$4" dst="$5" fixed="$6" rc
+    local rundir="$1" exe="$2" filter="$3" tmo="$4" dst="$5" fixed="$6" runner="$7" rc
     rm -f "${fixed}"
-    ( cd "${rundir}" && DMR_GTEST_FILTER="${filter}" timeout -k 5 -s ABRT "${tmo}" "./${exe}" )
+    ( cd "${rundir}" && "${runner[@]}" timeout -k 5 -s ABRT "${tmo}" "./${exe}" --gtest_filter="${filter}" )
     rc=$?
     if [ "${rc}" -lt 128 ] || grep -q '<testsuite' "${fixed}" 2>/dev/null; then
         if grep -q '<testsuite' "${fixed}" 2>/dev/null; then
@@ -101,10 +115,10 @@ run_once() {
     return 1
 }
 
-# 分片运行一个 QTest 包装的测试二进制
-# 参数: $1=构建子目录 $2=可执行名 $3=测试源码目录 $4=XML 文件前缀
+# 分片运行一个纯 gtest 测试二进制 (通过 --gtest_filter 注入套件过滤)
+# 参数: $1=构建子目录 $2=可执行名 $3=测试源码目录 $4=XML 文件前缀 $5=runner数组名
 run_chunked_suite() {
-    local sub="$1" exe="$2" srcdir="$3" prefix="$4"
+    local sub="$1" exe="$2" srcdir="$3" prefix="$4" runner="$5"
     local rundir="${build_path}/tests/${sub}"
     if [ ! -x "${rundir}/${exe}" ]; then
         echo "WARNING: ${rundir}/${exe} not found, skip ${exe}"
@@ -135,7 +149,7 @@ run_chunked_suite() {
         for attempt in 1 2; do
             echo ">>> ${exe} chunk $((i / CHUNK + 1)) attempt ${attempt}: suites [${i}-${last}]"
             clean_user_state
-            if run_once "${rundir}" "${exe}" "${filter}" 900 "${xml}" "${fixedxml}"; then
+            if run_once "${rundir}" "${exe}" "${filter}" 900 "${xml}" "${fixedxml}" "${runner}"; then
                 ok=1
                 break
             fi
@@ -153,7 +167,7 @@ run_chunked_suite() {
                 for attempt in 1 2; do
                     echo ">>> ${exe} suite [${s}] attempt ${attempt}"
                     clean_user_state
-                    if run_once "${rundir}" "${exe}" "${s}.*" 600 "${sxml}" "${fixedxml}"; then
+                    if run_once "${rundir}" "${exe}" "${s}.*" 600 "${sxml}" "${fixedxml}" "${runner}"; then
                         sok=1
                         break
                     fi
@@ -166,7 +180,7 @@ run_chunked_suite() {
                     for c in "${cases[@]}"; do
                         cxml="${build_path}/report/${prefix}_c$(printf '%03d' "${j}")_${c}.xml"
                         clean_user_state
-                        if run_once "${rundir}" "${exe}" "${s}.${c}" 240 "${cxml}" "${fixedxml}" >/dev/null 2>&1; then
+                        if run_once "${rundir}" "${exe}" "${s}.${c}" 240 "${cxml}" "${fixedxml}" "${runner}" >/dev/null 2>&1; then
                             :
                         else
                             echo "WARNING: ${exe} case ${s}.${c} hung/crashed alone, excluded from stats"
@@ -186,8 +200,8 @@ run_chunked_suite() {
 
 # 简单运行一个小型测试二进制 (整跑 + 失败重试)
 # 参数: $1=构建子目录 $2=可执行名 $3=汇总 xml 名
-run_suite() {
-    local sub="$1" exe="$2" xmlname="$3"
+run_suite() {  # $4=runner数组名
+    local sub="$1" exe="$2" xmlname="$3" runner="$4"
     local rundir="${build_path}/tests/${sub}"
     if [ ! -x "${rundir}/${exe}" ]; then
         echo "WARNING: ${rundir}/${exe} not found, skip ${exe}"
@@ -201,7 +215,7 @@ run_suite() {
         for n in 1 2 3; do
             clean_user_state
             echo " =================== ${exe} RUN ${n}/3 BEGIN ==================== "
-            timeout -k 10 1800 env ASAN_OPTIONS="fast_unwind_on_malloc=1" "./${exe}"
+            "${runner[@]}" timeout -k 10 1800 env ASAN_OPTIONS="fast_unwind_on_malloc=1" "./${exe}"
             r=$?
             echo " =================== ${exe} RUN ${n}/3 END rc=${r} ==================== "
             rc=$((rc || r))
@@ -217,9 +231,9 @@ run_suite() {
     return 0
 }
 
-run_chunked_suite "deepin-movie"          "deepin-movie-test"          "${projectdir}/tests/deepin-movie"          "report_deepin-movie"
-run_chunked_suite "deepin-movie-platform" "deepin-movie-platform-test" "${projectdir}/tests/deepin-movie-platform" "report_deepin-movie-platform"
-run_suite "ut_dmr-test" "ut_dmr-test" "report_dmr-test.xml"
+run_chunked_suite "deepin-movie"          "deepin-movie-test"          "${projectdir}/tests/deepin-movie"          "report_deepin-movie"          "${RUNNER_MOVIE[@]}"
+run_chunked_suite "deepin-movie-platform" "deepin-movie-platform-test" "${projectdir}/tests/deepin-movie-platform" "report_deepin-movie-platform" "${RUNNER_UI[@]}"
+run_suite "ut_dmr-test" "ut_dmr-test" "report_dmr-test.xml" "${RUNNER_UI[@]}"
 
 workdir="${build_path}"
 

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+# SPDX-FileCopyrightText: 2023-2026 UnionTech Software Technology Co., Ltd.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -156,7 +156,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${3rd_lib_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES})
 #------------------------------添加第三方库end-------------------------------------
 
-target_link_libraries(${PROJECT_NAME} gmock gmock_main gtest gtest_main)
+target_link_libraries(${PROJECT_NAME} gmock gtest)
 
 # 将工程与Qt模块链接起来
 if (Qt6_FOUND)
