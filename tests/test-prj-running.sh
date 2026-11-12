@@ -69,6 +69,20 @@ cmake -DCMAKE_BUILD_TYPE=Debug \
 # 编译三个单测目标
 make -j"$(nproc)" deepin-movie-test deepin-movie-platform-test ut_dmr-test || exit 1
 
+# 测试媒体资产不入库（.gitignore，见 tests/assets/gen_assets.sh），由 ffmpeg 现场合成。
+# CI 的 source_sync 步骤执行 git clean -fdx 会把它们删掉，资产缺失会导致播放类用例
+# 以 avformat_open_input 返回 -2 (ENOENT)、引擎停留在 Idle 的方式失败。
+if [ ! -f "${projectdir}/tests/assets/demo.mp4" ]; then
+    echo ">>> generating test media assets (tests/assets/gen_assets.sh)"
+    if command -v ffmpeg >/dev/null 2>&1; then
+        ( cd "${projectdir}/tests/assets" && ./gen_assets.sh ) || { echo "ERROR: gen_assets.sh failed" >&2; exit 1; }
+    else
+        echo "ERROR: ffmpeg not found and test assets missing; playback tests will fail" >&2
+        exit 1
+    fi
+fi
+mkdir -p "${projectdir}/tests/assets/DMovie"
+
 test_exit_code=0
 
 # 重置历史覆盖率计数
