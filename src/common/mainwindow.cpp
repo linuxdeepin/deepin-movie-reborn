@@ -1558,10 +1558,17 @@ void MainWindow::onBindingsChanged()
 {
     qCDebug(appMovie) << "Clearing existing actions";
     {
-        QList<QAction *> listActions = this->actions();
-        this->actions().clear();
+        // Only remove the shortcut actions we added below (tagged with the
+        // "origin" property). QAction ownership stays with its creator
+        // (ShortcutManager parents them), so deleting foreign actions here
+        // leaves dangling pointers in their owners and crashes the next time
+        // they are touched.
+        const QList<QAction *> listActions = this->actions();
         for (auto *pAct : listActions) {
-            delete pAct;
+            if (pAct && pAct->property("origin") == "shortcut") {
+                this->removeAction(pAct);
+                delete pAct;
+            }
         }
     }
 

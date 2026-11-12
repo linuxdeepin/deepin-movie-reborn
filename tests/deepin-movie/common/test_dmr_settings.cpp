@@ -528,11 +528,22 @@ TEST_F(DmrSettingsTestEnv, valueChanged_ShortcutsKey_EmitsShortcutsChanged)
     DSettings *s = Settings::get().settings();
     ASSERT_NE(s, nullptr);
     QVariant prev = s->value("shortcuts.play.pause_play");
+    // Shortcut options are QStringList-valued: ShortcutManager's
+    // shortcutsChanged handler dereferences val.toStringList().at(0), so a
+    // bare QString write crashes the binary (empty list). Also, DSettings
+    // suppresses valueChanged for a no-op write, so re-writing a value that
+    // is already persisted (e.g. left over from an earlier crashed run)
+    // would emit nothing and fail this test. Write a one-element list that
+    // is guaranteed to differ from the persisted value, and restore prev
+    // afterwards so the test stays order-independent.
+    const QStringList next = {
+        prev.toStringList().value(0) == QStringLiteral("X") ? QStringLiteral("Y")
+                                                             : QStringLiteral("X")};
     QSignalSpy spy(&Settings::get(), &Settings::shortcutsChanged);
     ASSERT_TRUE(spy.isValid());
 
     // Act
-    s->setOption("shortcuts.play.pause_play", QStringLiteral("X"));
+    s->setOption("shortcuts.play.pause_play", next);
     s->sync();
     QTest::qWait(80);
 
@@ -541,7 +552,7 @@ TEST_F(DmrSettingsTestEnv, valueChanged_ShortcutsKey_EmitsShortcutsChanged)
     if (spy.count() > 0) {
         QList<QVariant> args = spy.first();
         EXPECT_EQ(args.at(0).toString(), QStringLiteral("shortcuts.play.pause_play"));
-        EXPECT_EQ(args.at(1).toString(), QStringLiteral("X"));
+        EXPECT_EQ(args.at(1).toStringList(), next);
     }
 
     s->setOption("shortcuts.play.pause_play", prev);

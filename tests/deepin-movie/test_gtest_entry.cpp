@@ -38,9 +38,25 @@ using namespace dmr;
 // platform test harness). deepin-movie-test has flaky cross-suite crashes; a
 // crash would otherwise skip gcov's atexit flush and drop ALL coverage.
 extern "C" void __gcov_dump(void);
+extern "C" char **backtrace_symbols(void *const *, int);
+extern "C" int backtrace(void **, int);
 static void crashHandler(int sig) {
     fprintf(stderr, "\n=== Crash detected (signal %d), flushing coverage data ===\n", sig);
+    void *bt[32];
+    int n = backtrace(bt, 32);
+    char **sym = backtrace_symbols(bt, n);
+    if (sym) {
+        for (int i = 0; i < n; ++i) fprintf(stderr, "BT#%d %s\n", i, sym[i]);
+        free(sym);
+    }
+    fflush(stderr);
     __gcov_dump();
+    // DMR_UT_KEEP_CORE=1: restore the default disposition and re-raise so
+    // systemd-coredump can capture a real stack trace for offline debugging.
+    if (qEnvironmentVariableIsSet("DMR_UT_KEEP_CORE")) {
+        signal(sig, SIG_DFL);
+        raise(sig);
+    }
     _exit(128 + sig);
 }
 static void setupCrashHandler() {

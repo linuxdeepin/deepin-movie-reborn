@@ -328,12 +328,20 @@ TEST(boost_dm_lib2, bdl2_engine_idleSafeGetters_returnDefaults)
     PlayerEngine *e = bdl2_engine();
     ASSERT_NE(e, nullptr);
     // Every one of these guards on !_current and returns a default.
+    // main() constructs MainWindow, whose PlayerEngine ctor creates an
+    // MpvProxy and assigns it to _current, so the null-backend branch is
+    // only reachable by detaching the backend here. Detach, assert the
+    // null-backend defaults, then restore: the engine owns _current (it is
+    // not deleted here) and later suites still see the live backend.
+    Backend *saved = e->_current;
+    e->_current = nullptr;
     EXPECT_EQ(e->duration(), 0);
     EXPECT_EQ(e->elapsed(), 0);
     EXPECT_EQ(e->videoSize(), QSize(0, 0));
     EXPECT_EQ(e->volume(), 100);
     EXPECT_FALSE(e->muted());
     EXPECT_DOUBLE_EQ(e->subDelay(), 0.0);
+    e->_current = saved;
 }
 
 TEST(boost_dm_lib2, bdl2_engine_subCodepage_returnsAutoWhenNoBackend)
@@ -381,21 +389,36 @@ TEST(boost_dm_lib2, bdl2_engine_getDecodeModel_invalidWhenNoBackend)
 {
     PlayerEngine *e = bdl2_engine();
     ASSERT_NE(e, nullptr);
+    // Detach the live backend (see bdl2_engine_idleSafeGetters_returnDefaults)
+    // so we exercise the null-branch of getDecodeModel().
+    Backend *saved = e->_current;
+    e->_current = nullptr;
     EXPECT_FALSE(e->getDecodeModel().isValid());
+    e->_current = saved;
 }
 
 TEST(boost_dm_lib2, bdl2_engine_getMpvProxy_returnsNullWhenIdle)
 {
     PlayerEngine *e = bdl2_engine();
     ASSERT_NE(e, nullptr);
+    // Detach the live backend (see bdl2_engine_idleSafeGetters_returnDefaults)
+    // so we exercise the null-branch of getMpvProxy().
+    Backend *saved = e->_current;
+    e->_current = nullptr;
     EXPECT_EQ(e->getMpvProxy(), nullptr);
+    e->_current = saved;
 }
 
 TEST(boost_dm_lib2, bdl2_engine_getBackendProperty_invalidWhenIdle)
 {
     PlayerEngine *e = bdl2_engine();
     ASSERT_NE(e, nullptr);
+    // Detach the live backend (see bdl2_engine_idleSafeGetters_returnDefaults)
+    // so we exercise the null-branch of getBackendProperty().
+    Backend *saved = e->_current;
+    e->_current = nullptr;
     EXPECT_FALSE(e->getBackendProperty("keep-open").isValid());
+    e->_current = saved;
 }
 
 TEST(boost_dm_lib2, bdl2_engine_safeMutators_noopWhenIdle)
@@ -884,13 +907,17 @@ TEST(boost_dm_lib2, bdl2_movieInfo_sizeStr_branches)
 TEST(boost_dm_lib2, bdl2_movieInfo_durationStr_zeroDuration)
 {
     MovieInfo mi;
+    // The default ctor sets duration = -1 ("unknown"), which Time2str
+    // formats as 23:59:59 (QTime(0,0,0).addSecs(-1)). Pin the zero case
+    // this test name promises before asserting the formatting.
+    mi.duration = 0;
     EXPECT_EQ(mi.durationStr().toStdString(), "00:00:00");
 }
 
 TEST(boost_dm_lib2, bdl2_movieInfo_videoAudioCodec_known)
 {
     MovieInfo mi;
-    mi.vCodecID = 28;        // h264
+    mi.vCodecID = 27;        // h264 (utils::videoIndex2str table, 0-based; ffmpeg AV_CODEC_ID_H264)
     mi.aCodeID = 86017;      // mp3
     EXPECT_EQ(mi.videoCodec().toStdString(), "h264");
     EXPECT_EQ(mi.audioCodec().toStdString(), "mp3");
@@ -987,14 +1014,19 @@ TEST(boost_dm_lib2, bdl2_my_node_autofree_int64_format_negative)
 
 TEST(boost_dm_lib2, bdl2_my_node_autofree_string_format_static_literal)
 {
-    // mpv_free_node_contents does NOT free string buffers (caller-owned), so a
-    // string literal is safe and exercises the STRING branch of the dtor.
+    // mpv_free_node_contents() hands node contents to mpv's ta allocator on
+    // teardown; a string that was NOT ta-allocated (e.g. a static literal)
+    // trips ta_dbg_check_header and aborts the whole binary. Verify the
+    // STRING branch of the autofree wrapper, then detach the node (format
+    // NONE is a no-op for the free path) so the caller-owned literal never
+    // reaches ta_free.
     mpv_node node;
     node.format = MPV_FORMAT_STRING;
     node.u.string = const_cast<char *>("bdl2_static");
     {
         MpvProxy::my_node_autofree af(&node);
         ASSERT_STREQ(af.pNode->u.string, "bdl2_static");
+        node.format = MPV_FORMAT_NONE;
     }
     SUCCEED();
 }

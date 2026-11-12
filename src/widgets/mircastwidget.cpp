@@ -944,6 +944,7 @@ ItemWidget::ItemWidget(MiracastDevice device, const QByteArray &data, const QNet
     m_selected = false;
     m_hover = false;
     m_rotate = 0.0;
+    m_state = Normal; // must not stay uninitialized: state() is read before any setState() call on the createListeItem path
     m_normalLoadIcon = QIcon(":/resources/icons/mircast/spinner.svg");
     m_selectLoadIcon = QIcon(":/resources/icons/mircast/spinner_White.svg");
     connect(&m_rotateTime, &QTimer::timeout, [=](){

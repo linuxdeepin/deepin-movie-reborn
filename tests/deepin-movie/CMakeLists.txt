@@ -18,6 +18,9 @@ execute_process(COMMAND uname -m OUTPUT_VARIABLE MACH
 
 option (USE_TEST "Use TESTS" ON)
 add_definitions( -DUSE_TEST )
+# 与 tests/deepin-movie-platform/CMakeLists.txt 保持一致：测试媒体资产由
+# gen_assets.sh 现场合成（不入库），用例通过 DMR_TEST_ASSETS_DIR 引用
+add_definitions( -DDMR_TEST_ASSETS_DIR="${CMAKE_SOURCE_DIR}/tests/assets" )
 
 # 设置Qt模块
 # TODO:X11Extras 没适配

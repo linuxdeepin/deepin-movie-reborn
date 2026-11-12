@@ -157,14 +157,19 @@ TEST(boost_dm_be, bdb_my_node_autofree_int64_format_negative)
 
 TEST(boost_dm_be, bdb_my_node_autofree_string_format_static_literal)
 {
-    // mpv_free_node_contents does NOT free string buffers (caller-owned), so a
-    // string literal is safe and exercises the STRING branch of the dtor.
+    // mpv_free_node_contents() hands node contents to mpv's ta allocator on
+    // teardown; a string that was NOT ta-allocated (e.g. a static literal)
+    // trips ta_dbg_check_header and aborts the whole binary. Verify the
+    // STRING branch of the autofree wrapper, then detach the node (format
+    // NONE is a no-op for the free path) so the caller-owned literal never
+    // reaches ta_free.
     mpv_node node;
     node.format = MPV_FORMAT_STRING;
     node.u.string = const_cast<char *>("bdb_static");
     {
         MpvProxy::my_node_autofree af(&node);
         ASSERT_STREQ(af.pNode->u.string, "bdb_static");
+        node.format = MPV_FORMAT_NONE;
     }
     SUCCEED();
 }
@@ -367,11 +372,16 @@ TEST(boost_dm_be, bdb_Range_fromRange_full_fromZero)
 
 TEST(boost_dm_be, bdb_Range_fromRange_singleByte)
 {
-    auto r = DlnaContentServer::Range::fromRange("bytes=5-5", 10);
+    // fromRange() requires end > start strictly (dlnacontentserver.cpp), so a
+    // degenerate single-byte range like "bytes=5-5" is rejected outright even
+    // though RFC 7233 would accept it — pin the actual product behavior.
+    EXPECT_FALSE(DlnaContentServer::Range::fromRange("bytes=5-5", 10).has_value());
+    // The smallest range the product accepts spans two bytes.
+    auto r = DlnaContentServer::Range::fromRange("bytes=5-6", 10);
     ASSERT_TRUE(r.has_value());
     EXPECT_EQ(r->start, 5);
-    EXPECT_EQ(r->end, 5);
-    EXPECT_EQ(r->rangeLength(), 1);
+    EXPECT_EQ(r->end, 6);
+    EXPECT_EQ(r->rangeLength(), 2);
 }
 
 TEST(boost_dm_be, bdb_Range_fromRange_unknownLength_openEnded)
