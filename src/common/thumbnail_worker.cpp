@@ -78,14 +78,10 @@ void ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 {
     qCDebug(appMovie) << "Requesting thumbnail for:" << url.toString() << "at" << secs << "seconds";
     if(CompositingManager::get().platform() != Platform::Mips) {
-        if (m_thumbLock.tryLock()) {
-            _wq.push_front(qMakePair(url, secs));
-            m_cond.wakeOne();
-            m_thumbLock.unlock();
-            qCDebug(appMovie) << "Added thumbnail request to queue";
-        } else {
-            qCWarning(appMovie) << "Failed to acquire lock for thumbnail request";
-        }
+        QMutexLocker lock(&m_thumbLock);
+        _wq.push_front(qMakePair(url, secs));
+        m_cond.wakeOne();
+        qCDebug(appMovie) << "Added thumbnail request to queue";
     } else {
         qCDebug(appMovie) << "Running thumbnail generation in single thread mode";
         runSingle(qMakePair(url, secs));
@@ -96,8 +92,12 @@ ThumbnailWorker::ThumbnailWorker()
 {
     qCDebug(appMovie) << "Initializing ThumbnailWorker";
     initThumb();
-    m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
-    qCDebug(appMovie) << "Thumbnail size set based on device pixel ratio:" << m_video_thumbnailer->thumbnail_size;
+    if (m_video_thumbnailer) {
+        m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
+        qCDebug(appMovie) << "Thumbnail size set based on device pixel ratio:" << m_video_thumbnailer->thumbnail_size;
+    } else {
+        qCWarning(appMovie) << "Video thumbnailer is null, skipping thumbnail size initialization";
+    }
 
     m_pCharTime = (char *)malloc(20);
 
@@ -128,6 +128,7 @@ void ThumbnailWorker::initThumb()
     m_video_thumbnailer = m_mvideo_thumbnailer();
     if (!m_video_thumbnailer) {
         qCCritical(appMovie) << "Failed to create video thumbnailer instance";
+        return;
     } else {
         qCInfo(appMovie) << "Successfully initialized thumbnail library";
     }
@@ -136,6 +137,10 @@ void ThumbnailWorker::initThumb()
 
 QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
 {
+    if (!m_video_thumbnailer) {
+        qCWarning(appMovie) << "Video thumbnailer is null, cannot generate thumbnail for:" << url;
+        return QPixmap();
+    }
     qCDebug(appMovie) << "Generating thumbnail for:" << url.toString() << "at" << secs << "seconds";
     auto dpr = qApp->devicePixelRatio();
     QPixmap pm;

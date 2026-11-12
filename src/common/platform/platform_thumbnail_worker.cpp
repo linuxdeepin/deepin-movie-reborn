@@ -94,14 +94,10 @@ void Platform_ThumbnailWorker::requestThumb(const QUrl &url, int secs)
     qCDebug(appMovie) << "Requesting thumbnail for" << url << "at" << secs << "seconds";
     if(CompositingManager::get().platform() != Platform::Mips) {
         qCDebug(appMovie) << "Platform is not MIPS. Attempting to add thumbnail request to queue.";
-        if (m_thumbLock.tryLock()) {
-            _wq.push_front(qMakePair(url, secs));
-            m_cond.wakeOne();
-            m_thumbLock.unlock();
-            qCDebug(appMovie) << "Added thumbnail request to queue";
-        } else {
-            qCWarning(appMovie) << "Failed to acquire lock for thumbnail request";
-        }
+        QMutexLocker lock(&m_thumbLock);
+        _wq.push_front(qMakePair(url, secs));
+        m_cond.wakeOne();
+        qCDebug(appMovie) << "Added thumbnail request to queue";
     } else {
         qCDebug(appMovie) << "Running thumbnail generation synchronously on MIPS platform";
         runSingle(qMakePair(url, secs));
@@ -112,7 +108,11 @@ void Platform_ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 Platform_ThumbnailWorker::Platform_ThumbnailWorker()
 {
     initThumb();
-    m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
+    if (m_video_thumbnailer) {
+        m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
+    } else {
+        qCWarning(appMovie) << "Video thumbnailer is null, skipping thumbnail size initialization";
+    }
 
     m_pCharTime = (char *)malloc(20);
 }
@@ -145,6 +145,10 @@ void Platform_ThumbnailWorker::initThumb()
 
 QPixmap Platform_ThumbnailWorker::genThumb(const QUrl &url, int secs)
 {
+    if (!m_video_thumbnailer) {
+        qCWarning(appMovie) << "Video thumbnailer is null, cannot generate thumbnail for:" << url;
+        return QPixmap();
+    }
     qCInfo(appMovie) << "Generating thumbnail for" << url << "at" << secs << "seconds";
     auto dpr = qApp->devicePixelRatio();
     QPixmap pm;
