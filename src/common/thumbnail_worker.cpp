@@ -138,7 +138,15 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
 {
     qCDebug(appMovie) << "Generating thumbnail for:" << url.toString() << "at" << secs << "seconds";
     auto dpr = qApp->devicePixelRatio();
-    QPixmap pm;
+
+    // Try precise thumbnail first (decode to exact frame), fall back to ffmpegthumbnailer
+    QPixmap pm = PreciseThumbnail::generate(url, secs, thumbSize(), dpr);
+    if (!pm.isNull()) {
+        qDebug() << "Precise thumbnail generated successfully, size:" << pm.size();
+        return pm;
+    }
+
+    qWarning() << "Precise thumbnail failed, falling back to ffmpegthumbnailer";
     pm.setDevicePixelRatio(dpr);
     qCDebug(appMovie) << "Device pixel ratio:" << dpr << ", Pixmap device pixel ratio set.";
 
