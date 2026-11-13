@@ -72,7 +72,8 @@ void Platform_ApplicationAdaptor::funOpenFile(const QString &sFile)
 void Platform_ApplicationAdaptor::Raise()
 {
     qInfo() << "raise window from dbus";
-    m_pMainWindow->showNormal();
+    if (m_pMainWindow->isMinimized())
+        m_pMainWindow->showNormal();
     m_pMainWindow->raise();
     m_pMainWindow->activateWindow();
 }
