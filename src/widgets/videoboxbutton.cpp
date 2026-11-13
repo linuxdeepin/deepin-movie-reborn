@@ -177,9 +177,7 @@ void VideoBoxButton::mousePressEvent(QMouseEvent *event)
         if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
             curPropertyPicPathStr = defaultPicPath.checkedPicPath;
         } else {
-            if (status == 1 && !defaultPicPath.hoverPicPath.isEmpty()) {
-                curPropertyPicPathStr = defaultPicPath.hoverPicPath;
-            } else if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
+            if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
                 curPropertyPicPathStr = defaultPicPath.pressPicPath;
             }
         }
@@ -195,9 +193,7 @@ void VideoBoxButton::mousePressEvent(QMouseEvent *event)
         if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
             curPropertyPicPathStr = curPropertyPicPath.checkedPicPath;
         } else {
-            if (status == 1 && !defaultPicPath.hoverPicPath.isEmpty()) {
-                curPropertyPicPathStr = curPropertyPicPath.hoverPicPath;
-            } else if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
+            if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
                 curPropertyPicPathStr = curPropertyPicPath.pressPicPath;
             } else {
                 curPropertyPicPathStr = curPropertyPicPath.normalPicPath;
@@ -229,9 +225,7 @@ void VideoBoxButton::mouseReleaseEvent(QMouseEvent *event)
         if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
             curPropertyPicPathStr = defaultPicPath.checkedPicPath;
         } else {
-            if (status == 1 && !defaultPicPath.hoverPicPath.isEmpty()) {
-                curPropertyPicPathStr = defaultPicPath.hoverPicPath;
-            } else if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
+            if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
                 curPropertyPicPathStr = defaultPicPath.pressPicPath;
             }
         }
@@ -247,9 +241,7 @@ void VideoBoxButton::mouseReleaseEvent(QMouseEvent *event)
         if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
             curPropertyPicPathStr = curPropertyPicPath.checkedPicPath;
         } else {
-            if (status == 1 && !defaultPicPath.hoverPicPath.isEmpty()) {
-                curPropertyPicPathStr = curPropertyPicPath.hoverPicPath;
-            } else if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
+            if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
                 curPropertyPicPathStr = curPropertyPicPath.pressPicPath;
             } else {
                 curPropertyPicPathStr = curPropertyPicPath.normalPicPath;
