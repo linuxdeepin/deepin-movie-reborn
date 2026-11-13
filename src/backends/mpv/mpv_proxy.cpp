@@ -1753,6 +1753,16 @@ void MpvProxy::refreshDecode()
                 }
             }
 #endif
+#if defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
+            // LoongArch: gpuinfo probe skipped, fallback to software decode
+            if (!isSoftCodec && !CompositingManager::get().isZXIntgraphics()
+                    && !jmflag && !x100flag
+                    && !CompositingManager::get().isOnlySoftDecode()
+                    && !CompositingManager::get().isSpecialControls()) {
+                isSoftCodec = true;
+                qCWarning(dmrMpv) << "Using SoftCodec because LoongArch gpuinfo probe skipped";
+            }
+#endif
             if(utils::check_wayland_env()){
                 auto *pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
                 PlaylistModel *playMode = pEngine ? pEngine->getplaylist() : nullptr;
