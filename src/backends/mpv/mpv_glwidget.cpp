@@ -727,6 +727,7 @@ namespace dmr {
         }
         qInfo() << "GL resize" << nWidth << nHeight;
         QOpenGLWidget::resizeGL(nWidth, nHeight);
+        update();
     }
 
     void MpvGLWidget::toggleRoundedClip(bool bFalse)
