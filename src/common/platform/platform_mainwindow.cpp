@@ -2807,6 +2807,9 @@ void Platform_MainWindow::play(const QList<QString> &listFiles)
             m_pDVDHintWid->updateWithMessage(msg, true);
         }
 
+        if (isFullScreen() || isMaximized()) {
+            m_bMovieSwitchedInFsOrMaxed = true;
+        }
         m_pEngine->playByName(m_dvdUrl);
         return;
     }
@@ -2828,6 +2831,9 @@ void Platform_MainWindow::play(const QList<QString> &listFiles)
     if(lstValid.count() > 0) {
         if (!isHidden()) {
             activateWindow();
+        }
+        if (isFullScreen() || isMaximized()) {
+            m_bMovieSwitchedInFsOrMaxed = true;
         }
         m_pEngine->playByName(lstValid[0]);
     }
@@ -3501,7 +3507,8 @@ void Platform_MainWindow::resizeByConstraints(bool bForceCentered)
     if (bForceCentered) {
         QRect r;
         r.setSize(vidoeSize);
-        r.moveTopLeft({(geom.width() - r.width()) / 2, (geom.height() - r.height()) / 2});
+        r.moveTopLeft({geom.x() + (geom.width() - r.width()) / 2, geom.y() + (geom.height() - r.height()) / 2});
+        setGeometry(r);
     }
 }
 
