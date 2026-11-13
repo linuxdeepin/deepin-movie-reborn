@@ -17,7 +17,7 @@
 #include <QProcess>
 #include <QDebug>
 
-#define TOOLBOX_TOP_EXTENT 12
+#define TOOLBOX_TOP_EXTENT 0
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
@@ -165,6 +165,9 @@ void DMRSlider::leaveEvent(QEvent *pEvent)
     }
 
     m_nLastHoverValue = 0;
+    if (m_bIndicatorEnabled) {
+        setProperty("Hover", "false");
+    }
     if (m_bDown) {
         qCDebug(appMovie) << "Resetting down state on leave";
         m_bDown = false;
