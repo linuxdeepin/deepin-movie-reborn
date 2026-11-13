@@ -190,10 +190,10 @@ void VideoBoxButton::mousePressEvent(QMouseEvent *event)
         QVariant value = property(propertyPicPaths.first.toStdString().data());
         VideoPicPathInfo curPropertyPicPath = propertyPicPaths.second[value];
         QString curPropertyPicPathStr;
-        if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
+        if (isChecked() && !curPropertyPicPath.checkedPicPath.isEmpty()) {
             curPropertyPicPathStr = curPropertyPicPath.checkedPicPath;
         } else {
-            if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
+            if (status == 2 && !curPropertyPicPath.pressPicPath.isEmpty()) {
                 curPropertyPicPathStr = curPropertyPicPath.pressPicPath;
             } else {
                 curPropertyPicPathStr = curPropertyPicPath.normalPicPath;
@@ -238,10 +238,10 @@ void VideoBoxButton::mouseReleaseEvent(QMouseEvent *event)
         QVariant value = property(propertyPicPaths.first.toStdString().data());
         VideoPicPathInfo curPropertyPicPath = propertyPicPaths.second[value];
         QString curPropertyPicPathStr;
-        if (isChecked() && !defaultPicPath.checkedPicPath.isEmpty()) {
+        if (isChecked() && !curPropertyPicPath.checkedPicPath.isEmpty()) {
             curPropertyPicPathStr = curPropertyPicPath.checkedPicPath;
         } else {
-            if (status == 2 && !defaultPicPath.pressPicPath.isEmpty()) {
+            if (status == 2 && !curPropertyPicPath.pressPicPath.isEmpty()) {
                 curPropertyPicPathStr = curPropertyPicPath.pressPicPath;
             } else {
                 curPropertyPicPathStr = curPropertyPicPath.normalPicPath;
