@@ -75,7 +75,6 @@ QHttpConnection::~QHttpConnection()
 void QHttpConnection::socketDisconnected()
 {
     qCDebug(dmrDlna) << "Socket disconnected.";
-    deleteLater();
 
     if (m_request) {
         qCDebug(dmrDlna) << "Request deleted.";
@@ -85,6 +84,8 @@ void QHttpConnection::socketDisconnected()
         m_request->setSuccessful(false);
         Q_EMIT m_request->end();
     }
+
+    deleteLater();
 }
 
 void QHttpConnection::updateWriteCount(qint64 count)
