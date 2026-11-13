@@ -5295,8 +5295,7 @@ void MainWindow::paintEvent(QPaintEvent *pEvent)
     const QPalette pal = QGuiApplication::palette();//this->palette();
     QColor bgColor = pal.color(QPalette::Window);
 
-    if (CompositingManager::get().platform() == Platform::X86) {
-        qCDebug(appMovie) << "CompositingManager::get().platform() == Platform::X86";
+    {
         QPainterPath path;
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             qCDebug(appMovie) << "DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()";
