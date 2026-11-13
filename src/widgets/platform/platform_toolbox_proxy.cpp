@@ -1759,10 +1759,9 @@ void Platform_ToolboxProxy::slotElapsedChanged()
 {
     if(m_mircastWidget->getMircastState() != MircastWidget::Idel)
         return;
-    quint64 url = static_cast<quint64>(-1);
-    if (m_pEngine->playlist().current() != -1) {
-        url = static_cast<quint64>(m_pEngine->duration());
-    }
+    if (m_pEngine->playlist().current() == -1)
+        return;
+    quint64 url = static_cast<quint64>(m_pEngine->duration());
     //TODO(xxxpengfei):此处代码同时更新全屏的时长并未判断全屏状态，请维护同事查看是否存在优化空间
     updateTimeInfo(static_cast<qint64>(url), m_pEngine->elapsed(), m_pTimeLabel, m_pTimeLabelend, true);
     updateTimeInfo(static_cast<qint64>(url), m_pEngine->elapsed(), m_pFullscreentimelable, m_pFullscreentimelableend, false);
