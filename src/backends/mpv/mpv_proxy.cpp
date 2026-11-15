@@ -1719,7 +1719,7 @@ void MpvProxy::refreshDecode()
         auto codec = currentInfo.mi.videoCodec();
         auto name = _file.fileName();
         qCInfo(dmrMpv) << "Codec:" << codec << "Name:" << name;
-            isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv");
+            isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv") || codec.toLower().contains("avs2");
             if (isSoftCodec) {
                 qCWarning(dmrMpv) << "Using SoftCodec because of codec OR name";
             }
