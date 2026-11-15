@@ -12,6 +12,11 @@
 #include <dlfcn.h>
 #include "compositing_manager.h"
 #include "sysutils.h"
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/opt.h>
 
 #define SIZE_THRESHOLD (10 * 1<<20)
 
@@ -150,6 +155,13 @@ QPixmap Platform_ThumbnailWorker::genThumb(const QUrl &url, int secs)
     QPixmap pm;
     pm.setDevicePixelRatio(dpr);
 
+    QPixmap precisePm = genThumbPrecise(url, secs);
+    if (!precisePm.isNull()) {
+        qCInfo(appMovie) << "Using precise seek thumbnail for" << url << "at" << secs << "seconds";
+        return precisePm;
+    }
+    qCWarning(appMovie) << "Precise seek failed, falling back to libffmpegthumbnailer for" << url;
+
     if (m_image_data == nullptr) {
         qCDebug(appMovie) << "Creating new image data buffer";
         m_image_data = m_mvideo_thumbnailer_create_image_data();
@@ -178,6 +190,158 @@ QPixmap Platform_ThumbnailWorker::genThumb(const QUrl &url, int secs)
     m_image_data = nullptr;
 
     return pm;
+}
+
+QPixmap Platform_ThumbnailWorker::genThumbPrecise(const QUrl &url, int secs)
+{
+    qCInfo(appMovie) << "Precise seek thumbnail for" << url << "at" << secs << "seconds";
+    auto dpr = qApp->devicePixelRatio();
+    auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
+
+    AVFormatContext *fmtCtx = nullptr;
+    AVCodecContext *codecCtx = nullptr;
+    AVFrame *frame = nullptr;
+    AVPacket *pkt = nullptr;
+    struct SwsContext *swsCtx = nullptr;
+    QPixmap result;
+
+    if (avformat_open_input(&fmtCtx, file.toUtf8().constData(), nullptr, nullptr) != 0) {
+        qCWarning(appMovie) << "avformat_open_input failed for" << file;
+        return result;
+    }
+
+    if (avformat_find_stream_info(fmtCtx, nullptr) < 0) {
+        qCWarning(appMovie) << "avformat_find_stream_info failed for" << file;
+        avformat_close_input(&fmtCtx);
+        return result;
+    }
+
+    int videoStreamIdx = -1;
+    const AVCodec *codec = nullptr;
+    videoStreamIdx = av_find_best_stream(fmtCtx, AVMEDIA_TYPE_VIDEO, -1, -1, &codec, 0);
+    if (videoStreamIdx < 0 || !codec) {
+        qCWarning(appMovie) << "No video stream found for" << file;
+        avformat_close_input(&fmtCtx);
+        return result;
+    }
+
+    codecCtx = avcodec_alloc_context3(codec);
+    if (!codecCtx) {
+        qCWarning(appMovie) << "avcodec_alloc_context3 failed";
+        avformat_close_input(&fmtCtx);
+        return result;
+    }
+
+    if (avcodec_parameters_to_context(codecCtx, fmtCtx->streams[videoStreamIdx]->codecpar) < 0) {
+        qCWarning(appMovie) << "avcodec_parameters_to_context failed";
+        avcodec_free_context(&codecCtx);
+        avformat_close_input(&fmtCtx);
+        return result;
+    }
+
+    if (avcodec_open2(codecCtx, codec, nullptr) < 0) {
+        qCWarning(appMovie) << "avcodec_open2 failed";
+        avcodec_free_context(&codecCtx);
+        avformat_close_input(&fmtCtx);
+        return result;
+    }
+
+    int64_t seekTarget = static_cast<int64_t>(secs) * AV_TIME_BASE;
+    if (avformat_seek_file(fmtCtx, -1, INT64_MIN, seekTarget, INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
+        qCWarning(appMovie) << "avformat_seek_file failed at" << secs << "seconds";
+        avcodec_free_context(&codecCtx);
+        avformat_close_input(&fmtCtx);
+        return result;
+    }
+    avcodec_flush_buffers(codecCtx);
+
+    frame = av_frame_alloc();
+    pkt = av_packet_alloc();
+    bool gotFrame = false;
+
+    while (av_read_frame(fmtCtx, pkt) >= 0) {
+        if (pkt->stream_index != videoStreamIdx) {
+            av_packet_unref(pkt);
+            continue;
+        }
+
+        int ret = avcodec_send_packet(codecCtx, pkt);
+        av_packet_unref(pkt);
+        if (ret < 0) {
+            continue;
+        }
+
+        while (ret >= 0) {
+            ret = avcodec_receive_frame(codecCtx, frame);
+            if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
+                break;
+            }
+            if (ret < 0) {
+                break;
+            }
+            gotFrame = true;
+            break;
+        }
+        if (gotFrame) {
+            break;
+        }
+    }
+
+    if (!gotFrame) {
+        qCWarning(appMovie) << "Failed to decode target frame for" << file;
+        av_frame_free(&frame);
+        av_packet_free(&pkt);
+        avcodec_free_context(&codecCtx);
+        avformat_close_input(&fmtCtx);
+        return result;
+    }
+
+    int srcW = frame->width;
+    int srcH = frame->height;
+    QSize target = thumbSize() * dpr;
+    int dstW = target.width();
+    int dstH = target.height();
+
+    swsCtx = sws_getContext(srcW, srcH, static_cast<AVPixelFormat>(frame->format),
+                            dstW, dstH, AV_PIX_FMT_RGB24,
+                            SWS_BILINEAR, nullptr, nullptr, nullptr);
+    if (!swsCtx) {
+        qCWarning(appMovie) << "sws_getContext failed";
+        av_frame_free(&frame);
+        av_packet_free(&pkt);
+        avcodec_free_context(&codecCtx);
+        avformat_close_input(&fmtCtx);
+        return result;
+    }
+
+    uint8_t *dstData[4] = {nullptr};
+    int dstLinesize[4] = {0};
+    if (av_image_alloc(dstData, dstLinesize, dstW, dstH, AV_PIX_FMT_RGB24, 1) < 0) {
+        qCWarning(appMovie) << "av_image_alloc failed";
+        sws_freeContext(swsCtx);
+        av_frame_free(&frame);
+        av_packet_free(&pkt);
+        avcodec_free_context(&codecCtx);
+        avformat_close_input(&fmtCtx);
+        return result;
+    }
+
+    sws_scale(swsCtx, frame->data, frame->linesize, 0, srcH, dstData, dstLinesize);
+
+    QImage img(dstData[0], dstW, dstH, dstLinesize[0], QImage::Format_RGB888);
+    result = QPixmap::fromImage(img.copy());
+    result.setDevicePixelRatio(dpr);
+
+    qCInfo(appMovie) << "Precise seek thumbnail generated" << result.size();
+
+    av_freep(&dstData[0]);
+    sws_freeContext(swsCtx);
+    av_frame_free(&frame);
+    av_packet_free(&pkt);
+    avcodec_free_context(&codecCtx);
+    avformat_close_input(&fmtCtx);
+
+    return result;
 }
 
 void Platform_ThumbnailWorker::run()
@@ -275,4 +439,3 @@ void Platform_ThumbnailWorker::runSingle(QPair<QUrl, int> w)
     emit thumbGenerated(w.first, w.second);
 }
 }
-

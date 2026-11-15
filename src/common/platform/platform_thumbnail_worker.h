@@ -73,6 +73,7 @@ private:
     void run() override;
     void runSingle(QPair<QUrl, int> w);
     QPixmap genThumb(const QUrl &url, int secs);
+    QPixmap genThumbPrecise(const QUrl &url, int secs);
 
 private:
     static std::atomic<Platform_ThumbnailWorker *> m_instance;
