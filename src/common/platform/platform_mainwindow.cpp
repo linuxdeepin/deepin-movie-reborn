@@ -3734,6 +3734,11 @@ void Platform_MainWindow::updateProxyGeometry()
 #endif
             m_pPlaylist->setGeometry(fixed);
         }
+    } else {
+        m_pMiniPlayBtn->move(view_rect.width() - 12 - m_pMiniPlayBtn->width(),
+                             view_rect.height() - 10 - m_pMiniPlayBtn->height());
+        m_pMiniCloseBtn->move(view_rect.width() - 15 - m_pMiniCloseBtn->width(), 10);
+        m_pMiniQuitMiniBtn->move(14, view_rect.height() - 10 - m_pMiniQuitMiniBtn->height());
     }
     qCDebug(appMovie) << "Exit updateProxyGeometry function";
 }
