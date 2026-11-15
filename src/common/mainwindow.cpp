@@ -3835,6 +3835,7 @@ void MainWindow::suspendToolsWindow()
         m_pMiniPlayBtn->hide();
         m_pMiniCloseBtn->hide();
         m_pMiniQuitMiniBtn->hide();
+        m_pToolbox->hide();
     }
 }
 
@@ -3890,6 +3891,7 @@ void MainWindow::resumeToolsWindow()
             m_pMiniPlayBtn->setVisible(m_bMiniMode);
             m_pMiniCloseBtn->setVisible(m_bMiniMode);
             m_pMiniQuitMiniBtn->setVisible(m_bMiniMode);
+            m_pToolbox->setVisible(false);
         }
     }
 
