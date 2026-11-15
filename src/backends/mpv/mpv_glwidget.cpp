@@ -629,7 +629,7 @@ namespace dmr {
         qCDebug(dmrMpv) << "DEBUG: Dark splash image prepared.";
  
         QPixmap pixmap3;
-        QImage image(pixmap.size(),QImage::Format_Alpha8);
+        QImage image(pixmap.size(),QImage::Format_ARGB32_Premultiplied);
         image.fill(QColor(0, 0, 0, 0));
         image.setDevicePixelRatio(qApp->devicePixelRatio());
         pixmap3=pixmap3.fromImage(image);
