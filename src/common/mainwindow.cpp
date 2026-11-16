@@ -5419,14 +5419,14 @@ void MainWindow::toggleUIMode()
             setGeometry(m_waylandRectInNormalMode);
             show();
 
-           if (m_preMiniWindowState == Qt::WindowMaximized) {
-               qCDebug(appMovie) << "m_preMiniWindowState == Qt::WindowMaximized";
+           if (m_nStateBeforeMiniMode & SBEM_Maximized) {
+               qCDebug(appMovie) << "m_nStateBeforeMiniMode & SBEM_Maximized";
                // 使用迷你模式前记录的坐标，在多屏中显示正确位置
                move(m_lastRectInNormalMode.topLeft());
                showMaximized();
                setGeometry(m_lastRectInNormalMode);
-           } else if (m_preMiniWindowState & Qt::WindowFullScreen) {
-               qCDebug(appMovie) << "m_preMiniWindowState & Qt::WindowFullScreen";
+           } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
+               qCDebug(appMovie) << "m_nStateBeforeMiniMode & SBEM_Fullscreen";
                move(m_lastRectInNormalMode.topLeft());
                showFullScreen();
            } else {
