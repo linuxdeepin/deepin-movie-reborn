@@ -3568,6 +3568,10 @@ void MainWindow::play(const QList<QString> &listFiles)
         return;
     }
 
+    if (isFullScreen() || isMaximized()) {
+        m_bMovieSwitchedInFsOrMaxed = true;
+    }
+
 #ifdef DTKCORE_CLASS_DConfigFile
     DConfig *dconfig = DConfig::create("org.deepin.movie","org.deepin.movie.restart");
     if(dconfig && dconfig->isValid() && dconfig->keyList().contains("RestartAfterWakeUp")) {

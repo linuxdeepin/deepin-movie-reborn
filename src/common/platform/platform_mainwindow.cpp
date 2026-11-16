@@ -3609,6 +3609,10 @@ void Platform_MainWindow::play(const QList<QString> &listFiles)
         return;
     }
 
+    if (isFullScreen() || isMaximized()) {
+        m_bMovieSwitchedInFsOrMaxed = true;
+    }
+
     QList<QUrl> lstValid;
     QList<QString> lstDir;
     QList<QString> lstFile;
