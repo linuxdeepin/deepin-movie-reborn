@@ -4389,7 +4389,7 @@ void MainWindow::paintEvent(QPaintEvent *pEvent)
 //            QPointF pos = bgRect.center() - QPoint(img.width() / 2, img.height() / 2) / devicePixelRatioF();
 //            painter.drawImage(pos, img);
 //        }
-        QPointF pos = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
+        QPointF pos = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / bg.devicePixelRatio();
         painter.drawImage(pos, bg);
     }
 
