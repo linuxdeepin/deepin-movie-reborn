@@ -664,13 +664,13 @@ bool ValidateScreenshotPath(const QString &path)
     return true;
 }
 
-QImage LoadHiDPIImage(const QString &filename)
+QImage LoadHiDPIImage(const QString &filename, qreal dpr)
 {
     qCDebug(dmrLib) << "Entering LoadHiDPIImage() with filename:" << filename;
     QImageReader reader(filename);
-    reader.setScaledSize(reader.size() * qApp->devicePixelRatio());
+    reader.setScaledSize(reader.size() * dpr);
     auto img =  reader.read();
-    img.setDevicePixelRatio(qApp->devicePixelRatio());
+    img.setDevicePixelRatio(dpr);
     qCDebug(dmrLib) << "Exiting LoadHiDPIImage(). Image size:" << img.size() << ", device pixel ratio:" << img.devicePixelRatio();
     return img;
 }

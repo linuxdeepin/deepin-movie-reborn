@@ -5172,8 +5172,8 @@ void Platform_MainWindow::delayedMouseReleaseHandler()
 void Platform_MainWindow::prepareSplashImages()
 {
     qCDebug(appMovie) << "Enter prepareSplashImages function";
-    m_imgBgDark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
-    m_imgBgLight = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+    m_imgBgDark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg", devicePixelRatioF());
+    m_imgBgLight = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg", devicePixelRatioF());
     qCDebug(appMovie) << "Exiting prepareSplashImages function";
 }
 
