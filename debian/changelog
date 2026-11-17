@@ -1,3 +1,62 @@
+deepin-movie-reborn (6.5.61) unstable; urgency=medium
+
+  * chore: Update version to 6.5.61
+  * test: skip mwDeconstruction window teardown case in headless runs
+  * fix: stabilize UT suites and repair shortcut action lifecycle
+  * test: regenerate gitignored media assets before running UT suites
+  * test: migrate ut_dmr suite to pure gtest
+  * test: migrate deepin-movie-platform suites to pure gtest
+  * test: migrate deepin-movie suites to pure gtest and harden the runner
+  * fix: do not show the miracast exit button as a window
+  * feat(movie): support stay-on-top on treeland via dde-shell role
+  * test(mpv): add GTest suites for MpvGLWidget and extend MpvProxy coverage
+  * fix: guard malformed mpv response in takeOneScreenshot
+  * fix: return early on mpv render context init fail
+  * fix: resolve memory leak in my_node_autofree destructor
+  * fix: remove self-delete to prevent double free
+  * fix: resolve use-after-free in QHttpResponse::connectionClosed
+  * fix(movie): guard Wayland always-on-top in Platform_MainWindow
+  * fix(movie): guard unavailable Wayland always-on-top hook
+  * test: add Google Test suites for common ThumbnailWorker/ShortcutManager/EventMonitor
+  * fix: construct HwdecProbe lazily on first get() call
+  * fix: restore ffmpeg init and add null pointer guards in hwdec probe
+  * fix: remove NVIDIA driver version check for hardware decode
+  * fix: guard Stopped state in pause handler to prevent race
+  * fix: fix null deref and memory leak in presenter/movieapp
+  * test: 新增 main.cpp 可测函数单元测试 12 例
+  * test: 重写 MovieApp 单元测试覆盖构造/初始化/退出路径
+  * test: 重写 Presenter 单元测试覆盖 Mpris 槽与平台窗口转发
+  * fix: add null guard in setPresenter to prevent crash
+  * fix: 修复投屏退出时播放列表为空导致的崩溃
+  * fix: add null checks for m_pPlaylist dereferences
+  * fix: null-guard m_pPlaylist in early DBus race
+  * fix: fix null deref and dead branch in playlist widgets
+  * fix: restore real DBus reply in readDBusMethod
+  * fix: handle empty-value HTTP headers in DLNA parser
+  * fix: fix null pointer crash and single-dash option parsing
+  * fix: guard empty url-list in dropEvent
+  * test(widgets): raise notification/tip/titlebar coverage to 100% function
+  * test(widgets): add unit tests for notification/tip/titlebar widgets
+  * test(platform-mainwindow): add ext7 unit tests for Platform_MainWindow drag/drop and toggleUIMode branches
+  * test: 新增 MircastWidget/MircastShowWidget/MovieWidget 值级单元测试
+  * test(ut): add GTest coverage for 10 common modules
+  * test: add unit tests for widgets and platform widgets
+  * test(dlna): rewrite and add Google Test suites for dlna sources
+  * test: add tests/deepin-movie for deepin-movie-reborn batch 1 (4/4 classes)
+  * test(ut): make judgeMouseInWindow test independent of window placement
+  * test(ut): add MainWindow gap tests and ut runner scripts
+  * test: 补充 widgets 滑条与音量按钮等 4 个类的 GTest 用例
+  * test: add GenerateSettingTranslate smoke cases for settings_translation
+  * test: add CommandLineManager parsing cases for options.cpp
+  * test: add ActionFactory menu structure cases for actions.cpp
+  * test: extend dmr_settings suite with ctor-contract and valueChanged cases
+  * test(ut): deliver close-timer timeout synchronously in playlist tests
+  * test(ut): pin isMinimized and probe close-timer fire in playlist suites
+  * test(ut): add populated-state coverage for Platform_PlaylistWidget
+  * test(ut): add populated-state coverage for PlaylistWidget
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Tue, 17 Nov 2026 20:23:42 +0800
+
 deepin-movie-reborn (6.5.60) unstable; urgency=medium
 
   * chore: Update version to 6.5.60
