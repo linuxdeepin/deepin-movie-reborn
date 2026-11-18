@@ -7,6 +7,7 @@
 #include "ddlog.h"
 #include "player_engine.h"
 #include "utils.h"
+#include "filefilter.h"
 #ifndef _LIBDMR_
 #include "dmr_settings.h"
 #endif
@@ -1284,7 +1285,8 @@ void PlaylistModel::appendSingle(const QUrl &url)
             qCInfo(dmrLib) << "Found" << fil.size() << "similar files";
             std::for_each(fil.begin(), fil.end(), [ = ](const QFileInfo & fi) {
                 auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
-                if (indexOf(url) < 0 && _engine->isPlayableFile(fi.absoluteFilePath())) {
+                if (indexOf(url) < 0 && FileFilter::isMediaSuffix(fi.suffix()) &&
+                        _engine->isPlayableFile(fi.absoluteFilePath())) {
                     auto playitem_info = calculatePlayInfo(url, fi);
                     if (playitem_info.valid) {
                         _infos.append(playitem_info);
@@ -1317,6 +1319,13 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
         if(url.isLocalFile()) {
             QFileInfo fi(url.toLocalFile());
             if (!_firstLoad && (!fi.exists() || !fi.isFile())) continue;
+            // 批量添加（播放列表恢复、多选拖拽等）时按后缀预过滤非媒体文件，
+            // 避免启动恢复时对失效的垃圾条目逐个做 FFmpeg 探测；
+            // 单个文件仍走完整探测，生僻可播格式不受影响
+            if (urls.size() > 1 && !FileFilter::isMediaSuffix(fi.suffix())) {
+                qCInfo(dmrLib) << "skip non-media file in batch append:" << url;
+                continue;
+            }
             _pendingJob.append(qMakePair(url, fi));
             _urlsInJob.insert(url.toLocalFile());
             inputUrls.append(url);
@@ -1342,6 +1351,7 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
                         auto file_url = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
 
                         if (!_urlsInJob.contains(file_url.toLocalFile()) && indexOf(file_url) < 0 &&
+                                FileFilter::isMediaSuffix(fileinfo.suffix()) &&
                                 _engine->isPlayableFile(fileinfo.absoluteFilePath())) {
                             _pendingJob.append(qMakePair(file_url, fileinfo));
                             _urlsInJob.insert(file_url.toLocalFile());

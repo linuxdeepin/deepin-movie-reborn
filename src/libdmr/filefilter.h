@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -64,6 +64,13 @@ public:
 
     static FileFilter* instance();
     /**
+     * @brief 判断后缀是否属于已知媒体类型（视频/音频/播放列表），
+     * 不含点、大小写不敏感，用于扫描/批量添加时预过滤，
+     * 避免对海量无关文件逐个做 FFmpeg 探测
+     * @param 文件后缀，如 "wmv"
+     */
+    static bool isMediaSuffix(const QString &suffix);
+    /**
      * @brief 判断是否是多媒体文件
      * @param 文件路径
      */
@@ -122,6 +129,10 @@ public:
 private:
     FileFilter();
 
+
+    // 带递归深度的目录过滤：防止病态目录树（符号链接环/超深测试数据）
+    // 在 UI 线程上无限递归
+    QList<QUrl> filterDir(QDir dir, int depth);
 
 private:
     static FileFilter* m_pFileFilter;

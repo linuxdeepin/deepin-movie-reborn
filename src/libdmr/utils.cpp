@@ -959,6 +959,13 @@ QString ConvertLinglongPathForPlayback(const QString &path)
         return path;
     }
 
+    // 空路径直接返回：否则会拼出 "/run/host/rootfs"（宿主机根目录），
+    // 后续 play() 会在 UI 线程递归扫描整个宿主机文件系统，导致窗口卡死
+    if (path.isEmpty()) {
+        qCWarning(dmrLib) << "[Linglong] Convert for playback: empty path, skip";
+        return path;
+    }
+
     // 检测原始路径是否存在
     if (QFile::exists(path)) {
         return path;
