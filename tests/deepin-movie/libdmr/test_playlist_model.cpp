@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QTemporaryDir>
 #include <QDataStream>
 #include <QUrl>
 #include <QStandardPaths>
@@ -532,4 +533,60 @@ TEST(PlaylistModel, playPrev_SinglePlayNotFromUserNoop)
     EXPECT_EQ(0, model->_last);
     EXPECT_EQ(0, g_ut_b5TryPlayCount);
     delete engine;
+}
+
+// ============================ collectionJob 批量后缀预过滤 ============================
+// BUG-383579 回归防护：批量添加（播放列表恢复/多选拖拽）时非媒体后缀
+// 直接跳过，不进入探测管道，避免启动时对失效垃圾条目逐个 FFmpeg 探测
+TEST(PlaylistModel, collectionJob_BatchSkipsNonMediaSuffix)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    PlayerEngine *engine = w->engine();
+    ASSERT_NE(nullptr, engine);
+    PlaylistModel *model = engine->getplaylist();
+    ASSERT_NE(nullptr, model);
+
+    QTemporaryDir td;
+    ASSERT_TRUE(td.isValid());
+    QFile mp4(td.path() + "/a.mp4");
+    ASSERT_TRUE(mp4.open(QIODevice::WriteOnly));
+    QFile zip(td.path() + "/b.zip");
+    ASSERT_TRUE(zip.open(QIODevice::WriteOnly));
+    QFile htm(td.path() + "/c.htm");
+    ASSERT_TRUE(htm.open(QIODevice::WriteOnly));
+
+    QList<QUrl> input{QUrl::fromLocalFile(mp4.fileName()),
+                      QUrl::fromLocalFile(zip.fileName()),
+                      QUrl::fromLocalFile(htm.fileName())};
+    QList<QUrl> out;
+    model->collectionJob(input, out);
+
+    // 只有媒体后缀进入后续探测管道
+    ASSERT_EQ(out.size(), 1);
+    EXPECT_EQ(out.first(), QUrl::fromLocalFile(mp4.fileName()));
+}
+
+// 单文件添加不受批量预过滤影响：仍进入管道由完整探测决定去留，
+// 生僻可播格式（后缀不在白名单）不受影响
+TEST(PlaylistModel, collectionJob_SingleFileKeepsFullProbe)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ASSERT_NE(nullptr, w);
+    PlayerEngine *engine = w->engine();
+    ASSERT_NE(nullptr, engine);
+    PlaylistModel *model = engine->getplaylist();
+    ASSERT_NE(nullptr, model);
+
+    QTemporaryDir td;
+    ASSERT_TRUE(td.isValid());
+    QFile raw(td.path() + "/stream.h264");
+    ASSERT_TRUE(raw.open(QIODevice::WriteOnly));
+
+    QList<QUrl> input{QUrl::fromLocalFile(raw.fileName())};
+    QList<QUrl> out;
+    model->collectionJob(input, out);
+
+    EXPECT_EQ(out.size(), 1);
+    EXPECT_EQ(out.first(), QUrl::fromLocalFile(raw.fileName()));
 }

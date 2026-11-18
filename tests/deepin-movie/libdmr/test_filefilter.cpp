@@ -10,7 +10,11 @@
 #include <thread>
 #include <gtest/gtest.h>
 #include "application.h"
+// 访问单例的 m_stopRunningThread：前面的用例（stopThread 系列）会把标志置 true
+// 且无公开重置接口，本文件内 filterDir 递归用例需要先复位才能正常跑
+#define private public
 #include "filefilter.h"
+#undef private
 #include "stub/stub.h"
 #include "ut_sample_media.h"
 using namespace dmr;
@@ -191,6 +195,85 @@ TEST(filefilter_ext, filterDir_stopThreadReturnsEmptyOnSubdir)
     ff->stopThread();
     QList<QUrl> urls = ff->filterDir(base);
     EXPECT_TRUE(urls.isEmpty());
+
+    base.removeRecursively();
+}
+
+// ===========================================================================
+// isMediaSuffix: 后缀预过滤白名单（与文件对话框同一张媒体类型表）
+// ===========================================================================
+TEST(filefilter_ext, isMediaSuffix_mediaSuffixesPass)
+{
+    // 视频、音频、播放列表后缀均应放行；大小写不敏感
+    EXPECT_TRUE(FileFilter::isMediaSuffix("wmv"));
+    EXPECT_TRUE(FileFilter::isMediaSuffix("WMV"));
+    EXPECT_TRUE(FileFilter::isMediaSuffix("mp4"));
+    EXPECT_TRUE(FileFilter::isMediaSuffix("mkv"));
+    EXPECT_TRUE(FileFilter::isMediaSuffix("mp3"));
+    EXPECT_TRUE(FileFilter::isMediaSuffix("flac"));
+    EXPECT_TRUE(FileFilter::isMediaSuffix("m3u"));
+    // 带连字符的后缀（来自 video_filetypes 的 "*.dvr-ms"）
+    EXPECT_TRUE(FileFilter::isMediaSuffix("dvr-ms"));
+}
+
+TEST(filefilter_ext, isMediaSuffix_nonMediaSuffixesRejected)
+{
+    // 非媒体后缀与空后缀一律拒绝；不能误伤未知但形似的后缀
+    EXPECT_FALSE(FileFilter::isMediaSuffix("htm"));
+    EXPECT_FALSE(FileFilter::isMediaSuffix("zip"));
+    EXPECT_FALSE(FileFilter::isMediaSuffix("txt"));
+    EXPECT_FALSE(FileFilter::isMediaSuffix("mpeg7"));
+    EXPECT_FALSE(FileFilter::isMediaSuffix(""));
+}
+
+// ===========================================================================
+// filterDir: 后缀预过滤 + 递归深度上限（BUG-383579 回归防护）
+// ===========================================================================
+TEST(filefilter_ext, filterDir_skipsNonMediaFiles)
+{
+    FileFilter *ff = FileFilter::instance();
+
+    QDir base = filefilter_ext_makeTempTree();
+    QFile(base.absoluteFilePath("video.wmv")).open(QIODevice::WriteOnly);
+    QFile(base.absoluteFilePath("movie.MP4")).open(QIODevice::WriteOnly);
+    QFile(base.absoluteFilePath("audio.mp3")).open(QIODevice::WriteOnly);
+    QFile(base.absoluteFilePath("page.htm")).open(QIODevice::WriteOnly);
+    QFile(base.absoluteFilePath("archive.zip")).open(QIODevice::WriteOnly);
+    QFile(base.absoluteFilePath("notes.txt")).open(QIODevice::WriteOnly);
+
+    QList<QUrl> urls = ff->filterDir(base);
+    EXPECT_EQ(urls.size(), 3);
+    for (const auto &u : urls) {
+        const QString s = u.toLocalFile().toLower();
+        EXPECT_TRUE(s.endsWith(".wmv") || s.endsWith(".mp4") || s.endsWith(".mp3"))
+                << "unexpected url kept: " << u.toString().toStdString();
+    }
+
+    base.removeRecursively();
+}
+
+TEST(filefilter_ext, filterDir_depthCapSkipsVeryDeepDirs)
+{
+    FileFilter *ff = FileFilter::instance();
+
+    // 前面套件的 stopThread 用例会把单例标志置 true 且不重置，先复位，
+    // 否则本用例递归在第一个子目录就被终止（ BUG-383579 深度上限回归防护）
+    ff->m_stopRunningThread = false;
+
+    QDir base = filefilter_ext_makeTempTree();
+    // 浅层媒体文件仍应被收集
+    QFile(base.absoluteFilePath("shallow.wmv")).open(QIODevice::WriteOnly);
+    // 构造超过 kMaxFilterDirDepth(10) 的目录链，深处文件应被放弃而不挂死
+    QString deep = base.absolutePath();
+    for (int i = 0; i < 12; ++i)
+        deep += QString("/level%1").arg(i);
+    QDir().mkpath(deep);
+    QFile(deep + "/toodeep.wmv").open(QIODevice::WriteOnly);
+
+    QList<QUrl> urls = ff->filterDir(base);
+    EXPECT_EQ(urls.size(), 1);
+    if (urls.size() == 1)
+        EXPECT_TRUE(urls.first().toLocalFile().endsWith("shallow.wmv"));
 
     base.removeRecursively();
 }
