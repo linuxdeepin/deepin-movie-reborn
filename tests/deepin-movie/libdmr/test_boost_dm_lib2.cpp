@@ -1296,8 +1296,9 @@ TEST(boost_dm_lib2, bdl2_filterDir_collectsFilesRecursively)
     QFile(base.absoluteFilePath("sub/b.mp3")).open(QIODevice::WriteOnly);
     QFile(base.absoluteFilePath("sub/deep/c.ass")).open(QIODevice::WriteOnly);
 
+    // c.ass 是字幕后缀，不在媒体白名单内，目录扫描按设计跳过（BUG-383579）
     QList<QUrl> urls = ff->filterDir(base);
-    EXPECT_EQ(urls.size(), 3);
+    EXPECT_EQ(urls.size(), 2);
     for (const QUrl &u : urls) {
         EXPECT_TRUE(u.isLocalFile());
     }

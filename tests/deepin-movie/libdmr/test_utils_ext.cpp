@@ -249,6 +249,16 @@ TEST(utils_ext, ConvertLinglongPathForPlayback_linglong_neither_exists)
     EXPECT_EQ(utils::ConvertLinglongPathForPlayback(p), p);
 }
 
+TEST(utils_ext, ConvertLinglongPathForPlayback_linglong_empty_path)
+{
+    Stub stub;
+    typedef bool (*fptr)();
+    stub.set((fptr)&utils::IsLinglongEnvironment, utils_ext_isLinglong_true);
+    // 空路径必须原样返回：否则拼出 /run/host/rootfs（宿主机根目录），
+    // 后续 play() 会在 UI 线程递归扫描全盘卡死窗口（BUG-383579）
+    EXPECT_EQ(utils::ConvertLinglongPathForPlayback(QString()), QString());
+}
+
 TEST(utils_ext, ConvertLinglongPathForFM_not_linglong)
 {
     EXPECT_EQ(utils::ConvertLinglongPathForFM("/run/host/rootfs/foo"),

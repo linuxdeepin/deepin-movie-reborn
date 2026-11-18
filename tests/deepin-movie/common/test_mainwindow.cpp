@@ -1016,7 +1016,10 @@ TEST(ToolBox, playListWidget)
         listPlayFiles << QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/demo.mp4")
                       << QUrl::fromLocalFile(DMR_TEST_ASSETS_DIR "/bensound-sunny.mp3");
         w->engine()->addPlayFiles(listPlayFiles);
-        QTest::qWait(200);   // let the playlist rows get created
+        // 追加走异步管线（GetThumbnail 线程算完元数据后才建行），固定 200ms
+        // 在负载高的机器上不够用，改为轮询等待（异步追加时序抖动，BUG-383579）
+        for (int i = 0; i < 20 && playlist->count() < 2; ++i)
+            QTest::qWait(100);
     }
     ASSERT_GE(playlist->count(), 2);
     DFloatingButton *playItemCloseBtn;
