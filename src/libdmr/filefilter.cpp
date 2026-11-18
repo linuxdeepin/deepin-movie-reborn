@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -7,6 +7,7 @@
 #include "ddlog.h"
 #include "compositing_manager.h"
 #include "sysutils.h"
+#include "player_engine.h"
 
 #include <iostream>
 #include <functional>
@@ -121,8 +122,24 @@ bool FileFilter::isMediaFile(QUrl url)
 
 QList<QUrl> FileFilter::filterDir(QDir dir)
 {
+    return filterDir(dir, 0);
+}
+
+// 目录递归扫描的最大深度：正常媒体目录（含剧集子目录）远达不到这个深度，
+// 超过则视为病态目录树（符号链接环/超深测试数据），直接放弃
+static constexpr int kMaxFilterDirDepth = 10;
+
+QList<QUrl> FileFilter::filterDir(QDir dir, int depth)
+{
     qCDebug(dmrLib) << "Filtering directory:" << dir.absolutePath();
     QList<QUrl> lstUrl;
+
+    if (depth > kMaxFilterDirDepth) {
+        qCWarning(dmrLib) << "Directory recursion depth exceeded, skip:"
+                          << dir.absolutePath();
+        return lstUrl;
+    }
+
     QDir di(dir);
     qCDebug(dmrLib) << "QDir object created for:" << di.absolutePath();
 
@@ -130,22 +147,45 @@ QList<QUrl> FileFilter::filterDir(QDir dir)
     qCDebug(dmrLib) << "Directory filter set.";
 
     for (QFileInfo fileInfo : di.entryInfoList()) {
-        qCDebug(dmrLib) << "Processing entry:" << fileInfo.absoluteFilePath();
         if (fileInfo.isFile()) {
-            qCDebug(dmrLib) << "Entry is a file. Transferring file:" << fileInfo.filePath();
+            // 后缀预过滤：非媒体文件直接跳过，不对它做 URL 转换和后续
+            // FFmpeg 探测。否则面对海量无关文件的目录（如测试数据集）
+            // 会逐个打开探测，拖死 UI 线程
+            if (!isMediaSuffix(fileInfo.suffix())) {
+                qCDebug(dmrLib) << "Skip non-media file:" << fileInfo.absoluteFilePath();
+                continue;
+            }
+            qCDebug(dmrLib) << "Media file found:" << fileInfo.absoluteFilePath();
             lstUrl.append(fileTransfer(fileInfo.filePath()));
-            qCDebug(dmrLib) << "File transferred and added to list. Current list size:" << lstUrl.size();
         } else if (fileInfo.isDir()) {
             qCDebug(dmrLib) << "Entry is a directory:" << fileInfo.absoluteFilePath();
             if (m_stopRunningThread) {
                 qCDebug(dmrLib) << "Thread stopped, returning empty list";
                 return QList<QUrl>();
             }
-            lstUrl << filterDir(fileInfo.absoluteFilePath());
+            lstUrl << filterDir(fileInfo.absoluteFilePath(), depth + 1);
         }
     }
     qCDebug(dmrLib) << "Found" << lstUrl.size() << "files in directory";
     return lstUrl;
+}
+
+bool FileFilter::isMediaSuffix(const QString &suffix)
+{
+    // 以 PlayerEngine 的媒体类型表为唯一数据源，小写匹配（Linux 下
+    // 存在 .MP4/.AVI 等大写后缀文件）
+    static const QSet<QString> mediaSuffixes = [] {
+        QSet<QString> s;
+        for (const QString &t : dmr::PlayerEngine::video_filetypes) {
+            s.insert(t.mid(2).toLower());   // 去掉通配符前缀 "*."
+        }
+        for (const QString &t : dmr::PlayerEngine::audio_filetypes) {
+            s.insert(t.mid(2).toLower());
+        }
+        return s;
+    }();
+
+    return mediaSuffixes.contains(suffix.toLower());
 }
 
 // file:// URLs must not be parsed with QUrl(str): '#' would be treated as a fragment

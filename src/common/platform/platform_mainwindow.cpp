@@ -2263,6 +2263,14 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         QString name("/data/source/deepin-movie-reborn/movie");
 #endif
 
+        // 用户取消或对话框异常时返回空串：直接退出。
+        // 空串若继续走玲珑路径转换会被拼成 /run/host/rootfs（宿主机根目录），
+        // 导致 play() 在 UI 线程递归扫描整个宿主机文件系统，窗口卡死
+        if (name.isEmpty()) {
+            qCDebug(appMovie) << "OpenDirectory: dialog returned empty path (canceled), skip";
+            break;
+        }
+
         // 玲珑环境处理：转换为播放路径
         if (utils::IsLinglongEnvironment()) {
             const QString convertedPath = utils::ConvertLinglongPathForPlayback(name);
@@ -5308,6 +5316,13 @@ QString Platform_MainWindow::lastOpenedPath()
             qCDebug(appMovie) << "!newLastDir.exists()";
             lastPath = QDir::currentPath();
         }
+    }
+
+    // 玲珑环境：文件对话框进程运行在宿主机上，看不到沙箱内路径。
+    // 配置里可能存有 /run/host/rootfs/... 形式的沙箱路径（历史遗留），
+    // 传给对话框前转回宿主机路径，避免对话框拿到无效初始目录
+    if (utils::IsLinglongEnvironment()) {
+        lastPath = utils::ConvertLinglongPathForFM(lastPath);
     }
 
     qCDebug(appMovie) << "Exiting lastOpenedPath function";
