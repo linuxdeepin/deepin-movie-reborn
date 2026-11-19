@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // 覆盖：mpv_init / handle_mpv_events / configureJjwGPU / refreshDecode /
-//       play / firstInit / initGpuInfoFuns / isSpecialHWHardware
+//       applyGpuInfoHwdecConfig / play / firstInit / initGpuInfoFuns / isSpecialHWHardware
 // 测试环境约定（Qt6 + USE_TEST，_LIBDMR_ 未定义）：
 //   1. libmpv 未链接进测试进程，所有 mpv 交互走成员函数指针，测试中直接赋值录制 stub；
 //      fake handle 为哑指针，永不解引用。
@@ -314,6 +314,7 @@ QByteArray ut_qprocReadKlvv_stub(void *) { return QByteArray("KLVV-XXXX Series\n
 QByteArray ut_qprocReadEmpty_stub(void *) { return QByteArray(); }
 void ut_qprocSetProgram_stub(void *, const QString &) {}
 bool ut_waylandTrue_stub() { return true; }
+bool ut_waylandFalse_stub() { return false; }
 bool ut_libExistFalse_stub() { return false; }
 bool ut_libExistTrue_stub() { return true; }
 QFunctionPointer ut_qlibResolve_stub(const QString &, const char *)
@@ -359,6 +360,44 @@ QString ut_jjwPath_mwv206_stub() { return QStringLiteral("/dev/mwv206_0"); }
 bool ut_qdirExistsTrue_stub(void *) { return true; }
 const char *ut_gpuInfoVo_testvo_stub() { return "test-vo"; }
 const char *ut_gpuInfoVo_x_stub() { return "x"; }
+const char *ut_gpuInfoVo_vaapi_stub() { return "vaapi"; }
+const char *ut_gpuInfoVo_empty_stub() { return ""; }
+
+// QLibrary::load 实例重载打桩（gpuinfo 加载分支用；不桩会依赖测试机是否装有 libgpuinfo）
+bool ut_qlibLoadTrue_stub(QLibrary *) { return true; }
+bool ut_qlibLoadFalse_stub(QLibrary *) { return false; }
+
+// 旧版 libgpuinfo：有 gpuinfo_get_vo，但没有 gpuinfo_get_interop
+QFunctionPointer ut_qlibResolveNoInterop_stub(QLibrary *, const char *symbol)
+{
+    if (symbol && std::strcmp(symbol, "gpuinfo_get_interop") == 0)
+        return nullptr;
+    return (QFunctionPointer)(void *)0x1234;
+}
+
+const char *ut_gpuInfoInterop_vaapiEgl_stub() { return "vaapi-egl"; }
+const char *ut_gpuInfoInterop_vaapiGlx_stub() { return "vaapi-glx"; }
+const char *ut_gpuInfoInterop_vdpauGlx_stub() { return "vdpau-glx"; }
+const char *ut_gpuInfoInterop_empty_stub() { return ""; }
+const char *ut_gpuInfoInterop_null_stub() { return nullptr; }
+
+// QT_XCB_GL_INTEGRATION 等环境变量的保存/恢复，避免用例间污染
+class UtEnvGuard
+{
+public:
+    explicit UtEnvGuard(const char *name) : m_name(name), m_old(qgetenv(name)) {}
+    ~UtEnvGuard()
+    {
+        if (m_old.isEmpty())
+            qunsetenv(m_name);
+        else
+            qputenv(m_name, m_old);
+    }
+
+private:
+    const char *m_name;
+    QByteArray m_old;
+};
 
 // ============================ 辅助 ============================
 
@@ -604,11 +643,13 @@ TEST_F(MpvProxyTest, initGpuInfoFuns_LibMissingClearsPointers)
 
     proxy->m_gpuInfo = (void *)0x1;
     proxy->m_gpuInfoVo = []() -> const char * { return "x"; };
+    proxy->m_gpuInfoInterop = []() -> const char * { return "vaapi-egl"; };
 
     proxy->initGpuInfoFuns();
 
     EXPECT_EQ(nullptr, proxy->m_gpuInfo);
     EXPECT_EQ(nullptr, proxy->m_gpuInfoVo);
+    EXPECT_EQ(nullptr, proxy->m_gpuInfoInterop);
 }
 
 // libgpuinfo.so 存在且 resolve 成功时，函数指针应被赋值
@@ -619,6 +660,9 @@ TEST_F(MpvProxyTest, initGpuInfoFuns_ResolveSuccessAssignsPointers)
     ASSERT_NE(nullptr, proxy);
     stub.set(ADDR(SysUtils, libExist), ut_libExistTrue_stub);
     stub.set(ADDR(SysUtils, libPath), ut_libPath_gpuinfo_stub);   // 非空路径（空路径 QLibrary 不 resolve）
+    // QLibrary::load 必须先打桩：源码显式 load 失败会提前返回，不桩则依赖测试机装有 libgpuinfo
+    typedef bool (QLibrary::*LoadMemFn)();
+    stub.set((LoadMemFn)&QLibrary::load, ut_qlibLoadTrue_stub);
     // QLibrary::resolve 实例重载打桩（静态重载打桩在本环境不生效，实例重载模式
     // 已在 test_mpv_glwidget.cpp 套件验证可行）
     typedef QFunctionPointer (QLibrary::*ResolveMemFn)(const char *);
@@ -626,11 +670,268 @@ TEST_F(MpvProxyTest, initGpuInfoFuns_ResolveSuccessAssignsPointers)
 
     proxy->m_gpuInfo = nullptr;
     proxy->m_gpuInfoVo = nullptr;
+    proxy->m_gpuInfoInterop = nullptr;
 
     proxy->initGpuInfoFuns();
 
     EXPECT_NE(nullptr, proxy->m_gpuInfo);
     EXPECT_NE(nullptr, proxy->m_gpuInfoVo);
+    EXPECT_NE(nullptr, proxy->m_gpuInfoInterop);
+}
+
+// 旧版 libgpuinfo（无 gpuinfo_get_interop）：interop 指针置空，其余功能不受影响
+TEST_F(MpvProxyTest, initGpuInfoFuns_InteropSymbolMissingClearsInteropOnly)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    stub.set(ADDR(SysUtils, libExist), ut_libExistTrue_stub);
+    stub.set(ADDR(SysUtils, libPath), ut_libPath_gpuinfo_stub);
+    typedef bool (QLibrary::*LoadMemFn)();
+    stub.set((LoadMemFn)&QLibrary::load, ut_qlibLoadTrue_stub);
+    typedef QFunctionPointer (QLibrary::*ResolveMemFn)(const char *);
+    stub.set((ResolveMemFn)&QLibrary::resolve, ut_qlibResolveNoInterop_stub);
+
+    proxy->m_gpuInfo = nullptr;
+    proxy->m_gpuInfoVo = nullptr;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_vaapiEgl_stub;
+
+    proxy->initGpuInfoFuns();
+
+    EXPECT_NE(nullptr, proxy->m_gpuInfo);
+    EXPECT_NE(nullptr, proxy->m_gpuInfoVo);
+    EXPECT_EQ(nullptr, proxy->m_gpuInfoInterop);
+}
+
+// 库存在但加载失败（按名/系统路径都失败）：三个函数指针都置空，且不崩溃
+TEST_F(MpvProxyTest, initGpuInfoFuns_LoadFailsClearsPointers)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    stub.set(ADDR(SysUtils, libExist), ut_libExistTrue_stub);
+    stub.set(ADDR(SysUtils, libPath), ut_libPath_gpuinfo_stub);
+    typedef bool (QLibrary::*LoadMemFn)();
+    stub.set((LoadMemFn)&QLibrary::load, ut_qlibLoadFalse_stub);
+
+    proxy->m_gpuInfo = (void *)0x1;
+    proxy->m_gpuInfoVo = ut_gpuInfoVo_x_stub;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_vaapiEgl_stub;
+
+    proxy->initGpuInfoFuns();
+
+    EXPECT_EQ(nullptr, proxy->m_gpuInfo);
+    EXPECT_EQ(nullptr, proxy->m_gpuInfoVo);
+    EXPECT_EQ(nullptr, proxy->m_gpuInfoInterop);
+}
+
+// ============================ applyGpuInfoHwdecConfig ============================
+// 源码路径：src/backends/mpv/mpv_proxy.cpp applyGpuInfoHwdecConfig()
+// 未初始化 mpv 时 my_set_property 写入 m_mapWaitSet，直接断言该表即可
+
+// 合成路径：hwdec=vaapi + gpuinfo 给出的 interop，且不写 vo
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_Composited_SetsHwdecAndInterop)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    stub.set(ADDR(utils, check_wayland_env), ut_waylandFalse_stub);
+    proxy->m_decodeMode = DecodeMode::AUTO;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_vaapiEgl_stub;
+    proxy->m_gpuInfoVo = ut_gpuInfoVo_vaapi_stub;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_EQ(QString("vaapi"), proxy->m_mapWaitSet.value("hwdec").toString());
+    EXPECT_EQ(QString("vaapi-egl"), proxy->m_mapWaitSet.value("gpu-hwdec-interop").toString());
+    EXPECT_FALSE(proxy->m_mapWaitSet.contains("vo"));
+}
+
+// 合成路径 + xcb_glx context：interop 跟随实际 GL context 改为 vaapi-glx
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_XcbGlxContext_UsesVaapiGlx)
+{
+    UtEnvGuard envGuard("QT_XCB_GL_INTEGRATION");
+    qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    stub.set(ADDR(utils, check_wayland_env), ut_waylandFalse_stub);
+    proxy->m_decodeMode = DecodeMode::AUTO;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_vaapiEgl_stub;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_EQ(QString("vaapi"), proxy->m_mapWaitSet.value("hwdec").toString());
+    EXPECT_EQ(QString("vaapi-glx"), proxy->m_mapWaitSet.value("gpu-hwdec-interop").toString());
+}
+
+// 合成路径 + gpuinfo 直接给出 vaapi-glx（env 未设置）：沿用 vaapi-glx
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_GpuInfoGlxValue_UsesVaapiGlx)
+{
+    UtEnvGuard envGuard("QT_XCB_GL_INTEGRATION");
+    qunsetenv("QT_XCB_GL_INTEGRATION");
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    stub.set(ADDR(utils, check_wayland_env), ut_waylandFalse_stub);
+    proxy->m_decodeMode = DecodeMode::AUTO;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_vaapiGlx_stub;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_EQ(QString("vaapi"), proxy->m_mapWaitSet.value("hwdec").toString());
+    EXPECT_EQ(QString("vaapi-glx"), proxy->m_mapWaitSet.value("gpu-hwdec-interop").toString());
+}
+
+// 合成路径 + Wayland：无论 env 如何都使用 vaapi-egl
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_WaylandForcesVaapiEgl)
+{
+    UtEnvGuard envGuard("QT_XCB_GL_INTEGRATION");
+    qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    stub.set(ADDR(utils, check_wayland_env), ut_waylandTrue_stub);
+    proxy->m_decodeMode = DecodeMode::AUTO;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_vaapiEgl_stub;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_EQ(QString("vaapi-egl"), proxy->m_mapWaitSet.value("gpu-hwdec-interop").toString());
+}
+
+// 非合成路径：vo 用 gpuinfo 的 vo 列 + hwdec=vaapi，不写 gpu-hwdec-interop
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_NonComposited_SetsVoAndHwdec)
+{
+    Stub stub;
+    QWidget *parent = new QWidget;
+    MpvProxy *proxy = ut_createProxy(stub, parent, false);
+    ASSERT_NE(nullptr, proxy);
+    stub.set(ADDR(utils, check_wayland_env), ut_waylandFalse_stub);
+    proxy->m_decodeMode = DecodeMode::AUTO;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_vaapiEgl_stub;
+    proxy->m_gpuInfoVo = ut_gpuInfoVo_vaapi_stub;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_EQ(QString("vaapi"), proxy->m_mapWaitSet.value("vo").toString());
+    EXPECT_EQ(QString("vaapi"), proxy->m_mapWaitSet.value("hwdec").toString());
+    EXPECT_FALSE(proxy->m_mapWaitSet.contains("gpu-hwdec-interop"));
+    EXPECT_EQ(QString("vaapi"), proxy->m_sInitVo);
+}
+
+// 用户显式软解：不做任何覆盖
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_SoftwareMode_Skips)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_decodeMode = DecodeMode::SOFTWARE;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_vaapiEgl_stub;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_TRUE(proxy->m_mapWaitSet.isEmpty());
+}
+
+// 用户自定义解码：不做任何覆盖
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_CustomMode_Skips)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_decodeMode = DecodeMode::CUSTOM;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_vaapiEgl_stub;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_TRUE(proxy->m_mapWaitSet.isEmpty());
+}
+
+// 旧版 libgpuinfo：interop 函数指针为空，完全跳过
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_InteropPointerNull_Skips)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_decodeMode = DecodeMode::AUTO;
+    proxy->m_gpuInfoInterop = nullptr;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_TRUE(proxy->m_mapWaitSet.isEmpty());
+}
+
+// gpuinfo 返回空串：完全跳过
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_EmptyInterop_Skips)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_decodeMode = DecodeMode::AUTO;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_empty_stub;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_TRUE(proxy->m_mapWaitSet.isEmpty());
+}
+
+// gpuinfo 返回 null：不崩溃且完全跳过
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_NullInterop_Skips)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_decodeMode = DecodeMode::AUTO;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_null_stub;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_TRUE(proxy->m_mapWaitSet.isEmpty());
+}
+
+// 不支持的 interop 值（当前只处理 vaapi-egl/vaapi-glx）：完全跳过
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_UnsupportedInterop_Skips)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->m_decodeMode = DecodeMode::AUTO;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_vdpauGlx_stub;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_TRUE(proxy->m_mapWaitSet.isEmpty());
+}
+
+// 非合成 + vo 列为空：只设置 hwdec=vaapi，不写 vo
+TEST_F(MpvProxyTest, applyGpuInfoHwdecConfig_NonCompositedNoVo_KeepsVoUntouched)
+{
+    Stub stub;
+    QWidget *parent = new QWidget;
+    MpvProxy *proxy = ut_createProxy(stub, parent, false);
+    ASSERT_NE(nullptr, proxy);
+    stub.set(ADDR(utils, check_wayland_env), ut_waylandFalse_stub);
+    proxy->m_decodeMode = DecodeMode::AUTO;
+    proxy->m_gpuInfoInterop = ut_gpuInfoInterop_vaapiEgl_stub;
+    proxy->m_gpuInfoVo = ut_gpuInfoVo_empty_stub;
+    proxy->m_mapWaitSet.clear();
+
+    proxy->applyGpuInfoHwdecConfig(ut_fakeHandle());
+
+    EXPECT_FALSE(proxy->m_mapWaitSet.contains("vo"));
+    EXPECT_EQ(QString("vaapi"), proxy->m_mapWaitSet.value("hwdec").toString());
 }
 
 // ============================ handle_mpv_events ============================
@@ -2819,8 +3120,8 @@ TEST_F(MpvProxyTest, pauseResume_PlayingState_SetsPauseTrue)
     proxy->pauseResume();
 
     ASSERT_EQ(1, g_ut_props.size());
-    EXPECT_EQ(QStringLiteral("pause"), g_ut_props.at(0).name);
-    EXPECT_EQ(QStringLiteral("true"), g_ut_props.at(0).value);
+    EXPECT_EQ(QString("pause"), g_ut_props.at(0).name);
+    EXPECT_EQ(QString("true"), g_ut_props.at(0).value);
 }
 
 TEST_F(MpvProxyTest, pauseResume_PausedState_SetsPauseFalse)
@@ -2835,8 +3136,8 @@ TEST_F(MpvProxyTest, pauseResume_PausedState_SetsPauseFalse)
     proxy->pauseResume();
 
     ASSERT_EQ(1, g_ut_props.size());
-    EXPECT_EQ(QStringLiteral("pause"), g_ut_props.at(0).name);
-    EXPECT_EQ(QStringLiteral("false"), g_ut_props.at(0).value);
+    EXPECT_EQ(QString("pause"), g_ut_props.at(0).name);
+    EXPECT_EQ(QString("false"), g_ut_props.at(0).value);
 }
 
 // slotStateChanged()：把 state!=Stopped 同步到 GL widget 的播放标志
