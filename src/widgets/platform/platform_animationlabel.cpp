@@ -108,6 +108,7 @@ void Platform_AnimationLabel::setWM(bool isWM)
 void Platform_AnimationLabel::initMember(QWidget *pMainwindow)
 {
     qCDebug(appMovie) << "Initializing member variables";
+    m_bIsWM = false;
     initPlayAnimation();
     initPauseAnimation();
     m_pMainWindow = pMainwindow;
