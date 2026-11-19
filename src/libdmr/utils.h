@@ -83,6 +83,12 @@ bool isFantasyGPUPresent();
  * @return 返回存在的设备路径，如果都不存在则返回空字符串
  */
 QString getJjwGPUPath();
+
+/**
+ * @brief 获取gpuinfo数据库为当前GPU配置的hwdec interop
+ * @return interop值（如"vaapi-egl"），未匹配到或库不可用时返回空字符串
+ */
+QString gpuInfoInterop();
 /**
  * @brief 检测是否在玲珑环境
  * @return 如果是玲珑环境返回true，否则返回false

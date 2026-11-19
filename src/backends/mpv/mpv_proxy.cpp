@@ -211,17 +211,79 @@ void MpvProxy::initGpuInfoFuns()
         qCWarning(dmrMpv) << "libgpuinfo.so not found - GPU info functions will be unavailable";
         m_gpuInfo = NULL;
         m_gpuInfoVo = NULL;
+        m_gpuInfoInterop = NULL;
         qCDebug(dmrMpv) << "DEBUG: Exiting MpvProxy::initGpuInfoFuns due to missing libgpuinfo.so."; // Add exit log
         return;
     }
-    QLibrary mpvLibrary(SysUtils::libPath("libgpuinfo.so"));
+    // 先按普通库名加载，支持 LD_LIBRARY_PATH 下的本地测试库；
+    // 失败时再回退到系统库目录。
+    QLibrary mpvLibrary("libgpuinfo.so");
+    if (!mpvLibrary.load()) {
+        mpvLibrary.setFileName(SysUtils::libPath("libgpuinfo.so"));
+        if (!mpvLibrary.load()) {
+            qCWarning(dmrMpv) << "load libgpuinfo.so failed:" << mpvLibrary.errorString();
+            m_gpuInfo = NULL;
+            m_gpuInfoVo = NULL;
+            m_gpuInfoInterop = NULL;
+            return;
+        }
+    }
     m_gpuInfo = reinterpret_cast<void *>(mpvLibrary.resolve("vdp_Iter_decoderInfo"));
     m_gpuInfoVo = reinterpret_cast<const char* (*)(void)>(mpvLibrary.resolve("gpuinfo_get_vo"));
+    m_gpuInfoInterop = reinterpret_cast<const char* (*)(void)>(mpvLibrary.resolve("gpuinfo_get_interop"));
     if (m_gpuInfo && m_gpuInfoVo) {
         qCInfo(dmrMpv) << "GPU info functions initialized successfully";
     } else {
         qCWarning(dmrMpv) << "GPU info functions initialized error";
     }
+    if (!m_gpuInfoInterop)
+        qCWarning(dmrMpv) << "gpuinfo_get_interop not found, interop config is unavailable";
+}
+
+void MpvProxy::applyGpuInfoHwdecConfig(mpv_handle *pHandle)
+{
+    // 尊重用户显式选择的软解/自定义解码
+    if (m_decodeMode == DecodeMode::SOFTWARE || m_decodeMode == DecodeMode::CUSTOM)
+        return;
+
+    if (!m_gpuInfoInterop)
+        return;
+
+    const char *interopValue = m_gpuInfoInterop();
+    if (!interopValue || interopValue[0] == '\0')
+        return;
+
+    const QString gpuInterop = QString::fromUtf8(interopValue).trimmed();
+    if (gpuInterop != "vaapi-egl" && gpuInterop != "vaapi-glx")
+        return;
+
+    // 非合成（wid）路径：vo 用 gpuinfo 的 vo 列，interop 交给 mpv 的 auto 选择。
+    if (!CompositingManager::get().composited()) {
+        const char *voValue = m_gpuInfoVo ? m_gpuInfoVo() : nullptr;
+        const QString voName = voValue ? QString::fromUtf8(voValue).trimmed() : QString();
+        if (!voName.isEmpty()) {
+            my_set_property(pHandle, "vo", voName);
+            m_sInitVo = voName;
+        }
+        my_set_property(pHandle, "hwdec", "vaapi");
+        qCInfo(dmrMpv) << "gpuinfo interop=" << gpuInterop << ": non-composited, vo=" << voName << ", hwdec=vaapi";
+        return;
+    }
+
+    // composited/libmpv 路径：以实际 GL context 为准
+    // xcb_glx -> vaapi-glx，xcb_egl/Wayland -> vaapi-egl
+    QString interop = gpuInterop;
+    const QByteArray glInt = qgetenv("QT_XCB_GL_INTEGRATION");
+    if (glInt == "xcb_glx")
+        interop = "vaapi-glx";
+    else if (glInt == "xcb_egl")
+        interop = "vaapi-egl";
+    if (utils::check_wayland_env())
+        interop = "vaapi-egl";
+
+    qCInfo(dmrMpv) << "gpuinfo interop=" << gpuInterop << ": hwdec=vaapi, gpu-hwdec-interop=" << interop;
+    my_set_property(pHandle, "hwdec", "vaapi");
+    my_set_property(pHandle, "gpu-hwdec-interop", interop);
 }
 
 void MpvProxy::firstInit()
@@ -914,6 +976,9 @@ mpv_handle *MpvProxy::mpv_init()
     // Set fast profile globally for better playback performance
     my_set_property_async(pHandle, "profile", "fast", 0);
     qCInfo(dmrMpv) << "Set profile to fast for optimized playback";
+
+    // gpuinfo 按显卡绑定硬解/GL interop（影院/libmpv 路径）
+    applyGpuInfoHwdecConfig(pHandle);
 
     qCDebug(dmrMpv) << "DEBUG: Exiting MpvProxy::mpv_init() with handle:" << pHandle;
     return pHandle;
@@ -1986,6 +2051,9 @@ void MpvProxy::refreshDecode()
         }
     }
 #endif
+
+    // gpuinfo 的硬解/interop 配置放在最后，避免被自动/硬解分支覆盖
+    applyGpuInfoHwdecConfig(m_handle);
 }
 
 void MpvProxy::initMember()
@@ -2029,6 +2097,7 @@ void MpvProxy::initMember()
     m_pConfig = nullptr;
     m_gpuInfo = nullptr;
     m_gpuInfoVo = nullptr;
+    m_gpuInfoInterop = nullptr;
 }
 
 void MpvProxy::play()

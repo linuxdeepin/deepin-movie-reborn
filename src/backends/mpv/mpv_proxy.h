@@ -393,6 +393,11 @@ protected:
      */
     void initGpuInfoFuns();
     /**
+     * @brief 根据gpuinfo的interop配置应用硬解/GL interop
+     *        不覆盖用户显式选择的软解/自定义解码
+     */
+    void applyGpuInfoHwdecConfig(mpv_handle *pHandle);
+    /**
      * @brief 是否支持硬件解码
      */
     bool isSupportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight);
@@ -455,6 +460,7 @@ private:
     mpv_freeNode_contents m_freeNodecontents;
     void *m_gpuInfo; //解码探测函数指针
     const char* (*m_gpuInfoVo)(void); //gpuinfo_get_vo函数指针
+    const char* (*m_gpuInfoInterop)(void); //gpuinfo_get_interop函数指针
 
 
     MpvHandle m_handle;                    //mpv句柄
