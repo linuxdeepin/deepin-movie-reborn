@@ -1917,20 +1917,6 @@ void MpvProxy::refreshDecode()
             my_set_property_async(m_handle, "vo", "gpu", 0);
         }
 
-        // 芯动(inno-codec) wmv 硬解覆盖（仅限wmv）
-        {
-            QDir innodir("/sys/bus/platform/drivers/inno-codec");
-            if (innodir.exists()) {
-                const auto codec = currentInfo.mi.videoCodec();
-                const auto name = _file.fileName();
-                if (codec.toLower().contains("wmv") || name.toLower().contains("wmv")) {
-                    qCDebug(dmrMpv) << "DEBUG: Inno-codec driver detected with wmv. Force hwdec=vaapi, vo=gpu.";
-                    my_set_property_async(m_handle, "hwdec", "vaapi", 0);
-                    my_set_property_async(m_handle, "vo", "gpu", 0);
-                }
-            }
-        }
-
         auto *pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
         PlaylistModel *playMode = pEngine ? pEngine->getplaylist() : nullptr;
         PlayItemInfo currentInfo = playMode ? playMode->currentInfo() : PlayItemInfo();
@@ -1967,6 +1953,19 @@ void MpvProxy::refreshDecode()
                 break;
             }
             iter++;
+        }
+        // 芯动(inno-codec) wmv 硬解覆盖（仅限wmv，需在 play.conf 覆盖之后执行）
+        {
+            QDir innodir("/sys/bus/platform/drivers/inno-codec");
+            if (innodir.exists()) {
+                const auto codec = currentInfo.mi.videoCodec();
+                const auto name = _file.fileName();
+                if (codec.toLower().contains("wmv") || name.toLower().contains("wmv")) {
+                    qCDebug(dmrMpv) << "DEBUG: Inno-codec driver detected with wmv. Force hwdec=vaapi, vo=gpu.";
+                    my_set_property_async(m_handle, "hwdec", "vaapi", 0);
+                    my_set_property_async(m_handle, "vo", "gpu", 0);
+                }
+            }
         }
     }
 #ifndef _LIBDMR_
