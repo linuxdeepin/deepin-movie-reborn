@@ -585,7 +585,7 @@ namespace dmr {
         //HACK: we assume if any of width or height is 380, then we are in mini mode
         auto vp = rect().size();
 
-        auto bg_size = QSizeF(m_imgBgDark.size()) / devicePixelRatioF();
+        auto bg_size = QSizeF(m_imgBgDark.size()) / m_imgBgDark.devicePixelRatio();
         m_bInMiniMode = vp.width() <= 380 || vp.height() <= 380;
         auto tex_sz = m_bInMiniMode ? bg_size/2 : bg_size;
 
