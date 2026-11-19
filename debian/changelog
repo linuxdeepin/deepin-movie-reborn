@@ -1,3 +1,11 @@
+deepin-movie-reborn (6.5.62) unstable; urgency=medium
+
+  * chore: Update version to 6.5.62
+  * test(ut): add unit tests for path guard and media suffix filtering
+  * fix(mainwindow): avoid UI freeze on invalid paths and non-media files
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 19 Nov 2026 14:16:01 +0800
+
 deepin-movie-reborn (6.5.61) unstable; urgency=medium
 
   * chore: Update version to 6.5.61
