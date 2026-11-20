@@ -3314,7 +3314,7 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
             m_listBurstShoots.clear();
             if (!m_bPausedBeforeBurst) {
                 qCDebug(appMovie) << "!m_bPausedBeforeBurst";
-                m_pEngine->pauseResume();
+                m_pEngine->setPaused(false);
             }
             qCDebug(appMovie) << "m_listBurstShoots.clear() return";
             return;
@@ -3333,7 +3333,7 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
         m_listBurstShoots.clear();
         if (!m_bPausedBeforeBurst) {
             qCDebug(appMovie) << "m_bPausedBeforeBurst";
-            m_pEngine->pauseResume();
+            m_pEngine->setPaused(false);
         }
 
         if (nRet == QDialog::Accepted) {

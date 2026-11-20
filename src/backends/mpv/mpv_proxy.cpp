@@ -2255,6 +2255,20 @@ void MpvProxy::pauseResume()
     qCDebug(dmrMpv) << "Exiting MpvProxy::pauseResume()";
 }
 
+void MpvProxy::setPaused(bool paused)
+{
+    qCDebug(dmrMpv) << "Entering MpvProxy::setPaused():" << paused;
+
+    if (_state == PlayState::Stopped) {
+        qCInfo(dmrMpv) << "Cannot set pause state - player is stopped";
+        return;
+    }
+
+    qCInfo(dmrMpv) << "Setting pause state to:" << paused;
+    my_set_property(m_handle, "pause", paused);
+    qCDebug(dmrMpv) << "Exiting MpvProxy::setPaused()";
+}
+
 void MpvProxy::stop()
 {
     qCDebug(dmrMpv) << "Entering MpvProxy::stop()";

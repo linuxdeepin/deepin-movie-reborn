@@ -3391,7 +3391,7 @@ void Platform_MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestam
             m_listBurstShoots.clear();
             if (!m_bPausedBeforeBurst) {
                 qCDebug(appMovie) << "!m_bPausedBeforeBurst";
-                m_pEngine->pauseResume();
+                m_pEngine->setPaused(false);
             }
             return;
         }
@@ -3409,7 +3409,7 @@ void Platform_MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestam
         m_listBurstShoots.clear();
         if (!m_bPausedBeforeBurst) {
             qCDebug(appMovie) << "!m_bPausedBeforeBurst";
-            m_pEngine->pauseResume();
+            m_pEngine->setPaused(false);
         }
 
         if (nRet == QDialog::Accepted) {
