@@ -1047,3 +1047,49 @@ TEST(platform_mw_ext5, SleepStateChanged_False_IdleNoSeek)
     ASSERT_NE(w, nullptr);
     EXPECT_NO_FATAL_FAILURE(w->sleepStateChanged(false));
 }
+
+// ==========================================================================
+// toggleKWinCompositingForLjm / restoreKWinCompositingForLjm
+// 测试构建中 m_bLjmEffectsActive 默认 false，手动置位覆盖各分支。
+// ==========================================================================
+
+TEST(platform_mw_ext5, ToggleKWinCompositing_InactiveNoOp)
+{
+    // m_bLjmEffectsActive = false -> 立即返回，无副作用
+    Platform_MainWindow *w = pmw5_window();
+    ASSERT_NE(w, nullptr);
+    EXPECT_NO_FATAL_FAILURE(w->toggleKWinCompositingForLjm(true));
+    EXPECT_NO_FATAL_FAILURE(w->toggleKWinCompositingForLjm(false));
+}
+
+TEST(platform_mw_ext5, ToggleKWinCompositing_ActiveButNullInterface_NoCrash)
+{
+    Platform_MainWindow *w = pmw5_window();
+    ASSERT_NE(w, nullptr);
+    bool savedActive = w->m_bLjmEffectsActive;
+    w->m_bLjmEffectsActive = true;
+    // m_pKWinCompositing 在测试环境中为 nullptr（无凌久微显卡）
+    EXPECT_NO_FATAL_FAILURE(w->toggleKWinCompositingForLjm(true));
+    EXPECT_NO_FATAL_FAILURE(w->toggleKWinCompositingForLjm(false));
+    w->m_bLjmEffectsActive = savedActive;
+}
+
+TEST(platform_mw_ext5, RestoreKWinCompositing_NotSuspended_NoOp)
+{
+    Platform_MainWindow *w = pmw5_window();
+    ASSERT_NE(w, nullptr);
+    bool savedActive = w->m_bLjmEffectsActive;
+    bool savedSuspended = w->m_bCompositingSuspendedByUs;
+    w->m_bLjmEffectsActive = true;
+    w->m_bCompositingSuspendedByUs = false;
+    EXPECT_NO_FATAL_FAILURE(w->restoreKWinCompositingForLjm());
+    w->m_bLjmEffectsActive = savedActive;
+    w->m_bCompositingSuspendedByUs = savedSuspended;
+}
+
+TEST(platform_mw_ext5, RestoreKWinCompositing_Inactive_NoOp)
+{
+    Platform_MainWindow *w = pmw5_window();
+    ASSERT_NE(w, nullptr);
+    EXPECT_NO_FATAL_FAILURE(w->restoreKWinCompositingForLjm());
+}
