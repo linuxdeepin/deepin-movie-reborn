@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -339,6 +339,9 @@ public:
      */
     bool getMiniMode();
 
+    void toggleKWinCompositingForLjm(bool playing);
+    void restoreKWinCompositingForLjm();
+
 public slots:
     /**
      * @brief 根据url地址播放影片
@@ -592,6 +595,10 @@ private:
     qint64 m_nFullscreenTime;                         ///全屏操作间隔时间
     QDBusInterface *m_pWMDBus {nullptr};              ///窗口特效dbus接口
     bool m_bIsWM {true};                              ///是否开启窗口特效
+    QDBusInterface *m_pKWinCompositing {nullptr};     ///org.kde.kwin.Compositing 接口(凌久微停合成)
+    bool m_bLjmEffectsActive {false};                 ///是否启用凌久微显卡停合成
+    bool m_bCompositingSuspendedByUs {false};         ///当前是否由本程序 suspend 了合成器
+    bool m_bSavedKWinCompositingActive {true};        ///suspend 前 KWin 合成器 active 状态
     bool m_bMaximized;                                ///全屏前最大化窗口记录
     bool m_bLocked{true};
     DSettingsDialog *m_pDSettingDilog{nullptr};

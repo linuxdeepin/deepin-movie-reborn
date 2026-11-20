@@ -591,6 +591,16 @@ TEST(utils_ext, isSietiumGPUPresent_returns_bool)
 }
 
 // ---------------------------------------------------------------------------
+// isLjmGPUPresent
+// ---------------------------------------------------------------------------
+
+TEST(utils_ext, isLjmGPUPresent_returns_bool_no_crash)
+{
+    bool r = utils::isLjmGPUPresent();
+    EXPECT_TRUE(r == true || r == false);
+}
+
+// ---------------------------------------------------------------------------
 // LoadHiDPIImage / LoadHiDPIPixmap
 // ---------------------------------------------------------------------------
 
