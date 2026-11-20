@@ -156,6 +156,7 @@ Q_SIGNALS:
 public slots:
     virtual void play() = 0;
     virtual void pauseResume() = 0;
+    virtual void setPaused(bool paused) = 0;
     virtual void stop() = 0;
 
     virtual void seekForward(int secs) = 0;

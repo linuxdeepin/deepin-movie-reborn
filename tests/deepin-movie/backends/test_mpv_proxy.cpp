@@ -3140,6 +3140,53 @@ TEST_F(MpvProxyTest, pauseResume_PausedState_SetsPauseFalse)
     EXPECT_EQ(QString("false"), g_ut_props.at(0).value);
 }
 
+// setPaused()：新增显式暂停/恢复接口，不依赖 _state toggle 语义
+TEST_F(MpvProxyTest, setPaused_StoppedState_EarlyReturnNoPropertyWrite)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Stopped;
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setPaused(false);
+
+    EXPECT_EQ(0, g_ut_props.size());
+}
+
+TEST_F(MpvProxyTest, setPaused_False_SetsPauseFalse)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Playing;
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setPaused(false);
+
+    ASSERT_EQ(1, g_ut_props.size());
+    EXPECT_EQ(QString("pause"), g_ut_props.at(0).name);
+    EXPECT_EQ(QString("false"), g_ut_props.at(0).value);
+}
+
+TEST_F(MpvProxyTest, setPaused_True_SetsPauseTrue)
+{
+    Stub stub;
+    MpvProxy *proxy = ut_createProxy(stub, nullptr, true);
+    ASSERT_NE(nullptr, proxy);
+    proxy->_state = Backend::PlayState::Paused;
+    proxy->m_bInited = true;
+    ut_resetRecorders();
+
+    proxy->setPaused(true);
+
+    ASSERT_EQ(1, g_ut_props.size());
+    EXPECT_EQ(QString("pause"), g_ut_props.at(0).name);
+    EXPECT_EQ(QString("true"), g_ut_props.at(0).value);
+}
+
 // slotStateChanged()：把 state!=Stopped 同步到 GL widget 的播放标志
 TEST_F(MpvProxyTest, slotStateChanged_Playing_SetsWidgetPlaying)
 {

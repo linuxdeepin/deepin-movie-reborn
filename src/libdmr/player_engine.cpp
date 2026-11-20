@@ -958,6 +958,23 @@ void PlayerEngine::pauseResume()
     qCDebug(dmrLib) << "Exiting PlayerEngine::pauseResume().";
 }
 
+void PlayerEngine::setPaused(bool paused)
+{
+    qCDebug(dmrLib) << "setPaused requested:" << paused;
+    if (!_current) {
+        qCDebug(dmrLib) << "_current backend is null, cannot set paused, returning.";
+        qCWarning(dmrLib) << "No backend available";
+        return;
+    }
+    if (_state == CoreState::Idle) {
+        qCDebug(dmrLib) << "Player state is Idle, returning.";
+        return;
+    }
+
+    _current->setPaused(paused);
+    qCDebug(dmrLib) << "Exiting PlayerEngine::setPaused().";
+}
+
 void PlayerEngine::stop()
 {
     qCDebug(dmrLib) << "Stop requested";
