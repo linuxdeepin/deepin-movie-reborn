@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -3572,7 +3572,8 @@ void MainWindow::exitMircast()
 {
     if (m_pEngine->state() == PlayerEngine::Playing)
         m_pEngine->pauseResume();
-    m_pEngine->seekAbsolute(m_pToolbox->getSlider()->value());
+    if (m_pEngine->state() != PlayerEngine::Paused)
+        m_pEngine->seekAbsolute(m_pToolbox->getSlider()->value());
     updateActionsState();
     m_pToolbox->getMircast()->slotExitMircast();
     m_pMircastShowWidget->hide();
