@@ -84,6 +84,11 @@ Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *p
             this, &Platform_VolumeSlider::setThemeType);
     m_autoHideTimer.setSingleShot(true);
     connect(&m_autoHideTimer, &QTimer::timeout, this, &Platform_VolumeSlider::hide);
+
+    connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, &Platform_VolumeSlider::changeVolume);
+    connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, &Platform_VolumeSlider::changeMuteState);
+    volumeMonitoring.start();
+
     qCDebug(appMovie) << "Exiting Platform_VolumeSlider constructor";
 }
 

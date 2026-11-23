@@ -79,6 +79,11 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
             this, &VolumeSlider::setThemeType);
     m_autoHideTimer.setSingleShot(true);
     connect(&m_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
+
+    connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, &VolumeSlider::changeVolume);
+    connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, &VolumeSlider::changeMuteState);
+    volumeMonitoring.start();
+
     qCDebug(appMovie) << "VolumeSlider initialized";
 }
 
