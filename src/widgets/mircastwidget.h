@@ -11,6 +11,7 @@
 
 #include <DWidget>
 #include <DFloatingWidget>
+#include <DBlurEffectWidget>
 #include <DLabel>
 #include <DSpinner>
 
