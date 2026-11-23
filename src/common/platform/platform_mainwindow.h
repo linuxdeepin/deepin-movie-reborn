@@ -362,6 +362,7 @@ public slots:
     void checkOnlineSubtitle(const OnlineSubtitle::FailReason reason);
     void checkErrorMpvLogsChanged(const QString sPrefix, const QString sText);
     void checkWarningMpvLogsChanged(const QString sPrefix, const QString sText);
+    void slotHDRDetected();
     void slotdefaultplaymodechanged(const QString &sKey, const QVariant &value);
     /**
     * @brief 设置解码模式

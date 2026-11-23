@@ -195,6 +195,7 @@ signals:
 
     void sigMediaError();
     void finishedAddFiles(QList<QUrl>);
+    void sigHDRDetected();
 
 public slots:
     void play();
