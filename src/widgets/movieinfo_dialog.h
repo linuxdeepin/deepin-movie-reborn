@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -35,8 +35,6 @@
 #define LINE_MAX_WIDTH 200
 #define LINE_HEIGHT 30
 const QString LOGO_BIG = ":/resources/icons/logo-big.svg";
-const QString INFO_CLOSE_LIGHT = ":/resources/icons/light/info_close_light.svg";
-const QString INFO_CLOSE_DARK = ":/resources/icons/dark/info_close_dark.svg";
 
 DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
