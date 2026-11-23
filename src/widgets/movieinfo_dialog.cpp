@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -15,8 +15,6 @@
 
 #include <QScrollArea>
 #include <QDebug>
-
-#include <DPushButton>
 
 #include <denhancedwidget.h>
 
@@ -158,44 +156,6 @@ protected:
 
         qCDebug(appMovie) << "Exiting ToolTipEvent::eventFilter(). Calling base eventFilter.";
         return QObject::eventFilter(obj, event);
-    }
-};
-/**
- * @brief The CloseButton class
- * 影片信息窗口关闭按钮
- */
-class CloseButton : public DPushButton
-{
-public:
-    /**
-     * @brief CloseButton 构造函数
-     * @param parent 父窗口
-     */
-    explicit CloseButton(QWidget *parent) : DPushButton(parent) {
-        qCDebug(appMovie) << "Entering CloseButton constructor with parent:" << parent;
-        qCDebug(appMovie) << "Exiting CloseButton constructor.";
-    }
-protected:
-    /**
-     * @brief paintEvent 重载绘制事件函数
-     * @param pPaintEvent 绘制事件
-     */
-    void paintEvent(QPaintEvent *pPaintEvent) override
-    {
-        qCDebug(appMovie) << "Entering CloseButton::paintEvent() with event:" << pPaintEvent;
-        QPainter painter(this);
-        QRect rect = this->rect();
-        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_LIGHT));
-            qCDebug(appMovie) << "Theme is LightType, drawing INFO_CLOSE_LIGHT.";
-        } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_DARK));
-            qCDebug(appMovie) << "Theme is DarkType, drawing INFO_CLOSE_DARK.";
-        } else {
-            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_LIGHT));
-            qCDebug(appMovie) << "Theme is neither LightType nor DarkType, drawing INFO_CLOSE_LIGHT as default.";
-        }
-        qCDebug(appMovie) << "Exiting CloseButton::paintEvent().";
     }
 };
 
