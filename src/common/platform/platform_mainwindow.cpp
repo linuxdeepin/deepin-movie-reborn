@@ -3694,6 +3694,10 @@ void Platform_MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const 
                (sErrorMessage.toLower().contains(QString("open"))) &&
                sErrorMessage.toLower().contains(m_pEngine->getplaylist()->currentInfo().info.fileName())) {
         m_pCommHintWid->updateWithMessage(tr("No video file found"));
+    } else if (sErrorMessage.toLower().contains(QString("avhwdevicecontext")) ||
+               sErrorMessage.toLower().contains(QString("libcuda")) ||
+               sErrorMessage.toLower().contains(QString("opengl error invalid_operation"))) {
+        m_pCommHintWid->updateWithMessage(tr("Hardware decoding may be unavailable, please try software decoding"));
     }
 }
 
