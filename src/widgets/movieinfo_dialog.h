@@ -51,9 +51,9 @@ public:
     {
         QGraphicsDropShadowEffect *pShadowEffect = new QGraphicsDropShadowEffect(this);
         //参考设计图
-        pShadowEffect->setColor(QColor(0, 0, 0, 76));
-        pShadowEffect->setOffset(0, 3);
-        pShadowEffect->setBlurRadius(6);
+        pShadowEffect->setColor(QColor(0, 0, 0, 100));
+        pShadowEffect->setOffset(0, 5);
+        pShadowEffect->setBlurRadius(18);
         setGraphicsEffect(pShadowEffect);
     }
 };
