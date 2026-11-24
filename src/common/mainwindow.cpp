@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -4453,8 +4453,6 @@ void MainWindow::toggleUIMode()
 
     if (m_bMiniMode) {
         m_pTitlebar->titlebar()->setDisableFlags(Qt::WindowMaximizeButtonHint);
-    } else {
-        m_pTitlebar->titlebar()->setDisableFlags(nullptr);
     }
 
     m_pTitlebar->setVisible(!m_bMiniMode);
@@ -4607,6 +4605,7 @@ void MainWindow::toggleUIMode()
                 });
             }
         }
+        m_pTitlebar->titlebar()->setDisableFlags(nullptr);
         m_nStateBeforeMiniMode = SBEM_None;
     }
 
