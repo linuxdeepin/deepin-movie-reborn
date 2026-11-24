@@ -47,6 +47,7 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     m_nPlayStatus = MircastWidget::NoState;
     m_attempts = 0;
     m_connectTimeout = 0;
+    m_lastInfoSignature.clear();
     m_nCurDuration = -1;
     m_nCurAbsTime = -1;
     m_ControlURLPro = "";
@@ -308,6 +309,17 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
         return;
     //TODO:测试电视退出投屏后是否会有返回
     m_connectTimeout = 0;
+    //去重：仅在 Screening 状态下跳过重复应答payload，避免重复写入进度和重复触发状态变更/弹窗
+    //Connecting 状态需每次处理以递增 m_attempts，保证连接失败检测正常工作
+    if (m_mircastState == MircastState::Screening) {
+        QString signature = info.sAbsTime + "|" + info.sTrackDuration + "|"
+                            + info.sTrackURI + "|" + QString::number(static_cast<int>(m_mircastState));
+        if (signature == m_lastInfoSignature) {
+            qCDebug(appMovie) << "Duplicate position info received, skipping.";
+            return;
+        }
+        m_lastInfoSignature = signature;
+    }
     PlayerEngine *engine =static_cast<PlayerEngine *>(m_pEngine);
     if (engine->state() == PlayerEngine::CoreState::Idle) {
         qCDebug(appMovie) << "Engine is idle, exiting Miracast";
@@ -415,6 +427,7 @@ void MircastWidget::slotConnectDevice(ItemWidget *item)
     m_connectDevice.miracastDevice = item->getDevice();
     m_connectDevice.deviceState = MircastState::Connecting;
     m_mircastState = Connecting;
+    m_lastInfoSignature.clear();
     item->setState(ItemWidget::Loading);
     stopDlnaTP();
     startDlnaTp(item);
@@ -525,6 +538,7 @@ void MircastWidget::slotExitMircast()
     m_connectDevice.deviceState = Idel;
     m_mircastTimeOut.stop();
     m_connectTimeout = 0;
+    m_lastInfoSignature.clear();
     m_listWidget->setItemWidgetStatus(m_listWidget->selectedItemWidget(), ItemWidget::Normal);
     stopDlnaTP();
     m_URLAddrPro.clear();
@@ -592,6 +606,7 @@ void MircastWidget::startDlnaTp(ItemWidget *item)
         m_ControlURLPro = item->property(controlURLPro).toString();
         m_URLAddrPro = item->property(urlAddrPro).toString();
     }
+    m_lastInfoSignature.clear();
 
     if(!m_dlnaContentServer)
     {

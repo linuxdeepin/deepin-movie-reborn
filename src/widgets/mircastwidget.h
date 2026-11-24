@@ -292,6 +292,7 @@ private:
     MircastState m_mircastState;
     int          m_attempts;
     int          m_connectTimeout;
+    QString      m_lastInfoSignature;
 
     ListWidget   *m_listWidget;
     MircastPlayState     m_nPlayStatus;
