@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -153,11 +153,36 @@ void MovieWidget::initMember()
     qCDebug(appMovie) << "Initializing MovieWidget members";
     m_nRotate = 0;
     m_state = PlayState::STATE_STOP;
+
+    if (m_pTimer) {
+        m_pTimer->stop();
+        m_pTimer->deleteLater();
+    }
     m_pTimer = nullptr;
+
+    if (m_pBgSvgItem) {
+        delete m_pBgSvgItem;
+    }
     m_pBgSvgItem = nullptr;
+
+    if (m_pNoteSvgItem) {
+        delete m_pNoteSvgItem;
+    }
     m_pNoteSvgItem = nullptr;
+
+    if (m_pScene) {
+        delete m_pScene;
+    }
     m_pScene = nullptr;
+
+    if (m_pBgRender) {
+        delete m_pBgRender;
+    }
     m_pBgRender = nullptr;
+
+    if (m_pNoteRender) {
+        delete m_pNoteRender;
+    }
     m_pNoteRender = nullptr;
 }
 

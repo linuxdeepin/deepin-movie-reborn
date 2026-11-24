@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022-2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -77,14 +77,14 @@ protected:
     void mouseMoveEvent(QMouseEvent* pEvent) override;
 
 private:
-    QGraphicsSvgItem *m_pBgSvgItem;
-    QGraphicsSvgItem *m_pNoteSvgItem;
-    QGraphicsScene *m_pScene;
-    QTimer *m_pTimer;             ///控制动画播放速度的时间
+    QGraphicsSvgItem *m_pBgSvgItem = nullptr;
+    QGraphicsSvgItem *m_pNoteSvgItem = nullptr;
+    QGraphicsScene *m_pScene = nullptr;
+    QTimer *m_pTimer = nullptr;    ///控制动画播放速度的时间
     int m_nRotate;                ///旋转角度
     PlayState m_state;            ///播放状态
-    QSvgRenderer *m_pBgRender;    ///背景render
-    QSvgRenderer *m_pNoteRender;  ///音符render
+    QSvgRenderer *m_pBgRender = nullptr;    ///背景render
+    QSvgRenderer *m_pNoteRender = nullptr;  ///音符render
 };
 
 }
