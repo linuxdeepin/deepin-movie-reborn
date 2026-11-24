@@ -16,6 +16,8 @@
 #include <QScrollArea>
 #include <QDebug>
 
+#include <DWidget>
+
 #include <denhancedwidget.h>
 
 DWIDGET_USE_NAMESPACE
