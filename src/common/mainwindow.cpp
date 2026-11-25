@@ -1,5 +1,5 @@
 // Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
-// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2022 - 2026 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -4547,6 +4547,12 @@ void MainWindow::toggleUIMode()
         this->setMaximumSize(QSize(QWIDGETSIZE_MAX-1, QWIDGETSIZE_MAX-1));
         m_lastRectInNormalMode = tmp;
         setEnableSystemResize(true);
+        // 退出时先隐藏再显示，强制 KWin 以恢复后的窗口 hints 重新托管窗口。
+        // 迷你模式期间窗口被以固定/受限尺寸托管，KWin 会把窗口标记为不可缩放，
+        // 之后仅修改 WM_NORMAL_HINTS 不会恢复，表现为最大化按钮失灵。
+        if (!utils::check_wayland_env()) {
+            hide();
+        }
         if (m_nStateBeforeMiniMode & SBEM_Maximized) {
             //迷你模式切换最大化时，先恢复原来窗口大小
             if (m_lastRectInNormalMode.isValid()) {
@@ -4556,6 +4562,16 @@ void MainWindow::toggleUIMode()
             }
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
+            if (!utils::check_wayland_env()) {
+                // 先以恢复后的 hints 重新 map，再进入全屏；隐藏状态下设置
+                // FullScreen 不会生效。
+                if (m_lastRectInNormalMode.isValid()) {
+                    setGeometry(m_lastRectInNormalMode);
+                } else {
+                    resizeByConstraints();
+                }
+                show();
+            }
             setWindowState(windowState() | Qt::WindowFullScreen);
             if (windowHandle()) {
                 Utility::setBypassCompositor(windowHandle()->winId(), true);
@@ -4597,6 +4613,10 @@ void MainWindow::toggleUIMode()
 
         if (m_nStateBeforeMiniMode & SBEM_Above) {
             requestAction(ActionFactory::WindowAbove);
+        }
+
+        if (!utils::check_wayland_env()) {
+            show();
         }
 
         if (m_nStateBeforeMiniMode & SBEM_PlaylistOpened &&
