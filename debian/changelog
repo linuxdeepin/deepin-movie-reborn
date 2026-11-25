@@ -1,3 +1,17 @@
+deepin-movie-reborn (6.5.63) unstable; urgency=medium
+
+  * chore: Update version to 6.5.63
+  * fix: prevent crash on repeated initMember calls
+  * fix: unify condition and assignment data source in VideoBoxButton
+  * fix: remove unreachable status==1 dead code
+  * fix: initialize m_bIsWM in AnimationLabel header
+  * feat(platform): suspend KWin compositing during ljmcore video playback
+  * fix: resolve null pointer crash and request loss
+  * test(ut): add unit tests for gpuinfo interop binding
+  * feat(mpv): bind vaapi interop for gpuinfo interop field
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Wed, 25 Nov 2026 13:56:39 +0800
+
 deepin-movie-reborn (6.5.62) unstable; urgency=medium
 
   * chore: Update version to 6.5.62
