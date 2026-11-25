@@ -4608,6 +4608,11 @@ void Platform_MainWindow::toggleUIMode()
         m_pCommHintWid->setAnchorPoint(QPoint(30, 58));
         setMaximumSize(INT_MAX, INT_MAX);
         setEnableSystemResize(true);
+        // 退出时先隐藏再显示，强制 KWin 以恢复后的窗口 hints 重新托管窗口，
+        // 避免迷你模式期间的受限尺寸让 KWin 保留“不可缩放”判定。
+        if (!utils::check_wayland_env()) {
+            hide();
+        }
         if (m_nStateBeforeMiniMode & SBEM_Maximized) {
             //迷你模式切换最大化时，先恢复原来窗口大小
             if (m_lastRectInNormalMode.isValid()) {
@@ -4617,6 +4622,16 @@ void Platform_MainWindow::toggleUIMode()
             }
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
+            if (!utils::check_wayland_env()) {
+                // 先以恢复后的 hints 重新 map，再进入全屏；隐藏状态下设置
+                // FullScreen 不会生效。
+                if (m_lastRectInNormalMode.isValid()) {
+                    setGeometry(m_lastRectInNormalMode);
+                } else {
+                    resizeByConstraints();
+                }
+                show();
+            }
             setWindowState(windowState() | Qt::WindowFullScreen);
             if (windowHandle()) {
                 Utility::setBypassCompositor(windowHandle()->winId(), true);
@@ -4635,6 +4650,10 @@ void Platform_MainWindow::toggleUIMode()
 
         if (m_nStateBeforeMiniMode & SBEM_Above) {
             requestAction(ActionFactory::WindowAbove);
+        }
+
+        if (!utils::check_wayland_env()) {
+            show();
         }
 
         if (m_nStateBeforeMiniMode & SBEM_PlaylistOpened &&
