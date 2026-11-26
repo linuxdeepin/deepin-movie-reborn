@@ -181,6 +181,14 @@ static PlayerEngine::CoreState pwpop_engineState_idle_stub(void *)
 // that fires mid-test. Pin isMinimized() to false so the popup state is
 // fully test-controlled.
 static bool pwpop_isMinimized_false_stub(void *) { return false; }
+// The fake http://example.com URLs trigger a real playback attempt once the
+// popup's qWait windows let the async player run; mpv then logs
+// "stream: Failed to open ..." and MainWindow::checkErrorMpvLogsChanged
+// removes playlist().current() — silently deleting test data mid-test
+// (removeClickedItem_visibleShortcutRemovesSelected saw its first item
+// vanish before the Act step). Neutralize that error-path removal: fake
+// URLs are not real playback failures.
+static void pwpop_checkErrorMpvLogsChanged_stub(void *, const QString, const QString) {}
 // contextMenuEvent ends with playlistContextMenu()->clear() under USE_TEST,
 // which deletes the singleton menu's cached actions — actions still referenced
 // by ActionFactory::m_listContextMenuActions (dangling pointers kill any later
@@ -270,6 +278,12 @@ protected:
         // (mainwindow.cpp slotMediaError), racing the test's own removal
         // assertions. Disable that handler for the whole fixture.
         stub.set(ADDR(MainWindow, slotMediaError), pwpop_slotMediaError_noop);
+        // The same fake URLs also surface as mpv log errors
+        // ("stream: Failed to open ..."), which hit MainWindow::
+        // checkErrorMpvLogsChanged — its "fail"+"open" branch removes
+        // playlist().current() as well (seen in CI: the first item vanished
+        // before the Act step). Neutralize that second removal path too.
+        stub.set(ADDR(MainWindow, checkErrorMpvLogsChanged), pwpop_checkErrorMpvLogsChanged_stub);
 
         scrubState();
     }
