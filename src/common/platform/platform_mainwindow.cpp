@@ -5264,7 +5264,7 @@ void Platform_MainWindow::prepareSplashImages()
 void Platform_MainWindow::subtitleMatchVideo(const QString &sFileName)
 {
     qCDebug(appMovie) << "Enter subtitleMatchVideo function";
-    QString sVideoName = sFileName;
+    QString sVideoName;
     // Search for video files with the same name as the subtitles and play the video file.
     QFileInfo subfileInfo(sFileName);
     QDir dir(subfileInfo.canonicalPath());
@@ -5275,11 +5275,23 @@ void Platform_MainWindow::subtitleMatchVideo(const QString &sFileName)
     for (int i = 0; i < list.size(); ++i) {
         QFileInfo info = list.at(i);
         qCInfo(appMovie) << info.absoluteFilePath();
-//        if (info.completeBaseName() == subfileInfo.completeBaseName()) {
-        if (subfileInfo.fileName().contains(info.completeBaseName())) {
+
+        if (info.canonicalFilePath() == subfileInfo.canonicalFilePath()) {
+            continue;
+        }
+
+        if (PlayerEngine::subtitle_suffixs.contains(info.suffix(), Qt::CaseInsensitive)) {
+            continue;
+        }
+
+        if (info.completeBaseName() == subfileInfo.completeBaseName()) {
             sVideoName = info.absoluteFilePath();
-        } else {
-            sVideoName = nullptr;
+            break;
+        }
+
+        if (sVideoName.isEmpty() &&
+            subfileInfo.completeBaseName().startsWith(info.completeBaseName() + QChar('.'))) {
+            sVideoName = info.absoluteFilePath();
         }
     }
 
