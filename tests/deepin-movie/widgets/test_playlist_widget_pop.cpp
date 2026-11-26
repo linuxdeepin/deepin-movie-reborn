@@ -181,6 +181,14 @@ static PlayerEngine::CoreState pwpop_engineState_idle_stub(void *)
 // that fires mid-test. Pin isMinimized() to false so the popup state is
 // fully test-controlled.
 static bool pwpop_isMinimized_false_stub(void *) { return false; }
+// The fake http://example.com URLs trigger a real playback attempt once the
+// popup's qWait windows let the async player run; mpv then logs
+// "stream: Failed to open ..." and MainWindow::checkErrorMpvLogsChanged
+// removes playlist().current() — silently deleting test data mid-test
+// (removeClickedItem_visibleShortcutRemovesSelected saw its first item
+// vanish before the Act step). Neutralize that error-path removal: fake
+// URLs are not real playback failures.
+static void pwpop_checkErrorMpvLogsChanged_stub(void *, const QString, const QString) {}
 // contextMenuEvent ends with playlistContextMenu()->clear() under USE_TEST,
 // which deletes the singleton menu's cached actions — actions still referenced
 // by ActionFactory::m_listContextMenuActions (dangling pointers kill any later
@@ -254,6 +262,7 @@ protected:
         stub.set(ADDR(CompositingManager, isPadSystem), pwpop_isPad_false_stub);
         stub.set(ADDR(PlaylistModel, onAsyncUpdate), pwpop_onAsyncUpdate_noop_stub);
         stub.set(ADDR(MainWindow, isMinimized), pwpop_isMinimized_false_stub);
+        stub.set(ADDR(MainWindow, checkErrorMpvLogsChanged), pwpop_checkErrorMpvLogsChanged_stub);
 
         scrubState();
     }
