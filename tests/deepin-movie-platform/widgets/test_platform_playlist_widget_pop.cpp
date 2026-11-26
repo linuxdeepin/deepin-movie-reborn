@@ -175,6 +175,14 @@ static void ppwpop_slotCloseTimeTimeOut_stub(void *) {}
 // race that fires mid-test. Pin isMinimized() to false so the popup state
 // is fully test-controlled.
 static bool ppwpop_isMinimized_false_stub(void *) { return false; }
+// The fake http://example.com URLs trigger a real playback attempt once the
+// popup's qWait windows let the async player run; mpv then logs
+// "stream: Failed to open ..." and Platform_MainWindow::checkErrorMpvLogsChanged
+// removes playlist().current() — silently deleting test data mid-test
+// (removeClickedItem_visibleShortcutRemovesSelected saw its first item
+// vanish before the Act step). Neutralize that error-path removal: fake
+// URLs are not real playback failures.
+static void ppwpop_checkErrorMpvLogsChanged_stub(void *, const QString, const QString) {}
 // contextMenuEvent ends with playlistContextMenu()->clear() under USE_TEST,
 // which deletes the singleton menu's cached actions — actions still referenced
 // by ActionFactory::m_listContextMenuActions (dangling pointers kill any later
@@ -247,6 +255,7 @@ protected:
         stub.set(ADDR(CompositingManager, isPadSystem), ppwpop_isPad_false_stub);
         stub.set(ADDR(PlaylistModel, onAsyncUpdate), ppwpop_onAsyncUpdate_noop_stub);
         stub.set(ADDR(Platform_MainWindow, isMinimized), ppwpop_isMinimized_false_stub);
+        stub.set(ADDR(Platform_MainWindow, checkErrorMpvLogsChanged), ppwpop_checkErrorMpvLogsChanged_stub);
 
         scrubState();
     }
