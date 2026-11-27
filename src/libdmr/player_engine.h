@@ -207,6 +207,7 @@ signals:
 public slots:
     void play();
     void pauseResume();
+    void setPaused(bool paused);
     void stop();
 
     void prev();

@@ -346,6 +346,7 @@ public slots:
      * @brief 暂停或恢复暂停
      */
     void pauseResume() override;
+    void setPaused(bool paused) override;
     /**
      * @brief 终止播放
      */
