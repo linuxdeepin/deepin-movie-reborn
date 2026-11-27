@@ -458,6 +458,9 @@ mpv_handle *MpvProxy::mpv_init()
         } else {
             qCDebug(dmrMpv) << "DEBUG: QT_XCB_GL_INTEGRATION environment variable is empty. Defaulting to vaapi-glx.";
         }
+        if (CompositingManager::runningOnNvidia()) {
+            interop = "vdpau-glx";
+        }
         my_set_property(pHandle, "gpu-hwdec-interop", interop.toUtf8().constData());
         qCInfo(dmrMpv) << "set gpu-hwdec-interop = " << interop;
     }
