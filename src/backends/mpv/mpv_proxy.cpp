@@ -629,9 +629,14 @@ mpv_handle *MpvProxy::mpv_init()
             qCDebug(dmrMpv) << "DEBUG: Loongarch: Specific hardware detected, skipping direct rendering check.";
         }
 #elif defined (__sw_64__)
+        if (!CompositingManager::get().hascard()) {
+            qCInfo(dmrMpv) << "修改音视频同步模式";
+            my_set_property(pHandle, "video-sync", "desync");
+        }
         qCDebug(dmrMpv) << "DEBUG: SW_64 defined. Modifying video output.";
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
         my_set_property(pHandle, "vo", "gpu,x11");
+        my_set_property(pHandle, "ao", "alsa");
         m_sInitVo = "gpu,x11";
 #elif defined (__aarch64__)
         // 检测特殊机型，使用配置的 VO 渲染
@@ -748,9 +753,14 @@ mpv_handle *MpvProxy::mpv_init()
         }
 
 #if defined (__sw_64__)
+        if (!CompositingManager::get().hascard()) {
+            qCInfo(dmrMpv) << "修改音视频同步模式";
+            my_set_property(pHandle, "video-sync", "desync");
+        }
         qCDebug(dmrMpv) << "DEBUG: SW_64 defined. Modifying video output.";
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
         my_set_property(pHandle, "vo", "gpu,x11");
+        my_set_property(pHandle, "ao", "alsa");
         m_sInitVo = "gpu,x11";
 #elif defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
         if (!CompositingManager::get().hascard()) {
