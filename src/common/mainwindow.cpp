@@ -5155,8 +5155,8 @@ void MainWindow::delayedMouseReleaseHandler()
 void MainWindow::prepareSplashImages()
 {
     qCDebug(appMovie) << "prepareSplashImages";
-    m_imgBgDark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
-    m_imgBgLight = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+    m_imgBgDark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg", devicePixelRatioF());
+    m_imgBgLight = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg", devicePixelRatioF());
 }
 
 void MainWindow::subtitleMatchVideo(const QString &sFileName)
