@@ -4523,8 +4523,6 @@ void Platform_MainWindow::toggleUIMode()
 
     if (m_bMiniMode) {
         m_pTitlebar->titlebar()->setDisableFlags(Qt::WindowMaximizeButtonHint);
-    } else {
-        m_pTitlebar->titlebar()->setDisableFlags(nullptr);
     }
 
     m_pTitlebar->setVisible(!m_bMiniMode);
@@ -4664,6 +4662,7 @@ void Platform_MainWindow::toggleUIMode()
                 });
             }
         }
+        m_pTitlebar->titlebar()->setDisableFlags(nullptr);
         m_nStateBeforeMiniMode = SBEM_None;
     }
 
