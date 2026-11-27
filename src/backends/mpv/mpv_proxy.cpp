@@ -2557,6 +2557,10 @@ void MpvProxy::stepBurstScreenshot()
             qCInfo(dmrMpv) << "seek finished (end of file)" << elapsed();
             break;
         }
+
+        if (pEvent->event_id == MPV_EVENT_PROPERTY_CHANGE) {
+            processPropertyChange(reinterpret_cast<mpv_event_property *>(pEvent->data));
+        }
     }
 
     qCDebug(dmrMpv) << "Taking screenshot at position" << elapsed();
