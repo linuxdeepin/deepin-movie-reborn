@@ -317,6 +317,8 @@ private:
     void *m_pEngine;            ///播放引擎
     int m_nCurDuration;   //当前播放视频总时长
     int m_nCurAbsTime;    //当前播放视频播放时长
+    //上次处理的DLNA应答签名，用于去重
+    QString m_lastInfoSignature;
 };
 
 #endif /* ifndef _MIRCASTWIDGET_H */
