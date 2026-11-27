@@ -41,6 +41,8 @@ Build-Depends:
     libdtk6gui-dev,
     libdtk6widget-dev,
     libdtk6core-dev,
+    libgtest-dev,
+    libgmock-dev,
 # treeland (V25) 置顶支持（treeland_dde_shell_manager_v2 协议）
     qt6-wayland-dev,
     qt6-wayland-private-dev,
